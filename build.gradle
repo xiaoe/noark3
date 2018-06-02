@@ -1,0 +1,65 @@
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'findbugs'
+    apply plugin: 'maven-publish'
+	apply plugin: 'pmd'
+
+	ext {
+	    p3c = "1.3.0"
+	}
+	
+	pmd {
+	    consoleOutput = true
+	    reportsDir = file("build/reports/pmd")
+	
+	    ruleSets = [
+	    	"java-ali-comment",
+	        "java-ali-concurrent",
+	        "java-ali-constant",
+	        "java-ali-exception",
+	        "java-ali-flowcontrol",
+	        "java-ali-naming",
+	        "java-ali-oop",
+	        "java-ali-orm",
+	        "java-ali-other",
+	        "java-ali-set"
+	    ]
+	}
+
+	group = 'xyz.noark'  
+	version = '3.0.0.Final'
+	
+	sourceCompatibility = 1.8  
+	targetCompatibility = 1.8  
+
+	[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    repositories {
+    	maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    	mavenCentral()
+    	jcenter()
+	}
+
+    dependencies {
+		testImplementation 'junit:junit:4.12'
+        pmd "com.alibaba.p3c:p3c-pmd:${p3c}"
+    }
+
+    jar {
+     	manifest.attributes provider: '小流氓'
+		manifest.attributes["Created-By"] = "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
+		manifest.attributes["Implementation-Title"] = project.name
+		manifest.attributes["Implementation-Version"] = project.version
+    }
+    
+    javadoc {
+    	options{
+    		encoding "UTF-8"
+    		charSet 'UTF-8'
+    		author true
+    		version true
+    		links "http://docs.oracle.com/javase/8/docs/api/"
+    	}
+    }
+}
