@@ -15,6 +15,7 @@ package xyz.noark.reflectasm;
 
 import java.lang.reflect.Method;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import xyz.noark.benchmark.Benchmark;
@@ -27,25 +28,34 @@ import xyz.noark.benchmark.Benchmark;
  */
 public class MethodAccessTest {
 	private final Benchmark benchmark = new Benchmark(1_0000_0000);
+	private final TestBean bean = new TestBean();
+	private Method method;// JDK的反射.
+	private MethodAccess access;// ReflectAsm
+	private int methodIndex;
+
+	@Before
+	public void setUp() throws Exception {
+		method = TestBean.class.getMethod("setId", int.class);
+		access = MethodAccess.get(TestBean.class);
+		methodIndex = access.getIndex("setId");
+	}
 
 	@Test
 	public void test() throws Exception {
-		this.testJdkReflect();
-		this.testReflectAsm();
+		for (int i = 1; i < 10; i++) {
+			this.testJdkReflect();
+			this.testReflectAsm();
+			System.out.println();
+		}
 	}
 
 	@Test
 	public void testJdkReflect() throws Exception {
-		TestBean bean = new TestBean();
-		Method method = TestBean.class.getMethod("setId", int.class);
 		benchmark.doSomething("testJdkReflect:", () -> method.invoke(bean, 1));
 	}
 
 	@Test
 	public void testReflectAsm() throws Exception {
-		TestBean bean = new TestBean();
-		MethodAccess access = MethodAccess.get(TestBean.class);
-		int methodIndex = access.getIndex("setId");
 		benchmark.doSomething("testReflectAsm:", () -> access.invoke(bean, methodIndex, 1));
 	}
 }
