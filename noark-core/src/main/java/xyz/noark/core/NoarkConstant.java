@@ -14,14 +14,16 @@
 package xyz.noark.core;
 
 /**
- * Noark测试用例.
+ * Noark的一些常用配置类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class NoarkTest {
+public class NoarkConstant {
 
-	public static void main(String[] args) {
-		Noark.run(TestServerStartup.class, args);
-	}
+	/**
+	 * 激活Noark的Profile的Key.
+	 */
+	public static final String NOARK_PROFILES_ACTIVE = "--noark.profiles.active=";
+
 }

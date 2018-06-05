@@ -13,15 +13,27 @@
  */
 package xyz.noark.core;
 
+import static org.junit.Assert.*;
+
+import java.util.Map;
+
+import org.junit.Test;
+
 /**
- * Noark测试用例.
+ * 属性配置文件加载测试.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class NoarkTest {
+public class NoarkPropertiesLoaderTest {
 
-	public static void main(String[] args) {
-		Noark.run(TestServerStartup.class, args);
+	@Test
+	public void test() {
+		NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
+		Map<String, String> config = loader.loadProperties("dev");
+
+		assertTrue("中国".equals(config.get("noark.key.test")));
+		assertTrue("2".equals(config.get("noark.server.id")));
+		assertTrue("test 2 server".equals(config.get("noark.setver.name")));
 	}
 }

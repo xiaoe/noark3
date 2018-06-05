@@ -27,6 +27,7 @@ import xyz.noark.util.ClassUtils;
  * @author 小流氓(176543888@qq.com)
  */
 class NoarkInitializer {
+
 	/**
 	 * 初始化Noark.
 	 * 
@@ -35,22 +36,28 @@ class NoarkInitializer {
 	 */
 	public void init(Class<? extends ServerStartup> klass, String... args) {
 		// 载入配置文件...
-		Map<String, String> config = this.loadProperties(args);
-		EnvConfigHolder.setProperties(config);
+		EnvConfigHolder.setProperties(this.loadProperties(args));
 
 		// 初始化日志系统
-		LogManager.init(config);
+		LogManager.init(EnvConfigHolder.getProperties());
 
 		// 初始化IOC容器.
 		ClassUtils.newInstance(klass).start();
 	}
 
+	// 根据启动参数分析加载相应的配置文件...
 	private Map<String, String> loadProperties(String... args) {
+		// --noark.profiles.active=dev
+		String profiles = null;
+		for (String a : args) {
+			if (a.startsWith(NoarkConstant.NOARK_PROFILES_ACTIVE)) {
+				profiles = a.substring(NoarkConstant.NOARK_PROFILES_ACTIVE.length());
+				break;
+			}
+		}
+
 		// 载入配置文件...
 		NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
-		Map<String, String> config = loader.loadProperties();
-
-		// --noark.profiles.active=dev
-		return config;
+		return loader.loadProperties(profiles);
 	}
 }

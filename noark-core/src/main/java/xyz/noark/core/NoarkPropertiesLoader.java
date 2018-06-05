@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import xyz.noark.core.startup.ServiceStartupException;
+import xyz.noark.util.StringUtils;
 
 /**
  * 属性文件加载器.
@@ -31,18 +32,27 @@ import xyz.noark.core.startup.ServiceStartupException;
  */
 class NoarkPropertiesLoader {
 	private static final String default_properties = "application.properties";
+	private static final String profile_prefix = "application-";
+	private static final String profile_suffix = ".properties";
 
 	/**
 	 * 加载系统配置文件中的内容.
 	 * <p>
 	 * application-test.properties中的内容会覆盖application.properties中的配置
 	 * 
+	 * @param profile profile
 	 * @return 返回配置内容
 	 */
-	Map<String, String> loadProperties() {
+	Map<String, String> loadProperties(String profile) {
 		final ClassLoader loader = Noark.class.getClassLoader();
 		HashMap<String, String> result = new HashMap<>();
+
 		loadPorperties(loader, default_properties, result);
+
+		if (StringUtils.isNotEmpty(profile)) {
+			loadPorperties(loader, profile_prefix + profile + profile_suffix, result);
+		}
+
 		// 表达式引用...
 		this.analysisEL(result);
 		return result;
@@ -75,15 +85,17 @@ class NoarkPropertiesLoader {
 	}
 
 	private void loadPorperties(ClassLoader loader, String filename, HashMap<String, String> result) {
-		try (InputStream in = loader.getResourceAsStream(filename); InputStreamReader isr = new InputStreamReader(in, "utf-8")) {
+		try (InputStream in = loader.getResourceAsStream(filename)) {
 			if (in != null) {
-				Properties props = new Properties();
-				props.load(isr);
-				for (Entry<Object, Object> e : props.entrySet()) {
-					String key = e.getKey().toString();
-					String value = e.getValue().toString();
-					if (result.put(key, value) != null) {
-						// System.err.println("覆盖配置 >> " + key + "=" + value);
+				try (InputStreamReader isr = new InputStreamReader(in, "utf-8")) {
+					Properties props = new Properties();
+					props.load(isr);
+					for (Entry<Object, Object> e : props.entrySet()) {
+						String key = e.getKey().toString();
+						String value = e.getValue().toString();
+						if (result.put(key, value) != null) {
+							System.err.println("覆盖配置 >>" + key + "=" + value);
+						}
 					}
 				}
 			}
