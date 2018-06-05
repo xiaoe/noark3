@@ -1,0 +1,7 @@
+dependencies {
+	compile project(':noark-asm')
+	compile project(':noark-log')
+	compile project(':noark-util')
+
+	testCompile project(':noark-benchmark')
+}
