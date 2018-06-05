@@ -35,7 +35,7 @@ public class BagService {
 	@Autowired
 	private Map<String, Command> commands;
 	@Autowired
-	private List<Command> commandList;
+	private List<VipService> commandList;
 
 	public void test() {
 		itemService.addItem("123456");
@@ -53,7 +53,7 @@ public class BagService {
 		return commands;
 	}
 
-	public List<Command> getCommandList() {
+	public List<VipService> getCommandList() {
 		return commandList;
 	}
 }

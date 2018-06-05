@@ -35,6 +35,6 @@ public class ListFieldDefinition extends DefaultFieldDefinition {
 
 	@Override
 	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-		return making.findAllImpl(klass).stream().map(b -> b.getSingle()).collect(Collectors.toList());
+		return making.findAllImpl(fieldClass).stream().map(b -> b.getSingle()).collect(Collectors.toList());
 	}
 }

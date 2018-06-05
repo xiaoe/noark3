@@ -11,12 +11,13 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc.demo;
+package xyz.noark.core.ioc.demo.map;
 
 import xyz.noark.core.annotation.Component;
+import xyz.noark.core.ioc.demo.Command;
 
 /**
- * 
+ * 添加道具命令.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
@@ -24,4 +25,8 @@ import xyz.noark.core.annotation.Component;
 @Component(name = { "// add item" })
 public class AddItemCommand extends Command {
 
+	@Override
+	public String doSomething() {
+		return "item";
+	}
 }

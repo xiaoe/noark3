@@ -70,7 +70,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	}
 
 	@Override
-	public String[] getName() {
+	public String[] getNames() {
 		return new String[] { beanClass.getName() };
 	}
 

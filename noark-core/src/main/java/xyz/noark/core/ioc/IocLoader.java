@@ -27,6 +27,7 @@ import xyz.noark.core.annotation.Repository;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.ConvertManager;
+import xyz.noark.core.ioc.definition.ComponentBeanDefinition;
 import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.ioc.scan.Resource;
@@ -122,8 +123,9 @@ public class IocLoader {
 		}
 	}
 
-	private void analytical(Class<?> klass, Component cast) {
-		beans.put(klass, new DefaultBeanDefinition(klass));
+	// 组件类型的Bean...
+	private void analytical(Class<?> klass, Component component) {
+		beans.put(klass, new ComponentBeanDefinition(klass, component));
 	}
 
 	private void analytical(Class<?> klass, Repository cast) {

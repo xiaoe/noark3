@@ -28,7 +28,7 @@ public interface BeanDefinition {
 	 * 
 	 * @return Bean的名称
 	 */
-	public String[] getName();
+	public String[] getNames();
 
 	/**
 	 * 获取这个Bean的单例缓存对象.

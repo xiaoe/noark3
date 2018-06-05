@@ -59,8 +59,8 @@ public class NoarkIoc implements Ioc {
 	}
 
 	// 初始化和依赖注入的关系
-	private void finishBeanInitialization(IocLoader loader, IocMaking making, Collection<? extends BeanDefinition> configurations) {
-		loader.getBeans().forEach((k, bean) -> bean.injection(making));
+	private void finishBeanInitialization(IocLoader loader, IocMaking making, Collection<? extends BeanDefinition> beans) {
+		beans.forEach(bean -> bean.injection(making));
 	}
 
 	@Override
@@ -71,6 +71,6 @@ public class NoarkIoc implements Ioc {
 
 	public void invokeCustomAnnotationMethod(Class<PostConstruct> class1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

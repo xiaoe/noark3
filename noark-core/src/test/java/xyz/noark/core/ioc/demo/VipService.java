@@ -14,11 +14,15 @@
 package xyz.noark.core.ioc.demo;
 
 /**
- * 
+ * VIP服务.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 public interface VipService {
 
+	/**
+	 * 做事.
+	 */
+	public abstract String doSomething();
 }

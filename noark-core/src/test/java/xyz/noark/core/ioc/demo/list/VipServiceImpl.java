@@ -11,17 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc.demo;
+package xyz.noark.core.ioc.demo.list;
 
-import xyz.noark.core.annotation.Component;
+import xyz.noark.core.annotation.Service;
+import xyz.noark.core.ioc.demo.VipService;
 
 /**
- * 
+ * VIP服务实现1.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = { "// add rmb" })
-public class AddRmbCommand extends Command {
+@Service
+public class VipServiceImpl implements VipService {
+
+	@Override
+	public String doSomething() {
+		return "1";
+	}
 
 }

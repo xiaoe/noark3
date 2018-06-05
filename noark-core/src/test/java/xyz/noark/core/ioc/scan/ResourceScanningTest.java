@@ -13,10 +13,15 @@
  */
 package xyz.noark.core.ioc.scan;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 /**
- * 
+ * 资源扫描测试.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
@@ -25,7 +30,8 @@ public class ResourceScanningTest {
 
 	@Test
 	public void test() {
-		ResourceScanning.scanPackage(new String[] { "org" }, (resource) -> System.out.println(resource));
+		List<Resource> rs = new ArrayList<>();
+		ResourceScanning.scanPackage(new String[] { "xyz.noark.core.ioc.scan" }, (r) -> rs.add(r));
+		assertTrue(!rs.isEmpty());
 	}
-
 }

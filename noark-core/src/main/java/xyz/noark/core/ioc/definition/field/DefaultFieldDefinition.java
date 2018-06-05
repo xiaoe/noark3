@@ -57,6 +57,6 @@ public class DefaultFieldDefinition implements FieldDefinition {
 	 * @return 需要注入的对象
 	 */
 	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-		return making.findAllImpl(klass).stream().map(b -> b.getSingle()).findFirst().orElseThrow(() -> new RuntimeException("注入属性未找到..."+klass.getName()));
+		return making.findAllImpl(klass).stream().map(b -> b.getSingle()).findFirst().orElseThrow(() -> new RuntimeException("注入属性未找到..." + klass.getName()));
 	}
 }
