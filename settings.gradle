@@ -4,5 +4,8 @@ rootProject.name = 'noark3'
 // 核心工程 
 include "noark-asm", "noark-benchmark", "noark-util", "noark-log", "noark-core"
 
+// 网络模块
+include "noark-network"
+
 // 游戏Demo
 include "noark-slg", "noark-mmo"

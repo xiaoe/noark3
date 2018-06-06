@@ -1,0 +1,6 @@
+dependencies {
+	compile project(':noark-core')
+	compile 'io.netty:netty-all:4.1.+'
+	
+	testCompile project(':noark-benchmark')
+}
