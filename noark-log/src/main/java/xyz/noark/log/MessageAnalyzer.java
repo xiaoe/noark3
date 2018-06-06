@@ -16,6 +16,7 @@ package xyz.noark.log;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * 消息分析器.
@@ -126,6 +127,7 @@ class MessageAnalyzer {
 	}
 
 	private void append(StringBuilder sb, Object object) {
+		// 异常类型的输出...
 		if (object instanceof Throwable) {
 			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
 				((Throwable) object).printStackTrace(pw);
@@ -133,7 +135,15 @@ class MessageAnalyzer {
 			} catch (Exception e) {
 				sb.append(object);
 			}
-		} else {
+		}
+
+		// 数组类型的输出...
+		else if (object.getClass().isArray()) {
+			sb.append(Arrays.toString((Object[]) object));
+		}
+
+		// 默认的交给StringBuilder
+		else {
 			sb.append(object);
 		}
 	}
