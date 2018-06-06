@@ -1,0 +1,5 @@
+dependencies {
+	compile project(':noark-core')
+
+	testCompile project(':noark-benchmark')
+}
