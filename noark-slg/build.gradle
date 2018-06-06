@@ -1,5 +1,6 @@
 dependencies {
 	compile project(':noark-core')
+	compile project(':noark-network')
 
 	testCompile project(':noark-benchmark')
 }
