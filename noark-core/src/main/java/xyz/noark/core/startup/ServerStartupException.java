@@ -14,15 +14,15 @@
 package xyz.noark.core.startup;
 
 /**
- * 
+ * 服务器启动异常类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class ServiceStartupException extends RuntimeException {
+public class ServerStartupException extends RuntimeException {
 	private static final long serialVersionUID = -1979831464877053819L;
 
-	public ServiceStartupException(String msg) {
+	public ServerStartupException(String msg) {
 		super(msg);
 	}
 }

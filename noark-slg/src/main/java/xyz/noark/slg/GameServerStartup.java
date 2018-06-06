@@ -34,4 +34,10 @@ public class GameServerStartup extends AbstractServerStartup {
 
 	}
 
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+
+	}
+
 }

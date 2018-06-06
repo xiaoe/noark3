@@ -18,6 +18,7 @@ import static xyz.noark.log.LogHelper.logger;
 import javax.annotation.PostConstruct;
 
 import xyz.noark.core.ioc.NoarkIoc;
+import xyz.noark.log.LogManager;
 
 /**
  * 抽象的启动服务类.
@@ -39,6 +40,11 @@ public abstract class AbstractServerStartup implements ServerStartup {
 	public AbstractServerStartup() {
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
 	}
+
+	/**
+	 * @return 返回当前服务器名称.
+	 */
+	protected abstract String getServerName();
 
 	@Override
 	public void start() {
@@ -71,17 +77,23 @@ public abstract class AbstractServerStartup implements ServerStartup {
 		}
 	}
 
-	/**
-	 * @return 返回当前服务器名称.
-	 */
-	protected abstract String getServerName();
-
 	protected abstract void onStart();
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		logger.info("stopping service: {}", this.getServerName());
+		try {
+			logger.info("goodbye {}", this.getServerName());
+			System.out.println("goodbye " + this.getServerName());
 
+			this.onStop();
+
+			// 日志框架Shutdown
+			LogManager.shutdown();
+		} catch (Exception e) {
+			logger.error("failed to stopping service:{}", this.getServerName(), e);
+		}
 	}
 
+	protected abstract void onStop();
 }

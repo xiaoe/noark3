@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import xyz.noark.core.startup.ServiceStartupException;
+import xyz.noark.core.startup.ServerStartupException;
 import xyz.noark.util.StringUtils;
 
 /**
@@ -73,7 +73,7 @@ class NoarkPropertiesLoader {
 					String elKey = value.substring(startIndex + 2, endIndex);
 					String elValue = result.get(elKey);
 					if (elValue == null) {
-						throw new ServiceStartupException(value + "--> 替换参数呢?");
+						throw new ServerStartupException(value + "--> 替换参数呢?");
 					} else {
 						value = value.replace("${" + elKey + "}", elValue);
 						e.setValue(value);
@@ -100,7 +100,7 @@ class NoarkPropertiesLoader {
 				}
 			}
 		} catch (IOException e) {
-			throw new ServiceStartupException("配置文件格式异常... filename=" + filename);
+			throw new ServerStartupException("配置文件格式异常... filename=" + filename);
 		}
 	}
 }
