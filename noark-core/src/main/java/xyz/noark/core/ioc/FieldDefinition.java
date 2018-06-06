@@ -14,12 +14,18 @@
 package xyz.noark.core.ioc;
 
 /**
- * 
+ * 一个属性的定义.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 public interface FieldDefinition {
 
+	/**
+	 * 注入对象.
+	 * 
+	 * @param single 宿主对象
+	 * @param making 装配对象
+	 */
 	void injection(Object single, IocMaking making);
 }

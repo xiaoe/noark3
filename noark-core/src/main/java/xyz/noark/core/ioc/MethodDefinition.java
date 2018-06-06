@@ -13,12 +13,36 @@
  */
 package xyz.noark.core.ioc;
 
+import java.lang.reflect.Parameter;
+
+import xyz.noark.reflectasm.MethodAccess;
+
 /**
- * 
+ * 一个方法的定义.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 public interface MethodDefinition {
 
+	/**
+	 * 获取此方法的访问入口.
+	 * 
+	 * @return 访问入口
+	 */
+	public MethodAccess getMethodAccess();
+
+	/**
+	 * 获取此方法的访问入口所对应的Index.
+	 * 
+	 * @return 访问入口所对应的Index.
+	 */
+	public int getMethodIndex();
+
+	/**
+	 * 获取参数列表
+	 * 
+	 * @return 参数
+	 */
+	public Parameter[] getParameters();
 }

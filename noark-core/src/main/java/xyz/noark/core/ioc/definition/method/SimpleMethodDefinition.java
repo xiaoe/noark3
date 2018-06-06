@@ -11,22 +11,43 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.bootstrap;
+package xyz.noark.core.ioc.definition.method;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+
+import xyz.noark.core.ioc.MethodDefinition;
+import xyz.noark.reflectasm.MethodAccess;
 
 /**
- * 服务器启动异常类.
+ * 一个简单的方法定义.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class ServerBootstrapException extends RuntimeException {
-	private static final long serialVersionUID = -1979831464877053819L;
+public class SimpleMethodDefinition implements MethodDefinition {
+	protected final Method method;
+	protected final Parameter[] parameters;
+	protected final MethodAccess methodAccess;
 
-	public ServerBootstrapException(String msg) {
-		super(msg);
+	public SimpleMethodDefinition(MethodAccess methodAccess, Method method) {
+		this.method = method;
+		this.methodAccess = methodAccess;
+		this.parameters = method.getParameters();
 	}
 
-	public ServerBootstrapException(String msg, Exception e) {
-		super(msg, e);
+	@Override
+	public MethodAccess getMethodAccess() {
+		return methodAccess;
+	}
+
+	@Override
+	public int getMethodIndex() {
+		return methodAccess.getIndex(method.getName());
+	}
+
+	@Override
+	public Parameter[] getParameters() {
+		return parameters;
 	}
 }

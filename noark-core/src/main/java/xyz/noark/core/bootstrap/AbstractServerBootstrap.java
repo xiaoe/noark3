@@ -15,9 +15,12 @@ package xyz.noark.core.bootstrap;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import xyz.noark.core.ioc.NoarkIoc;
+import xyz.noark.core.network.TcpServer;
 import xyz.noark.log.LogManager;
 
 /**
@@ -66,6 +69,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			// HTTP服务
 
 			// 对外网络...
+			this.initNetworkService();
 
 			float interval = (System.nanoTime() - startTime) / 1000_000f;
 			logger.info("{} is running, interval={} ms", this.getServerName(), interval);
@@ -74,6 +78,20 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			e.printStackTrace();
 			logger.error("failed to starting service:{}", this.getServerName(), e);
 			System.exit(1);
+		}
+	}
+
+	/**
+	 * 启动网络服务...
+	 */
+	protected void initNetworkService() {
+		List<TcpServer> servers = ioc.findImpl(TcpServer.class);
+		if (servers.isEmpty()) {
+			// 没有配置，默认按规则启动一个...
+		} else {
+			for (TcpServer server : servers) {
+				server.startup();
+			}
 		}
 	}
 

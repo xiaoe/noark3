@@ -15,6 +15,7 @@ package xyz.noark.core.ioc.definition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import xyz.noark.core.ioc.definition.field.ValueFieldDefinition;
 import xyz.noark.reflectasm.MethodAccess;
 import xyz.noark.util.ClassUtils;
 import xyz.noark.util.FieldUtils;
+import xyz.noark.util.MethodUtils;
 
 /**
  * 默认的Bean定义描述类.
@@ -65,9 +67,13 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		this.beanClass = object.getClass();
 		this.methodAccess = MethodAccess.get(beanClass);
 
+		this.init();
+
 		this.analysisField();
 		this.analysisMethod();
 	}
+
+	protected void init() {}
 
 	@Override
 	public String[] getNames() {
@@ -85,8 +91,50 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	}
 
 	private void analysisMethod() {
-		// TODO Auto-generated method stub
+		MethodUtils.getAllMethod(beanClass).forEach(method -> {
+			Annotation[] annotations = method.getAnnotations();
+			// 没有注解的忽略掉
+			if (annotations != null && annotations.length > 0) {
+				for (Annotation annotation : annotations) {
+					final Class<? extends Annotation> annotationType = annotation.annotationType();
+					// 忽略一些系统警告类的注解
+					if (ignoreAnnotationByMethods.contains(annotationType)) {
+						continue;
+					}
+					this.analysisMthodByAnnotation(annotationType, annotation, method);
+				}
+			}
+		});
+	}
 
+	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+		// List<MethodDefinition> methods =
+		// customMethods.computeIfAbsent(annotationType, key -> new
+		// ArrayList<>(64));
+		// // 协议入口
+		// if (annotationType == PacketMapping.class) {
+		// methods.add(new PacketMethodDefinition(methodAccess, method,
+		// PacketMapping.class.cast(annotation)));
+		// }
+		// // 事件监听
+		// else if (annotationType == EventListener.class) {
+		// methods.add(new EventMethodDefinition(methodAccess, method,
+		// EventListener.class.cast(annotation)));
+		// }
+		// // 延迟任务
+		// else if (annotationType == Scheduled.class) {
+		// methods.add(new ScheduleMethodDefinition(methodAccess, method,
+		// Scheduled.class.cast(annotation)));
+		// }
+		// // HTTP接口
+		// else if (annotationType == HttpHandler.class) {
+		// methods.add(new HttpMethodDefinition(methodAccess, method,
+		// HttpHandler.class.cast(annotation)));
+		// }
+		// // 未知的
+		// else {
+		// methods.add(new AnnotationMethodDefinition(methodAccess, method));
+		// }
 	}
 
 	private void analysisField() {

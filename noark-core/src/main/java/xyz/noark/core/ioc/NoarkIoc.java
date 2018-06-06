@@ -16,6 +16,7 @@ package xyz.noark.core.ioc;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -72,5 +73,16 @@ public class NoarkIoc implements Ioc {
 	public void invokeCustomAnnotationMethod(Class<PostConstruct> class1) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * 查找所有实现类.
+	 * 
+	 * @param klass 接口
+	 * @return 实现类集合
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> List<T> findImpl(final Class<T> klass) {
+		return (List<T>) singletons.values().stream().filter(v -> klass.isInstance(v)).collect(Collectors.toList());
 	}
 }

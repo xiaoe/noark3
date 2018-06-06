@@ -13,7 +13,14 @@
  */
 package xyz.noark.core.ioc.definition;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import xyz.noark.core.annotation.Bean;
 import xyz.noark.core.ioc.IocMaking;
+import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
 
 /**
  * 启动配置Bean的定义.
@@ -23,8 +30,15 @@ import xyz.noark.core.ioc.IocMaking;
  */
 public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 
+	private List<SimpleMethodDefinition> beans;
+
 	public ConfigurationBeanDefinition(Class<?> klass) {
 		super(klass);
+	}
+
+	@Override
+	protected void init() {
+		this.beans = new ArrayList<>();
 	}
 
 	@Override
@@ -32,26 +46,20 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 		super.injection(making);
 
 		// 注入完属性，还要建构相关Bean.
+		for (SimpleMethodDefinition bean : beans) {
+			// FIXME 可以使用参数注入的方式 @Value一起用...
+			Object obj = bean.getMethodAccess().invoke(single, bean.getMethodIndex());
 
-		// List<MethodWrapper> beans = customMethods.getOrDefault(Bean.class,
-		// Collections.emptyList());
-		//
-		// for (Method method : klass.getDeclaredMethods()) {
-		// if (method.isAnnotationPresent(Bean.class)) {
-		// BeanDefinition bd = null;
-		// if (method.getParameters().length > 0) {
-		// String key =
-		// method.getParameters()[0].getAnnotation(Autowired.class).value();
-		// Object args = EnvDataHolder.getEnvData(key);
-		// bd = new BeanDefinition(MethodUtils.invoke(single, method, args));
-		// } else {
-		// bd = new BeanDefinition(MethodUtils.invoke(single, method));
-		// }
-		// beans.put(bd.getSingle().getClass(), bd);
-		// }
-		// }
-
-		making.getLoader().getBeans();
+			DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(obj);
+			making.getLoader().getBeans().put(beanDefinition.getBeanClass(), beanDefinition);
+		}
 	}
 
+	@Override
+	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+		// 配置类中，只关心@Bean的注解方法，其他都忽略掉吧，没有什么意义...
+		if (annotationType == Bean.class) {
+			beans.add(new SimpleMethodDefinition(methodAccess, method));
+		}
+	}
 }
