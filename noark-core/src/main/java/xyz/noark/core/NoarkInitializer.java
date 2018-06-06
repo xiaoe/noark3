@@ -15,8 +15,8 @@ package xyz.noark.core;
 
 import java.util.Map;
 
+import xyz.noark.core.bootstrap.ServerBootstrap;
 import xyz.noark.core.env.EnvConfigHolder;
-import xyz.noark.core.startup.ServerStartup;
 import xyz.noark.log.LogManager;
 import xyz.noark.util.ClassUtils;
 
@@ -34,7 +34,7 @@ class NoarkInitializer {
 	 * @param klass
 	 * @param args
 	 */
-	public void init(Class<? extends ServerStartup> klass, String... args) {
+	public void init(Class<? extends ServerBootstrap> klass, String... args) {
 		// 载入配置文件...
 		EnvConfigHolder.setProperties(this.loadProperties(args));
 

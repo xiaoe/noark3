@@ -13,7 +13,7 @@
  */
 package xyz.noark.core;
 
-import xyz.noark.core.startup.ServerStartup;
+import xyz.noark.core.bootstrap.ServerBootstrap;
 
 /**
  * Noark框架启动类.
@@ -47,7 +47,7 @@ public final class Noark {
 	 * @param klass 启动服务类
 	 * @param args 启动参数，可以动态覆盖配置
 	 */
-	public static void run(Class<? extends ServerStartup> klass, String... args) {
+	public static void run(Class<? extends ServerBootstrap> klass, String... args) {
 		new NoarkInitializer().init(klass, args);
 	}
 }

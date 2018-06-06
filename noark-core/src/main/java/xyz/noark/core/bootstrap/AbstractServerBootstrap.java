@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.startup;
+package xyz.noark.core.bootstrap;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -33,11 +33,11 @@ import xyz.noark.log.LogManager;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractServerStartup implements ServerStartup {
+public abstract class AbstractServerBootstrap implements ServerBootstrap {
 	protected NoarkIoc ioc;// IOC容器
 
 	// 启动服务时，添加一个停机守护线程，用于清理异常情况.
-	public AbstractServerStartup() {
+	public AbstractServerBootstrap() {
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
 	}
 

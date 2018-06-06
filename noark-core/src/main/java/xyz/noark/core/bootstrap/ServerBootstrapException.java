@@ -11,23 +11,18 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.startup;
+package xyz.noark.core.bootstrap;
 
 /**
- * 服务启动类.
+ * 服务器启动异常类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface ServerStartup {
+public class ServerBootstrapException extends RuntimeException {
+	private static final long serialVersionUID = -1979831464877053819L;
 
-	/**
-	 * 启动
-	 */
-	public void start();
-
-	/**
-	 * 停止
-	 */
-	public void stop();
+	public ServerBootstrapException(String msg) {
+		super(msg);
+	}
 }

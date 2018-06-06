@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.startup;
+package xyz.noark.core.bootstrap;
 
 /**
  * 停服信号勾子.
@@ -20,9 +20,9 @@ package xyz.noark.core.startup;
  * @author 小流氓(176543888@qq.com)
  */
 public class ShutdownHook extends Thread {
-	private final AbstractServerStartup serverStartup;
+	private final AbstractServerBootstrap serverStartup;
 
-	public ShutdownHook(AbstractServerStartup startup) {
+	public ShutdownHook(AbstractServerBootstrap startup) {
 		super("shutdown");// 修正停服逻辑线程名称
 		this.serverStartup = startup;
 	}

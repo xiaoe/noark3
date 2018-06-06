@@ -13,7 +13,7 @@
  */
 package xyz.noark.slg;
 
-import xyz.noark.core.startup.AbstractServerStartup;
+import xyz.noark.core.bootstrap.AbstractServerBootstrap;
 
 /**
  * 服务器服务启动类.
@@ -21,7 +21,7 @@ import xyz.noark.core.startup.AbstractServerStartup;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class GameServerStartup extends AbstractServerStartup {
+public class GameServerStartup extends AbstractServerBootstrap {
 
 	@Override
 	protected String getServerName() {
