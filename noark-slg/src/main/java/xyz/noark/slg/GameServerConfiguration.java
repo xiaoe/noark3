@@ -15,6 +15,7 @@ package xyz.noark.slg;
 
 import xyz.noark.core.annotation.Bean;
 import xyz.noark.core.annotation.Configuration;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.network.NettyServer;
 
 /**
@@ -26,9 +27,12 @@ import xyz.noark.network.NettyServer;
 @Configuration
 public class GameServerConfiguration {
 
+	@Value("network.crypto")
+	private boolean crypto = false;
+
 	@Bean
 	public NettyServer nettyServer() {
-		NettyServer server = new NettyServer(new GameServerNetworkListener());
+		NettyServer server = new NettyServer(new GameServerNetworkListener(crypto));
 		return server;
 	}
 }

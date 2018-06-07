@@ -19,12 +19,18 @@ import xyz.noark.core.network.Packet;
 import xyz.noark.core.network.Session;
 
 /**
- * 
+ * 游戏服网络监听器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 public class GameServerNetworkListener extends DefaultNetworkListener implements NetworkListener {
+
+	private boolean crypto;
+
+	public GameServerNetworkListener(boolean crypto) {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void channelActive(Session session) {
