@@ -11,34 +11,31 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package xyz.noark.core.thread;
 
 /**
- * Controller注解用来标识一个消息入口处理类.
- * <p>
- * 消息控制器，主要作用就是为每个模块接口消息处理的入口.<br>
- * 这个注解所标识的类，不会被其他类所注入，只会装配此类，但不会有别的类依赖于他.
+ * 线程指令.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Controller {
+public interface ThreadCommand {
+	/**
+	 * 执行这个指令.
+	 */
+	void exec();
 
 	/**
-	 * 队列规则.
+	 * 简单编码.
 	 * <p>
-	 * 没有对Key处理的模块就当系统模块在串型执行.
+	 * 用于日志显示.
 	 * 
-	 * @return 队列规则Key
+	 * @return 编码
 	 */
-	String value() default "";
+	String code();
+
+	/**
+	 * @return 是否输入执行时间日志.
+	 */
+	boolean isPrintLog();
 }
