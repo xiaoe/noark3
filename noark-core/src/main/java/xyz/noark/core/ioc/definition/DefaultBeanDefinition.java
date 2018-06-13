@@ -49,6 +49,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	private static final Set<Class<?>> ignoreAnnotationByMethods = new HashSet<>();
 	static {
 		ignoreAnnotationByMethods.add(Override.class);
+		ignoreAnnotationByMethods.add(Deprecated.class);
 		ignoreAnnotationByMethods.add(SuppressWarnings.class);
 	}
 
@@ -66,14 +67,13 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		this.single = object;
 		this.beanClass = object.getClass();
 		this.methodAccess = MethodAccess.get(beanClass);
-
-		this.init();
-
-		this.analysisField();
-		this.analysisMethod();
 	}
 
-	protected void init() {}
+	public BeanDefinition init() {
+		this.analysisField();
+		this.analysisMethod();
+		return this;
+	}
 
 	@Override
 	public String[] getNames() {
@@ -174,8 +174,5 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	}
 
 	@Override
-	public Object doAnalysisHandler(NoarkIoc noarkIoc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void doAnalysisFunction(NoarkIoc noarkIoc) {}
 }

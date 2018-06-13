@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
+package xyz.noark.core.annotation.controller;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -19,27 +19,33 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
-
 /**
- * Controller注解用来标识一个消息入口处理类.
- * <p>
- * 消息控制器，主要作用就是为每个模块接口消息处理的入口.<br>
- * 这个注解所标识的类，不会被其他类所注入，只会装配此类，但不会有别的类依赖于他.
+ * PacketMapping注解用来标识一个封包映射到一个处理方法.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 @Documented
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Controller {
+public @interface PacketMapping {
 
 	/**
-	 * 标识这个协议控制中的入口方法由哪个线程组调用.
-	 * <p>
+	 * 操作码，协议的唯一编号。
 	 * 
-	 * @return 执行线程组.
+	 * @return 操作码
 	 */
-	ExecThreadGroup threadGroup();
+	int opcode();
+
+	/**
+	 * @return 如果是内部协议，此使用此属性来标识
+	 */
+	boolean inner() default false;
+
+	/**
+	 * 是否需要打印协议相关的日志.
+	 * 
+	 * @return 默认为输出日志
+	 */
+	boolean printLog() default true;
 }

@@ -30,6 +30,6 @@ import java.lang.annotation.Target;
  * @author 小流氓(176543888@qq.com)
  */
 @Documented
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
 public @interface Autowired {}

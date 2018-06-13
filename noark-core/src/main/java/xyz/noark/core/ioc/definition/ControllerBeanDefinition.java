@@ -13,12 +13,50 @@
  */
 package xyz.noark.core.ioc.definition;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.PacketMapping;
+import xyz.noark.core.ioc.NoarkIoc;
+import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
+import xyz.noark.core.ioc.manager.PacketMethodManager;
+import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+
 /**
- * 
+ * 控制器的Bean定义描述类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class ControllerBeanDefinition {
+public class ControllerBeanDefinition extends DefaultBeanDefinition {
+	private final Controller controller;
+	private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
 
+	public ControllerBeanDefinition(Class<?> klass, Controller controller) {
+		super(klass);
+		this.controller = controller;
+	}
+
+	@Override
+	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+		// 客户端过来的协议入口.
+		if (annotationType == PacketMapping.class) {
+			pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
+		}
+	}
+
+	@Override
+	public void doAnalysisFunction(NoarkIoc noarkIoc) {
+		super.doAnalysisFunction(noarkIoc);
+
+		this.doAnalysisPacketHandler(noarkIoc);
+	}
+
+	// 分析一下封包处理方法.
+	private void doAnalysisPacketHandler(NoarkIoc noarkIoc) {
+		final PacketMethodManager manager = PacketMethodManager.getInstance();
+		pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, controller)));
+	}
 }

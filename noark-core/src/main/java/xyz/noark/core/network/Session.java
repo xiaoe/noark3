@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.network;
 
+import java.io.Serializable;
+
 /**
  * Session.
  *
@@ -44,4 +46,8 @@ public interface Session {
 	 * @param packet 网络封包
 	 */
 	public void send(Packet packet);
+
+	public Serializable getPlayerId();
+
+	public ProtocalCodec getPacketCodec();
 }

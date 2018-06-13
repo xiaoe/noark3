@@ -29,6 +29,7 @@ import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.ioc.definition.ComponentBeanDefinition;
 import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
+import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.ioc.scan.Resource;
 import xyz.noark.core.ioc.scan.ResourceScanning;
@@ -42,7 +43,7 @@ import xyz.noark.util.ClassUtils;
  */
 public class IocLoader {
 	private final HashMap<Class<?>, BeanDefinition> beans = new HashMap<>(1024);
-	private final List<ConfigurationBeanDefinition> configurations = new ArrayList<>();
+	private final List<BeanDefinition> configurations = new ArrayList<>();
 
 	IocLoader(String... packages) {
 		ResourceScanning.scanPackage(packages, (resource) -> analysisResource(resource));
@@ -125,19 +126,19 @@ public class IocLoader {
 
 	// 组件类型的Bean...
 	private void analytical(Class<?> klass, Component component) {
-		beans.put(klass, new ComponentBeanDefinition(klass, component));
+		beans.put(klass, new ComponentBeanDefinition(klass, component).init());
 	}
 
 	private void analytical(Class<?> klass, Repository cast) {
-		beans.put(klass, new DefaultBeanDefinition(klass));
+		beans.put(klass, new DefaultBeanDefinition(klass).init());
 	}
 
 	private void analytical(Class<?> klass, Service cast) {
-		beans.put(klass, new DefaultBeanDefinition(klass));
+		beans.put(klass, new DefaultBeanDefinition(klass).init());
 	}
 
-	private void analytical(Class<?> klass, Controller cast) {
-		beans.put(klass, new DefaultBeanDefinition(klass));
+	private void analytical(Class<?> klass, Controller controller) {
+		beans.put(klass, new ControllerBeanDefinition(klass, controller).init());
 	}
 
 	private void analytical(Class<?> klass, TemplateConverter converter) {
@@ -145,14 +146,14 @@ public class IocLoader {
 	}
 
 	private void analytical(Class<?> klass, Configuration configuration) {
-		configurations.add(new ConfigurationBeanDefinition(klass));
+		configurations.add(new ConfigurationBeanDefinition(klass).init());
 	}
 
 	public HashMap<Class<?>, BeanDefinition> getBeans() {
 		return beans;
 	}
 
-	public List<ConfigurationBeanDefinition> getConfigurations() {
+	public List<BeanDefinition> getConfigurations() {
 		return configurations;
 	}
 }

@@ -11,35 +11,39 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
+package xyz.noark.core.annotation.controller;
 
 /**
- * Controller注解用来标识一个消息入口处理类.
- * <p>
- * 消息控制器，主要作用就是为每个模块接口消息处理的入口.<br>
- * 这个注解所标识的类，不会被其他类所注入，只会装配此类，但不会有别的类依赖于他.
+ * 执行线程组枚举类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Controller {
+public enum ExecThreadGroup {
+	/**
+	 * Netty本身的Work线程.
+	 * <p>
+	 * 心跳，或完全没有IO操作的逻辑，直接交给Netty的Work线程处理掉
+	 */
+	NettyThreadGroup,
 
 	/**
-	 * 标识这个协议控制中的入口方法由哪个线程组调用.
+	 * 以玩家ID划分的线程.
 	 * <p>
-	 * 
-	 * @return 执行线程组.
+	 * 基本就是一个玩家一个线程<br>
 	 */
-	ExecThreadGroup threadGroup();
+	PlayerThreadGroup,
+
+	/**
+	 * 以模块划分的线程.
+	 * <p>
+	 * 基本就是一个Controller一个线程<br>
+	 * 如：登录，世界聊天，公会，排行榜
+	 */
+	ModuleThreadGroup,
+
+	/**
+	 * 场景业务逻辑处理线程.
+	 */
+	SceneThreadGroup;
 }

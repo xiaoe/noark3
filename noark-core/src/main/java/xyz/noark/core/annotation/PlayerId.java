@@ -19,27 +19,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
-
 /**
- * Controller注解用来标识一个消息入口处理类.
+ * RoleId注解表示此属性是否为游戏中的角色ID字段.
  * <p>
- * 消息控制器，主要作用就是为每个模块接口消息处理的入口.<br>
- * 这个注解所标识的类，不会被其他类所注入，只会装配此类，但不会有别的类依赖于他.
+ * 可联合Id或Column一起使用.<br>
+ * 网络层，就是注入角色ID,等于@Autowired("playerId")
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 @Documented
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Controller {
-
-	/**
-	 * 标识这个协议控制中的入口方法由哪个线程组调用.
-	 * <p>
-	 * 
-	 * @return 执行线程组.
-	 */
-	ExecThreadGroup threadGroup();
-}
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
+public @interface PlayerId {}

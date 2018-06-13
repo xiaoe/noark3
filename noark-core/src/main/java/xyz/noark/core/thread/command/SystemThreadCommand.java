@@ -11,23 +11,25 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
+package xyz.noark.core.thread.command;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import xyz.noark.core.ioc.wrap.method.ControllerMethodWrapper;
 
 /**
- * 申明一个IOC容器接管的JavaBean.
- * <p>
- * 只有当在{@link Configuration}注解所标识的类中才会生效.
- * 
+ * 系统线程处理命令.
+ *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Bean {}
+public class SystemThreadCommand extends AbstractThreadCommand {
+	private final String module;
+
+	public SystemThreadCommand(String module, ControllerMethodWrapper method, Object... args) {
+		super(method, args);
+		this.module = module;
+	}
+
+	public String getModule() {
+		return module;
+	}
+}

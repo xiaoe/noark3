@@ -11,35 +11,21 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
+package xyz.noark.core.ioc.wrap;
 
 /**
- * Controller注解用来标识一个消息入口处理类.
- * <p>
- * 消息控制器，主要作用就是为每个模块接口消息处理的入口.<br>
- * 这个注解所标识的类，不会被其他类所注入，只会装配此类，但不会有别的类依赖于他.
+ * 可执行的方法.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Controller {
+public interface MethodWrapper {
 
 	/**
-	 * 标识这个协议控制中的入口方法由哪个线程组调用.
-	 * <p>
+	 * 执行.
 	 * 
-	 * @return 执行线程组.
+	 * @param args 参数列表
+	 * @return 返回值
 	 */
-	ExecThreadGroup threadGroup();
+	public Object invoke(Object... args);
 }

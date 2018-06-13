@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService;
  * @author 小流氓(176543888@qq.com)
  */
 public class TaskQueue {
-	private final Object lock = new Object();
 	private final ExecutorService threadPool;
 	private LinkedList<AsyncTask> queue;// 任务处理队列
 
@@ -38,7 +37,7 @@ public class TaskQueue {
 	 * @param task 任务
 	 */
 	public void submit(AsyncTask task) {
-		synchronized (lock) {
+		synchronized (this) {
 			queue.add(task);
 			// 只有一个任务，那就是刚刚加的，直接开始执行...
 			if (queue.size() == 1) {
@@ -51,7 +50,7 @@ public class TaskQueue {
 	 * 完成一个任务后续处理
 	 */
 	public void complete() {
-		synchronized (lock) {
+		synchronized (this) {
 			// 移除已经完成的任务。
 			queue.removeFirst();
 

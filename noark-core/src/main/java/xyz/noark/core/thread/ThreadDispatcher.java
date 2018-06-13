@@ -13,6 +13,19 @@
  */
 package xyz.noark.core.thread;
 
+import java.io.Serializable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import xyz.noark.core.annotation.Component;
+import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.lang.TimeoutHashMap;
+import xyz.noark.core.network.Session;
+import xyz.noark.core.thread.command.PlayerThreadCommand;
+import xyz.noark.core.thread.command.SystemThreadCommand;
+
 /**
  * 线程调度器.
  * <p>
@@ -21,6 +34,46 @@ package xyz.noark.core.thread;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
+@Component(name = "ThreadDispatcher")
 public class ThreadDispatcher {
+	private final ExecutorService logicPool;// 非场景类的线程池...
+	private final TimeoutHashMap<Serializable, TaskQueue> logicPoolTaskQueue;// 非场景线程处理的任务队列
 
+	private ThreadDispatcher() {
+		this.logicPool = Executors.newFixedThreadPool(8, new NamedThreadFactory("logic"));
+		this.logicPoolTaskQueue = new TimeoutHashMap<>(1, TimeUnit.MINUTES, () -> new TaskQueue(logicPool));
+	}
+
+	public void dispatchPacket(Session session, PacketMethodWrapper pmw, Object[] args) {
+		switch (pmw.threadGroup()) {
+		case NettyThreadGroup:
+			this.dispatchNettyThreadHandle(pmw, args);
+			break;
+		case PlayerThreadGroup:
+			this.dispatchPlayerThreadHandle(new PlayerThreadCommand(session.getPlayerId(), pmw, args));
+			break;
+		case ModuleThreadGroup:
+			this.dispatchSystemThreadHandle(new SystemThreadCommand(pmw.getModule(), pmw, args));
+			break;
+		default:
+			throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
+		}
+	}
+
+	// 派发给Netty线程处理的逻辑.
+	private void dispatchNettyThreadHandle(PacketMethodWrapper protocal, Object... args) {
+		protocal.invoke(args);
+	}
+
+	// 派发给系统线程处理的逻辑.
+	void dispatchSystemThreadHandle(SystemThreadCommand command) {
+		TaskQueue taskQueue = logicPoolTaskQueue.get(command.getModule());
+		taskQueue.submit(new AsyncTask(taskQueue, command));
+	}
+
+	// 派发给玩家线程处理的逻辑.
+	void dispatchPlayerThreadHandle(PlayerThreadCommand command) {
+		TaskQueue taskQueue = logicPoolTaskQueue.get(command.getPlayerId());
+		taskQueue.submit(new AsyncTask(taskQueue, command));
+	}
 }

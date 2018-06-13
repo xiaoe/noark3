@@ -15,6 +15,7 @@ package xyz.noark.core.ioc;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,8 +33,11 @@ public class NoarkIoc implements Ioc {
 	// 容器中所有托管的Bean对象.
 	private final ConcurrentHashMap<Class<?>, Object> singletons = new ConcurrentHashMap<>(512);;
 
-	public NoarkIoc(String... packages) {
-		logger.debug("init ioc, packages={}", new Object[] { packages });
+	public NoarkIoc(String packager) {
+		String[] packages = Arrays.asList(packager, "xyz.noark").toArray(new String[] {});
+		logger.debug("init ioc, packages={}", packager);
+
+		// 自动注入的实现也交给他去处理...
 
 		IocLoader loader = new IocLoader(packages);
 
@@ -55,7 +59,7 @@ public class NoarkIoc implements Ioc {
 	 * @param loader IOC加载
 	 */
 	private void finishBeanAnalysis(IocLoader loader) {
-		loader.getBeans().forEach((k, v) -> v.doAnalysisHandler(this));
+		loader.getBeans().forEach((k, v) -> v.doAnalysisFunction(this));
 		this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(BeanDefinition::getBeanClass, v -> v.getSingle())));
 	}
 

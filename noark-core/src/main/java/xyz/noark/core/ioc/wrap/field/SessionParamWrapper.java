@@ -11,26 +11,21 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc;
+package xyz.noark.core.ioc.wrap.field;
+
+import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.network.Session;
 
 /**
- * IOC创建工厂.
+ * Session对象.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class IocFactory {
+public class SessionParamWrapper implements ParamWrapper {
 
-	private static Ioc ioc;
-
-	public static Ioc create() {
-		if (ioc == null) {
-			synchronized (IocFactory.class) {
-				if (ioc == null) {
-					ioc = new NoarkIoc();
-				}
-			}
-		}
-		return ioc;
+	@Override
+	public Object read(Session session, byte[] bytes) {
+		return session;
 	}
 }

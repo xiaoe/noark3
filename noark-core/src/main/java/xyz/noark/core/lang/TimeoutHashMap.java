@@ -11,35 +11,30 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
+package xyz.noark.core.lang;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 
 /**
- * Controller注解用来标识一个消息入口处理类.
+ * 超时功能的HashMap.
  * <p>
- * 消息控制器，主要作用就是为每个模块接口消息处理的入口.<br>
- * 这个注解所标识的类，不会被其他类所注入，只会装配此类，但不会有别的类依赖于他.
+ * 此版本由Caffeine缓存来实现.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Controller {
+public class TimeoutHashMap<K, V> {
+	private final LoadingCache<K, V> caches;
 
-	/**
-	 * 标识这个协议控制中的入口方法由哪个线程组调用.
-	 * <p>
-	 * 
-	 * @return 执行线程组.
-	 */
-	ExecThreadGroup threadGroup();
+	public TimeoutHashMap(long duration, TimeUnit unit, Supplier<? extends V> loading) {
+		this.caches = Caffeine.newBuilder().expireAfterWrite(duration, unit).build(key -> loading.get());
+	}
+
+	public V get(K key) {
+		return caches.get(key);
+	}
 }

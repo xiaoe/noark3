@@ -11,33 +11,18 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.slg;
-
-import xyz.noark.core.bootstrap.AbstractServerBootstrap;
+package xyz.noark.core.exception;
 
 /**
- * 服务器服务启动类.
+ * 未实现的异常，一种可能会出来，但却没有对应实现的异常.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class GameServerStartup extends AbstractServerBootstrap {
+public class UnrealizedException extends RuntimeException {
+	private static final long serialVersionUID = 8947098802476902429L;
 
-	@Override
-	protected String getServerName() {
-		return "game-server";
+	public UnrealizedException(String msg) {
+		super(msg);
 	}
-
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

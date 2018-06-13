@@ -49,5 +49,10 @@ public interface BeanDefinition {
 	 */
 	public void injection(IocMaking making);
 
-	public Object doAnalysisHandler(NoarkIoc noarkIoc);
+	/**
+	 * 分析此用的功能用途.
+	 * 
+	 * @param noarkIoc 容器
+	 */
+	public void doAnalysisFunction(NoarkIoc noarkIoc);
 }

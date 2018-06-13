@@ -15,12 +15,9 @@ package xyz.noark.core.bootstrap;
 
 import static xyz.noark.log.LogHelper.logger;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import xyz.noark.core.ioc.NoarkIoc;
-import xyz.noark.core.network.TcpServer;
 import xyz.noark.log.LogManager;
 
 /**
@@ -57,19 +54,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			// 启动IOC容器
 			this.ioc = new NoarkIoc(this.getClass().getPackage().getName());
 
-			// DB
-
-			// 载入策划配置模板
-
-			// 初始化方法...
-			ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
-
 			this.onStart();
-
-			// HTTP服务
-
-			// 对外网络...
-			this.initNetworkService();
 
 			float interval = (System.nanoTime() - startTime) / 1000_000f;
 			logger.info("{} is running, interval={} ms", this.getServerName(), interval);
@@ -81,21 +66,25 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 		}
 	}
 
+	protected void onStart() {
+		// DB
+
+		// 载入策划配置模板
+
+		// 初始化方法...
+		ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
+
+
+		// HTTP服务
+
+		// 对外网络...
+		this.initNetworkService();
+	}
+
 	/**
 	 * 启动网络服务...
 	 */
-	protected void initNetworkService() {
-		List<TcpServer> servers = ioc.findImpl(TcpServer.class);
-		if (servers.isEmpty()) {
-			// 没有配置，默认按规则启动一个...
-		} else {
-			for (TcpServer server : servers) {
-				server.startup();
-			}
-		}
-	}
-
-	protected abstract void onStart();
+	protected abstract void initNetworkService();
 
 	@Override
 	public void stop() {
@@ -113,5 +102,5 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 		}
 	}
 
-	protected abstract void onStop();
+	protected void onStop() {};
 }
