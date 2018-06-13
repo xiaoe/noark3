@@ -11,35 +11,27 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.firstrequest;
+package xyz.noark.network.codec.json;
 
-import static xyz.noark.log.LogHelper.logger;
+import com.alibaba.fastjson.JSON;
 
-import io.netty.channel.Channel;
-import xyz.noark.network.ChannelContext;
-import xyz.noark.network.FirstRequestHandler;
+import xyz.noark.core.network.ProtocalCodec;
 
 /**
- * 非法请求.
+ * 简单的Json协议编解码.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class IllegalRequestHandler implements FirstRequestHandler {
-	private final String request;
+public class SimpleJsonCodec implements ProtocalCodec {
 
-	public IllegalRequestHandler(String request) {
-		this.request = request;
+	@Override
+	public <T> T decode(byte[] bytes, Class<T> klass) {
+		return JSON.parseObject(bytes, klass);
 	}
 
 	@Override
-	public String key() {
-		return "";
-	}
-
-	@Override
-	public void handle(ChannelContext context, Channel channel) throws InterruptedException {
-		logger.warn("非法暗号：{}", request);
-		channel.close();
+	public byte[] encode(Object object) {
+		return JSON.toJSONBytes(object);
 	}
 }

@@ -13,10 +13,12 @@
  */
 package xyz.noark.network;
 
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 
 import io.netty.channel.Channel;
 import xyz.noark.core.network.Packet;
+import xyz.noark.core.network.ProtocalCodec;
 import xyz.noark.core.network.Session;
 
 /**
@@ -53,4 +55,17 @@ public class NettySession implements Session {
 	public void send(Packet packet) {
 
 	}
+
+	@Override
+	public Serializable getPlayerId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ProtocalCodec getPacketCodec() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

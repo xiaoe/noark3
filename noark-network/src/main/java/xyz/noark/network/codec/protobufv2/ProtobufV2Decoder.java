@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.network.codec.protobufv2;
 
 import java.util.List;
 
@@ -21,36 +21,30 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.CorruptedFrameException;
 
 /**
- * 封包解码器.
+ * ProtobufV2封包解码器.
  * <p>
- * <b>解码时，做自增位的检查，过滤复制封包...</b>
- *
+ * 
+ * <pre>
+ * BEFORE DECODE (302 bytes)       AFTER DECODE (300 bytes)
+ * +--------+---------------+      +---------------+
+ * | Length | Protobuf Data |----->| Protobuf Data |
+ * | 0xAC02 |  (300 bytes)  |      |  (300 bytes)  |
+ * +--------+---------------+      +---------------+
+ * </pre>
+ * 
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class PacketDecoder extends ByteToMessageDecoder {
+public class ProtobufV2Decoder extends ByteToMessageDecoder {
 	private final static int max_packet_length = 65535;// 最大封包长度
-	private final ChannelContext context;
 
-	public PacketDecoder(ChannelContext context) {
-		this.context = context;
-	}
+	public ProtobufV2Decoder() {}
 
 	// 封包长度 + 自增位 + Opcode + 协议内容 + 校验位
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		if (context.isFirstRequest()) {
-			context.setFirstRequest(false);// 只要他是第一个请求包，马上修改状态
 
-			byte[] content = new byte[in.readableBytes()];
-			in.readBytes(content);
-			FirstRequestManager.getHandler(new String(content)).handle(context, ctx.channel());
-		} else {
-			this.decodePacket(ctx, in, out);
-		}
-	}
-
-	private void decodePacket(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+		// 封包长度
 		in.markReaderIndex();
 		int preIndex = in.readerIndex();
 		int length = this.readRawVarint32(in);// 包长
@@ -67,11 +61,22 @@ public class PacketDecoder extends ByteToMessageDecoder {
 		// 封包不全，忽略本次处理.
 		if (in.readableBytes() < length) {
 			in.resetReaderIndex();
+			return;
 		}
+
 		// 满足一个封包
-		else {
-			out.add(in.readRetainedSlice(length));
-		}
+		ProtobufV2Packet packet = new ProtobufV2Packet();
+		packet.setIncode(this.readRawVarint32(in));
+
+		// 内容=长度-2
+		byte[] content = new byte[length - 2];
+		in.readBytes(content);
+		packet.setBytes(content);
+
+		packet.setIncode(in.readByte());
+		packet.setChecksum(in.readByte());
+
+		out.add(packet);
 	}
 
 	// Reads variable length 32bit int from buffer

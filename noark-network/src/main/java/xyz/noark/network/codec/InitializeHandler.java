@@ -11,31 +11,22 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.network.codec;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import io.netty.channel.Channel;
-import xyz.noark.core.network.Session;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
- * 
+ * 初始化协议处理器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SessionManager {
-	// 所有链接服务器的会话.
-	private static final ConcurrentMap<Channel, Session> sessions = new ConcurrentHashMap<>(2048);
+public interface InitializeHandler {
 
-	public static Session createSession(Channel channel, boolean isEncrypt) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static Session getSession(Channel channel) {
-		return sessions.get(channel);
-	}
-
+	/**
+	 * 处理相对应的请求逻辑.
+	 * 
+	 * @param ctx 当前链接配置
+	 */
+	void handle(ChannelHandlerContext ctx);
 }

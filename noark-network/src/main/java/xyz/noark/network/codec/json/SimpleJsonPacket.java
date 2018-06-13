@@ -11,31 +11,19 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.network.codec.json;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import io.netty.channel.Channel;
-import xyz.noark.core.network.Session;
+import xyz.noark.network.codec.AbstractPacket;
 
 /**
- * 
+ * 一个简单的Json类型的封包实现.
+ * <p>
+ * 包长（short）+ 协议编号（int） + 内容（Json）
+ *
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SessionManager {
-	// 所有链接服务器的会话.
-	private static final ConcurrentMap<Channel, Session> sessions = new ConcurrentHashMap<>(2048);
-
-	public static Session createSession(Channel channel, boolean isEncrypt) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static Session getSession(Channel channel) {
-		return sessions.get(channel);
-	}
+public class SimpleJsonPacket extends AbstractPacket {
 
 }

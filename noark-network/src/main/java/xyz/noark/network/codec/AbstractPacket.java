@@ -11,40 +11,53 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.network.codec;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import xyz.noark.network.firstrequest.IllegalRequestHandler;
-import xyz.noark.network.firstrequest.InitRequestHandler;
-import xyz.noark.network.firstrequest.PolicyFileHandler;
+import xyz.noark.network.NetworkPacket;
 
 /**
- * 第一个请求管理类.
+ * 
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class FirstRequestManager {
-	private static final Map<String, FirstRequestHandler> handlers = new HashMap<>();
+public abstract class AbstractPacket implements NetworkPacket {
+	private Integer opcode;
+	private byte[] bytes;
+	private int incode;// 自增校验位
+	private int checksum;// 封包CRC16
 
-	public static void registHandler(FirstRequestHandler handler) {
-		handlers.put(handler.key(), handler);
+	@Override
+	public Integer getOpcode() {
+		return opcode;
 	}
 
-	static {
-		registHandler(new PolicyFileHandler());
-		registHandler(new InitRequestHandler());
+	@Override
+	public byte[] getBytes() {
+		return bytes;
 	}
 
-	/**
-	 * 获取一个请求处理器.
-	 * 
-	 * @param request 请求标识.
-	 * @return 处理器
-	 */
-	public static FirstRequestHandler getHandler(String request) {
-		return handlers.getOrDefault(request, new IllegalRequestHandler(request));
+	public void setBytes(byte[] bytes) {
+		this.bytes = bytes;
+	}
+
+	public int getIncode() {
+		return incode;
+	}
+
+	public void setIncode(int incode) {
+		this.incode = incode;
+	}
+
+	public int getChecksum() {
+		return checksum;
+	}
+
+	public void setChecksum(int checksum) {
+		this.checksum = checksum;
+	}
+
+	public void setOpcode(Integer opcode) {
+		this.opcode = opcode;
 	}
 }

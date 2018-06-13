@@ -11,32 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.firstrequest;
+package xyz.noark.network.codec.protobufv2;
 
-import static xyz.noark.log.LogHelper.logger;
-
-import io.netty.channel.Channel;
-import xyz.noark.network.ChannelContext;
-import xyz.noark.network.FirstRequestHandler;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import xyz.noark.core.annotation.Component;
+import xyz.noark.core.network.ProtocalCodec;
+import xyz.noark.network.codec.AbstractInitializeHandler;
 
 /**
- * Flash所需要的策略文件.
+ * 使用Protobuf2的版本协议.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class PolicyFileHandler implements FirstRequestHandler {
-	private final static byte[] POLICY = "<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\"/></cross-domain-policy>\0".getBytes();
+@Component(name = "protobufV2")
+public class ProtobufV2InitializeHandler extends AbstractInitializeHandler {
 
 	@Override
-	public String key() {
-		return "<policy-file-request/>\0";
+	protected ByteToMessageDecoder createPacketDecoder() {
+		return new ProtobufV2Decoder();
 	}
 
 	@Override
-	public void handle(ChannelContext context, Channel channel) throws InterruptedException {
-		context.setWriteLength(false);// 发送策略文件时，不需要写入长度.
-		channel.writeAndFlush(POLICY).sync().channel().close();
-		logger.warn("无法访问843端口,从主端口获取安全策略文件 ip={}", channel.remoteAddress());
+	protected ProtocalCodec createProtocalCodec() {
+		return new ProtobufV2Codec();
 	}
 }

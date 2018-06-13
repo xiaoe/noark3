@@ -25,13 +25,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.bootstrap.ServerBootstrapException;
-import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.TcpServer;
-import xyz.noark.util.StringUtils;
+import xyz.noark.network.codec.InitializeDecoder;
 
 /**
  * 基于Netty实现的一个网络服务.
@@ -39,6 +39,7 @@ import xyz.noark.util.StringUtils;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
+@Component(name = "NettyServer")
 public class NettyServer implements TcpServer {
 	// Boss线程就用一个线程
 	private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
@@ -75,7 +76,10 @@ public class NettyServer implements TcpServer {
 	@Value("network.websocket.path")
 	private String websocketPath;
 
-	public NettyServer(NetworkListener listener) {
+	@Autowired
+	private InitializeDecoder initializeDecoder;
+
+	public NettyServer() {
 		// TODO 有时间来实现一个NoarkLog的工厂...
 		// InternalLoggerFactory.setDefaultFactory(Log4J2LoggerFactory.INSTANCE);
 
@@ -89,22 +93,7 @@ public class NettyServer implements TcpServer {
 		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			public void initChannel(SocketChannel ch) {
-				ChannelContext context = new ChannelContext(listener);
-
-				// 没有配置
-				if (StringUtils.isEmpty(websocketPath)) {
-					buildChannelPipeline(ch.pipeline(), context);
-				} else {
-					// ChannelPipeline pipeline = ch.pipeline();
-					// pipeline.addLast(new LoggingHandler());
-					// pipeline.addLast(new HttpServerCodec());
-					// pipeline.addLast(new ChunkedWriteHandler());
-					// pipeline.addLast(new HttpObjectAggregator(8192));
-					// pipeline.addLast(new
-					// WebSocketServerProtocolHandler(networkConfig.getWebsocketPath()));
-					// pipeline.addLast(new WebSocketHandler(context,
-					// packetManager));
-				}
+				buildChannelPipeline(ch.pipeline());
 			}
 		});
 	}
@@ -115,18 +104,13 @@ public class NettyServer implements TcpServer {
 	 * @param pipeline ChannelPipeline通道
 	 * @param context ChannelContext上下文
 	 */
-	protected void buildChannelPipeline(ChannelPipeline pipeline, ChannelContext context) {
+	protected void buildChannelPipeline(ChannelPipeline pipeline) {
 		// 配置了心跳功能，则启用心跳机制.
 		if (heartbeat > 0) {
 			pipeline.addLast("idleStateHandler", new IdleStateHandler(heartbeat, 0, 0, TimeUnit.SECONDS));
 		}
 
-		pipeline.addLast("logger", new LoggingHandler());
-
-		pipeline.addLast("decoder", new PacketDecoder(context));// 这个需要每人一个
-		pipeline.addLast("encoder", new PacketEncoder(context));
-
-		pipeline.addLast("handle", new NettyServerHandler());
+		pipeline.addLast("FirstRequest", initializeDecoder);
 	}
 
 	@Override

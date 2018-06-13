@@ -11,49 +11,28 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.network.codec;
 
-import io.netty.buffer.ByteBuf;
+import static xyz.noark.log.LogHelper.logger;
+
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
- * 封包编码器.
- *
+ * 非法请求.
+ * 
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class PacketEncoder extends MessageToByteEncoder<byte[]> {
-	private final ChannelContext context;
+public class IllegalRequestHandler implements InitializeHandler {
+	private final String request;
 
-	public PacketEncoder(ChannelContext context) {
-		this.context = context;
+	public IllegalRequestHandler(String request) {
+		this.request = request;
 	}
 
 	@Override
-	protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) throws Exception {
-		if (context.isWriteLength()) {
-			this.writeRawVarint32(out, msg.length);
-		}
-		out.writeBytes(msg);
-	}
-
-	/**
-	 * 向ByteBuf中写入一个Int32值
-	 * 
-	 * @param out ByteBuf对象
-	 * @param value Int32值
-	 */
-	private void writeRawVarint32(ByteBuf out, int value) {
-		while (true) {
-			if ((value & ~0x7F) == 0) {
-				out.writeByte(value);
-				return;
-			} else {
-				// 取最后7位 前面再加1
-				out.writeByte((value & 0x7F) | 0x80);
-				value >>>= 7;
-			}
-		}
+	public void handle(ChannelHandlerContext ctx) {
+		logger.warn("非法暗号：{}, IP={}", request, ctx.channel().remoteAddress());
+		ctx.close();
 	}
 }

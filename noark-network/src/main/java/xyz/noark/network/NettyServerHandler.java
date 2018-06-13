@@ -13,20 +13,63 @@
  */
 package xyz.noark.network;
 
-import io.netty.buffer.ByteBuf;
+import static xyz.noark.log.LogHelper.logger;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import xyz.noark.core.ioc.manager.PacketMethodManager;
+import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.network.Session;
+import xyz.noark.core.thread.ThreadDispatcher;
 
 /**
- * 
+ * Netty接到封包后的处理器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class NettyServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacket> {
+
+	private final ThreadDispatcher threadDispatcher;
+
+	public NettyServerHandler(ThreadDispatcher threadDispatcher) {
+		this.threadDispatcher = threadDispatcher;
+	}
 
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception {
+		Session session = SessionManager.getSession(ctx.channel());
+
+		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(msg.getOpcode());
+
+		if (pmw == null) {
+			logger.warn("undefined protocol, opcode={}", msg.getOpcode());
+			return;
+		}
+
+		// 是否已废弃使用.
+		if (pmw.isDeprecated()) {
+			logger.warn("deprecated protocol. opcode={}, playerId={}", msg.getOpcode(), session.getPlayerId());
+			return;
+		}
+
+		// 客户端发来的封包，是不可以调用内部处理器的.
+		if (pmw.isInner()) {
+			logger.warn(" ^0^ inner protocol. opcode={}, playerId={}", msg.getOpcode(), session.getPlayerId());
+			return;
+		}
+
+		// 增加协议计数.
+		pmw.incrCount();
+
+		this.localDispatch(session, pmw, msg);
+	}
+
+	private void localDispatch(Session session, PacketMethodWrapper pmw, NetworkPacket msg) {
+		// 参数列表.
+		Object[] args = pmw.analysisParam(session, msg.getBytes());
+
+		threadDispatcher.dispatchPacket(session, pmw, args);
 
 	}
 

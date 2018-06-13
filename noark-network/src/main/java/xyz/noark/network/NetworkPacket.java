@@ -13,29 +13,25 @@
  */
 package xyz.noark.network;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import io.netty.channel.Channel;
-import xyz.noark.core.network.Session;
-
 /**
- * 
+ * 一个网络封包.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SessionManager {
-	// 所有链接服务器的会话.
-	private static final ConcurrentMap<Channel, Session> sessions = new ConcurrentHashMap<>(2048);
+public interface NetworkPacket {
 
-	public static Session createSession(Channel channel, boolean isEncrypt) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	/**
+	 * 封包的编号.
+	 * 
+	 * @return 编号
+	 */
+	public Integer getOpcode();
 
-	public static Session getSession(Channel channel) {
-		return sessions.get(channel);
-	}
-
+	/**
+	 * 封包的内容.
+	 * 
+	 * @return 内容
+	 */
+	public byte[] getBytes();
 }

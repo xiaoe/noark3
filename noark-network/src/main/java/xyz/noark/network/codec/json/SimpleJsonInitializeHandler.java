@@ -11,28 +11,27 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.network.codec.json;
 
-import io.netty.channel.Channel;
+import xyz.noark.core.annotation.Component;
+import xyz.noark.network.codec.AbstractInitializeHandler;
 
 /**
- * 第一个请求处理器.
+ * 使用Protobuf2的版本协议.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface FirstRequestHandler {
+@Component(name = "json")
+public class SimpleJsonInitializeHandler extends AbstractInitializeHandler {
 
-	/**
-	 * @return 请求Key.
-	 */
-	String key();
+	@Override
+	protected SimpleJsonDecoder createPacketDecoder() {
+		return new SimpleJsonDecoder();
+	}
 
-	/**
-	 * 处理相对应的请求逻辑.
-	 * 
-	 * @param context 当前配置
-	 * @param channel 链接
-	 */
-	void handle(ChannelContext context, Channel channel) throws Exception;
+	@Override
+	protected SimpleJsonCodec createProtocalCodec() {
+		return new SimpleJsonCodec();
+	}
 }
