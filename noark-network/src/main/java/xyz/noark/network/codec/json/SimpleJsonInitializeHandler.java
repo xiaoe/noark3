@@ -29,4 +29,9 @@ public class SimpleJsonInitializeHandler extends AbstractInitializeHandler {
 	protected SimpleJsonCodec createPacketDecoder() {
 		return new SimpleJsonCodec();
 	}
+
+	@Override
+	protected SimpleJsonEncoder createPacketEncoder() {
+		return new SimpleJsonEncoder();
+	}
 }

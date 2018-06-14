@@ -22,6 +22,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import xyz.noark.core.network.AbstractSession;
+import xyz.noark.core.network.PacketCodecHolder;
 
 /**
  * 基于Netty的Channel实现的Session.
@@ -61,28 +62,22 @@ public class NettySession extends AbstractSession {
 
 	@Override
 	public void send(Integer opcode, Object protocal) {
+		this.send(PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal));
+	}
+
+	@Override
+	public void send(byte[] packet) {
 		// 链接已关闭了...
 		if (!channel.isActive()) {
-			logger.warn("send packet fail isActive=false. session={},playerId={},opcode={}", id, playerId, opcode);
+			logger.warn("send packet fail isActive=false. session={},playerId={}", id, playerId);
 			return;
 		}
 
 		// 不可写，未发送的数据已达最高水位了...
 		if (!channel.isWritable()) {
-			logger.warn("send packet fail isWritable=false. session={},playerId={},opcode={}", id, playerId, opcode);
+			logger.warn("send packet fail isWritable=false. session={},playerId={}", id, playerId);
 			return;
 		}
-
-		// byte[] bytes = protocalCodec.encode(protocal);
-
-	}
-
-	/**
-	 * 给这个Session发送一个封包.
-	 * 
-	 * @param packet 封包是已处理过的加密压缩等功能后的包.
-	 */
-	void sendPacket(byte[] packet) {
 
 		if (websocket) {
 			channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.copiedBuffer(packet)), channel.voidPromise());

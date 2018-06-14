@@ -11,30 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.codec.protobufv2;
+package xyz.noark.network.codec.json;
 
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import xyz.noark.core.annotation.Component;
-import xyz.noark.network.codec.AbstractInitializeHandler;
 
 /**
- * 使用Protobuf2的版本协议.
+ * 这个主要用来添加包长的.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = "protobufV2")
-public class ProtobufV2InitializeHandler extends AbstractInitializeHandler {
+public class SimpleJsonEncoder extends MessageToByteEncoder<byte[]> {
 
 	@Override
-	protected ByteToMessageDecoder createPacketDecoder() {
-		return new ProtobufV2Decoder();
-	}
-
-	@Override
-	protected MessageToByteEncoder<?> createPacketEncoder() {
-		// TODO Auto-generated method stub
-		return null;
+	protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) throws Exception {
+		out.writeShort(msg.length);
+		out.writeBytes(msg);
 	}
 }

@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import xyz.noark.network.codec.AbstractPacketCodec;
+import xyz.noark.util.ByteArrayUtils;
 
 /**
  * Json封包解码器.
@@ -88,7 +89,11 @@ public class SimpleJsonCodec extends AbstractPacketCodec {
 
 	@Override
 	public byte[] encodePacket(Integer opcode, Object protocal) {
-		// TODO Auto-generated method stub
-		return null;
+		byte[] bytes = JSON.toJSONBytes(protocal);
+		byte[] data2 = ByteArrayUtils.toByteArray(opcode);
+		byte[] data3 = new byte[bytes.length + data2.length];
+		System.arraycopy(data2, 0, data3, 0, data2.length);
+		System.arraycopy(bytes, 0, data3, data2.length, bytes.length);
+		return data3;
 	}
 }

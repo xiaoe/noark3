@@ -16,6 +16,7 @@ package xyz.noark.network.codec;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
@@ -37,6 +38,7 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 	public void handle(ChannelHandlerContext ctx) {
 		final ChannelPipeline pipeline = ctx.pipeline();
 		// TODO 确认没有并发可以优化一下单例方法
+		pipeline.addFirst(createPacketEncoder());
 		pipeline.addFirst(createPacketDecoder());
 
 		// 为Session绑定编解码.
@@ -54,4 +56,11 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 	 * @return 封包解码器
 	 */
 	protected abstract ByteToMessageDecoder createPacketDecoder();
+
+	/**
+	 * 创建一个封包解码器.
+	 * 
+	 * @return 封包解码器
+	 */
+	protected abstract MessageToByteEncoder<?> createPacketEncoder();
 }

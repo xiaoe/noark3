@@ -16,6 +16,7 @@ package com.company.test.module.login;
 import static xyz.noark.log.LogHelper.logger;
 
 import com.company.test.proto.json.LoginGame_CS;
+import com.company.test.proto.json.LoginGame_SC;
 
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
@@ -41,5 +42,9 @@ public class LoginController {
 		if (packet.getUsername().equalsIgnoreCase(packet.getPassword())) {
 			session.setPlayerId(Long.parseLong(packet.getUsername()));
 		}
+
+		LoginGame_SC result = new LoginGame_SC();
+		result.setPlayerId(Long.parseLong(packet.getUsername()));
+		session.send(1001, result);
 	}
 }

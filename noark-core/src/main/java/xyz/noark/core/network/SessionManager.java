@@ -13,13 +13,12 @@
  */
 package xyz.noark.core.network;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
-
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 
 /**
  * Session管理器.
@@ -49,19 +48,18 @@ public class SessionManager {
 	 * @param playerIds 接受人的ID列表
 	 */
 	public static void send(Integer opcode, Object protocal, Serializable... playerIds) {
-//		byte[] packet = packetEncoder.encode(opcode, protocal);
-//		if (playerIds.length == 0) {// 全服发送
-//			playerId2Session.forEach((k, v) -> v.sendPacket(packet));
-//		} else {
-//			for (long roleId : roleIds) {
-//				Session session = roleId2Session.get(roleId);
-//				if (session == null) {
-//					logger.debug("未找到Session，无法发送, roleId={}", roleId);
-//				} else {
-//					session.sendPacket(packet);
-//				}
-//			}
-//		}
+		byte[] packet = PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
+		if (playerIds.length == 0) {// 全服发送
+			playerId2Session.forEach((k, v) -> v.send(packet));
+		} else {
+			for (Serializable playerId : playerIds) {
+				Session session = playerId2Session.get(playerId);
+				if (session == null) {
+					logger.debug("未找到Session，无法发送, roleId={}", playerId);
+				} else {
+					session.send(packet);
+				}
+			}
+		}
 	}
-
 }

@@ -49,6 +49,15 @@ public interface Session {
 	public void send(Integer opcode, Object protocal);
 
 	/**
+	 * 发送一个网络封包.
+	 * <p>
+	 * 封包是已处理过的加密压缩等功能后的包
+	 * 
+	 * @param packet 封包内容
+	 */
+	public void send(byte[] packet);
+
+	/**
 	 * 获取当前链接状态.
 	 * 
 	 * @return 链接状态

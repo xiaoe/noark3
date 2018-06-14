@@ -13,28 +13,40 @@
  */
 package xyz.noark.network.codec.protobufv2;
 
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import xyz.noark.core.annotation.Component;
-import xyz.noark.network.codec.AbstractInitializeHandler;
 
 /**
- * 使用Protobuf2的版本协议.
+ * 写入一个Varint128长度.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = "protobufV2")
-public class ProtobufV2InitializeHandler extends AbstractInitializeHandler {
+public class ProtobufV2Encoder extends MessageToByteEncoder<byte[]> {
 
 	@Override
-	protected ByteToMessageDecoder createPacketDecoder() {
-		return new ProtobufV2Decoder();
+	protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) throws Exception {
+		this.writeRawVarint32(out, msg.length);
+		out.writeBytes(msg);
 	}
 
-	@Override
-	protected MessageToByteEncoder<?> createPacketEncoder() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * 向ByteBuf中写入一个Int32值
+	 * 
+	 * @param out ByteBuf对象
+	 * @param value Int32值
+	 */
+	private void writeRawVarint32(ByteBuf out, int value) {
+		while (true) {
+			if ((value & ~0x7F) == 0) {
+				out.writeByte(value);
+				return;
+			} else {
+				// 取最后7位 前面再加1
+				out.writeByte((value & 0x7F) | 0x80);
+				value >>>= 7;
+			}
+		}
 	}
 }
