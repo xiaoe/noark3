@@ -49,5 +49,5 @@ public interface Session {
 
 	public Serializable getPlayerId();
 
-	public ProtocalCodec getPacketCodec();
+	public ProtocalCodec getProtocalCodec();
 }

@@ -31,6 +31,6 @@ public class SessionCodecWrapper implements ParamWrapper {
 
 	@Override
 	public Object read(Session session, byte[] bytes) {
-		return session.getPacketCodec().decode(bytes, klass);
+		return session.getProtocalCodec().decode(bytes, klass);
 	}
 }

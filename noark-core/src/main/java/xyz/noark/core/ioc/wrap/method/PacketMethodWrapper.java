@@ -55,10 +55,10 @@ public class PacketMethodWrapper extends ControllerMethodWrapper {
 	// 构建参数
 	private void buildParamWrapper(Parameter parameter) {
 		// Session
-		if (Session.class == parameter.getType()) {
+		if (parameter.getType().isAssignableFrom(Session.class)) {
 			this.parameters.add(new SessionParamWrapper());
 		}
-		// 玩家ID？
+		// 玩家ID
 		else if (parameter.isAnnotationPresent(PlayerId.class)) {
 			this.parameters.add(new PlayerIdParamWrapper());
 		}
@@ -127,6 +127,6 @@ public class PacketMethodWrapper extends ControllerMethodWrapper {
 
 	@Override
 	public String logCode() {
-		return "Protocal [opcode=" + opcode + "]";
+		return "protocal[opcode=" + opcode + "]";
 	}
 }
