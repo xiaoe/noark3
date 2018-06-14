@@ -18,8 +18,6 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 
 /**
  * 协议初始化解码器.
@@ -29,18 +27,19 @@ import xyz.noark.core.annotation.Service;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Service
 public class InitializeDecoder extends ByteToMessageDecoder {
 	private static final int max_length = 64;
-	@Autowired
-	private InitializeManager initializeManager;
 
-	public InitializeDecoder() {}
+	private final InitializeManager initializeManager;
+
+	public InitializeDecoder(InitializeManager initializeManager) {
+		this.initializeManager = initializeManager;
+	}
 
 	// 封包长度 + 自增位 + Opcode + 协议内容 + 校验位
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		ctx.pipeline().removeLast();// 移除自己
+		ctx.pipeline().remove(this.getClass());// 移除自己
 
 		int length = in.readableBytes();
 		if (length > max_length) {

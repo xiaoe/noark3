@@ -30,8 +30,10 @@ import xyz.noark.core.network.Session;
 public class NettySession implements Session {
 	private final Channel channel;
 	private final String ip;
+	private ProtocalCodec protocalCodec;
+	private Serializable playerId;
 
-	public NettySession(Channel channel, boolean isEncrypt, boolean webSocket) {
+	public NettySession(Channel channel) {
 		this.channel = channel;
 		this.ip = ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
 	}
@@ -58,14 +60,20 @@ public class NettySession implements Session {
 
 	@Override
 	public Serializable getPlayerId() {
-		// TODO Auto-generated method stub
-		return null;
+		return playerId;
+	}
+
+	public void setPlayerId(Serializable playerId) {
+		this.playerId = playerId;
 	}
 
 	@Override
-	public ProtocalCodec getPacketCodec() {
-		// TODO Auto-generated method stub
-		return null;
+	public ProtocalCodec getProtocalCodec() {
+		return protocalCodec;
+	}
+
+	public void setProtocalCodec(ProtocalCodec protocalCodec) {
+		this.protocalCodec = protocalCodec;
 	}
 
 }

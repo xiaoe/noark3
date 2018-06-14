@@ -31,7 +31,9 @@ import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.bootstrap.ServerBootstrapException;
 import xyz.noark.core.network.TcpServer;
+import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.network.codec.InitializeDecoder;
+import xyz.noark.network.codec.InitializeManager;
 
 /**
  * 基于Netty实现的一个网络服务.
@@ -77,7 +79,9 @@ public class NettyServer implements TcpServer {
 	private String websocketPath;
 
 	@Autowired
-	private InitializeDecoder initializeDecoder;
+	private InitializeManager initializeManager;
+	@Autowired
+	private ThreadDispatcher threadDispatcher;
 
 	public NettyServer() {
 		// TODO 有时间来实现一个NoarkLog的工厂...
@@ -110,7 +114,9 @@ public class NettyServer implements TcpServer {
 			pipeline.addLast("idleStateHandler", new IdleStateHandler(heartbeat, 0, 0, TimeUnit.SECONDS));
 		}
 
-		pipeline.addLast("FirstRequest", initializeDecoder);
+		pipeline.addLast(new InitializeDecoder(initializeManager));
+
+		pipeline.addLast("handle", new NettyServerHandler(threadDispatcher));
 	}
 
 	@Override

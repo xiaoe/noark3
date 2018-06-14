@@ -16,10 +16,9 @@ package xyz.noark.network.codec;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.network.ProtocalCodec;
-import xyz.noark.core.thread.ThreadDispatcher;
-import xyz.noark.network.NettyServerHandler;
+import xyz.noark.network.NettySession;
+import xyz.noark.network.SessionManager;
 
 /**
  * 抽象实现的初始化协议处理器.
@@ -29,18 +28,16 @@ import xyz.noark.network.NettyServerHandler;
  */
 public abstract class AbstractInitializeHandler implements InitializeHandler {
 
-	@Autowired
-	private ThreadDispatcher threadDispatcher;
-	
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
 		final ChannelPipeline pipeline = ctx.pipeline();
 		// TODO 确认没有并发可以优化一下单例方法
-		pipeline.addLast("decoder", createPacketDecoder());
-		pipeline.addLast("handle", new NettyServerHandler(threadDispatcher));
+		pipeline.addFirst(createPacketDecoder());
 
 		// 为Session绑定编解码.
 		// NettySession session
+		NettySession session = SessionManager.getSession(ctx.channel());
+		session.setProtocalCodec(createProtocalCodec());
 	}
 
 	/**

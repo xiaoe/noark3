@@ -46,7 +46,7 @@ public class SimpleJsonDecoder extends ByteToMessageDecoder {
 		// 封包长度
 		in.markReaderIndex();
 		int preIndex = in.readerIndex();
-		int length = in.readShort();// 包长
+		int length = in.readInt();// 包长
 		if (preIndex == in.readerIndex()) {
 			return;
 		}
@@ -65,7 +65,7 @@ public class SimpleJsonDecoder extends ByteToMessageDecoder {
 
 		// 满足一个封包
 		SimpleJsonPacket packet = new SimpleJsonPacket();
-		packet.setIncode(in.readInt());
+		packet.setOpcode(in.readInt());
 
 		// 内容=长度-2
 		byte[] content = new byte[length];

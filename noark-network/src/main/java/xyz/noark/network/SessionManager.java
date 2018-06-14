@@ -27,14 +27,13 @@ import xyz.noark.core.network.Session;
  */
 public class SessionManager {
 	// 所有链接服务器的会话.
-	private static final ConcurrentMap<Channel, Session> sessions = new ConcurrentHashMap<>(2048);
+	private static final ConcurrentMap<Channel, NettySession> sessions = new ConcurrentHashMap<>(2048);
 
-	public static Session createSession(Channel channel, boolean isEncrypt) {
-		// TODO Auto-generated method stub
-		return null;
+	public static Session createSession(Channel channel) {
+		return sessions.computeIfAbsent(channel, (key) -> new NettySession(channel));
 	}
 
-	public static Session getSession(Channel channel) {
+	public static NettySession getSession(Channel channel) {
 		return sessions.get(channel);
 	}
 

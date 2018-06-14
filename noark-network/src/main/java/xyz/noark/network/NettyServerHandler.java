@@ -37,6 +37,19 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 	}
 
 	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		super.channelActive(ctx);
+		logger.debug("发现链接{}", ctx.channel().remoteAddress());
+		Session session = SessionManager.createSession(ctx.channel());
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		super.channelInactive(ctx);
+		logger.debug("断开链接{}", ctx.channel().remoteAddress());
+	}
+
+	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception {
 		Session session = SessionManager.getSession(ctx.channel());
 
