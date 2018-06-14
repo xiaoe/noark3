@@ -14,6 +14,7 @@
 package xyz.noark.core.ioc.definition.field;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import xyz.noark.core.ioc.FieldDefinition;
 import xyz.noark.core.ioc.IocMaking;
@@ -27,14 +28,16 @@ import xyz.noark.util.FieldUtils;
  */
 public class DefaultFieldDefinition implements FieldDefinition {
 	protected final Field field;
+	protected final boolean required;
 	protected final Class<?> fieldClass;
 
-	public DefaultFieldDefinition(Field field) {
-		this(field, field.getType());
+	public DefaultFieldDefinition(Field field, boolean required) {
+		this(field, field.getType(), required);
 	}
 
-	protected DefaultFieldDefinition(Field field, Class<?> fieldClass) {
+	protected DefaultFieldDefinition(Field field, Class<?> fieldClass, boolean required) {
 		this.field = field;
+		this.required = required;
 		this.fieldClass = fieldClass;
 		this.field.setAccessible(true);
 	}
@@ -57,6 +60,10 @@ public class DefaultFieldDefinition implements FieldDefinition {
 	 * @return 需要注入的对象
 	 */
 	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-		return making.findAllImpl(klass).stream().map(b -> b.getSingle()).findFirst().orElseThrow(() -> new RuntimeException("注入属性未找到..." + klass.getName()));
+		Optional<Object> result = making.findAllImpl(klass).stream().map(b -> b.getSingle()).findFirst();
+		if (!result.isPresent() && required) {
+			throw new RuntimeException("注入属性未找到实现,类:" + klass.getName());
+		}
+		return result.orElse(null);
 	}
 }

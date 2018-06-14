@@ -29,8 +29,8 @@ import xyz.noark.core.ioc.IocMaking;
  */
 public class MapFieldDefinition extends DefaultFieldDefinition {
 
-	public MapFieldDefinition(Field field) {
-		super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1]);
+	public MapFieldDefinition(Field field, boolean required) {
+		super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1], required);
 	}
 
 	@Override

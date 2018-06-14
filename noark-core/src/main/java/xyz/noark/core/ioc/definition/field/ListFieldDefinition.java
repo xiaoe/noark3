@@ -29,8 +29,8 @@ import xyz.noark.core.ioc.IocMaking;
  */
 public class ListFieldDefinition extends DefaultFieldDefinition {
 
-	public ListFieldDefinition(Field field) {
-		super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]);
+	public ListFieldDefinition(Field field, boolean required) {
+		super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0], required);
 	}
 
 	@Override

@@ -147,19 +147,21 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
 		Value value = field.getAnnotation(Value.class);
 		if (value == null) {
+			Autowired autowired = field.getAnnotation(Autowired.class);
+
 			// List类型的注入需求
 			if (fieldClass == List.class) {
-				autowiredFields.add(new ListFieldDefinition(field));
+				autowiredFields.add(new ListFieldDefinition(field, autowired.required()));
 			}
 
 			// Map类型的注入需求
 			else if (fieldClass == Map.class) {
-				autowiredFields.add(new MapFieldDefinition(field));
+				autowiredFields.add(new MapFieldDefinition(field, autowired.required()));
 			}
 
 			// 其他就当普通Bean处理...
 			else {
-				autowiredFields.add(new DefaultFieldDefinition(field));
+				autowiredFields.add(new DefaultFieldDefinition(field, autowired.required()));
 			}
 		}
 		// @Value注入配置属性.

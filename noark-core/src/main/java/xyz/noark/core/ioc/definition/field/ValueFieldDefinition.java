@@ -32,7 +32,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	private final String key;// 对应配置文件中的Key...
 
 	public ValueFieldDefinition(Field field, String key) {
-		super(field);
+		super(field, false);
 		this.key = key;
 	}
 
