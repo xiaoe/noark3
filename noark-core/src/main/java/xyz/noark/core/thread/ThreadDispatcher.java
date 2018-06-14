@@ -39,7 +39,7 @@ public class ThreadDispatcher {
 	private final ExecutorService logicPool;// 非场景类的线程池...
 	private final TimeoutHashMap<Serializable, TaskQueue> logicPoolTaskQueue;// 非场景线程处理的任务队列
 
-	private ThreadDispatcher() {
+	public ThreadDispatcher() {
 		this.logicPool = Executors.newFixedThreadPool(8, new NamedThreadFactory("logic"));
 		this.logicPoolTaskQueue = new TimeoutHashMap<>(1, TimeUnit.MINUTES, () -> new TaskQueue(logicPool));
 	}
