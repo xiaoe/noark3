@@ -15,9 +15,10 @@ package xyz.noark.network;
 
 import static xyz.noark.log.LogHelper.logger;
 
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
@@ -31,29 +32,21 @@ import xyz.noark.core.thread.ThreadDispatcher;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
+@Service
+@Sharable
 public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacket> {
 
-	private final ThreadDispatcher threadDispatcher;
-
-	public NettyServerHandler(ThreadDispatcher threadDispatcher) {
-		this.threadDispatcher = threadDispatcher;
-	}
+	@Autowired
+	private ThreadDispatcher threadDispatcher;
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		logger.debug("发现客户端链接，channel={}", ctx.channel());
-		// 判定链接上限，是否要弄死这个链接
-		final int clinets = SessionManager.getCurClients();
-//		if (clinets >= networkConfig.getMaxClients()) {
-//			ctx.close();
-//			logger.warn("服务器已达最大链接数，主动掐断链接. cur={}, max={}, channel={}", clinets, networkConfig.getMaxClients(), channel);
-//		}
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		super.channelInactive(ctx);
-		logger.debug("断开链接{}", ctx.channel().remoteAddress());
+		logger.debug("客户端断开链接，channel={}", ctx.channel());
 	}
 
 	@Override
