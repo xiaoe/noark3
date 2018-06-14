@@ -49,16 +49,6 @@ public interface Session {
 	public void send(Integer opcode, Object protocal);
 
 	/**
-	 * 获取协议解码器.
-	 * 
-	 * @return 协议解码器
-	 */
-	public ProtocalCodec getProtocalCodec();
-
-
-	public void setProtocalCodec(ProtocalCodec createProtocalCodec);
-	
-	/**
 	 * 获取当前链接状态.
 	 * 
 	 * @return 链接状态

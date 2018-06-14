@@ -11,27 +11,27 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.codec.protobufv2;
+package xyz.noark.core.ioc.wrap.field;
 
-import com.alibaba.fastjson.JSON;
-
-import xyz.noark.core.network.ProtocalCodec;
+import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.network.Session;
 
 /**
- * 简单的Json协议编解码.
+ * 协议编解码包装类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class ProtobufV2Codec implements ProtocalCodec {
+public class PacketCodecWrapper implements ParamWrapper {
+	private final Class<?> klass;
 
-	@Override
-	public <T> T decode(byte[] bytes, Class<T> klass) {
-		return JSON.parseObject(bytes, klass);
+	public PacketCodecWrapper(Class<?> klass) {
+		this.klass = klass;
 	}
 
 	@Override
-	public byte[] encode(Object object) {
-		return JSON.toJSONBytes(object);
+	public Object read(Session session, byte[] bytes) {
+		return PacketCodecHolder.getPacketCodec().decodeProtocal(bytes, klass);
 	}
 }

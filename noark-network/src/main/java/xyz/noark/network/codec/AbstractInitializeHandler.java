@@ -16,7 +16,8 @@ package xyz.noark.network.codec;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import xyz.noark.core.network.ProtocalCodec;
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.network.NettySession;
@@ -29,6 +30,9 @@ import xyz.noark.network.NettySession;
  */
 public abstract class AbstractInitializeHandler implements InitializeHandler {
 
+	@Autowired(required = false)
+	private NetworkListener networkListener;
+
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
 		final ChannelPipeline pipeline = ctx.pipeline();
@@ -36,9 +40,12 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 		pipeline.addFirst(createPacketDecoder());
 
 		// 为Session绑定编解码.
-		// NettySession session
-		Session session =SessionManager.createSession(ctx.channel().id().asLongText(), id -> new NettySession(ctx.channel()));
-		session.setProtocalCodec(createProtocalCodec());
+		final String id = ctx.channel().id().asLongText();
+		Session session = SessionManager.createSession(id, key -> new NettySession(ctx.channel()));
+
+		if (networkListener != null) {
+			networkListener.channelActive(session);
+		}
 	}
 
 	/**
@@ -47,11 +54,4 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 	 * @return 封包解码器
 	 */
 	protected abstract ByteToMessageDecoder createPacketDecoder();
-
-	/**
-	 * 创建协议编解码.
-	 * 
-	 * @param session Session对象.
-	 */
-	protected abstract ProtocalCodec createProtocalCodec();
 }

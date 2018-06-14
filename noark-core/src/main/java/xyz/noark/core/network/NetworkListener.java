@@ -33,16 +33,6 @@ public interface NetworkListener {
 	void channelActive(Session session);
 
 	/**
-	 * 解析到第一个封包时，调用.
-	 * <p>
-	 * 绑定账号.
-	 * 
-	 * @param session Session对象
-	 * @param packet 第一个封包
-	 */
-	void channelReadFirstPacket(Session session, Packet packet);
-
-	/**
 	 * 断开链接时调用.
 	 * 
 	 * @param session Session对象

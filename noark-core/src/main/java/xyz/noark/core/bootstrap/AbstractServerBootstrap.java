@@ -74,7 +74,6 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 		// 初始化方法...
 		ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
 
-
 		// HTTP服务
 
 		// 对外网络...

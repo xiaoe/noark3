@@ -13,9 +13,13 @@
  */
 package xyz.noark.core.network;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
+
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Service;
 
 /**
  * Session管理器.
@@ -26,6 +30,8 @@ import java.util.function.Function;
 public class SessionManager {
 	// 所有链接服务器的会话.
 	private static final ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>(2048);
+	// 所有已进入游戏的会话.
+	private static final ConcurrentMap<Serializable, Session> playerId2Session = new ConcurrentHashMap<>(2048);
 
 	public static Session createSession(String id, Function<String, Session> mappingFunction) {
 		return sessions.computeIfAbsent(id, mappingFunction);
@@ -35,9 +41,27 @@ public class SessionManager {
 		return sessions.get(id);
 	}
 
-	public static int getCurClients() {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * 群发封包.
+	 * 
+	 * @param opcode 协议编号
+	 * @param protocal 协议对象
+	 * @param playerIds 接受人的ID列表
+	 */
+	public static void send(Integer opcode, Object protocal, Serializable... playerIds) {
+//		byte[] packet = packetEncoder.encode(opcode, protocal);
+//		if (playerIds.length == 0) {// 全服发送
+//			playerId2Session.forEach((k, v) -> v.sendPacket(packet));
+//		} else {
+//			for (long roleId : roleIds) {
+//				Session session = roleId2Session.get(roleId);
+//				if (session == null) {
+//					logger.debug("未找到Session，无法发送, roleId={}", roleId);
+//				} else {
+//					session.sendPacket(packet);
+//				}
+//			}
+//		}
 	}
 
 }

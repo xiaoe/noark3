@@ -26,12 +26,7 @@ import xyz.noark.network.codec.AbstractInitializeHandler;
 public class SimpleJsonInitializeHandler extends AbstractInitializeHandler {
 
 	@Override
-	protected SimpleJsonDecoder createPacketDecoder() {
-		return new SimpleJsonDecoder();
-	}
-
-	@Override
-	protected SimpleJsonCodec createProtocalCodec() {
+	protected SimpleJsonCodec createPacketDecoder() {
 		return new SimpleJsonCodec();
 	}
 }

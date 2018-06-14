@@ -11,32 +11,27 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.network;
+package xyz.noark.network.codec;
+
+import java.util.List;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import xyz.noark.core.network.PacketCodec;
 
 /**
- * 协议编解码.
- * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
+ * 基本Netty实现的一个抽象编解码器
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface ProtocalCodec {
+public abstract class AbstractPacketCodec extends ByteToMessageDecoder implements PacketCodec {
 
 	/**
-	 * 解码成对象.
-	 * 
-	 * @param bytes 字节数组
-	 * @param klass
-	 * @return 协议对象
+	 * 基本Netty的网络解码器实现的解码封包逻辑.
 	 */
-	public <T> T decode(byte[] bytes, Class<T> klass);
+	@Override
+	protected abstract void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception;
 
-	/**
-	 * 编码成字节数组.
-	 * 
-	 * @param object 协议对象
-	 * @return 字节数组
-	 */
-	public byte[] encode(Object object);
 }

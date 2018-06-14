@@ -13,25 +13,82 @@
  */
 package xyz.noark.network.codec.json;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 
-import xyz.noark.core.network.ProtocalCodec;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import xyz.noark.network.codec.AbstractPacketCodec;
 
 /**
- * 简单的Json协议编解码.
- *
+ * Json封包解码器.
+ * <p>
+ * 包长（short）+ 协议编号（int） + 内容（Json）
+ * 
+ * <pre>
+ * BEFORE DECODE (306 bytes)                     AFTER DECODE (306 bytes)
+ * +--------+------------+---------------+      +--------+------------+---------------+
+ * | length |   opcode   |   Json Data   |----->| length |   opcode   |   Json Data   |
+ * | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |      | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |
+ * +--------+------------+---------------+      +--------+------------+---------------+
+ * </pre>
+ * 
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SimpleJsonCodec implements ProtocalCodec {
+public class SimpleJsonCodec extends AbstractPacketCodec {
+	private final static int max_packet_length = 65535;// 最大封包长度
+
+	public SimpleJsonCodec() {}
 
 	@Override
-	public <T> T decode(byte[] bytes, Class<T> klass) {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+		// 包长不够...
+		if (in.readableBytes() < 2) {
+			return;
+		}
+
+		// 封包长度
+		in.markReaderIndex();
+		int preIndex = in.readerIndex();
+		int length = in.readShort();// 包长
+		if (preIndex == in.readerIndex()) {
+			return;
+		}
+
+		// 不正常的封包，干掉这个人.
+		if (length <= 0 || length > max_packet_length) {
+			ctx.close();
+			return;
+		}
+
+		// 封包不全，忽略本次处理.
+		if (in.readableBytes() < length) {
+			in.resetReaderIndex();
+			return;
+		}
+
+		// 满足一个封包
+		SimpleJsonPacket packet = new SimpleJsonPacket();
+		packet.setOpcode(in.readInt());
+
+		// 内容=长度-4
+		byte[] content = new byte[length - 4];
+		in.readBytes(content);
+		packet.setBytes(content);
+
+		out.add(packet);
+	}
+
+	@Override
+	public <T> T decodeProtocal(byte[] bytes, Class<T> klass) {
 		return JSON.parseObject(bytes, klass);
 	}
 
 	@Override
-	public byte[] encode(Object object) {
-		return JSON.toJSONBytes(object);
+	public byte[] encodePacket(Integer opcode, Object protocal) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

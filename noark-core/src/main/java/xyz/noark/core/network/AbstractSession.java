@@ -21,8 +21,6 @@ package xyz.noark.core.network;
  */
 public abstract class AbstractSession implements Session {
 	protected State state = State.CONNECTED;
-	protected ProtocalCodec protocalCodec;
-
 	protected final String id;
 	protected final String ip;
 
@@ -44,11 +42,6 @@ public abstract class AbstractSession implements Session {
 	@Override
 	public State getState() {
 		return state;
-	}
-
-	@Override
-	public ProtocalCodec getProtocalCodec() {
-		return protocalCodec;
 	}
 
 	@Override

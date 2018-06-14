@@ -22,7 +22,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import xyz.noark.core.network.AbstractSession;
-import xyz.noark.core.network.ProtocalCodec;
 
 /**
  * 基于Netty的Channel实现的Session.
@@ -56,10 +55,6 @@ public class NettySession extends AbstractSession {
 		this.playerId = playerId;
 	}
 
-	public void setProtocalCodec(ProtocalCodec protocalCodec) {
-		this.protocalCodec = protocalCodec;
-	}
-
 	public void setWebsocket(boolean websocket) {
 		this.websocket = websocket;
 	}
@@ -78,7 +73,7 @@ public class NettySession extends AbstractSession {
 			return;
 		}
 
-		byte[] bytes = protocalCodec.encode(protocal);
+		// byte[] bytes = protocalCodec.encode(protocal);
 
 	}
 

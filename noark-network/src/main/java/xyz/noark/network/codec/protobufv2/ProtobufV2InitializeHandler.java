@@ -15,7 +15,6 @@ package xyz.noark.network.codec.protobufv2;
 
 import io.netty.handler.codec.ByteToMessageDecoder;
 import xyz.noark.core.annotation.Component;
-import xyz.noark.core.network.ProtocalCodec;
 import xyz.noark.network.codec.AbstractInitializeHandler;
 
 /**
@@ -30,10 +29,5 @@ public class ProtobufV2InitializeHandler extends AbstractInitializeHandler {
 	@Override
 	protected ByteToMessageDecoder createPacketDecoder() {
 		return new ProtobufV2Decoder();
-	}
-
-	@Override
-	protected ProtocalCodec createProtocalCodec() {
-		return new ProtobufV2Codec();
 	}
 }

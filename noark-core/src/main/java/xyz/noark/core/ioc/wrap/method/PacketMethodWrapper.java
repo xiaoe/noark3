@@ -23,7 +23,7 @@ import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.field.PlayerIdParamWrapper;
-import xyz.noark.core.ioc.wrap.field.SessionCodecWrapper;
+import xyz.noark.core.ioc.wrap.field.PacketCodecWrapper;
 import xyz.noark.core.ioc.wrap.field.SessionParamWrapper;
 import xyz.noark.core.network.Session;
 import xyz.noark.reflectasm.MethodAccess;
@@ -64,7 +64,7 @@ public class PacketMethodWrapper extends ControllerMethodWrapper {
 		}
 		// 无法识别的只能依靠Session内置解码器来转化了.
 		else {
-			this.parameters.add(new SessionCodecWrapper(parameter.getType()));
+			this.parameters.add(new PacketCodecWrapper(parameter.getType()));
 		}
 	}
 
