@@ -8,4 +8,4 @@ include "noark-asm", "noark-benchmark", "noark-util", "noark-log", "noark-core"
 include "noark-network", "noark-protobuf"
 
 // 游戏Demo
-include "noark-slg", "noark-mmo"
+include "noark-game"
