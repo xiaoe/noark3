@@ -32,4 +32,14 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Autowired {}
+public @interface Autowired {
+
+	/**
+	 * 标识当前注入参数是否必需有值，如果有为false，记得手工处理null
+	 * <p>
+	 * 默认为true，就是必需要有实现.
+	 * 
+	 * @return true为必需参数，false是可能为null.
+	 */
+	boolean required() default true;
+}
