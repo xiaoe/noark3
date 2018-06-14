@@ -13,8 +13,6 @@
  */
 package xyz.noark.protobuf;
 
-import xyz.noark.core.network.Packet;
-
 /**
  * 封包的抽象实现.
  *
