@@ -82,6 +82,8 @@ public class NettyServer implements TcpServer {
 	private InitializeManager initializeManager;
 	@Autowired
 	private ThreadDispatcher threadDispatcher;
+	//@Autowired
+	private NettyServerHandler nettyServerHandler;
 
 	public NettyServer() {
 		// TODO 有时间来实现一个NoarkLog的工厂...

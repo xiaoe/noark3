@@ -19,6 +19,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import xyz.noark.core.network.Session;
+
 /**
  * PacketMapping注解用来标识一个封包映射到一个处理方法.
  *
@@ -48,4 +50,13 @@ public @interface PacketMapping {
 	 * @return 默认为输出日志
 	 */
 	boolean printLog() default true;
+
+	/**
+	 * 当前状态才可以调用的执行方法.
+	 * <p>
+	 * 当登录协议需要设定为链接状态
+	 * 
+	 * @return 默认为游戏中状态
+	 */
+	Session.State state() default Session.State.INGAME;
 }

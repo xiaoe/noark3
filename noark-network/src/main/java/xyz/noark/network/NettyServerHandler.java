@@ -15,11 +15,14 @@ package xyz.noark.network;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import xyz.noark.core.annotation.Service;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.ThreadDispatcher;
 
 /**
@@ -38,9 +41,13 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		super.channelActive(ctx);
-		logger.debug("发现链接{}", ctx.channel().remoteAddress());
-		Session session = SessionManager.createSession(ctx.channel());
+		logger.debug("发现客户端链接，channel={}", ctx.channel());
+		// 判定链接上限，是否要弄死这个链接
+		final int clinets = SessionManager.getCurClients();
+//		if (clinets >= networkConfig.getMaxClients()) {
+//			ctx.close();
+//			logger.warn("服务器已达最大链接数，主动掐断链接. cur={}, max={}, channel={}", clinets, networkConfig.getMaxClients(), channel);
+//		}
 	}
 
 	@Override
@@ -51,7 +58,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception {
-		Session session = SessionManager.getSession(ctx.channel());
+		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
 
 		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(msg.getOpcode());
 

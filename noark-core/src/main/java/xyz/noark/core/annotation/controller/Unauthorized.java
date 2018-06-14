@@ -11,30 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.core.annotation.controller;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import io.netty.channel.Channel;
-import xyz.noark.core.network.Session;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 
+ * 不需要认证的就可以访问的协议.
+ * <p>
+ * 一般只用
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SessionManager {
-	// 所有链接服务器的会话.
-	private static final ConcurrentMap<Channel, NettySession> sessions = new ConcurrentHashMap<>(2048);
-
-	public static Session createSession(Channel channel) {
-		return sessions.computeIfAbsent(channel, (key) -> new NettySession(channel));
-	}
-
-	public static NettySession getSession(Channel channel) {
-		return sessions.get(channel);
-	}
-
-}
+@Documented
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Unauthorized {}

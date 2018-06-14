@@ -11,24 +11,33 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.codec.json;
+package xyz.noark.core.network;
 
-import xyz.noark.network.codec.AbstractPacket;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 /**
- * 一个简单的Json类型的封包实现.
- * <p>
- * 包长（short）+ 协议编号（int） + 内容（Json）
- * 
- * <pre>
- * BEFORE DECODE (306 bytes)                     AFTER DECODE (306 bytes)
- * +--------+------------+---------------+      +--------+------------+---------------+
- * | length |   opcode   |   Json Data   |----->| length |   opcode   |   Json Data   |
- * | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |      | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |
- * +--------+------------+---------------+      +--------+------------+---------------+
- * </pre>
+ * Session管理器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SimpleJsonPacket extends AbstractPacket {}
+public class SessionManager {
+	// 所有链接服务器的会话.
+	private static final ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>(2048);
+
+	public static Session createSession(String id, Function<String, Session> mappingFunction) {
+		return sessions.computeIfAbsent(id, mappingFunction);
+	}
+
+	public static Session getSession(String id) {
+		return sessions.get(id);
+	}
+
+	public static int getCurClients() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

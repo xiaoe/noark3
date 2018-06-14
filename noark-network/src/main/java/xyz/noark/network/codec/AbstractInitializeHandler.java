@@ -17,8 +17,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import xyz.noark.core.network.ProtocalCodec;
+import xyz.noark.core.network.Session;
+import xyz.noark.core.network.SessionManager;
 import xyz.noark.network.NettySession;
-import xyz.noark.network.SessionManager;
 
 /**
  * 抽象实现的初始化协议处理器.
@@ -36,7 +37,7 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 
 		// 为Session绑定编解码.
 		// NettySession session
-		NettySession session = SessionManager.getSession(ctx.channel());
+		Session session =SessionManager.createSession(ctx.channel().id().asLongText(), id -> new NettySession(ctx.channel()));
 		session.setProtocalCodec(createProtocalCodec());
 	}
 

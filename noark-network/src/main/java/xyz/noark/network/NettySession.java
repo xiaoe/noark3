@@ -13,49 +13,38 @@
  */
 package xyz.noark.network;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import xyz.noark.core.network.Packet;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import xyz.noark.core.network.AbstractSession;
 import xyz.noark.core.network.ProtocalCodec;
-import xyz.noark.core.network.Session;
 
 /**
- * 
+ * 基于Netty的Channel实现的Session.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class NettySession implements Session {
+public class NettySession extends AbstractSession {
 	private final Channel channel;
-	private final String ip;
-	private ProtocalCodec protocalCodec;
 	private Serializable playerId;
 
+	// 是否为websocket链接.
+	private boolean websocket = false;
+
 	public NettySession(Channel channel) {
+		super(channel.id().asLongText(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 		this.channel = channel;
-		this.ip = ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
-	}
-
-	@Override
-	public String getId() {
-		return channel.id().asLongText();
-	}
-
-	@Override
-	public String getIp() {
-		return ip;
 	}
 
 	@Override
 	public void close() {
 		channel.close();
-	}
-
-	@Override
-	public void send(Packet packet) {
-
 	}
 
 	@Override
@@ -67,13 +56,43 @@ public class NettySession implements Session {
 		this.playerId = playerId;
 	}
 
-	@Override
-	public ProtocalCodec getProtocalCodec() {
-		return protocalCodec;
-	}
-
 	public void setProtocalCodec(ProtocalCodec protocalCodec) {
 		this.protocalCodec = protocalCodec;
 	}
 
+	public void setWebsocket(boolean websocket) {
+		this.websocket = websocket;
+	}
+
+	@Override
+	public void send(Integer opcode, Object protocal) {
+		// 链接已关闭了...
+		if (!channel.isActive()) {
+			logger.warn("send packet fail isActive=false. session={},playerId={},opcode={}", id, playerId, opcode);
+			return;
+		}
+
+		// 不可写，未发送的数据已达最高水位了...
+		if (!channel.isWritable()) {
+			logger.warn("send packet fail isWritable=false. session={},playerId={},opcode={}", id, playerId, opcode);
+			return;
+		}
+
+		byte[] bytes = protocalCodec.encode(protocal);
+
+	}
+
+	/**
+	 * 给这个Session发送一个封包.
+	 * 
+	 * @param packet 封包是已处理过的加密压缩等功能后的包.
+	 */
+	void sendPacket(byte[] packet) {
+
+		if (websocket) {
+			channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.copiedBuffer(packet)), channel.voidPromise());
+		} else {
+			channel.writeAndFlush(packet, channel.voidPromise());
+		}
+	}
 }

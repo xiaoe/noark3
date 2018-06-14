@@ -25,11 +25,11 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  * 包长（short）+ 协议编号（int） + 内容（Json）
  * 
  * <pre>
- * BEFORE DECODE (302 bytes)       AFTER DECODE (300 bytes)
- * +--------+---------------+      +---------------+
- * | Length | Protobuf Data |----->| Protobuf Data |
- * | 0xAC02 |  (300 bytes)  |      |  (300 bytes)  |
- * +--------+---------------+      +---------------+
+ * BEFORE DECODE (306 bytes)                     AFTER DECODE (306 bytes)
+ * +--------+------------+---------------+      +--------+------------+---------------+
+ * | length |   opcode   |   Json Data   |----->| length |   opcode   |   Json Data   |
+ * | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |      | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |
+ * +--------+------------+---------------+      +--------+------------+---------------+
  * </pre>
  * 
  * @since 3.0
@@ -42,11 +42,15 @@ public class SimpleJsonDecoder extends ByteToMessageDecoder {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+		// 包长不够...
+		if (in.readableBytes() < 2) {
+			return;
+		}
 
 		// 封包长度
 		in.markReaderIndex();
 		int preIndex = in.readerIndex();
-		int length = in.readInt();// 包长
+		int length = in.readShort();// 包长
 		if (preIndex == in.readerIndex()) {
 			return;
 		}
@@ -67,8 +71,8 @@ public class SimpleJsonDecoder extends ByteToMessageDecoder {
 		SimpleJsonPacket packet = new SimpleJsonPacket();
 		packet.setOpcode(in.readInt());
 
-		// 内容=长度-2
-		byte[] content = new byte[length];
+		// 内容=长度-4
+		byte[] content = new byte[length - 4];
 		in.readBytes(content);
 		packet.setBytes(content);
 

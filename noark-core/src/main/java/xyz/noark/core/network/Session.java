@@ -43,11 +43,49 @@ public interface Session {
 	/**
 	 * 发送一个网络封包.
 	 * 
-	 * @param packet 网络封包
+	 * @param opcode 协议编号
+	 * @param protocal 协议对象
 	 */
-	public void send(Packet packet);
+	public void send(Integer opcode, Object protocal);
+
+	/**
+	 * 获取协议解码器.
+	 * 
+	 * @return 协议解码器
+	 */
+	public ProtocalCodec getProtocalCodec();
+
+
+	public void setProtocalCodec(ProtocalCodec createProtocalCodec);
+	
+	/**
+	 * 获取当前链接状态.
+	 * 
+	 * @return 链接状态
+	 */
+	public State getState();
 
 	public Serializable getPlayerId();
 
-	public ProtocalCodec getProtocalCodec();
+	/**
+	 * Session状态.
+	 */
+	static enum State {
+		/**
+		 * 客户端刚刚链接上来的状态.
+		 * <p>
+		 * 未登录才可以调用的方法
+		 */
+		CONNECTED,
+		/**
+		 * 已认证状态.
+		 * <p>
+		 * 已登录但未进游戏（可能有选角界面）
+		 */
+		AUTHENTICATED,
+		/**
+		 * 游戏中状态，选择角色进入游戏了.
+		 */
+		INGAME;
+	}
 }

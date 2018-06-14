@@ -55,7 +55,7 @@ public class PacketMethodWrapper extends ControllerMethodWrapper {
 	// 构建参数
 	private void buildParamWrapper(Parameter parameter) {
 		// Session
-		if (parameter.getType().isAssignableFrom(Session.class)) {
+		if (Session.class.isAssignableFrom(parameter.getType())) {
 			this.parameters.add(new SessionParamWrapper());
 		}
 		// 玩家ID
