@@ -13,6 +13,10 @@
  */
 package com.company.test.module.bag;
 
+import java.util.Map;
+
+import com.company.test.module.bag.template.ItemTemplate;
+
 import xyz.noark.core.annotation.Service;
 import xyz.noark.game.template.TemplateManager;
 
@@ -25,6 +29,8 @@ import xyz.noark.game.template.TemplateManager;
 @Service
 public class ItemTemplateManager extends TemplateManager {
 
+	private Map<String, ItemTemplate> itemTemplates;
+
 	@Override
 	public String getModuleName() {
 		return "道具表";
@@ -32,7 +38,10 @@ public class ItemTemplateManager extends TemplateManager {
 
 	@Override
 	public void loadData() {
-
+		this.itemTemplates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId);
 	}
 
+	public Map<String, ItemTemplate> getItemTemplates() {
+		return itemTemplates;
+	}
 }

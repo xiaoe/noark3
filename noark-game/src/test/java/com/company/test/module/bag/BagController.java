@@ -17,6 +17,7 @@ import static xyz.noark.log.LogHelper.logger;
 
 import com.company.test.proto.json.GetBagInfo_CS;
 
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
@@ -30,11 +31,16 @@ import xyz.noark.core.annotation.controller.PacketMapping;
  */
 @Controller(threadGroup = ExecThreadGroup.PlayerThreadGroup)
 public class BagController {
+
+	@Autowired
+	private ItemTemplateManager itemTemplateManager;
+
 	/**
 	 * 登录游戏（第一个封包）
 	 */
 	@PacketMapping(opcode = 102)
 	public void loginGame(@PlayerId long playerId, GetBagInfo_CS packet) {
 		logger.info("获取背包信息 playerId={},type={}", playerId, packet.getType());
+		logger.info("好多道具：" + itemTemplateManager.getItemTemplates().size());
 	}
 }
