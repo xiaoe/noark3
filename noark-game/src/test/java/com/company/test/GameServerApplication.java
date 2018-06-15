@@ -13,7 +13,7 @@
  */
 package com.company.test;
 
-import xyz.noark.core.Noark;
+import xyz.noark.game.Noark;
 
 /**
  * 服务器启动入口类.

@@ -23,4 +23,8 @@ import xyz.noark.game.bootstrap.DefualtServerBootstrap;
  */
 public class GameServerBootstrap extends DefualtServerBootstrap {
 
+	@Override
+	protected String getServerName() {
+		return "game-server";
+	}
 }

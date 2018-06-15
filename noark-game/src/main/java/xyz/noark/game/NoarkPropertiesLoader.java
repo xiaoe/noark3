@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core;
+package xyz.noark.game;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import xyz.noark.core.bootstrap.ServerBootstrapException;
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.util.StringUtils;
 
 /**

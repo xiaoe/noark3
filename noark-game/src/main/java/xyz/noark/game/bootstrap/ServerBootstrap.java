@@ -11,43 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core;
-
-import xyz.noark.core.bootstrap.ServerBootstrap;
+package xyz.noark.game.bootstrap;
 
 /**
- * Noark框架启动类.
- * <p>
- * 
- * <pre>
- * Noark.run(DemoApplication.class, args);
- * </pre>
+ * 服务启动类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public final class Noark {
-	// 私有化构造函数.
-	private Noark() {}
+public interface ServerBootstrap {
 
 	/**
-	 * Return the full version string of the present Noark codebase.
-	 * 
-	 * @see Package#getImplementationVersion()
+	 * 启动
 	 */
-	public static String getVersion() {
-		return Noark.class.getPackage().getImplementationVersion();
-	}
+	public void start();
 
 	/**
-	 * 启动游戏服务器.
-	 * <p>
-	 * 以启动Main方法所在的包开始扫描需要管理的类.
-	 * 
-	 * @param klass 启动服务类
-	 * @param args 启动参数，可以动态覆盖配置
+	 * 停止
 	 */
-	public static void run(Class<? extends ServerBootstrap> klass, String... args) {
-		new NoarkInitializer().init(klass, args);
-	}
+	public void stop();
 }

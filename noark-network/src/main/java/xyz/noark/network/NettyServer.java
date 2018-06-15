@@ -29,7 +29,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
-import xyz.noark.core.bootstrap.ServerBootstrapException;
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.network.TcpServer;
 import xyz.noark.network.codec.InitializeDecoder;
 import xyz.noark.network.codec.InitializeManager;

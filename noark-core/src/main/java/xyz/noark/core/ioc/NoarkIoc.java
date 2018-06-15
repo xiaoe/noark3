@@ -70,7 +70,6 @@ public class NoarkIoc implements Ioc {
 
 	@Override
 	public <T> T get(Class<T> klass) {
-		logger.debug("Get IOC Bean class={}", klass.getName());
 		return klass.cast(singletons.get(klass));
 	}
 

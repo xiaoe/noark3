@@ -13,9 +13,11 @@
  */
 package xyz.noark.game.bootstrap;
 
-import xyz.noark.core.bootstrap.AbstractServerBootstrap;
+import javax.annotation.PostConstruct;
+
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.game.template.ReloadManager;
 import xyz.noark.network.NettyServer;
 import xyz.noark.network.codec.json.SimpleJsonCodec;
 
@@ -25,11 +27,24 @@ import xyz.noark.network.codec.json.SimpleJsonCodec;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class DefualtServerBootstrap extends AbstractServerBootstrap {
+public abstract class DefualtServerBootstrap extends AbstractServerBootstrap {
 
 	@Override
-	protected String getServerName() {
-		return "game-server";
+	protected void onStart() {
+		// 1、重载所有策划模板数据.
+		ioc.get(ReloadManager.class).reload(true);
+
+		// DB
+
+		// 载入策划配置模板
+
+		// 初始化方法...
+		ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
+
+		// HTTP服务
+
+		// 对外网络...
+		this.initNetworkService();
 	}
 
 	@Override

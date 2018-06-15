@@ -11,11 +11,9 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.bootstrap;
+package xyz.noark.game.bootstrap;
 
 import static xyz.noark.log.LogHelper.logger;
-
-import javax.annotation.PostConstruct;
 
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.log.LogManager;
@@ -66,19 +64,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 		}
 	}
 
-	protected void onStart() {
-		// DB
-
-		// 载入策划配置模板
-
-		// 初始化方法...
-		ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
-
-		// HTTP服务
-
-		// 对外网络...
-		this.initNetworkService();
-	}
+	protected abstract void onStart();
 
 	/**
 	 * 启动网络服务...

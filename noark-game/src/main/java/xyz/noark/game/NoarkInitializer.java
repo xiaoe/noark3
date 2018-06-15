@@ -11,12 +11,12 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core;
+package xyz.noark.game;
 
 import java.util.Map;
 
-import xyz.noark.core.bootstrap.ServerBootstrap;
 import xyz.noark.core.env.EnvConfigHolder;
+import xyz.noark.game.bootstrap.ServerBootstrap;
 import xyz.noark.log.LogManager;
 import xyz.noark.util.ClassUtils;
 

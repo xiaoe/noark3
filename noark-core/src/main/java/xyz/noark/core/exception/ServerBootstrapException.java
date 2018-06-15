@@ -11,29 +11,22 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core;
-
-import static org.junit.Assert.*;
-
-import java.util.Map;
-
-import org.junit.Test;
+package xyz.noark.core.exception;
 
 /**
- * 属性配置文件加载测试.
+ * 服务器启动异常类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class NoarkPropertiesLoaderTest {
+public class ServerBootstrapException extends RuntimeException {
+	private static final long serialVersionUID = -1979831464877053819L;
 
-	@Test
-	public void test() {
-		NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
-		Map<String, String> config = loader.loadProperties("dev");
+	public ServerBootstrapException(String msg) {
+		super(msg);
+	}
 
-		assertTrue("中国".equals(config.get("noark.key.test")));
-		assertTrue("2".equals(config.get("noark.server.id")));
-		assertTrue("test 2 server".equals(config.get("noark.setver.name")));
+	public ServerBootstrapException(String msg, Exception e) {
+		super(msg, e);
 	}
 }
