@@ -11,27 +11,34 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test;
+package xyz.noark.game.template.csv;
 
-import xyz.noark.core.annotation.Configuration;
-import xyz.noark.core.annotation.Value;
-import xyz.noark.core.annotation.configuration.Bean;
-import xyz.noark.game.template.csv.CsvTemplateLoader;
+import java.util.List;
+
+import xyz.noark.csv.Csv;
+import xyz.noark.game.template.AbstractTemplateLoader;
 
 /**
- * 游戏服务器启动配置类.
+ * CSV格式的模板加载类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Configuration
-public class GameServerConfiguration {
+public class CsvTemplateLoader extends AbstractTemplateLoader {
+	private final Csv parser;
 
-	@Value("template.path")
-	private String templatePath;
+	public CsvTemplateLoader(String templatePath) {
+		super(templatePath);
+		this.parser = new Csv();
+	}
 
-	@Bean
-	public CsvTemplateLoader templateLoader() {
-		return new CsvTemplateLoader(templatePath);
+	public CsvTemplateLoader(String templatePath, char separator) {
+		super(templatePath);
+		this.parser = new Csv(separator);
+	}
+
+	@Override
+	public <T> List<T> loadAll(Class<T> klass) {
+		return parser.loadAll(templatePath, klass);
 	}
 }

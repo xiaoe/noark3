@@ -11,27 +11,24 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test;
+package xyz.noark.core.exception;
 
-import xyz.noark.core.annotation.Configuration;
-import xyz.noark.core.annotation.Value;
-import xyz.noark.core.annotation.configuration.Bean;
-import xyz.noark.game.template.csv.CsvTemplateLoader;
+import java.lang.reflect.Field;
+
+import xyz.noark.core.annotation.tpl.TplAttr;
 
 /**
- * 游戏服务器启动配置类.
+ * 模板属性必选异常.
+ * <p>
+ * 如果一个模板类中的一个属性，没有在模板文件出现，就会抛出此异常，主要用发现策划偷偷修改配置文件时未通知程序的问题.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Configuration
-public class GameServerConfiguration {
+public class TplAttrRequiredException extends RuntimeException {
+	private static final long serialVersionUID = 2133854117929964654L;
 
-	@Value("template.path")
-	private String templatePath;
-
-	@Bean
-	public CsvTemplateLoader templateLoader() {
-		return new CsvTemplateLoader(templatePath);
+	public TplAttrRequiredException(Class<?> templateClass, Field field, TplAttr attr) {
+		super("模板类中的属性未注入：class=" + templateClass.getName() + ",field(" + attr.name() + ")=" + field.getName());
 	}
 }

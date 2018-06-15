@@ -11,27 +11,20 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test;
-
-import xyz.noark.core.annotation.Configuration;
-import xyz.noark.core.annotation.Value;
-import xyz.noark.core.annotation.configuration.Bean;
-import xyz.noark.game.template.csv.CsvTemplateLoader;
+package xyz.noark.core.exception;
 
 /**
- * 游戏服务器启动配置类.
+ * 转化异常.
+ * <p>
+ * 如果字符串转化成目标对象时出现的异常情况
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Configuration
-public class GameServerConfiguration {
+public class ConvertException extends RuntimeException {
+	private static final long serialVersionUID = -8117790927874317857L;
 
-	@Value("template.path")
-	private String templatePath;
-
-	@Bean
-	public CsvTemplateLoader templateLoader() {
-		return new CsvTemplateLoader(templatePath);
+	public ConvertException(String msg, Exception e) {
+		super(msg, e);
 	}
 }

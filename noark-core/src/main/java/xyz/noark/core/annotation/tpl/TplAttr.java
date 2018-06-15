@@ -11,27 +11,36 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test;
+package xyz.noark.core.annotation.tpl;
 
-import xyz.noark.core.annotation.Configuration;
-import xyz.noark.core.annotation.Value;
-import xyz.noark.core.annotation.configuration.Bean;
-import xyz.noark.game.template.csv.CsvTemplateLoader;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 游戏服务器启动配置类.
+ * TplAttr注解用于标识模板类中的属性关系.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Configuration
-public class GameServerConfiguration {
+@Documented
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TplAttr {
 
-	@Value("template.path")
-	private String templatePath;
+	/**
+	 * 对应的属性字段
+	 * 
+	 * @return 字段
+	 */
+	String name();
 
-	@Bean
-	public CsvTemplateLoader templateLoader() {
-		return new CsvTemplateLoader(templatePath);
-	}
+	/**
+	 * required字段表现，此属性必需出现在配置文件中.
+	 * 
+	 * @return 是否必选项
+	 */
+	boolean required() default true;
 }

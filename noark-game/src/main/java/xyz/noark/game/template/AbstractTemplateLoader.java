@@ -11,27 +11,27 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test;
+package xyz.noark.game.template;
 
-import xyz.noark.core.annotation.Configuration;
-import xyz.noark.core.annotation.Value;
-import xyz.noark.core.annotation.configuration.Bean;
-import xyz.noark.game.template.csv.CsvTemplateLoader;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
- * 游戏服务器启动配置类.
+ * 抽象实现的模板加载器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Configuration
-public class GameServerConfiguration {
+public abstract class AbstractTemplateLoader implements TemplateLoader {
+	protected final String templatePath;
 
-	@Value("template.path")
-	private String templatePath;
+	public AbstractTemplateLoader(String templatePath) {
+		this.templatePath = templatePath;
+	}
 
-	@Bean
-	public CsvTemplateLoader templateLoader() {
-		return new CsvTemplateLoader(templatePath);
+	@Override
+	public <K, T> Map<K, T> loadAll(Class<T> klass, Function<? super T, ? extends K> keyMapper) {
+		return this.loadAll(klass).stream().collect(Collectors.toMap(keyMapper, Function.identity()));
 	}
 }
