@@ -15,11 +15,13 @@ package com.company.test.module.bag;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import com.company.test.module.login.OnlineEvent;
 import com.company.test.proto.json.GetBagInfo_CS;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
 
@@ -43,4 +45,10 @@ public class BagController {
 		logger.info("获取背包信息 playerId={},type={}", playerId, packet.getType());
 		logger.info("好多道具：" + itemTemplateManager.getItemTemplates().size());
 	}
+
+	@EventListener(value = OnlineEvent.class)
+	public void handle(OnlineEvent event) {
+		logger.info("背包模块处理上线事件:{}", event.getPlayerId());
+	}
+
 }

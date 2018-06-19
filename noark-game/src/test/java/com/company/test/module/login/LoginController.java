@@ -21,6 +21,7 @@ import com.company.test.proto.json.LoginGame_SC;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
+import xyz.noark.core.event.EventBus;
 import xyz.noark.core.network.Session.State;
 import xyz.noark.network.NettySession;
 
@@ -42,6 +43,8 @@ public class LoginController {
 		if (packet.getUsername().equalsIgnoreCase(packet.getPassword())) {
 			session.setPlayerId(Long.parseLong(packet.getUsername()));
 		}
+
+		EventBus.publish(new OnlineEvent(Long.parseLong(packet.getUsername())));
 
 		LoginGame_SC result = new LoginGame_SC();
 		result.setPlayerId(Long.parseLong(packet.getUsername()));
