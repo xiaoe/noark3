@@ -11,40 +11,22 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+package xyz.noark.core.ioc.definition;
 
 /**
- * 装配对象缓存
+ * 组件类型的Bean定义.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class IocMaking implements AutoCloseable {
-	private final IocLoader loader;
+public class StaticComponentBeanDefinition extends DefaultBeanDefinition {
 
-	// 缓存接口的实现类
-	private Map<Class<?>, List<DefaultBeanDefinition>> interfaceImplCache = new HashMap<>();
-
-	IocMaking(IocLoader loader) {
-		this.loader = loader;
+	public StaticComponentBeanDefinition(Class<?> klass) {
+		super(klass);
 	}
 
-	public IocLoader getLoader() {
-		return loader;
-	}
-
-	@Override
-	public void close() {
-		interfaceImplCache.clear();
-	}
-
-	public List<DefaultBeanDefinition> findAllImpl(Class<?> interfaceClass) {
-		return interfaceImplCache.computeIfAbsent(interfaceClass, key -> loader.findImpl(key));
+	public StaticComponentBeanDefinition init() {
+		super.init();
+		return this;
 	}
 }

@@ -127,6 +127,6 @@ public class PacketMethodWrapper extends ControllerMethodWrapper {
 
 	@Override
 	public String logCode() {
-		return "protocal[opcode=" + opcode + "]";
+		return "protocal(opcode=" + opcode + ")";
 	}
 }

@@ -18,10 +18,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.ioc.NoarkIoc;
+import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
+import xyz.noark.core.ioc.manager.EventMethodManager;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
+import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 
 /**
@@ -33,6 +37,7 @@ import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	private final Controller controller;
 	private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
+	private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
 
 	public ControllerBeanDefinition(Class<?> klass, Controller controller) {
 		super(klass);
@@ -45,6 +50,10 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		if (annotationType == PacketMapping.class) {
 			pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
 		}
+		// 事件监听
+		else if (annotationType == EventListener.class) {
+			emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation)));
+		}
 	}
 
 	@Override
@@ -52,6 +61,14 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		super.doAnalysisFunction(noarkIoc);
 
 		this.doAnalysisPacketHandler(noarkIoc);
+
+		this.doAnalysisEventHandler(noarkIoc);
+	}
+
+	// 分析事件处理入口.
+	private void doAnalysisEventHandler(NoarkIoc ioc) {
+		final EventMethodManager manager = EventMethodManager.getInstance();
+		emds.forEach(emd -> manager.resetEventHander(new EventMethodWrapper(methodAccess, single, emd, controller)));
 	}
 
 	// 分析一下封包处理方法.

@@ -19,7 +19,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import xyz.noark.core.annotation.Component;
+import xyz.noark.core.event.Event;
+import xyz.noark.core.event.PlayerEvent;
 import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.Session;
@@ -75,5 +78,27 @@ public class ThreadDispatcher {
 	void dispatchPlayerThreadHandle(PlayerThreadCommand command) {
 		TaskQueue taskQueue = logicPoolTaskQueue.get(command.getPlayerId());
 		taskQueue.submit(new AsyncTask(taskQueue, command));
+	}
+
+	/**
+	 * 派发事件任务给线程池.
+	 */
+	public void dispatchEvent(EventMethodWrapper handler, Event event) {
+		switch (handler.threadGroup()) {
+		case PlayerThreadGroup: {
+			if (event instanceof PlayerEvent) {
+				PlayerEvent e = (PlayerEvent) event;
+				this.dispatchPlayerThreadHandle(new PlayerThreadCommand(e.getPlayerId(), handler, e));
+			} else {
+				throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
+			}
+			break;
+		}
+		case ModuleThreadGroup:
+			this.dispatchSystemThreadHandle(new SystemThreadCommand(handler.getModule(), handler, event));
+			break;
+		default:
+			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
+		}
 	}
 }

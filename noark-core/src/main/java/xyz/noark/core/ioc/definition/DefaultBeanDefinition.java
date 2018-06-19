@@ -69,7 +69,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		this.methodAccess = MethodAccess.get(beanClass);
 	}
 
-	public BeanDefinition init() {
+	public DefaultBeanDefinition init() {
 		this.analysisField();
 		this.analysisMethod();
 		return this;
@@ -80,12 +80,20 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		return new String[] { beanClass.getName() };
 	}
 
-	@Override
+	/**
+	 * 获取这个Bean的单例缓存对象.
+	 * 
+	 * @return 实例对象.
+	 */
 	public Object getSingle() {
 		return single;
 	}
 
-	@Override
+	/**
+	 * 获取当前Bean的Class
+	 * 
+	 * @return 当前Bean的Class
+	 */
 	public Class<?> getBeanClass() {
 		return beanClass;
 	}
@@ -107,35 +115,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		});
 	}
 
-	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
-		// List<MethodDefinition> methods =
-		// customMethods.computeIfAbsent(annotationType, key -> new
-		// ArrayList<>(64));
-		// // 协议入口
-		// if (annotationType == PacketMapping.class) {
-		// methods.add(new PacketMethodDefinition(methodAccess, method,
-		// PacketMapping.class.cast(annotation)));
-		// }
-		// // 事件监听
-		// else if (annotationType == EventListener.class) {
-		// methods.add(new EventMethodDefinition(methodAccess, method,
-		// EventListener.class.cast(annotation)));
-		// }
-		// // 延迟任务
-		// else if (annotationType == Scheduled.class) {
-		// methods.add(new ScheduleMethodDefinition(methodAccess, method,
-		// Scheduled.class.cast(annotation)));
-		// }
-		// // HTTP接口
-		// else if (annotationType == HttpHandler.class) {
-		// methods.add(new HttpMethodDefinition(methodAccess, method,
-		// HttpHandler.class.cast(annotation)));
-		// }
-		// // 未知的
-		// else {
-		// methods.add(new AnnotationMethodDefinition(methodAccess, method));
-		// }
-	}
+	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {}
 
 	private void analysisField() {
 		FieldUtils.getAllField(beanClass).stream().filter(v -> v.isAnnotationPresent(Autowired.class) || v.isAnnotationPresent(Value.class)).forEach(v -> analysisAutowiredOrValue(v));
@@ -175,6 +155,10 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		this.autowiredFields.forEach((v) -> v.injection(single, making));
 	}
 
-	@Override
+	/**
+	 * 分析此用的功能用途.
+	 * 
+	 * @param noarkIoc 容器
+	 */
 	public void doAnalysisFunction(NoarkIoc noarkIoc) {}
 }

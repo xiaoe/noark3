@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.ioc;
 
+import xyz.noark.core.annotation.Component;
+
 /**
  * 一个被IOC容器所管理的JavaBean定义描述类.
  *
@@ -31,28 +33,7 @@ public interface BeanDefinition {
 	public String[] getNames();
 
 	/**
-	 * 获取这个Bean的单例缓存对象.
-	 * 
-	 * @return 实例对象.
-	 */
-	public Object getSingle();
-
-	/**
-	 * 获取当前Bean的Class
-	 * 
-	 * @return 当前Bean的Class
-	 */
-	public Class<?> getBeanClass();
-
-	/**
 	 * 注入属性.
 	 */
 	public void injection(IocMaking making);
-
-	/**
-	 * 分析此用的功能用途.
-	 * 
-	 * @param noarkIoc 容器
-	 */
-	public void doAnalysisFunction(NoarkIoc noarkIoc);
 }

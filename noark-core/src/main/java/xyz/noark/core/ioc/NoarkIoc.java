@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+
 /**
  * Noark-IOC的核心容器.
  *
@@ -47,6 +49,9 @@ public class NoarkIoc implements Ioc {
 
 			// 完成其他Bean的初始化和依赖注入的关系
 			this.finishBeanInitialization(loader, making, loader.getBeans().values());
+
+			// 最后还有一些静态属性注入.
+			this.finishBeanInitialization(loader, making, loader.getStaticComponents());
 		}
 
 		// 完成分析Bean的功能用途
@@ -60,7 +65,7 @@ public class NoarkIoc implements Ioc {
 	 */
 	private void finishBeanAnalysis(IocLoader loader) {
 		loader.getBeans().forEach((k, v) -> v.doAnalysisFunction(this));
-		this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(BeanDefinition::getBeanClass, v -> v.getSingle())));
+		this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(DefaultBeanDefinition::getBeanClass, v -> v.getSingle())));
 	}
 
 	// 初始化和依赖注入的关系

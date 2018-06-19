@@ -11,40 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc;
+package xyz.noark.core.annotation;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 装配对象缓存
+ * 静态组件.
+ * <p>
+ * 有时候想搞个静态属性却又想注入的把这个类生成对象.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class IocMaking implements AutoCloseable {
-	private final IocLoader loader;
-
-	// 缓存接口的实现类
-	private Map<Class<?>, List<DefaultBeanDefinition>> interfaceImplCache = new HashMap<>();
-
-	IocMaking(IocLoader loader) {
-		this.loader = loader;
-	}
-
-	public IocLoader getLoader() {
-		return loader;
-	}
-
-	@Override
-	public void close() {
-		interfaceImplCache.clear();
-	}
-
-	public List<DefaultBeanDefinition> findAllImpl(Class<?> interfaceClass) {
-		return interfaceImplCache.computeIfAbsent(interfaceClass, key -> loader.findImpl(key));
-	}
-}
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface StaticComponent {}

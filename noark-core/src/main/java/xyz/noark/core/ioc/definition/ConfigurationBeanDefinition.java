@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.noark.core.annotation.configuration.Bean;
-import xyz.noark.core.ioc.BeanDefinition;
 import xyz.noark.core.ioc.IocMaking;
 import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
 
@@ -47,7 +46,7 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 			// FIXME 可以使用参数注入的方式 @Value一起用...
 			Object obj = bean.getMethodAccess().invoke(single, bean.getMethodIndex());
 
-			BeanDefinition beanDefinition = new DefaultBeanDefinition(obj).init();
+			DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(obj).init();
 			making.getLoader().getBeans().put(beanDefinition.getBeanClass(), beanDefinition);
 		}
 	}

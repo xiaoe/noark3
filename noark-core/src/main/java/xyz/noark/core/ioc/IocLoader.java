@@ -25,12 +25,14 @@ import xyz.noark.core.annotation.Configuration;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.Repository;
 import xyz.noark.core.annotation.Service;
+import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.ioc.definition.ComponentBeanDefinition;
 import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
 import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+import xyz.noark.core.ioc.definition.StaticComponentBeanDefinition;
 import xyz.noark.core.ioc.scan.Resource;
 import xyz.noark.core.ioc.scan.ResourceScanning;
 import xyz.noark.util.ClassUtils;
@@ -42,8 +44,9 @@ import xyz.noark.util.ClassUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class IocLoader {
-	private final HashMap<Class<?>, BeanDefinition> beans = new HashMap<>(1024);
+	private final HashMap<Class<?>, DefaultBeanDefinition> beans = new HashMap<>(1024);
 	private final List<BeanDefinition> configurations = new ArrayList<>();
+	private final List<StaticComponentBeanDefinition> staticcomponents = new ArrayList<>();
 
 	IocLoader(String... packages) {
 		ResourceScanning.scanPackage(packages, (resource) -> analysisResource(resource));
@@ -55,7 +58,7 @@ public class IocLoader {
 	 * @param klass 接口
 	 * @return 实现类集合
 	 */
-	protected List<BeanDefinition> findImpl(final Class<?> klass) {
+	protected List<DefaultBeanDefinition> findImpl(final Class<?> klass) {
 		return beans.values().stream().filter(v -> klass.isInstance(v.getSingle())).collect(Collectors.toList());
 	}
 
@@ -117,11 +120,21 @@ public class IocLoader {
 				analytical(klass, Repository.class.cast(annotation));
 			}
 
+			// 静态组件
+			else if (annotationType == StaticComponent.class) {
+				analytical(klass, StaticComponent.class.cast(annotation));
+			}
+
 			// 没有归属
 			else if (annotationType == Component.class) {
 				analytical(klass, Component.class.cast(annotation));
 			}
 		}
+	}
+
+	// 静态组件
+	private void analytical(Class<?> klass, StaticComponent component) {
+		staticcomponents.add(new StaticComponentBeanDefinition(klass).init());
 	}
 
 	// 组件类型的Bean...
@@ -149,11 +162,15 @@ public class IocLoader {
 		configurations.add(new ConfigurationBeanDefinition(klass).init());
 	}
 
-	public HashMap<Class<?>, BeanDefinition> getBeans() {
+	public HashMap<Class<?>, DefaultBeanDefinition> getBeans() {
 		return beans;
 	}
 
 	public List<BeanDefinition> getConfigurations() {
 		return configurations;
+	}
+
+	public List<StaticComponentBeanDefinition> getStaticComponents() {
+		return staticcomponents;
 	}
 }
