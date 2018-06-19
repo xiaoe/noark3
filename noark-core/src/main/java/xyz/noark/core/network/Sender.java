@@ -70,5 +70,7 @@ public final class Sender {
 	 * @param opcode 封包操作码
 	 * @param packet 封包对象
 	 */
-	public static void innerRelayPacket(long roleId, Object packet) {}
+	public static void innerRelayPacket(Serializable roleId, Integer opcode, Object protocal) {
+		// TODO 临时先空一下，有些情况还没想好...
+	}
 }
