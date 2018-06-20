@@ -223,4 +223,32 @@ public class StringUtils {
 		}
 		return list.toArray(new String[list.size()]);
 	}
+
+	/**
+	 * 将一个字符串由驼峰式命名变成分割符分隔单词
+	 * 
+	 * <pre>
+	 *  lowerWord("helloWorld", '_') => "hello_world"
+	 * </pre>
+	 * 
+	 * @param cs 字符串
+	 * @param c 分隔符
+	 * 
+	 * @return 转换后字符串
+	 */
+	public static String lowerWord(CharSequence cs, char c) {
+		int len = cs.length();
+		StringBuilder sb = new StringBuilder(len + 5);
+		for (int i = 0; i < len; i++) {
+			char ch = cs.charAt(i);
+			if (Character.isUpperCase(ch)) {
+				if (i > 0)
+					sb.append(c);
+				sb.append(Character.toLowerCase(ch));
+			} else {
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
+	}
 }
