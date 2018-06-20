@@ -4,8 +4,8 @@ rootProject.name = 'noark3'
 // 核心工程 
 include "noark-asm", "noark-benchmark", "noark-util", "noark-log", "noark-core"
 
-// 网络模块
-include "noark-network", "noark-protobuf", "noark-csv"
+// 功能模块
+include "noark-network", "noark-protobuf", "noark-csv", "noark-orm"
 
-// 游戏Demo
+// 游戏服务器
 include "noark-game"

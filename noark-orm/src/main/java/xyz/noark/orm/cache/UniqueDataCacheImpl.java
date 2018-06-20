@@ -1,0 +1,180 @@
+/*
+ * Copyright © 2018 www.noark.xyz All Rights Reserved.
+ * 
+ * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
+ * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
+ * 
+ * 		http://www.noark.xyz/LICENSE
+ *
+ * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
+ * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
+ * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
+ * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
+ */
+package xyz.noark.orm.cache;
+
+import static xyz.noark.log.LogHelper.logger;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
+import xyz.noark.core.annotation.orm.Entity.FeatchType;
+import xyz.noark.core.exception.DataException;
+import xyz.noark.orm.repository.CacheRepository;
+
+/**
+ * 这类的，要么没有角色Id，要么就是角色Id就是主键。
+ * 
+ * @param <T> 实体类
+ * @param <K> 实体类Id
+ *
+ * @since 3.0
+ * @author 小流氓(176543888@qq.com)
+ */
+public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractDataCache<T, K> {
+	// 实体Id <==> 一个数据包装器
+	private final LoadingCache<K, DataWrapper<T>> caches;
+
+	public UniqueDataCacheImpl(CacheRepository<T, K> repository, long offlineInterval) {
+		super(repository);
+
+		// 构建一个数据加载器
+		CacheLoader<K, DataWrapper<T>> loader = new CacheLoader<K, DataWrapper<T>>() {
+			@Override
+			public DataWrapper<T> load(K entityId) throws Exception {
+				// 没有缓存时，从数据访问策略中加载
+				return new DataWrapper<>(repository.load(entityId));
+			}
+		};
+
+		// 没有玩家ID或启服时加载内存是需要永久缓存
+		if (entityMapping.getPlayerId() == null || entityMapping.getFeatchType() == FeatchType.START) {
+			caches = Caffeine.newBuilder().build(loader);
+		}
+		// 其他情况是有缓存超时的
+		else {
+			caches = Caffeine.newBuilder().expireAfterAccess(offlineInterval, TimeUnit.SECONDS).build(loader);
+		}
+	}
+
+	@Override
+	public void insert(T entity) {
+		final K entityId = this.getPrimaryIdValue(entity);
+
+		DataWrapper<T> wrapper = caches.get(entityId);
+		if (wrapper.getEntity() == null) {
+			wrapper.setEntity(entity);
+		} else {
+			throw new DataException("插入了重复Key:" + entityId);
+		}
+	}
+
+	@Override
+	public void delete(T entity) {
+		final K entityId = this.getPrimaryIdValue(entity);
+
+		DataWrapper<T> wrapper = caches.get(entityId);
+		if (wrapper.getEntity() == null) {
+			throw new DataException("删除了一个不存在的Key:" + entityId);
+		} else {
+			wrapper.setEntity(null);
+		}
+	}
+
+	@Override
+	public List<T> deleteAll() {
+		List<T> result = loadAll();
+		caches.invalidateAll();
+		return result;
+	}
+
+	@Override
+	public void update(T entity) {
+		final K entityId = this.getPrimaryIdValue(entity);
+
+		DataWrapper<T> wrapper = caches.get(entityId);
+		if (wrapper.getEntity() == null) {
+			throw new DataException("修改了一个不存在的Key:" + entityId);
+		} else {
+			wrapper.setEntity(entity);
+		}
+	}
+
+	@Override
+	public T load(K entityId) {
+		return caches.get(entityId).getEntity();
+	}
+
+	@Override
+	public List<T> loadAll() {
+		return loadAllByQueryFilter(null);
+	}
+
+	@Override
+	public List<T> loadAll(Predicate<T> filter) {
+		return loadAllByQueryFilter(filter);
+	}
+
+	private List<T> loadAllByQueryFilter(Predicate<T> filter) {
+		ConcurrentMap<K, DataWrapper<T>> map = caches.asMap();
+		if (map.isEmpty()) {
+			return Collections.emptyList();
+		}
+		ArrayList<T> result = new ArrayList<>(map.size());
+		for (Entry<K, DataWrapper<T>> e : map.entrySet()) {
+			T entity = e.getValue().getEntity();
+			if (entity == null) {
+				continue;
+			}
+			if (filter != null) {
+				if (!filter.test(entity)) {
+					continue;
+				}
+			}
+			result.add(entity);
+		}
+		result.trimToSize();
+		return result;
+	}
+
+	@Override
+	public void initCacheData() {
+		logger.debug("实体类[{}]抓取策略为启动服务器就加载缓存.", entityMapping.getEntityClass());
+		List<T> result = repository.loadAll();
+		result.stream().forEach(entity -> caches.put(this.getPrimaryIdValue(entity), new DataWrapper<>(entity)));
+		logger.debug("实体类[{}]初始化缓存完成,一共 {} 条数据.", entityMapping.getEntityClass(), result.size());
+	}
+
+	/**
+	 * 数据包装器.
+	 * <p>
+	 * 这个类里有一个实体对象，可能为空，主要用来初始化缓存数据
+	 * 
+	 * @param <E> 实体对象
+	 */
+	private class DataWrapper<E> {
+		private E entity;
+
+		private DataWrapper(E entity) {
+			this.entity = entity;
+		}
+
+		E getEntity() {
+			return entity;
+		}
+
+		void setEntity(E entity) {
+			this.entity = entity;
+		}
+	}
+}

@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import javax.annotation.PreDestroy;
+
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.ioc.wrap.MethodWrapper;
 
@@ -113,6 +115,6 @@ public class NoarkIoc implements Ioc {
 	}
 
 	public void destroy() {
-
+		invokeCustomAnnotationMethod(PreDestroy.class);
 	}
 }

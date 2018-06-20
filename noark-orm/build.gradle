@@ -1,0 +1,6 @@
+dependencies {
+	compile project(':noark-core')
+	compile 'com.alibaba:fastjson:1.+'
+	
+	testCompile project(':noark-benchmark')
+}

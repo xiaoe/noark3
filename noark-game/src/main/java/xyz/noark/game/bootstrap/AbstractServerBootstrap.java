@@ -15,7 +15,10 @@ package xyz.noark.game.bootstrap;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import xyz.noark.core.ModularManager;
 import xyz.noark.core.ioc.NoarkIoc;
+import xyz.noark.core.network.PacketCodec;
+import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.log.LogManager;
 
 /**
@@ -33,6 +36,7 @@ import xyz.noark.log.LogManager;
  */
 public abstract class AbstractServerBootstrap implements ServerBootstrap {
 	protected NoarkIoc ioc;// IOC容器
+	protected ModularManager modularManager;
 
 	// 启动服务时，添加一个停机守护线程，用于清理异常情况.
 	public AbstractServerBootstrap() {
@@ -51,6 +55,9 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 		try {
 			// 启动IOC容器
 			this.ioc = new NoarkIoc(this.getClass().getPackage().getName());
+			this.modularManager = ioc.get(ModularManager.class);
+
+			PacketCodecHolder.setPacketCodec(getPacketCodec());
 
 			this.onStart();
 
@@ -64,12 +71,17 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 		}
 	}
 
-	protected abstract void onStart();
+	/**
+	 * 自定义封包结构需要重写当前方法.
+	 * 
+	 * @return 封包的编解码
+	 */
+	protected abstract PacketCodec getPacketCodec();
 
 	/**
-	 * 启动网络服务...
+	 * 启动逻辑.
 	 */
-	protected abstract void initNetworkService();
+	protected abstract void onStart();
 
 	@Override
 	public void stop() {
@@ -79,13 +91,18 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			System.out.println("goodbye " + this.getServerName());
 
 			this.onStop();
-
-			// 日志框架Shutdown
-			LogManager.shutdown();
 		} catch (Exception e) {
 			logger.error("failed to stopping service:{}", this.getServerName(), e);
+		} finally {
+			// IOC容器销毁
+			ioc.destroy();
+			// 日志框架Shutdown
+			LogManager.shutdown();
 		}
 	}
 
-	protected void onStop() {};
+	/**
+	 * 关闭逻辑.
+	 */
+	protected abstract void onStop();
 }

@@ -13,13 +13,16 @@
  */
 package xyz.noark.game.bootstrap;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 
+import xyz.noark.core.Modular;
 import xyz.noark.core.network.PacketCodec;
-import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.game.template.ReloadManager;
 import xyz.noark.network.NettyServer;
 import xyz.noark.network.codec.json.SimpleJsonCodec;
+import xyz.noark.orm.DataCheckAndInit;
 
 /**
  * 一个默认的服务器启动引导类.
@@ -29,31 +32,47 @@ import xyz.noark.network.codec.json.SimpleJsonCodec;
  */
 public abstract class DefualtServerBootstrap extends AbstractServerBootstrap {
 
+	private NettyServer nettyServer;
+	private Optional<Modular> dataModular;
+
 	@Override
 	protected void onStart() {
-		// 1、重载所有策划模板数据.
+		// 1、DB检测与缓存初始化
+		dataModular = modularManager.getModular("DataModular");
+		dataModular.ifPresent(v -> initDataModular(v));
+
+		// 2、重载所有策划模板数据.
 		ioc.get(ReloadManager.class).reload(true);
 
-		// DB
-
-		// 载入策划配置模板
-
-		// 初始化方法...
+		// 3、初始化方法...
 		ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
 
 		// HTTP服务
 
 		// 对外网络...
-		this.initNetworkService();
+		nettyServer = ioc.get(NettyServer.class);
+		nettyServer.startup();
+	}
+
+	private void initDataModular(Modular modular) {
+		modular.init();
+		ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);
 	}
 
 	@Override
-	protected void initNetworkService() {
-		PacketCodecHolder.setPacketCodec(getPacketCodec());
-		ioc.get(NettyServer.class).startup();
-	}
-
 	protected PacketCodec getPacketCodec() {
 		return new SimpleJsonCodec();
+	}
+
+	@Override
+	protected void onStop() {
+		// 停止对外网络
+		nettyServer.shutdown();
+		// 停止延迟任务调度
+
+		// 等待所有任务处理完
+
+		// 保存数据
+		dataModular.ifPresent(v -> v.destroy());
 	}
 }
