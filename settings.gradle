@@ -9,3 +9,6 @@ include "noark-network", "noark-protobuf", "noark-csv", "noark-orm"
 
 // 游戏服务器
 include "noark-game"
+
+// 一个测试Demo
+include "noark-test"

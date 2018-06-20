@@ -1,0 +1,10 @@
+dependencies {
+	compile project(':noark-game')
+	compile project(':noark-csv')
+	compile 'com.alibaba:druid:1.0.27'
+	compile 'mysql:mysql-connector-java:5.1.40'
+	compile 'com.alibaba:fastjson:1.+'
+	
+	testCompile project(':noark-benchmark')
+	testCompile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.+'
+}

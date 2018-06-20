@@ -11,43 +11,45 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test.module.login;
+package com.company.test.module.bag;
 
 import static xyz.noark.log.LogHelper.logger;
 
-import com.company.test.proto.json.LoginGame_CS;
-import com.company.test.proto.json.LoginGame_SC;
+import com.company.test.module.bag.template.ItemTemplateManager;
+import com.company.test.module.login.event.OnlineEvent;
+import com.company.test.proto.json.GetBagInfo_CS;
 
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
-import xyz.noark.core.event.EventBus;
-import xyz.noark.core.network.Session.State;
-import xyz.noark.network.NettySession;
 
 /**
- * 登录入口.
+ * 背包入口.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
-public class LoginController {
+@Controller(threadGroup = ExecThreadGroup.PlayerThreadGroup)
+public class BagController {
+
+	@Autowired
+	private ItemTemplateManager itemTemplateManager;
+
 	/**
 	 * 登录游戏（第一个封包）
 	 */
-	@PacketMapping(opcode = 101, state = State.CONNECTED)
-	public void loginGame(NettySession session, LoginGame_CS packet) {
-		logger.info("玩家登录 username={}", packet.getUsername());
-		// 登录成功...
-		if (packet.getUsername().equalsIgnoreCase(packet.getPassword())) {
-			session.setPlayerId(Long.parseLong(packet.getUsername()));
-		}
-
-		EventBus.publish(new OnlineEvent(Long.parseLong(packet.getUsername())));
-
-		LoginGame_SC result = new LoginGame_SC();
-		result.setPlayerId(Long.parseLong(packet.getUsername()));
-		session.send(1001, result);
+	@PacketMapping(opcode = 102)
+	public void loginGame(@PlayerId long playerId, GetBagInfo_CS packet) {
+		logger.info("获取背包信息 playerId={},type={}", playerId, packet.getType());
+		logger.info("好多道具：" + itemTemplateManager.getItemTemplates().size());
 	}
+
+	@EventListener(value = OnlineEvent.class)
+	public void handle(OnlineEvent event) {
+		logger.info("背包模块处理上线事件:{}", event.getPlayerId());
+	}
+
 }

@@ -3,11 +3,6 @@ dependencies {
 	compile project(':noark-network')
 	compile project(':noark-orm')
 
-	testCompile 'com.alibaba:druid:1.0.27'
-	testCompile 'mysql:mysql-connector-java:5.1.40'
-	testCompile group: 'com.google.protobuf', name: 'protobuf-java', version: '2.+'
-	testCompile 'com.alibaba:fastjson:1.+'
-	
 	testCompile project(':noark-csv')
 	testCompile project(':noark-benchmark')
 }

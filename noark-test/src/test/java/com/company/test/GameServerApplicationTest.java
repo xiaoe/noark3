@@ -26,13 +26,12 @@ import com.company.test.proto.json.LoginGame_CS;
 import xyz.noark.util.ByteArrayUtils;
 
 /**
- * 
+ * 一个普通Socket的测试.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class GameServerTest {
-
+public class GameServerApplicationTest {
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		List<Socket> sockets = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
@@ -69,4 +68,5 @@ public class GameServerTest {
 
 		Thread.sleep(1000000);
 	}
+
 }

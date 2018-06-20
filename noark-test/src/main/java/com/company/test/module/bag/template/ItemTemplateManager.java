@@ -11,11 +11,9 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test.module.bag;
+package com.company.test.module.bag.template;
 
 import java.util.Map;
-
-import com.company.test.module.bag.template.ItemTemplate;
 
 import xyz.noark.core.annotation.Service;
 import xyz.noark.game.template.TemplateManager;
