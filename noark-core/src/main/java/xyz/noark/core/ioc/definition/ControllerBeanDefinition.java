@@ -54,6 +54,10 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		else if (annotationType == EventListener.class) {
 			emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation)));
 		}
+		// 其他的交给父类去处理
+		else {
+			super.analysisMthodByAnnotation(annotationType, annotation, method);
+		}
 	}
 
 	@Override

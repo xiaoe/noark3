@@ -23,7 +23,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class ControllerMethodWrapper extends AbstractMethodWrapper {
+public abstract class ControllerMethodWrapper extends BaseMethodWrapper {
 	protected final Controller controller;
 	protected boolean printLog = false;
 	protected final String module;

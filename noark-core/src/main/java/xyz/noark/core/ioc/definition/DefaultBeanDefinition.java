@@ -34,6 +34,8 @@ import xyz.noark.core.ioc.definition.field.DefaultFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ListFieldDefinition;
 import xyz.noark.core.ioc.definition.field.MapFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ValueFieldDefinition;
+import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
+import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
 import xyz.noark.reflectasm.MethodAccess;
 import xyz.noark.util.ClassUtils;
 import xyz.noark.util.FieldUtils;
@@ -115,7 +117,12 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		});
 	}
 
-	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {}
+	/**
+	 * 分析方法上的注解.
+	 */
+	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+		customMethods.computeIfAbsent(annotationType, key -> new ArrayList<>(64)).add(new SimpleMethodDefinition(methodAccess, method));
+	}
 
 	private void analysisField() {
 		FieldUtils.getAllField(beanClass).stream().filter(v -> v.isAnnotationPresent(Autowired.class) || v.isAnnotationPresent(Value.class)).forEach(v -> analysisAutowiredOrValue(v));
@@ -158,7 +165,10 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	/**
 	 * 分析此用的功能用途.
 	 * 
-	 * @param noarkIoc 容器
+	 * @param ioc 容器
 	 */
-	public void doAnalysisFunction(NoarkIoc noarkIoc) {}
+	public void doAnalysisFunction(NoarkIoc ioc) {
+		// 有自定义的注解需要送回来IOC容器中.
+		customMethods.forEach((k, list) -> list.forEach(v -> ioc.addCustomMethod(k, new BaseMethodWrapper(v.getMethodAccess(), single, v.getMethodIndex()))));
+	}
 }

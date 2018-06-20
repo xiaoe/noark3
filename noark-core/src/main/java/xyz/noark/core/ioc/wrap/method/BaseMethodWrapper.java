@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.reflectasm.MethodAccess;
 
 /**
@@ -21,17 +22,18 @@ import xyz.noark.reflectasm.MethodAccess;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class AbstractMethodWrapper {
+public class BaseMethodWrapper implements MethodWrapper {
 	protected final Object single;// 缓存那个单例对象
 	protected final int methodIndex;
 	protected final MethodAccess methodAccess;
 
-	public AbstractMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex) {
+	public BaseMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex) {
 		this.single = single;
 		this.methodIndex = methodIndex;
 		this.methodAccess = methodAccess;
 	}
 
+	@Override
 	public Object invoke(Object... args) {
 		if (args.length == 0) {
 			return methodAccess.invoke(single, methodIndex);

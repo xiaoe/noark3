@@ -56,6 +56,8 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 		// 配置类中，只关心@Bean的注解方法，其他都忽略掉吧，没有什么意义...
 		if (annotationType == Bean.class) {
 			beans.add(new SimpleMethodDefinition(methodAccess, method));
+		} else {
+			super.analysisMthodByAnnotation(annotationType, annotation, method);
 		}
 	}
 }

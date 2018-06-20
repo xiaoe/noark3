@@ -15,15 +15,17 @@ package xyz.noark.core.ioc;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+import xyz.noark.core.ioc.wrap.MethodWrapper;
 
 /**
  * Noark-IOC的核心容器.
@@ -34,6 +36,8 @@ import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 public class NoarkIoc implements Ioc {
 	// 容器中所有托管的Bean对象.
 	private final ConcurrentHashMap<Class<?>, Object> singletons = new ConcurrentHashMap<>(512);;
+
+	private final ConcurrentHashMap<Class<? extends Annotation>, List<MethodWrapper>> customMethods = new ConcurrentHashMap<>();
 
 	public NoarkIoc(String packager) {
 		String[] packages = Arrays.asList(packager, "xyz.noark").toArray(new String[] {});
@@ -78,9 +82,13 @@ public class NoarkIoc implements Ioc {
 		return klass.cast(singletons.get(klass));
 	}
 
-	public void invokeCustomAnnotationMethod(Class<PostConstruct> class1) {
-		// TODO Auto-generated method stub
-
+	/**
+	 * 调用自定义注解方法.
+	 * 
+	 * @param klass 注解类
+	 */
+	public void invokeCustomAnnotationMethod(Class<? extends Annotation> klass) {
+		customMethods.getOrDefault(klass, Collections.emptyList()).forEach(v -> v.invoke());
 	}
 
 	/**
@@ -92,5 +100,19 @@ public class NoarkIoc implements Ioc {
 	@SuppressWarnings("unchecked")
 	public <T> List<T> findImpl(final Class<T> klass) {
 		return (List<T>) singletons.values().stream().filter(v -> klass.isInstance(v)).collect(Collectors.toList());
+	}
+
+	/**
+	 * 为有注解的方法添加方法执行入口.
+	 * 
+	 * @param klass 注解类
+	 * @param mw 方法执行对象
+	 */
+	public void addCustomMethod(Class<? extends Annotation> klass, MethodWrapper mw) {
+		customMethods.computeIfAbsent(klass, key -> new ArrayList<>()).add(mw);
+	}
+
+	public void destroy() {
+
 	}
 }
