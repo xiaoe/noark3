@@ -17,9 +17,11 @@ import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -138,6 +140,20 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 	@Override
 	public List<T> loadAll(Serializable playerId, Predicate<T> filter) {
 		return caches.get(playerId).values().stream().filter(filter).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<T> loadAll() {
+		ConcurrentMap<Serializable, ConcurrentMap<K, T>> map = caches.asMap();
+		if (map.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		ArrayList<T> result = new ArrayList<>(map.size());
+		for (Entry<Serializable, ConcurrentMap<K, T>> e : map.entrySet()) {
+			result.addAll(e.getValue().values());
+		}
+		return result;
 	}
 
 	@Override

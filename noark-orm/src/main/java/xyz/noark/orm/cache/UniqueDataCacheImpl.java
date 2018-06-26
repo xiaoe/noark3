@@ -143,7 +143,6 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 			}
 			result.add(entity);
 		}
-		result.trimToSize();
 		return result;
 	}
 
