@@ -11,18 +11,18 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test.module.bag.service;
+package com.company.test.module.delay;
+
+import static xyz.noark.log.LogHelper.logger;
 
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
-import com.company.test.module.bag.domain.ItemAttr;
-import com.company.test.module.bag.domain.PlayerItem;
-import com.company.test.module.bag.domain.PlayerItemRepository;
-
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
+import xyz.noark.core.annotation.Repository;
+import xyz.noark.game.event.EventManager;
+import xyz.noark.orm.repository.MultiCacheRepository;
 
 /**
  * 
@@ -30,25 +30,25 @@ import xyz.noark.core.annotation.Service;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Service
-public class ItemService {
+@Repository
+public class DelayTaskRepository extends MultiCacheRepository<PlayerBuildingUpgradeEvent, Long> {
 
 	@Autowired
-	private PlayerItemRepository playerItemRepository;
+	private EventManager eventManager;
 
-	//@PostConstruct
+	/**
+	 * 把队列载入服务器定时系统中.
+	 */
+	@PostConstruct
 	public void init() {
-		for (int i = 0; i < 100; i++) {
-			PlayerItem item = playerItemRepository.cacheGet(10000001L, (long) i);
-			item.setId(i);
-			item.setCount(1);
-			item.setName("Item:" + i);
-			item.setPlayerId(10000001L);
-			item.setCreateTime(new Date());
-			item.setAttr(new ItemAttr());
+		logger.info("11111111111111111111111");
+		this.loadAll().stream().sorted().forEach(v -> eventManager.publish(v));
+		logger.info("22222222222");
+	}
 
-			// playerItemRepository.cacheInsert(item);
-			playerItemRepository.cacheUpdate(item);
-		}
+	@Override
+	public void cacheUpdate(PlayerBuildingUpgradeEvent entity) {
+		entity.setModifyTime(new Date());
+		super.cacheUpdate(entity);
 	}
 }

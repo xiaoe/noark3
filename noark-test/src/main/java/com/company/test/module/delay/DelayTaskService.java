@@ -11,44 +11,18 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.test.module.bag.service;
+package com.company.test.module.delay;
 
-import java.util.Date;
-
-import javax.annotation.PostConstruct;
-
-import com.company.test.module.bag.domain.ItemAttr;
-import com.company.test.module.bag.domain.PlayerItem;
-import com.company.test.module.bag.domain.PlayerItemRepository;
-
-import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 
 /**
- * 
+ * 延迟任务业务逻辑处理类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 @Service
-public class ItemService {
+public class DelayTaskService {
 
-	@Autowired
-	private PlayerItemRepository playerItemRepository;
 
-	//@PostConstruct
-	public void init() {
-		for (int i = 0; i < 100; i++) {
-			PlayerItem item = playerItemRepository.cacheGet(10000001L, (long) i);
-			item.setId(i);
-			item.setCount(1);
-			item.setName("Item:" + i);
-			item.setPlayerId(10000001L);
-			item.setCreateTime(new Date());
-			item.setAttr(new ItemAttr());
-
-			// playerItemRepository.cacheInsert(item);
-			playerItemRepository.cacheUpdate(item);
-		}
-	}
 }

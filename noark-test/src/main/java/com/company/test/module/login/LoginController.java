@@ -19,11 +19,12 @@ import com.company.test.module.login.event.OnlineEvent;
 import com.company.test.proto.json.LoginGame_CS;
 import com.company.test.proto.json.LoginGame_SC;
 
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
-import xyz.noark.core.event.EventBus;
 import xyz.noark.core.network.Session.State;
+import xyz.noark.game.event.EventManager;
 import xyz.noark.network.NettySession;
 
 /**
@@ -34,6 +35,9 @@ import xyz.noark.network.NettySession;
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
 public class LoginController {
+	@Autowired
+	private EventManager eventManager;
+
 	/**
 	 * 登录游戏（第一个封包）
 	 */
@@ -45,7 +49,7 @@ public class LoginController {
 			session.setPlayerId(Long.parseLong(packet.getUsername()));
 		}
 
-		EventBus.publish(new OnlineEvent(Long.parseLong(packet.getUsername())));
+		eventManager.publish(new OnlineEvent(Long.parseLong(packet.getUsername())));
 
 		LoginGame_SC result = new LoginGame_SC();
 		result.setPlayerId(Long.parseLong(packet.getUsername()));
