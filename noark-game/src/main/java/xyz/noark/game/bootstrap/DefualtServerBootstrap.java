@@ -34,6 +34,7 @@ public abstract class DefualtServerBootstrap extends AbstractServerBootstrap {
 
 	private NettyServer nettyServer;
 	private Optional<Modular> dataModular;
+	private Optional<Modular> eventModular;
 
 	@Override
 	protected void onStart() {
@@ -46,6 +47,10 @@ public abstract class DefualtServerBootstrap extends AbstractServerBootstrap {
 
 		// 3、初始化方法...
 		ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
+
+		// 4、延迟事件动起来.
+		eventModular = modularManager.getModular("EventModular");
+		eventModular.ifPresent(v -> v.init());
 
 		// HTTP服务
 
@@ -69,6 +74,7 @@ public abstract class DefualtServerBootstrap extends AbstractServerBootstrap {
 		// 停止对外网络
 		nettyServer.shutdown();
 		// 停止延迟任务调度
+		eventModular.ifPresent(v -> v.destroy());
 
 		// 等待所有任务处理完
 

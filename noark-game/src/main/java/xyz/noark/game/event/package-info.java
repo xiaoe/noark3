@@ -1,4 +1,4 @@
 /**
  * 异步事件功能.
  */
-package xyz.noark.core.event;
+package xyz.noark.game.event;

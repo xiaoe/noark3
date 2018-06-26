@@ -11,35 +11,48 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.event;
+package xyz.noark.game.event.delay;
 
 import static xyz.noark.log.LogHelper.logger;
 
 import java.util.List;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.StaticComponent;
+import xyz.noark.core.annotation.Service;
+import xyz.noark.core.event.Event;
 import xyz.noark.core.ioc.manager.EventMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.game.event.EventManager;
 
 /**
- * 事件总线.
+ * 一个提供延迟执行事件功能的实现类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@StaticComponent
-public class EventBus {
+@Service
+public class DelayEventManager implements EventManager {
 	private static final EventMethodManager manager = EventMethodManager.getInstance();
+	private final DelayEventThread handler = new DelayEventThread(this);
 
 	@Autowired
 	private static ThreadDispatcher threadDispatcher;
 
-	/**
-	 * 通知所有监听者.
-	 */
-	public static void publish(Event event) {
+	public void init() {
+		handler.start();
+	}
+
+	public void destroy() {
+		handler.setStarting(false);
+	}
+
+	@Override
+	public void publish(Event event) {
+		this.notifyListeners(event);
+	}
+
+	void notifyListeners(Event event) {
 		List<EventMethodWrapper> handlers = manager.getEventMethodWrappers(event.getClass());
 		if (handlers.isEmpty()) {
 			logger.warn("No subscription event. class={}", event.getClass());
@@ -60,5 +73,15 @@ public class EventBus {
 				logger.warn("handle event exception. {}", e);
 			}
 		}
+	}
+
+	@Override
+	public void publish(DelayEvent event) {
+		handler.addDelayEvent(event);
+	}
+
+	@Override
+	public boolean remove(DelayEvent event) {
+		return handler.remove(event);
 	}
 }
