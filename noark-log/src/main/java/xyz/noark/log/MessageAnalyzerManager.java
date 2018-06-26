@@ -28,11 +28,12 @@ import com.github.benmanes.caffeine.cache.Caffeine;
  * @author 小流氓(176543888@qq.com)
  */
 class MessageAnalyzerManager {
-	private static final int duration = 1;// 1分钟
+	/** 1分钟 */
+	private static final int DURATION = 1;
 	private final Cache<String, MessageAnalyzer> caches;
 
 	MessageAnalyzerManager() {
-		this.caches = Caffeine.newBuilder().maximumSize(1024).expireAfterAccess(duration, TimeUnit.MINUTES).build();
+		this.caches = Caffeine.newBuilder().maximumSize(1024).expireAfterAccess(DURATION, TimeUnit.MINUTES).build();
 	}
 
 	public MessageAnalyzer get(String key, Function<? super String, ? extends MessageAnalyzer> mappingFunction) {

@@ -23,6 +23,8 @@ public interface BenchmarkCallback {
 
 	/**
 	 * 干活...
+	 * 
+	 * @throws Exception 干活过程可能出现的异常
 	 */
 	public void doSomething() throws Exception;
 }

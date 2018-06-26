@@ -14,8 +14,9 @@
 package xyz.noark.log;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,13 +26,12 @@ import java.util.concurrent.TimeUnit;
  * @author 小流氓(176543888@qq.com)
  */
 class LogCenter {
-
-	private static final LogCenter instance = new LogCenter();
+	private static final LogCenter INSTANCE = new LogCenter();
 	/** 异步日志线程 */
 	private final ExecutorService ANSYC_LOG_EXEC;
 
 	private LogCenter() {
-		ANSYC_LOG_EXEC = Executors.newSingleThreadExecutor(new ThreadFactory() {
+		ANSYC_LOG_EXEC = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
 				Thread t = new Thread(r, "ansyc-log");
@@ -42,7 +42,7 @@ class LogCenter {
 	}
 
 	static LogCenter getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	void execute(LogExecutor info) {

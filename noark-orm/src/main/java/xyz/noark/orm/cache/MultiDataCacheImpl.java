@@ -45,7 +45,7 @@ import xyz.noark.orm.repository.CacheRepository;
  * @author 小流氓(176543888@qq.com)
  */
 public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataCache<T, K> {
-	// 角色Id <==> 一个数据集合
+	/** 角色Id <==> 一个数据集合 */
 	private final LoadingCache<Serializable, ConcurrentMap<K, T>> caches;
 
 	public MultiDataCacheImpl(CacheRepository<T, K> repository, long offlineInterval) {
@@ -166,7 +166,7 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 				Serializable playerId = entityMapping.getPlayerIdValue(entity);
 				ConcurrentHashMap<K, T> ds = data.get(playerId);
 				if (ds == null) {
-					ds = new ConcurrentHashMap<>();
+					ds = new ConcurrentHashMap<>(result.size() * 2);
 					data.put(playerId, ds);
 				}
 				ds.put(this.getPrimaryIdValue(entity), entity);

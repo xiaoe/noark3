@@ -36,24 +36,25 @@ import io.netty.handler.codec.CorruptedFrameException;
  * @author 小流氓(176543888@qq.com)
  */
 public class ProtobufV2Decoder extends ByteToMessageDecoder {
-	private final static int max_packet_length = 65535;// 最大封包长度
+	private final static int MAX_PACKET_LENGTH = 65535;
 
 	public ProtobufV2Decoder() {}
 
-	// 封包长度 + 自增位 + Opcode + 协议内容 + 校验位
+	/** 封包长度 + 自增位 + Opcode + 协议内容 + 校验位 */
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 
 		// 封包长度
 		in.markReaderIndex();
 		int preIndex = in.readerIndex();
-		int length = this.readRawVarint32(in);// 包长
+		// 包长
+		int length = this.readRawVarint32(in);
 		if (preIndex == in.readerIndex()) {
 			return;
 		}
 
 		// 不正常的封包，干掉这个人.
-		if (length <= 0 || length > max_packet_length) {
+		if (length <= 0 || length > MAX_PACKET_LENGTH) {
 			ctx.close();
 			return;
 		}
@@ -79,7 +80,7 @@ public class ProtobufV2Decoder extends ByteToMessageDecoder {
 		out.add(packet);
 	}
 
-	// Reads variable length 32bit int from buffer
+	/** Reads variable length 32bit int from buffer */
 	private int readRawVarint32(ByteBuf buffer) {
 		if (!buffer.isReadable()) {
 			return 0;

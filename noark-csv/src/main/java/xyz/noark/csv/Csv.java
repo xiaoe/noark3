@@ -44,7 +44,7 @@ import xyz.noark.util.StringUtils;
  */
 public class Csv {
 	private final ConvertManager convertManager = ConvertManager.getInstance();
-	private static final Charset default_charset = Charset.forName("UTF-8");
+	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 	private final char separator;
 
 	/**
@@ -76,8 +76,9 @@ public class Csv {
 			throw new TplConfigurationException("这不是CSV格式的配置文件类:" + klass.getName());
 		}
 
-		try (CsvReader reader = new CsvReader(separator, Files.newBufferedReader(Paths.get(templatePath, file.value()), default_charset))) {
-			Map<String, Integer> titles = reader.getHeaders();// 标题
+		try (CsvReader reader = new CsvReader(separator, Files.newBufferedReader(Paths.get(templatePath, file.value()), DEFAULT_CHARSET))) {
+			/** 标题 */
+			Map<String, Integer> titles = reader.getHeaders();
 
 			List<T> result = new ArrayList<>();
 			reader.getDatas().forEach(v -> result.add(analysisLine(klass, file.value(), titles, v)));
@@ -89,8 +90,8 @@ public class Csv {
 
 	private <T> T analysisLine(Class<T> klass, String tplFileName, Map<String, Integer> titles, String[] values) {
 		T result = ClassUtils.newInstance(klass);
-
-		for (Field field : FieldUtils.getAllField(klass)) {// 使用工具获取，父类的属性也要判定...
+		/** 使用工具获取，父类的属性也要判定 */
+		for (Field field : FieldUtils.getAllField(klass)) {
 			TplAttr attr = field.getAnnotation(TplAttr.class);
 			if (attr == null || StringUtils.isEmpty(attr.name())) {
 				continue;

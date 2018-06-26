@@ -27,7 +27,7 @@ import xyz.noark.game.bootstrap.ServerBootstrap;
  * @author 小流氓(176543888@qq.com)
  */
 public final class Noark {
-	// 私有化构造函数.
+	/** 私有化构造函数. */
 	private Noark() {}
 
 	/**

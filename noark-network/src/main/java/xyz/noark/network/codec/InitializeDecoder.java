@@ -28,7 +28,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  * @author 小流氓(176543888@qq.com)
  */
 public class InitializeDecoder extends ByteToMessageDecoder {
-	private static final int max_length = 64;
+	private static final int MAX_LENGTH = 64;
 
 	private final InitializeManager initializeManager;
 
@@ -36,14 +36,15 @@ public class InitializeDecoder extends ByteToMessageDecoder {
 		this.initializeManager = initializeManager;
 	}
 
-	// 封包长度 + 自增位 + Opcode + 协议内容 + 校验位
+	/** 封包长度 + 自增位 + Opcode + 协议内容 + 校验位 */
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		ctx.pipeline().remove(this.getClass());// 移除自己
+		// 移除自己
+		ctx.pipeline().remove(this.getClass());
 
 		int length = in.readableBytes();
-		if (length > max_length) {
-			length = max_length;
+		if (length > MAX_LENGTH) {
+			length = MAX_LENGTH;
 		}
 
 		byte[] content = new byte[length];

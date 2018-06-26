@@ -28,17 +28,19 @@ import java.util.stream.Stream;
  * @author 小流氓(176543888@qq.com)
  */
 class CsvReader implements AutoCloseable {
-
-	private static final int LF = '\n';// 换行符
-	private static final int QUOTE = '"';// 双引号
+	/** 换行符 */
+	private static final int LF = '\n';
+	/** 双引号 */
+	private static final int QUOTE = '"';
 
 	private final BufferedReader reader;
 	private final int separator;
 	private final StringBuilder sbing;
 	private final Map<String, Integer> headers;
-
-	private int cur;// 当前正在处理的字节
-	private boolean processed = true;// 标识当前字节有没有被处理过
+	/** 当前正在处理的字节 */
+	private int cur;
+	/** 标识当前字节有没有被处理过 */
+	private boolean processed = true;
 
 	public CsvReader(char separator, BufferedReader reader) throws IOException {
 		this.reader = reader;
@@ -73,8 +75,9 @@ class CsvReader implements AutoCloseable {
 		Stream.Builder<String[]> result = Stream.builder();
 		while (!isFileEnd()) {
 			String[] line = this.readLine();
-			if (line.length > 0)
+			if (line.length > 0) {
 				result.add(line);
+			}
 		}
 		return result.build();
 	}
@@ -102,19 +105,22 @@ class CsvReader implements AutoCloseable {
 		return result.toArray(new String[0]);
 	}
 
-	// * ①每条记录占一行；<br>
-	// * ②以逗号为分隔符；<br>
-	// * ③逗号前后的空格会被忽略；<br>
-	// * ④字段中包含有逗号，该字段必须用双引号括起来；<br>
-	// * ⑤字段中包含有换行符，该字段必须用双引号括起来；<br>
-	// * ⑥字段前后包含有空格，该字段必须用双引号括起来；<br>
-	// * ⑦字段中的双引号用两个双引号表示；<br>
-	// * ⑧字段中如果有双引号，该字段必须用双引号括起来；<br>
-	// * ⑨第一条记录，可以是字段名；<br>
-	// * ⑩以上提到的逗号和双引号均为半角字符。<br>
+	/**
+	 * ①每条记录占一行；<br>
+	 * ②以逗号为分隔符；<br>
+	 * ③逗号前后的空格会被忽略；<br>
+	 * ④字段中包含有逗号，该字段必须用双引号括起来；<br>
+	 * ⑤字段中包含有换行符，该字段必须用双引号括起来；<br>
+	 * ⑥字段前后包含有空格，该字段必须用双引号括起来；<br>
+	 * ⑦字段中的双引号用两个双引号表示；<br>
+	 * ⑧字段中如果有双引号，该字段必须用双引号括起来；<br>
+	 * ⑨第一条记录，可以是字段名；<br>
+	 * ⑩以上提到的逗号和双引号均为半角字符。<br>
+	 */
 	private String readString() throws IOException {
 		sbing.setLength(0);
-		boolean flag = false;// 是否为双引号的内容
+		// 是否为双引号的内容
+		boolean flag = false;
 		for (;;) {
 			this.readInt();
 

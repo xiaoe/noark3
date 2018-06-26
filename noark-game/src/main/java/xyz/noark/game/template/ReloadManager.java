@@ -30,7 +30,7 @@ import xyz.noark.core.annotation.Service;
 public class ReloadManager {
 
 	@Autowired
-	private List<TemplateManager> templateManagers;
+	private List<AbstractTemplateManager> abstractTemplateManagers;
 
 	/**
 	 * 重载所有模板管理器里的数据.
@@ -39,7 +39,7 @@ public class ReloadManager {
 	 */
 	public void reload(boolean checkValidity) {
 		logger.info("loading template data. checkValidity={}", checkValidity);
-		templateManagers.forEach(v -> {
+		abstractTemplateManagers.forEach(v -> {
 			logger.info("[{}] loading template.", v.getModuleName());
 			v.loadData();
 			logger.info("[{}] load OK.", v.getModuleName());
@@ -48,7 +48,7 @@ public class ReloadManager {
 
 		if (checkValidity) {
 			logger.info("check template data...");
-			templateManagers.forEach(v -> v.checkValidity());
+			abstractTemplateManagers.forEach(v -> v.checkValidity());
 			logger.info("check template success.");
 		}
 	}

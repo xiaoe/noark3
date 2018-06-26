@@ -23,7 +23,8 @@ public class ShutdownHook extends Thread {
 	private final ServerBootstrap serverStartup;
 
 	public ShutdownHook(ServerBootstrap startup) {
-		super("shutdown");// 修正停服逻辑线程名称
+		// 修正停服逻辑线程名称
+		super("shutdown");
 		this.serverStartup = startup;
 	}
 

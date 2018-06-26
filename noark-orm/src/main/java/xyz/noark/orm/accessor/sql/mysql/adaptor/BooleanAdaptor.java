@@ -24,7 +24,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-class BooleanAdaptor extends ValueAdaptor<Boolean> {
+class BooleanAdaptor extends AbstractValueAdaptor<Boolean> {
 
 	@Override
 	protected void toPreparedStatement(PreparedStatementProxy pstmt, Boolean value, int parameterIndex) throws Exception {

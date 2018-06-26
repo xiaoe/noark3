@@ -39,27 +39,30 @@ import xyz.noark.util.ByteArrayUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class SimpleJsonCodec extends AbstractPacketCodec {
-	private final static int max_packet_length = 65535;// 最大封包长度
+	/** 最大封包长度 */
+	private final static int MAX_PACKET_LENGTH = 65535;
+	private final static int PACKET_BYTE_LENGTH = 2;
 
 	public SimpleJsonCodec() {}
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 		// 包长不够...
-		if (in.readableBytes() < 2) {
+		if (in.readableBytes() < PACKET_BYTE_LENGTH) {
 			return;
 		}
 
 		// 封包长度
 		in.markReaderIndex();
 		int preIndex = in.readerIndex();
-		int length = in.readShort();// 包长
+		// 包长
+		int length = in.readShort();
 		if (preIndex == in.readerIndex()) {
 			return;
 		}
 
 		// 不正常的封包，干掉这个人.
-		if (length <= 0 || length > max_packet_length) {
+		if (length <= 0 || length > MAX_PACKET_LENGTH) {
 			ctx.close();
 			return;
 		}

@@ -26,8 +26,8 @@ import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.PreparedStatementCallback;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
-import xyz.noark.orm.accessor.sql.SqlDataAccessor;
-import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptor;
+import xyz.noark.orm.accessor.sql.AbstractSqlDataAccessor;
+import xyz.noark.orm.accessor.sql.mysql.adaptor.AbstractValueAdaptor;
 import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptorManager;
 
 /**
@@ -36,7 +36,7 @@ import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptorManager;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class MysqlDataAccessor extends SqlDataAccessor {
+public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 
 	public MysqlDataAccessor(DataSource dataSource) {
 		super(new MysqlSqlExpert(), dataSource);
@@ -63,7 +63,6 @@ public class MysqlDataAccessor extends SqlDataAccessor {
 		return delete(em, em.getPrimaryIdValue(entity));
 	}
 
-	// 这个接口不要暴露出来
 	private <K extends Serializable> int delete(final EntityMapping<?> em, final K id) {
 		class DeletePreparedStatementCallback implements PreparedStatementCallback<Integer> {
 			@Override
@@ -162,7 +161,7 @@ public class MysqlDataAccessor extends SqlDataAccessor {
 	}
 
 	private <T> void setPstmtParameter(EntityMapping<T> em, FieldMapping fm, PreparedStatementProxy pstmt, final T entity, final int index) throws Exception {
-		ValueAdaptor<?> adaptor = ValueAdaptorManager.getValueAdaptor(fm.getType());
+		AbstractValueAdaptor<?> adaptor = ValueAdaptorManager.getValueAdaptor(fm.getType());
 		adaptor.parameterToPreparedStatement(em, fm, pstmt, entity, index);
 	}
 }

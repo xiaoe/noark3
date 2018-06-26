@@ -26,13 +26,13 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-class UnrealizedAdaptor extends ValueAdaptor<Void> {
-	private static final UnrealizedAdaptor instance = new UnrealizedAdaptor();
+class UnrealizedAdaptor extends AbstractValueAdaptor<Void> {
+	private static final UnrealizedAdaptor INSTANCE = new UnrealizedAdaptor();
 
 	private UnrealizedAdaptor() {}
 
 	public static UnrealizedAdaptor getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	@Override

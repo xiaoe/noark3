@@ -26,7 +26,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-class JsonAdaptor extends ValueAdaptor<Object> {
+class JsonAdaptor extends AbstractValueAdaptor<Object> {
 
 	@Override
 	protected void toPreparedStatement(PreparedStatementProxy pstmt, Object value, int parameterIndex) throws Exception {

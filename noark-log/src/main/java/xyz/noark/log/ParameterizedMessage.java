@@ -20,7 +20,7 @@ package xyz.noark.log;
  * @author 小流氓(176543888@qq.com)
  */
 class ParameterizedMessage extends AbstractMessage {
-	private static final MessageAnalyzerManager cache = new MessageAnalyzerManager();
+	private static final MessageAnalyzerManager CACHE = new MessageAnalyzerManager();
 	private final Object[] args;
 
 	ParameterizedMessage(Level level, String messagePattern, Object[] args) {
@@ -30,6 +30,6 @@ class ParameterizedMessage extends AbstractMessage {
 
 	@Override
 	protected void onBuildMessage(StringBuilder sb) {
-		cache.get(msg, key -> new MessageAnalyzer(key)).build(sb, args);
+		CACHE.get(msg, key -> new MessageAnalyzer(key)).build(sb, args);
 	}
 }

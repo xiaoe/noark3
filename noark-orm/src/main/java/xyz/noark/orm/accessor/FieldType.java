@@ -20,7 +20,52 @@ package xyz.noark.orm.accessor;
  * @author 小流氓(176543888@qq.com)
  */
 public enum FieldType {
-	AsString, AsLong, AsInteger, AsAtomicInteger, AsBoolean, AsFloat, AsDouble,
-
-	AsInstant, AsDate, AsLocalDateTime, AsJson, AsBlob;
+	/**
+	 * 字符串
+	 */
+	AsString,
+	/**
+	 * Long类型
+	 */
+	AsLong,
+	/**
+	 * Int类型
+	 */
+	AsInteger,
+	/**
+	 * AtomicInteger类型
+	 */
+	AsAtomicInteger,
+	/**
+	 * Boolean类型
+	 */
+	AsBoolean,
+	/**
+	 * Float类型
+	 */
+	AsFloat,
+	/**
+	 * Double类型
+	 */
+	AsDouble,
+	/**
+	 * Double类型
+	 */
+	AsInstant,
+	/**
+	 * Date类型
+	 */
+	AsDate,
+	/**
+	 * LocalDateTime类型
+	 */
+	AsLocalDateTime,
+	/**
+	 * Json类型
+	 */
+	AsJson,
+	/**
+	 * Blob类型
+	 */
+	AsBlob;
 }

@@ -21,5 +21,12 @@ package xyz.noark.orm.accessor.sql;
  */
 @FunctionalInterface
 public interface PreparedStatementCallback<T> {
+	/**
+	 * 获取PreparedStatement代理对象后的处理逻辑.
+	 * 
+	 * @param pstmt PreparedStatement代理对象
+	 * @return 处理逻辑结果
+	 * @throws Exception 可能会出现异常
+	 */
 	T doInPreparedStatement(PreparedStatementProxy pstmt) throws Exception;
 }

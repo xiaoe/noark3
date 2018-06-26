@@ -26,5 +26,13 @@ import xyz.noark.core.exception.DataAccessException;
  */
 @FunctionalInterface
 public interface ConnectionCallback<T> {
+	/**
+	 * 获取链接后的处理逻辑.
+	 * 
+	 * @param con SQL链接
+	 * @return 处理逻辑所返回的结果
+	 * @throws SQLException 可能会出现SQL异常
+	 * @throws DataAccessException 可能会出现数据访问异常
+	 */
 	T doInConnection(Connection con) throws SQLException, DataAccessException;
 }

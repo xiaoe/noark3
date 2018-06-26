@@ -57,28 +57,87 @@ public interface DataCache<T, K extends Serializable> {
 	/**
 	 * 根据玩家ID来删除所有缓存实体.
 	 * 
+	 * @param playerId 玩家ID
 	 * @return 被删除的实体对象集合
 	 */
 	List<T> deleteAll(Serializable playerId);
 
+	/**
+	 * 更新一个实体对象
+	 * 
+	 * @param entity 实体对象
+	 */
 	void update(T entity);
 
+	/**
+	 * 根据主键加载实体对象
+	 * 
+	 * @param entityId 主键
+	 * @return 实体对象
+	 */
 	T load(K entityId);
 
+	/**
+	 * 根据玩家ID与主键值加载实体对象
+	 * 
+	 * @param playerId 玩家ID
+	 * @param entityId 主键
+	 * @return 实体对象
+	 */
 	T load(Serializable playerId, K entityId);
 
+	/**
+	 * 获取所有实体对象
+	 * 
+	 * @return 实体对象列表
+	 */
 	List<T> loadAll();
 
+	/**
+	 * 根据玩家ID实体获取所有实体对象
+	 * 
+	 * @param playerId 玩家ID
+	 * @return 实体对象
+	 */
 	List<T> loadAll(Serializable playerId);
 
+	/**
+	 * 初始化缓存
+	 */
 	void initCacheData();
 
+	/**
+	 * 根据条件载入实体对象列表
+	 * 
+	 * @param filter 条件
+	 * @return 实体对象列表
+	 */
 	List<T> loadAll(Predicate<T> filter);
 
+	/**
+	 * 根据玩家ID与条件载入实体对象.
+	 * 
+	 * @param playerId 玩家ID
+	 * @param filter 条件
+	 * @return 实体对象
+	 */
 	T load(Serializable playerId, Predicate<T> filter);
 
+	/**
+	 * 统计以玩家ID所要条件有多少实体对象
+	 * 
+	 * @param playerId 玩家ID
+	 * @param filter 条件
+	 * @return 实体对象数量
+	 */
 	long count(Serializable playerId, Predicate<T> filter);
 
+	/**
+	 * 根据玩家ID与条件载入实体对象列表.
+	 * 
+	 * @param playerId 玩家ID
+	 * @param filter 条件
+	 * @return 实体对象列表
+	 */
 	List<T> loadAll(Serializable playerId, Predicate<T> filter);
-
 }

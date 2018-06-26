@@ -51,6 +51,7 @@ abstract class AbstractMessage implements Message {
 		}
 	}
 
+	@Override
 	public Level getLevel() {
 		return level;
 	}

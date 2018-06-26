@@ -31,8 +31,8 @@ import xyz.noark.orm.write.AsyncWriteService;
  * @author 小流氓(176543888@qq.com)
  */
 abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRepository<T, K> implements CacheRepository<T, K> {
-	// CacheRepository层的数据缓存
 	protected DataCache<T, K> dataCache;
+
 	@Value(DataModular.DATA_OFFLINE_INERVAL)
 	private int offlineInterval = 3600;
 	@Autowired
@@ -49,8 +49,8 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
 	}
 
 	@Override
-	public void _checkEntityAndInitCache() {
-		super._checkEntityAndInitCache();
+	public void checkEntityAndInitCache() {
+		super.checkEntityAndInitCache();
 
 		// 缓存抓取策略
 		this.dataCache = buildDataCache(offlineInterval);
@@ -62,6 +62,9 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
 
 	/**
 	 * 创建数据缓存.
+	 * 
+	 * @param offlineInterval 离线缓存时间
+	 * @return 数据缓存实现
 	 */
 	protected abstract DataCache<T, K> buildDataCache(int offlineInterval);
 

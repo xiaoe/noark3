@@ -20,6 +20,7 @@ package xyz.noark.benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class Benchmark {
+	private static final int PREHEATING_TIMES = 100;
 	private final int times;
 
 	public Benchmark() {
@@ -33,7 +34,7 @@ public class Benchmark {
 
 	public void doSomething(String name, BenchmarkCallback callback) throws Exception {
 		// 预热100次
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < PREHEATING_TIMES; i++) {
 			callback.doSomething();
 		}
 

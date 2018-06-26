@@ -27,7 +27,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-class InstantAdaptor extends ValueAdaptor<Instant> {
+class InstantAdaptor extends AbstractValueAdaptor<Instant> {
 
 	@Override
 	protected void toPreparedStatement(PreparedStatementProxy pstmt, Instant value, int parameterIndex) throws Exception {

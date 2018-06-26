@@ -13,7 +13,7 @@
  */
 package com.company.test;
 
-import xyz.noark.game.bootstrap.DefualtServerBootstrap;
+import xyz.noark.game.bootstrap.BaseServerBootstrap;
 
 /**
  * 服务器服务启动类.
@@ -21,7 +21,7 @@ import xyz.noark.game.bootstrap.DefualtServerBootstrap;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class GameServerBootstrap extends DefualtServerBootstrap {
+public class GameServerBootstrap extends BaseServerBootstrap {
 
 	@Override
 	protected String getServerName() {

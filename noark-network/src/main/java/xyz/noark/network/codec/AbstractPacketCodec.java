@@ -30,8 +30,12 @@ public abstract class AbstractPacketCodec extends ByteToMessageDecoder implement
 
 	/**
 	 * 基本Netty的网络解码器实现的解码封包逻辑.
+	 * 
+	 * @param ctx 链接上下文
+	 * @param in 字节BUF缓冲区
+	 * @param out 输出列表
+	 * @throws Exception 可能会出现逻辑异常
 	 */
 	@Override
 	protected abstract void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception;
-
 }

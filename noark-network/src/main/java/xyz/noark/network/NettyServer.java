@@ -42,9 +42,12 @@ import xyz.noark.network.codec.InitializeManager;
  */
 @Component(name = "NettyServer")
 public class NettyServer implements TcpServer {
-	// Boss线程就用一个线程
+	private static final int CPU_MIN_COUNT = 4;
+	private static final int CPU_MAX_COUNT = 8;
+
+	/** Boss线程就用一个线程 */
 	private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-	// Work线程:CPU<=4的话CPU*2,CPU<=8的话CPU+4, 其他直接使用12
+	/** Work线程:CPU<=4的话CPU*2,CPU<=8的话CPU+4, 其他直接使用12 */
 	private final EventLoopGroup workGroup;
 
 	private final ServerBootstrap bootstrap;
@@ -52,28 +55,28 @@ public class NettyServer implements TcpServer {
 	private static final int DEFAULT_EVENT_LOOP_THREADS;
 	static {
 		int count = Runtime.getRuntime().availableProcessors();
-		if (count <= 4) {
+		if (count <= CPU_MIN_COUNT) {
 			DEFAULT_EVENT_LOOP_THREADS = count * 2;
-		} else if (count <= 8) {
+		} else if (count <= CPU_MAX_COUNT) {
 			DEFAULT_EVENT_LOOP_THREADS = count + 4;
 		} else {
 			DEFAULT_EVENT_LOOP_THREADS = 12;
 		}
 	}
 
-	// Netty监听端口
+	/** Netty监听端口 */
 	@Value("network.port")
 	private int port = 8888;
 
-	// 心跳功能，默认值为0，则不生效
+	/** 心跳功能，默认值为0，则不生效 */
 	@Value("network.heartbeat")
 	private int heartbeat = 0;
 
-	// Netty的Work线程数
+	/** Netty的Work线程数 */
 	@Value("network.work.threads")
 	private int workthreads = 0;
 
-	// 是否为WebSocket
+	/** 是否为WebSocket */
 	@Value("network.websocket.path")
 	private String websocketPath;
 

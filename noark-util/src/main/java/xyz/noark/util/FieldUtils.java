@@ -29,6 +29,10 @@ import java.util.Map;
  */
 public class FieldUtils {
 
+	private static final int PREFIX_IS_METHOD_INDEX = 2;
+	private static final int PREFIX_GET_METHOD_INDEX = 3;
+	private static final int PREFIX_SET_METHOD_INDEX = 3;
+
 	/**
 	 * 强制给一个属性{@link Field}写入值.
 	 * 
@@ -75,15 +79,15 @@ public class FieldUtils {
 		if (field.getType() == boolean.class) {
 			StringBuilder sb = new StringBuilder(len + 2);
 			sb.append("is").append(field.getName());
-			if (Character.isLowerCase(sb.charAt(2))) {
-				sb.setCharAt(2, Character.toUpperCase(sb.charAt(2)));
+			if (Character.isLowerCase(sb.charAt(PREFIX_IS_METHOD_INDEX))) {
+				sb.setCharAt(PREFIX_IS_METHOD_INDEX, Character.toUpperCase(sb.charAt(PREFIX_IS_METHOD_INDEX)));
 			}
 			return sb.toString();
 		} else {
 			StringBuilder sb = new StringBuilder(len + 3);
 			sb.append("get").append(field.getName());
-			if (Character.isLowerCase(sb.charAt(3))) {
-				sb.setCharAt(3, Character.toUpperCase(sb.charAt(3)));
+			if (Character.isLowerCase(sb.charAt(PREFIX_GET_METHOD_INDEX))) {
+				sb.setCharAt(PREFIX_GET_METHOD_INDEX, Character.toUpperCase(sb.charAt(PREFIX_GET_METHOD_INDEX)));
 			}
 			return sb.toString();
 		}
@@ -99,8 +103,8 @@ public class FieldUtils {
 		int len = field.getName().length();
 		StringBuilder sb = new StringBuilder(len + 3);
 		sb.append("set").append(field.getName());
-		if (Character.isLowerCase(sb.charAt(3))) {
-			sb.setCharAt(3, Character.toUpperCase(sb.charAt(3)));
+		if (Character.isLowerCase(sb.charAt(PREFIX_SET_METHOD_INDEX))) {
+			sb.setCharAt(PREFIX_SET_METHOD_INDEX, Character.toUpperCase(sb.charAt(PREFIX_SET_METHOD_INDEX)));
 		}
 		return sb.toString();
 	}

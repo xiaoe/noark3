@@ -32,20 +32,19 @@ public class EntityMapping<T> {
 	private final MethodAccess methodAccess;
 	private final ConstructorAccess<T> constructorAccess;
 
-	// 抓取策略
+	/** 抓取策略 */
 	protected final FeatchType featchType;
-	// 表名
+	/** 表名 */
 	protected String tableName;
-	// 注释
+	/** 注释 */
 	private String tableComment;
 
-	// 主键字段
+	/** 主键字段 */
 	protected FieldMapping primaryId;
-	// 玩家ID字段
+	/** 玩家ID字段 */
 	protected FieldMapping playerId;
-	// 全部属性
+	/** 全部属性 */
 	protected List<FieldMapping> fieldInfo;
-	
 
 	public EntityMapping(Class<T> klass) {
 		this.klass = klass;

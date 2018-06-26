@@ -35,7 +35,7 @@ import xyz.noark.orm.accessor.DataAccessor;
  * @author 小流氓(176543888@qq.com)
  */
 public class OrmRepository<T, K extends Serializable> {
-	private static final AnnotationEntityMaker maker = new AnnotationEntityMaker();
+	private static final AnnotationEntityMaker MAKER = new AnnotationEntityMaker();
 	protected final EntityMapping<T> entityMapping;
 	@Autowired
 	protected DataAccessor dataAccessor;
@@ -44,14 +44,14 @@ public class OrmRepository<T, K extends Serializable> {
 	protected OrmRepository() {
 		Type mySuperClass = this.getClass().getGenericSuperclass();
 		Type type = ((ParameterizedType) mySuperClass).getActualTypeArguments()[0];
-		this.entityMapping = maker.make((Class<T>) type);
+		this.entityMapping = MAKER.make((Class<T>) type);
 	}
 
 	/**
 	 * 检查实体类与DB映射关系并初始化缓存
 	 */
 	@DataCheckAndInit
-	public void _checkEntityAndInitCache() {
+	public void checkEntityAndInitCache() {
 		dataAccessor.checkupEntityFieldsWithDatabase(entityMapping);
 	}
 

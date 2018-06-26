@@ -24,7 +24,7 @@ import java.util.concurrent.DelayQueue;
  * @author 小流氓(176543888@qq.com)
  */
 class DelayEventThread extends Thread {
-	private static final DelayQueue<DelayEvent> queue = new DelayQueue<>();
+	private static final DelayQueue<DelayEvent> QUEUE = new DelayQueue<>();
 	private final DelayEventManager eventManager;
 	private volatile boolean starting = true;
 
@@ -33,11 +33,12 @@ class DelayEventThread extends Thread {
 		this.eventManager = eventManager;
 	}
 
+	@Override
 	public void run() {
 		logger.info("延迟任务调度线程开始啦...");
 		while (starting) {
 			try {
-				eventManager.notifyListeners(queue.take());
+				eventManager.notifyListeners(QUEUE.take());
 			} catch (Throwable e) {
 				logger.error("调度线程异常", e);
 			}
@@ -54,10 +55,10 @@ class DelayEventThread extends Thread {
 	}
 
 	public boolean addDelayEvent(DelayEvent event) {
-		return queue.add(event);
+		return QUEUE.add(event);
 	}
 
 	public boolean remove(DelayEvent event) {
-		return queue.remove(event);
+		return QUEUE.remove(event);
 	}
 }

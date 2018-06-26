@@ -77,14 +77,15 @@ public class EntityOperate<T> {
 	}
 
 	public boolean isInsert() {
-		if (delete)
-			return false;
+		if (delete) {
+			return false;}
 		return insert;
 	}
 
 	public boolean isUpdate() {
-		if (delete || insert)
+		if (delete || insert) {
 			return false;
+		}
 		return update;
 	}
 

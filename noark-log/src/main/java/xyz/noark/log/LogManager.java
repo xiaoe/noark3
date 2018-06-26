@@ -30,17 +30,17 @@ public class LogManager {
 	/**
 	 * 日志级别[debug|info|warn|error],默认值为debug
 	 */
-	private static final String log_level = "log.level";
+	private static final String LOG_LEVEL = "log.level";
 
 	/**
 	 * 是否输出到控制台[true|false],默认值为true
 	 */
-	private static final String log_console = "log.console";
+	private static final String LOG_CONSOLE = "log.console";
 
 	/**
 	 * 文件日志存储目录(默认:/data/log/game/1/game.{yyyy-MM-dd-HH}.log)
 	 */
-	private static final String log_path = "log.path";
+	private static final String LOG_PATH = "log.path";
 
 	/**
 	 * 日志功能初始化.
@@ -49,11 +49,11 @@ public class LogManager {
 	 */
 	public static void init(Map<String, String> config) {
 		// 日志等级
-		LogConfigurator.DEFAULT_LEVEL = Level.valueOf(config.getOrDefault(log_level, "debug").toUpperCase());
+		LogConfigurator.DEFAULT_LEVEL = Level.valueOf(config.getOrDefault(LOG_LEVEL, "debug").toUpperCase());
 		// 是否输出到控制台
-		LogConfigurator.CONSOLE = Boolean.valueOf(config.getOrDefault(log_console, "true"));
+		LogConfigurator.CONSOLE = Boolean.valueOf(config.getOrDefault(LOG_CONSOLE, "true"));
 		// 日志存储路径
-		LogConfigurator.LOG_PATH = new LogPath(config.get(log_path));
+		LogConfigurator.LOG_PATH = new LogPath(config.get(LOG_PATH));
 	}
 
 	/**

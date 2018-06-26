@@ -32,5 +32,5 @@ public interface ProtobufSerializable {
 	 * 
 	 * @param output 字节流
 	 */
-	public void writeTo(CodedOutputStream output);
+	public void writeTo(AbstractCodedOutputStream output);
 }

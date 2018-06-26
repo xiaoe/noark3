@@ -69,9 +69,11 @@ public abstract class MethodAccess {
 
 	/** Returns the index of the first method with the specified name. */
 	public int getIndex(String methodName) {
-		for (int i = 0, n = methodNames.length; i < n; i++)
-			if (methodNames[i].equals(methodName))
+		for (int i = 0, n = methodNames.length; i < n; i++) {
+			if (methodNames[i].equals(methodName)) {
 				return i;
+			}
+		}
 		throw new IllegalArgumentException("Unable to find public method: " + methodName);
 	}
 
@@ -80,9 +82,11 @@ public abstract class MethodAccess {
 	 * types.
 	 */
 	public int getIndex(String methodName, Class<?>... paramTypes) {
-		for (int i = 0, n = methodNames.length; i < n; i++)
-			if (methodNames[i].equals(methodName) && Arrays.equals(paramTypes, parameterTypes[i]))
+		for (int i = 0, n = methodNames.length; i < n; i++) {
+			if (methodNames[i].equals(methodName) && Arrays.equals(paramTypes, parameterTypes[i])) {
 				return i;
+			}
+		}
 		throw new IllegalArgumentException("Unable to find public method: " + methodName + " " + Arrays.toString(paramTypes));
 	}
 
@@ -91,9 +95,11 @@ public abstract class MethodAccess {
 	 * specified number of arguments.
 	 */
 	public int getIndex(String methodName, int paramsCount) {
-		for (int i = 0, n = methodNames.length; i < n; i++)
-			if (methodNames[i].equals(methodName) && parameterTypes[i].length == paramsCount)
+		for (int i = 0, n = methodNames.length; i < n; i++) {
+			if (methodNames[i].equals(methodName) && parameterTypes[i].length == paramsCount) {
 				return i;
+			}
+		}
 		throw new IllegalArgumentException("Unable to find public method: " + methodName + " with " + paramsCount + " params.");
 	}
 

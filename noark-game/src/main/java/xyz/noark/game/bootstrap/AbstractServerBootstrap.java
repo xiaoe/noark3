@@ -35,16 +35,19 @@ import xyz.noark.log.LogManager;
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractServerBootstrap implements ServerBootstrap {
-	protected NoarkIoc ioc;// IOC容器
+	/** IOC容器 */
+	protected NoarkIoc ioc;
 	protected ModularManager modularManager;
 
-	// 启动服务时，添加一个停机守护线程，用于清理异常情况.
+	/** 启动服务时，添加一个停机守护线程，用于清理异常情况. */
 	public AbstractServerBootstrap() {
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
 	}
 
 	/**
-	 * @return 返回当前服务器名称.
+	 * 返回当前服务器名称.
+	 * 
+	 * @return 服务器名称
 	 */
 	protected abstract String getServerName();
 

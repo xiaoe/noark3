@@ -24,23 +24,23 @@ import xyz.noark.orm.accessor.FieldType;
  * @author 小流氓(176543888@qq.com)
  */
 public class ValueAdaptorManager {
-	private static final EnumMap<FieldType, ValueAdaptor<?>> adaptor = new EnumMap<>(FieldType.class);
+	private static final EnumMap<FieldType, AbstractValueAdaptor<?>> ADAPTOR = new EnumMap<>(FieldType.class);
 
 	static {
-		adaptor.put(FieldType.AsInteger, new IntegerAdaptor());
-		adaptor.put(FieldType.AsLong, new LongAdaptor());
-		adaptor.put(FieldType.AsString, new StringAdaptor());
-		adaptor.put(FieldType.AsAtomicInteger, new AtomicIntegerAdaptor());
-		adaptor.put(FieldType.AsBoolean, new BooleanAdaptor());
-		adaptor.put(FieldType.AsFloat, new FloatAdaptor());
-		adaptor.put(FieldType.AsDouble, new DoubleAdaptor());
-		adaptor.put(FieldType.AsDate, new DateAdaptor());
-		adaptor.put(FieldType.AsJson, new JsonAdaptor());
-		adaptor.put(FieldType.AsLocalDateTime, new LocalDateTimeAdaptor());
-		adaptor.put(FieldType.AsInstant, new InstantAdaptor());
+		ADAPTOR.put(FieldType.AsInteger, new IntegerAdaptor());
+		ADAPTOR.put(FieldType.AsLong, new LongAdaptor());
+		ADAPTOR.put(FieldType.AsString, new StringAdaptor());
+		ADAPTOR.put(FieldType.AsAtomicInteger, new AtomicIntegerAdaptor());
+		ADAPTOR.put(FieldType.AsBoolean, new BooleanAdaptor());
+		ADAPTOR.put(FieldType.AsFloat, new FloatAdaptor());
+		ADAPTOR.put(FieldType.AsDouble, new DoubleAdaptor());
+		ADAPTOR.put(FieldType.AsDate, new DateAdaptor());
+		ADAPTOR.put(FieldType.AsJson, new JsonAdaptor());
+		ADAPTOR.put(FieldType.AsLocalDateTime, new LocalDateTimeAdaptor());
+		ADAPTOR.put(FieldType.AsInstant, new InstantAdaptor());
 	}
 
-	public static ValueAdaptor<?> getValueAdaptor(FieldType type) {
-		return adaptor.getOrDefault(type, UnrealizedAdaptor.getInstance());
+	public static AbstractValueAdaptor<?> getValueAdaptor(FieldType type) {
+		return ADAPTOR.getOrDefault(type, UnrealizedAdaptor.getInstance());
 	}
 }

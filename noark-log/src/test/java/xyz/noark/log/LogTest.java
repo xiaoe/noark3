@@ -16,8 +16,6 @@ package xyz.noark.log;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,12 +31,12 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class LogTest {
-	private final static org.apache.logging.log4j.Logger log4j2 = org.apache.logging.log4j.LogManager.getLogger(LogTest.class);
-	private final static org.slf4j.Logger logback = LoggerFactory.getLogger(LogTest.class);
+	private final static org.apache.logging.log4j.Logger LOG4J2 = org.apache.logging.log4j.LogManager.getLogger(LogTest.class);
+	private final static org.slf4j.Logger LOGBACK = LoggerFactory.getLogger(LogTest.class);
 
 	@Before
 	public void setUp() throws Exception {
-		HashMap<String, String> config = new HashMap<>();
+		HashMap<String, String> config = new HashMap<>(16, 1);
 		config.put("log.console", "false");
 		LogManager.init(config);
 	}
@@ -61,28 +59,7 @@ public class LogTest {
 	@Test
 	public void testBenchmark() throws Exception {
 		benchmark.doSomething("noark log:", () -> logger.error("test={},{},{}", 123, "abc", true));
-		benchmark.doSomething("log4j2:", () -> log4j2.error("test={},{},{}", 123, "abc", true));
-		benchmark.doSomething("logback:", () -> logback.error("test={},{},{}", 123, "abc", true));
-	}
-
-	ExecutorService logicPool = Executors.newFixedThreadPool(8);
-
-	@Test
-	public void testBenchmark2() {
-		for (int i = 0; i < 100; i++) {
-			logicPool.execute(() -> {
-				try {
-					testBenchmark();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-		}
-
-		try {
-			Thread.sleep(100000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		benchmark.doSomething("log4j2:", () -> LOG4J2.error("test={},{},{}", 123, "abc", true));
+		benchmark.doSomething("logback:", () -> LOGBACK.error("test={},{},{}", 123, "abc", true));
 	}
 }

@@ -33,9 +33,26 @@ public interface CacheRepository<T, K extends Serializable> {
 	 */
 	EntityMapping<T> getEntityMapping();
 
+	/**
+	 * 根据实体ID载入实体对象
+	 * 
+	 * @param entityId 实体ID
+	 * @return 实体对象
+	 */
 	T load(K entityId);
 
+	/**
+	 * 载入全部实体对象.
+	 * 
+	 * @return 全部实体对象
+	 */
 	List<T> loadAll();
 
+	/**
+	 * 根据玩家ID载入全部对象.
+	 * 
+	 * @param playerId 玩家ID
+	 * @return 全部实体对象
+	 */
 	List<T> loadAll(Serializable playerId);
 }

@@ -25,14 +25,15 @@ import xyz.noark.protobuf.decoder.ByteArrayDecoder;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class CodedOutputStream implements AutoCloseable {
+public abstract class AbstractCodedOutputStream implements AutoCloseable {
 	private static final int FIXED_32_SIZE = 4;
 	private static final int FIXED_64_SIZE = 8;
-	private static final int MAX_VARINT_SIZE = 10;// 一个Varint128的编码方式最大长度
-	// 默认的字符串编码
+	/** 一个Varint128的编码方式最大长度 */
+	private static final int MAX_VARINT_SIZE = 10;
+	/** 默认的字符串编码 */
 	private static final Charset DEFAULT_STRING_CHARSET = Charset.forName("UTF-8");
 
-	public static CodedOutputStream newInstance() {
+	public static AbstractCodedOutputStream newInstance() {
 		return new ByteArrayDecoder();
 	}
 
@@ -71,7 +72,7 @@ public abstract class CodedOutputStream implements AutoCloseable {
 	 * @param value Bool值.
 	 */
 	public void writeBool(final int tag, final boolean value) {
-		flushIfNotAvailable(MAX_VARINT_SIZE + 1);// 扩容判定
+		flushIfNotAvailable(MAX_VARINT_SIZE + 1);
 		bufferUInt32NoTag(tag);
 		buffer((byte) (value ? 1 : 0));
 	}
@@ -83,7 +84,7 @@ public abstract class CodedOutputStream implements AutoCloseable {
 	 * @param value int32值.
 	 */
 	public void writeInt32(final int tag, final int value) {
-		flushIfNotAvailable(MAX_VARINT_SIZE * 2);// 扩容判定
+		flushIfNotAvailable(MAX_VARINT_SIZE * 2);
 		bufferUInt32NoTag(tag);
 		bufferInt32NoTag(value);
 	}
@@ -550,5 +551,6 @@ public abstract class CodedOutputStream implements AutoCloseable {
 
 	protected abstract void bufferFixed64NoTag(final long value);
 
+	@Override
 	public abstract void close();
 }

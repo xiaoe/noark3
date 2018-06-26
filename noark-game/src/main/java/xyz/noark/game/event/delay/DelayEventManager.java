@@ -33,7 +33,7 @@ import xyz.noark.game.event.EventManager;
  */
 @Service
 public class DelayEventManager implements EventManager {
-	private static final EventMethodManager manager = EventMethodManager.getInstance();
+	private static final EventMethodManager MANAGER = EventMethodManager.getInstance();
 	private final DelayEventThread handler = new DelayEventThread(this);
 
 	@Autowired
@@ -53,7 +53,7 @@ public class DelayEventManager implements EventManager {
 	}
 
 	void notifyListeners(Event event) {
-		List<EventMethodWrapper> handlers = manager.getEventMethodWrappers(event.getClass());
+		List<EventMethodWrapper> handlers = MANAGER.getEventMethodWrappers(event.getClass());
 		if (handlers.isEmpty()) {
 			logger.warn("No subscription event. class={}", event.getClass());
 			return;

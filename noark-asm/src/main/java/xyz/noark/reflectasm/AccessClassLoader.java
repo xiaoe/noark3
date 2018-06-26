@@ -45,8 +45,9 @@ class AccessClassLoader extends ClassLoader {
 			if (selfContextAccessClassLoader == null) {
 				synchronized (accessClassLoaders) { // DCL with volatile
 													// semantics
-					if (selfContextAccessClassLoader == null)
+					if (selfContextAccessClassLoader == null) {
 						selfContextAccessClassLoader = new AccessClassLoader(selfContextParentClassLoader);
+					}
 				}
 			}
 			return selfContextAccessClassLoader;
@@ -56,13 +57,11 @@ class AccessClassLoader extends ClassLoader {
 			WeakReference<AccessClassLoader> ref = accessClassLoaders.get(parent);
 			if (ref != null) {
 				AccessClassLoader accessClassLoader = ref.get();
-				if (accessClassLoader != null)
+				if (accessClassLoader != null) {
 					return accessClassLoader;
-				else
-					accessClassLoaders.remove(parent); // the value has been
-														// GC-reclaimed, but
-														// still not the key
-														// (defensive sanity)
+				} else {
+					accessClassLoaders.remove(parent);
+				}
 			}
 			AccessClassLoader accessClassLoader = new AccessClassLoader(parent);
 			accessClassLoaders.put(parent, new WeakReference<AccessClassLoader>(accessClassLoader));
@@ -84,8 +83,9 @@ class AccessClassLoader extends ClassLoader {
 
 	public static int activeAccessClassLoaders() {
 		int sz = accessClassLoaders.size();
-		if (selfContextAccessClassLoader != null)
+		if (selfContextAccessClassLoader != null) {
 			sz++;
+		}
 		return sz;
 	}
 
@@ -96,8 +96,9 @@ class AccessClassLoader extends ClassLoader {
 	protected synchronized java.lang.Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		// These classes come from the classloader that loaded
 		// AccessClassLoader.
-		if (name.equals(MethodAccess.class.getName()))
+		if (name.equals(MethodAccess.class.getName())) {
 			return MethodAccess.class;
+		}
 		// All other classes come from the classloader that loaded the type we
 		// are accessing.
 		return super.loadClass(name, resolve);
@@ -108,8 +109,9 @@ class AccessClassLoader extends ClassLoader {
 			// Attempt to load the access class in the same loader, which makes
 			// protected and default access members accessible.
 			Method method = ClassLoader.class.getDeclaredMethod("defineClass", new Class[] { String.class, byte[].class, int.class, int.class, ProtectionDomain.class });
-			if (!method.isAccessible())
+			if (!method.isAccessible()) {
 				method.setAccessible(true);
+			}
 			return (Class<?>) method.invoke(getParent(), new Object[] { name, bytes, Integer.valueOf(0), Integer.valueOf(bytes.length), getClass().getProtectionDomain() });
 		} catch (Exception ignored) {}
 		return defineClass(name, bytes, 0, bytes.length, getClass().getProtectionDomain());
@@ -117,8 +119,9 @@ class AccessClassLoader extends ClassLoader {
 
 	private static ClassLoader getParentClassLoader(Class<?> type) {
 		ClassLoader parent = type.getClassLoader();
-		if (parent == null)
+		if (parent == null) {
 			parent = ClassLoader.getSystemClassLoader();
+		}
 		return parent;
 	}
 }

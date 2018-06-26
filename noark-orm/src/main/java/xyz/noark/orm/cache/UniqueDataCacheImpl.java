@@ -42,7 +42,7 @@ import xyz.noark.orm.repository.CacheRepository;
  * @author 小流氓(176543888@qq.com)
  */
 public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractDataCache<T, K> {
-	// 实体Id <==> 一个数据包装器
+	/** 实体Id <==> 一个数据包装器 */
 	private final LoadingCache<K, DataWrapper<T>> caches;
 
 	public UniqueDataCacheImpl(CacheRepository<T, K> repository, long offlineInterval) {

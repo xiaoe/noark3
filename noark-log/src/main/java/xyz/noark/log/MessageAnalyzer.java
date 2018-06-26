@@ -30,7 +30,8 @@ class MessageAnalyzer {
 	// private static final char ESCAPE_CHAR = '\\';
 
 	private ArrayList<Placeholder> caches = new ArrayList<>();
-	private int count = 0;// 占位符个数
+	/** 占位符个数 */
+	private int count = 0;
 
 	MessageAnalyzer(String key) {
 		init(key);
@@ -42,7 +43,8 @@ class MessageAnalyzer {
 		int i = 0;
 		int index = 0;
 		final int len = messagePattern.length();
-		for (; i < len - 1; i++) { // 最后的字符被排除在循环之外
+		/** 最后的字符被排除在循环之外 */
+		for (; i < len - 1; i++) {
 			final char curChar = messagePattern.charAt(i);
 			if (isDelimPair(curChar, messagePattern, i)) {
 
@@ -93,6 +95,12 @@ class MessageAnalyzer {
 	}
 
 	interface Placeholder {
+		/**
+		 * 构建日志内容
+		 * 
+		 * @param sb SB对象
+		 * @param args 参数
+		 */
 		void build(StringBuilder sb, Object[] args);
 	}
 

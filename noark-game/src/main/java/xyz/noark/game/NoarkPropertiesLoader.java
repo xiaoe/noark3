@@ -31,9 +31,9 @@ import xyz.noark.util.StringUtils;
  * @author 小流氓(176543888@qq.com)
  */
 class NoarkPropertiesLoader {
-	private static final String default_properties = "application.properties";
-	private static final String profile_prefix = "application-";
-	private static final String profile_suffix = ".properties";
+	private static final String DEFAULT_PROPERTIES = "application.properties";
+	private static final String PROFILE_PREFIX = "application-";
+	private static final String PROFILE_SUFFIX = ".properties";
 
 	/**
 	 * 加载系统配置文件中的内容.
@@ -45,12 +45,12 @@ class NoarkPropertiesLoader {
 	 */
 	Map<String, String> loadProperties(String profile) {
 		final ClassLoader loader = Noark.class.getClassLoader();
-		HashMap<String, String> result = new HashMap<>();
+		HashMap<String, String> result = new HashMap<>(256, 1);
 
-		loadPorperties(loader, default_properties, result);
+		loadPorperties(loader, DEFAULT_PROPERTIES, result);
 
 		if (StringUtils.isNotEmpty(profile)) {
-			loadPorperties(loader, profile_prefix + profile + profile_suffix, result);
+			loadPorperties(loader, PROFILE_PREFIX + profile + PROFILE_SUFFIX, result);
 		}
 
 		// 表达式引用...

@@ -157,7 +157,6 @@ public class StringUtils {
 		boolean match = false;
 		boolean lastMatch = false;
 		if (separatorChars == null) {
-			// Null separator means use whitespace
 			while (i < len) {
 				if (Character.isWhitespace(str.charAt(i))) {
 					if (match || preserveAllTokens) {
@@ -177,7 +176,6 @@ public class StringUtils {
 				i++;
 			}
 		} else if (separatorChars.length() == 1) {
-			// Optimise 1 character case
 			final char sep = separatorChars.charAt(0);
 			while (i < len) {
 				if (str.charAt(i) == sep) {
@@ -198,7 +196,6 @@ public class StringUtils {
 				i++;
 			}
 		} else {
-			// standard case
 			while (i < len) {
 				if (separatorChars.indexOf(str.charAt(i)) >= 0) {
 					if (match || preserveAllTokens) {
@@ -218,7 +215,8 @@ public class StringUtils {
 				i++;
 			}
 		}
-		if (match || preserveAllTokens && lastMatch) {
+		final boolean flag = preserveAllTokens && lastMatch;
+		if (match || flag) {
 			list.add(str.substring(start, i));
 		}
 		return list.toArray(new String[list.size()]);
@@ -242,8 +240,9 @@ public class StringUtils {
 		for (int i = 0; i < len; i++) {
 			char ch = cs.charAt(i);
 			if (Character.isUpperCase(ch)) {
-				if (i > 0)
+				if (i > 0) {
 					sb.append(c);
+				}
 				sb.append(Character.toLowerCase(ch));
 			} else {
 				sb.append(ch);

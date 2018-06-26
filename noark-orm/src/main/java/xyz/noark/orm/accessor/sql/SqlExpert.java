@@ -25,32 +25,102 @@ import xyz.noark.orm.FieldMapping;
 public interface SqlExpert {
 	/**
 	 * 获取创建表的SQL语句.
+	 * 
+	 * @param em 实体映射对象
+	 * @return SQL语句
 	 */
 	<T> String genCreateTableSql(EntityMapping<T> em);
 
+	/**
+	 * 获取插入的SQL语句.
+	 * 
+	 * @param em 实体映射对象
+	 * @return SQL语句
+	 */
 	<T> String genInsertSql(EntityMapping<T> em);
 
+	/**
+	 * 获取更新的SQL语句.
+	 * 
+	 * @param em 实体映射对象
+	 * @return SQL语句
+	 */
 	<T> String genUpdateSql(EntityMapping<T> em);
 
+	/**
+	 * 以玩家ID的方式去查询SQL语句.
+	 * 
+	 * @param em 实体映射对象
+	 * @return SQL语句
+	 */
 	<T> String genSeleteByPlayerId(EntityMapping<T> em);
 
+	/**
+	 * 获取删除的SQL语句.
+	 * 
+	 * @param em 实体映射对象
+	 * @return SQL语句
+	 */
 	<T> String genDeleteSql(EntityMapping<T> em);
 
+	/**
+	 * 获取查询的SQL语句.
+	 * 
+	 * @param em 实体映射对象
+	 * @return SQL语句
+	 */
 	<T> String genSeleteSql(EntityMapping<T> em);
 
+	/**
+	 * 获取查询全部的SQL语句.
+	 * 
+	 * @param em 实体映射对象
+	 * @return SQL语句
+	 */
 	<T> String genSeleteAllSql(EntityMapping<T> em);
 
-	// 生成带值的一条语句
+	/**
+	 * 生成带值的一条语句
+	 * 
+	 * @param em 实体映射对象
+	 * @param entity 实体类
+	 * @return SQL语句
+	 */
 	<T> String genInsertSql(EntityMapping<T> em, T entity);
 
+	/**
+	 * 生成带值的一条语句
+	 * 
+	 * @param em 实体映射对象
+	 * @param entity 实体类
+	 * @return SQL语句
+	 */
 	<T> String genUpdateSql(EntityMapping<T> em, T entity);
 
+	/**
+	 * 生成带值的一条语句
+	 * 
+	 * @param em 实体映射对象
+	 * @param entity 实体类
+	 * @return SQL语句
+	 */
 	<T> String genDeleteSql(EntityMapping<T> em, T entity);
 
 	/**
 	 * 生成添加表字段的SQL
+	 * 
+	 * @param em 实体映射对象
+	 * @param fm 属性映射对象
+	 * @return SQL语句
 	 */
 	<T> String genAddTableColumnSql(EntityMapping<T> em, FieldMapping fm);
 
+	/**
+	 * 生成带值的一条语句
+	 * 
+	 * @param em 实体映射对象
+	 * @param fm 属性映射对象
+	 * @return SQL语句
+	 */
 	<T> String genUpdateDefaultValueSql(EntityMapping<T> em, FieldMapping fm);
 }

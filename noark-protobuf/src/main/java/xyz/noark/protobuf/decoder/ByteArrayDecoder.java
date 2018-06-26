@@ -13,7 +13,7 @@
  */
 package xyz.noark.protobuf.decoder;
 
-import xyz.noark.protobuf.CodedOutputStream;
+import xyz.noark.protobuf.AbstractCodedOutputStream;
 
 /**
  * 字节数组实现的解码器.
@@ -21,7 +21,7 @@ import xyz.noark.protobuf.CodedOutputStream;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class ByteArrayDecoder extends CodedOutputStream {
+public class ByteArrayDecoder extends AbstractCodedOutputStream {
 	private byte[] buffer;
 	private int limit;
 	private int position;
@@ -69,6 +69,7 @@ public class ByteArrayDecoder extends CodedOutputStream {
 	 * This method does not perform bounds checking on the array. Checking array
 	 * bounds is the responsibility of the caller.
 	 */
+	@Override
 	protected void buffer(byte value) {
 		buffer[position++] = value;
 	}
@@ -77,6 +78,7 @@ public class ByteArrayDecoder extends CodedOutputStream {
 	 * This method does not perform bounds checking on the array. Checking array
 	 * bounds is the responsibility of the caller.
 	 */
+	@Override
 	protected void bufferInt32NoTag(final int value) {
 		if (value >= 0) {
 			bufferUInt32NoTag(value);
@@ -90,6 +92,7 @@ public class ByteArrayDecoder extends CodedOutputStream {
 	 * This method does not perform bounds checking on the array. Checking array
 	 * bounds is the responsibility of the caller.
 	 */
+	@Override
 	protected void bufferUInt32NoTag(int value) {
 		while (true) {
 			if ((value & ~0x7F) == 0) {
@@ -106,6 +109,7 @@ public class ByteArrayDecoder extends CodedOutputStream {
 	 * This method does not perform bounds checking on the array. Checking array
 	 * bounds is the responsibility of the caller.
 	 */
+	@Override
 	protected final void bufferUInt64NoTag(long value) {
 		while (true) {
 			if ((value & ~0x7FL) == 0) {
@@ -122,6 +126,7 @@ public class ByteArrayDecoder extends CodedOutputStream {
 	 * This method does not perform bounds checking on the array. Checking array
 	 * bounds is the responsibility of the caller.
 	 */
+	@Override
 	protected final void bufferFixed32NoTag(int value) {
 		buffer[position++] = (byte) (value & 0xFF);
 		buffer[position++] = (byte) ((value >> 8) & 0xFF);
@@ -133,6 +138,7 @@ public class ByteArrayDecoder extends CodedOutputStream {
 	 * This method does not perform bounds checking on the array. Checking array
 	 * bounds is the responsibility of the caller.
 	 */
+	@Override
 	protected final void bufferFixed64NoTag(long value) {
 		buffer[position++] = (byte) (value & 0xFF);
 		buffer[position++] = (byte) ((value >> 8) & 0xFF);

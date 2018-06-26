@@ -14,6 +14,7 @@
 package xyz.noark.orm.accessor.sql;
 
 import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.FieldMapping;
 
 /**
@@ -36,27 +37,32 @@ public abstract class AbstractSqlExpert implements SqlExpert {
 	 */
 	protected String evalFieldType(FieldMapping fm) {
 		switch (fm.getType()) {
-		case AsBoolean:// Boolean直接写死啦，不可能为其他值的.
+		// Boolean直接写死啦，不可能为其他值的.
+		case AsBoolean:
 			return "BIT(1)";
 
-		case AsString:// 字符串类型的，过长需要换类型
+		// 字符串类型的，过长需要换类型
+		case AsString:
 		case AsJson:
-			if (fm.getWidth() >= 65535) {
+			if (fm.getWidth() >= DataConstant.COLUMN_MAX_WIDTH) {
 				return "TEXT";
 			}
 			return "VARCHAR(" + fm.getWidth() + ")";
 
+		// 日期类型的，三种，其他用不着就不实现啦.
 		case AsInstant:
 		case AsLocalDateTime:
-		case AsDate:// 日期类型的，三种，其他用不着就不实现啦.
+		case AsDate:
 			return "DATETIME";
 
-		case AsInteger:// 数字类型的就写成通用的，Mysql的由子类重写
+		// 数字类型的就写成通用的，Mysql的由子类重写
+		case AsInteger:
 		case AsLong:
 		case AsAtomicInteger:
 			// 用户自定义了宽度
-			if (fm.getWidth() > 0)
+			if (fm.getWidth() > 0) {
 				return "INT(" + fm.getWidth() + ")";
+			}
 			// 用数据库的默认宽度
 			return "INT";
 
@@ -67,8 +73,9 @@ public abstract class AbstractSqlExpert implements SqlExpert {
 				return "NUMERIC(" + fm.getWidth() + "," + fm.getPrecision() + ")";
 			}
 			// 用默认精度
-			if (fm.isDouble())
+			if (fm.isDouble()) {
 				return "NUMERIC(15,10)";
+			}
 			return "FLOAT";
 		case AsBlob:
 			return "BLOB";

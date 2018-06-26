@@ -13,6 +13,7 @@
  */
 package xyz.noark.orm.accessor.sql.mysql;
 
+import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.FieldType;
@@ -62,7 +63,8 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 						sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
 						break;
 					default:
-						if (fm.getWidth() < 65535) {// 超过这个值当Text啦，Text是不可以有默认值的.
+						// 超过这个值当Text啦，Text是不可以有默认值的.
+						if (fm.getWidth() < 65535) {
 							sb.append(" DEFAULT '").append(fm.getDefaultValue()).append("'");
 						}
 						break;
@@ -107,20 +109,24 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	protected String evalFieldType(FieldMapping fm) {
 		switch (fm.getType()) {
 
-		case AsInteger:// 游戏嘛，数字就是int(11)不要想多啦，简单直接明了
+		// 游戏嘛，数字就是int(11)不要想多啦，简单直接明了
+		case AsInteger:
 		case AsAtomicInteger:
 			return "INT(11)";
 
-		case AsLong:// 龙哥说20就20吧~~~
+		// 20就20吧~~~
+		case AsLong:
 			return "BIGINT(20)";
 
-		case AsDouble:// 有小数的就直接写上他写的参数
+		// 有小数的就直接写上他写的参数
+		case AsDouble:
 			return "DOUBLE(" + fm.getPrecision() + "," + fm.getScale() + ")";
 
 		case AsFloat:
 			return "FLOAT(" + fm.getPrecision() + "," + fm.getScale() + ")";
 
-		default:// 其它的参照默认字段规则 ...
+		// 其它的参照默认字段规则 ...
+		default:
 			return super.evalFieldType(fm);
 		}
 	}
@@ -299,7 +305,8 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 				sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
 				break;
 			default:
-				if (fm.getWidth() < 65535) {// 超过这个值当Text啦，Text是不可以有默认值的.
+				// 超过这个值当Text啦，Text是不可以有默认值的.
+				if (fm.getWidth() < DataConstant.COLUMN_MAX_WIDTH) {
 					sb.append(" DEFAULT '").append(fm.getDefaultValue()).append("'");
 				}
 				break;

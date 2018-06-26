@@ -22,7 +22,9 @@ package xyz.noark.protobuf;
 public interface Packet {
 
 	/**
-	 * @return 获取当前封包编号.
+	 * 获取当前封包编号.
+	 * 
+	 * @return 封包编号
 	 */
 	public int getOpcode();
 

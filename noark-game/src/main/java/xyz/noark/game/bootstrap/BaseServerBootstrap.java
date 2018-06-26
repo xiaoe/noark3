@@ -30,7 +30,7 @@ import xyz.noark.orm.DataCheckAndInit;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class DefualtServerBootstrap extends AbstractServerBootstrap {
+public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 
 	private NettyServer nettyServer;
 	private Optional<Modular> dataModular;
@@ -46,7 +46,7 @@ public abstract class DefualtServerBootstrap extends AbstractServerBootstrap {
 		ioc.get(ReloadManager.class).reload(true);
 
 		// 3、初始化方法...
-		ioc.invokeCustomAnnotationMethod(PostConstruct.class);// 数据库初始化完，执行初始化注解
+		ioc.invokeCustomAnnotationMethod(PostConstruct.class);
 
 		// 4、延迟事件动起来.
 		eventModular = modularManager.getModular("EventModular");

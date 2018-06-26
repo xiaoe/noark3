@@ -33,8 +33,7 @@ import xyz.noark.core.network.PacketCodecHolder;
 public class NettySession extends AbstractSession {
 	private final Channel channel;
 	private Serializable playerId;
-
-	// 是否为websocket链接.
+	/** 是否为websocket链接. */
 	private boolean websocket = false;
 
 	public NettySession(Channel channel) {

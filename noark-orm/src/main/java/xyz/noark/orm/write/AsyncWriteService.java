@@ -26,12 +26,36 @@ import xyz.noark.orm.EntityMapping;
  */
 public interface AsyncWriteService {
 
+	/**
+	 * 插入一个实体对象.
+	 * 
+	 * @param em 实体映射对象
+	 * @param entity 实体对象
+	 */
 	public <T> void insert(final EntityMapping<T> em, final T entity);
 
+	/**
+	 * 删除一个实体对象.
+	 * 
+	 * @param em 实体映射对象
+	 * @param entity 实体对象
+	 */
 	public <T> void delete(final EntityMapping<T> em, final T entity);
 
+	/**
+	 * 删除一批实体对象.
+	 * 
+	 * @param em 实体映射对象
+	 * @param result 实体对象列表
+	 */
 	public <T> void deleteAll(final EntityMapping<T> em, List<T> result);
 
+	/**
+	 * 更新一个实体对象.
+	 * 
+	 * @param em 实体映射对象
+	 * @param entity 实体对象
+	 */
 	public <T> void update(final EntityMapping<T> em, final T entity);
 
 	/**
@@ -41,12 +65,23 @@ public interface AsyncWriteService {
 	 */
 	public void syncFlushAll();
 
+	/**
+	 * 停机存档
+	 */
 	public void shutdown();
 
 	/**
 	 * 异步存储，由存储系统保存.
+	 * 
+	 * @param playerId 玩家ID
 	 */
 	public void asyncFlushByPlayerId(Serializable playerId);
 
+	/**
+	 * 初始化存储系统
+	 * 
+	 * @param saveInterval 定时保存间隔
+	 * @param offlineInterval 定时清理缓存
+	 */
 	public void init(int saveInterval, int offlineInterval);
 }

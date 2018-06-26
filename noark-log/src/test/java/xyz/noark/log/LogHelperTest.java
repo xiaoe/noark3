@@ -31,7 +31,7 @@ public class LogHelperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		HashMap<String, String> config = new HashMap<>();
+		HashMap<String, String> config = new HashMap<>(16, 1);
 		LogManager.init(config);
 	}
 

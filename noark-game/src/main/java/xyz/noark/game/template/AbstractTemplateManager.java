@@ -21,7 +21,7 @@ import xyz.noark.core.annotation.Autowired;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class TemplateManager {
+public abstract class AbstractTemplateManager {
 
 	@Autowired
 	protected TemplateLoader templateLoader;

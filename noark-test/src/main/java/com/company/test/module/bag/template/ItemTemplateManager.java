@@ -16,7 +16,7 @@ package com.company.test.module.bag.template;
 import java.util.Map;
 
 import xyz.noark.core.annotation.Service;
-import xyz.noark.game.template.TemplateManager;
+import xyz.noark.game.template.AbstractTemplateManager;
 
 /**
  * 道具模板管理类.
@@ -25,7 +25,7 @@ import xyz.noark.game.template.TemplateManager;
  * @author 小流氓(176543888@qq.com)
  */
 @Service
-public class ItemTemplateManager extends TemplateManager {
+public class ItemTemplateManager extends AbstractTemplateManager {
 
 	private Map<String, ItemTemplate> itemTemplates;
 

@@ -24,7 +24,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-class LongAdaptor extends ValueAdaptor<Long> {
+class LongAdaptor extends AbstractValueAdaptor<Long> {
 
 	@Override
 	protected void toPreparedStatement(PreparedStatementProxy pstmt, Long value, int parameterIndex) throws Exception {

@@ -41,11 +41,11 @@ import xyz.noark.util.StringUtils;
  */
 public class AnnotationEntityMaker {
 
-	private static final List<Class<?>> annotations = new ArrayList<>();
+	private static final List<Class<?>> ANNOTATIONS = new ArrayList<>();
 	static {
-		annotations.add(Column.class);
-		annotations.add(Id.class);
-		annotations.add(PlayerId.class);
+		ANNOTATIONS.add(Column.class);
+		ANNOTATIONS.add(Id.class);
+		ANNOTATIONS.add(PlayerId.class);
 	}
 
 	public <T> EntityMapping<T> make(Class<T> klass) {
@@ -53,10 +53,10 @@ public class AnnotationEntityMaker {
 		if (!klass.isAnnotationPresent(Entity.class)) {
 			throw new NoEntityException(klass.getName(), "没有@Entity注解标识 ≡ (^(OO)^) ≡");
 		}
-		return _makeEntity(klass);
+		return makeEntity(klass);
 	}
 
-	private <T> EntityMapping<T> _makeEntity(Class<T> klass) {
+	private <T> EntityMapping<T> makeEntity(Class<T> klass) {
 		EntityMapping<T> em = new EntityMapping<>(klass);
 
 		// 如果没有写TableName 默认为类的简单名称由驼峰式命名变成分割符分隔单词
@@ -67,7 +67,7 @@ public class AnnotationEntityMaker {
 		}
 
 		// 解析属性
-		Field[] fields = FieldUtils.scanAllField(klass, annotations);
+		Field[] fields = FieldUtils.scanAllField(klass, ANNOTATIONS);
 		if (fields.length <= 0) {
 			// 一个表没有属性，还ORM个蛋蛋~~
 			throw new NoEntityException(klass.getName(), "没有可映射的属性 ≡ (^(OO)^) ≡");
@@ -75,7 +75,7 @@ public class AnnotationEntityMaker {
 
 		ArrayList<FieldMapping> fieldInfo = new ArrayList<>(fields.length);
 		for (Field field : fields) {
-			FieldMapping fm = _makeFieldMapping(field, em.getMethodAccess());
+			FieldMapping fm = makeFieldMapping(field, em.getMethodAccess());
 			if (fm.isPrimaryId()) {
 				em.setPrimaryId(fm);
 			}
@@ -88,7 +88,7 @@ public class AnnotationEntityMaker {
 		return em;
 	}
 
-	private FieldMapping _makeFieldMapping(Field field, MethodAccess methodAccess) {
+	private FieldMapping makeFieldMapping(Field field, MethodAccess methodAccess) {
 		FieldMapping fm = new FieldMapping(field, methodAccess);
 		// 需要解析的解析，有些不要用动的还放注解里面
 		if (fm.getColumn() == null || StringUtils.isEmpty(fm.getColumn().name())) {

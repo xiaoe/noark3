@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -36,6 +36,7 @@ import com.github.benmanes.caffeine.cache.RemovalListener;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.core.thread.NamedThreadFactory;
+import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.accessor.DataAccessor;
 import xyz.noark.orm.write.AsyncWriteService;
@@ -50,10 +51,9 @@ import xyz.noark.orm.write.OperateType;
 public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	@Autowired
 	private DataAccessor dataAccessor;
-
-	// 这个定时任务，有空就处理一下数据保存和缓存清理功能
-	private final static ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(4, new NamedThreadFactory("async-write-data"));
-	// 异步回写容器缓存
+	/** 这个定时任务，有空就处理一下数据保存和缓存清理功能 */
+	private final static ScheduledExecutorService SCHEDULED_EXECUTOR = new ScheduledThreadPoolExecutor(4, new NamedThreadFactory("async-write-data"));
+	/** 异步回写容器缓存 */
 	private LoadingCache<Serializable, AsyncWriteContainer> containers;
 
 	@Override
@@ -76,7 +76,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 		};
 
 		this.containers = Caffeine.newBuilder().expireAfterAccess(offlineInterval, TimeUnit.SECONDS).removalListener(listener).build(loader);
-		scheduledExecutor.scheduleAtFixedRate(new Runnable() {
+		SCHEDULED_EXECUTOR.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				containers.cleanUp();
@@ -98,7 +98,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 		if (em.getPlayerId() != null) {
 			return em.getPlayerIdValue(entity);
 		}
-		return DefaultId.instance;
+		return DefaultId.INSTANCE;
 	}
 
 	/**
@@ -159,16 +159,16 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	@Override
 	public void shutdown() {
 		logger.info("开始通知数据保存任务线程池关闭.");
-		scheduledExecutor.shutdown();
+		SCHEDULED_EXECUTOR.shutdown();
 		try {
 			// 尝试等待10分钟回写操作，10分钟都没写完就全停掉吧，不写了
-			if (!scheduledExecutor.awaitTermination(10, TimeUnit.MINUTES)) {
-				scheduledExecutor.shutdownNow();
+			if (!SCHEDULED_EXECUTOR.awaitTermination(DataConstant.SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
+				SCHEDULED_EXECUTOR.shutdownNow();
 			}
 			logger.info("数据保存任务线程池已全部回写完，关闭成功.");
 		} catch (InterruptedException ie) {
 			logger.error("数据保存任务线程池停机时发生异常.", ie);
-			scheduledExecutor.shutdownNow();
+			SCHEDULED_EXECUTOR.shutdownNow();
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -180,20 +180,18 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	 */
 	private class AsyncWriteContainer implements Runnable {
 		private final Serializable roleId;
-		// 当前已修改过的数据
+		/** 当前已修改过的数据 */
 		private Map<String, EntityOperate<?>> entityOperates = new HashMap<>();
-		// 最终需要保存的数据
+		/** 最终需要保存的数据 */
 		private Map<String, EntityOperate<?>> flushOperates;
-
 		private final ReentrantLock dataUpdateLock = new ReentrantLock();
 		private final ReentrantLock dataFlushLock = new ReentrantLock();
-
-		// 记录异步操作的结果，以便有需求时，操纵这个结果
+		/** 记录异步操作的结果，以便有需求时，操纵这个结果 */
 		private final ScheduledFuture<?> future;
 
 		private AsyncWriteContainer(Serializable roleId, int saveInterval) {
 			this.roleId = roleId;
-			this.future = scheduledExecutor.scheduleAtFixedRate(this, saveInterval, saveInterval, TimeUnit.SECONDS);
+			this.future = SCHEDULED_EXECUTOR.scheduleAtFixedRate(this, saveInterval, saveInterval, TimeUnit.SECONDS);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -258,7 +256,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 			dataUpdateLock.lock();
 			try {
 				updateData = entityOperates;
-				this.entityOperates = new HashMap<>();
+				this.entityOperates = new HashMap<>(32);
 			} finally {
 				dataUpdateLock.unlock();
 			}
@@ -342,7 +340,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	public void asyncFlushByPlayerId(Serializable roleId) {
 		AsyncWriteContainer container = containers.get(roleId);
 		if (container != null) {
-			scheduledExecutor.submit(container);
+			SCHEDULED_EXECUTOR.submit(container);
 		}
 	}
 }

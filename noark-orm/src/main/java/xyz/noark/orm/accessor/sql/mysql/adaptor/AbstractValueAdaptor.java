@@ -25,14 +25,22 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class ValueAdaptor<T> {
+public abstract class AbstractValueAdaptor<T> {
 
 	@SuppressWarnings("unchecked")
 	public void parameterToPreparedStatement(EntityMapping<?> em, FieldMapping fm, PreparedStatementProxy pstmt, Object entity, int index) throws Exception {
-		T value = (T) em.getMethodAccess().invoke(entity, fm.getGetMethodIndex());// 取出参数值
+		T value = (T) em.getMethodAccess().invoke(entity, fm.getGetMethodIndex());
 		this.toPreparedStatement(pstmt, value, index);
 	}
 
+	/**
+	 * 属性转化到PreparedStatement中
+	 * 
+	 * @param pstmt PreparedStatement代理对象
+	 * @param value 值
+	 * @param parameterIndex 参数位置
+	 * @throws Exception 可能出现SQL异常
+	 */
 	protected abstract void toPreparedStatement(PreparedStatementProxy pstmt, T value, final int parameterIndex) throws Exception;
 
 	public void resultSetToParameter(EntityMapping<?> em, FieldMapping fm, ResultSet rs, Object result) throws Exception {
@@ -40,5 +48,13 @@ public abstract class ValueAdaptor<T> {
 		em.getMethodAccess().invoke(result, fm.getSetMethodIndex(), value);
 	}
 
+	/**
+	 * ResultSet中取出值
+	 * 
+	 * @param fm 属性映射对象
+	 * @param rs 结果集
+	 * @return 返回属性值
+	 * @throws Exception 可能出现SQL异常
+	 */
 	protected abstract Object toParameter(FieldMapping fm, ResultSet rs) throws Exception;
 }

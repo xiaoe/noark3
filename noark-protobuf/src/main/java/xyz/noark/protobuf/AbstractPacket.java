@@ -19,22 +19,22 @@ package xyz.noark.protobuf;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractPacket implements Packet, ProtobufSerializable {
+public abstract class AbstractPacket implements Packet, ProtobufSerializable, AutoCloseable {
 
-	private static final ThreadLocal<CodedOutputStream> outputs = new ThreadLocal<>();
+	private static final ThreadLocal<AbstractCodedOutputStream> OUTPUTS = new ThreadLocal<>();
 
-	private CodedOutputStream getCodedOutputStream() {
-		CodedOutputStream output = outputs.get();
+	private AbstractCodedOutputStream getCodedOutputStream() {
+		AbstractCodedOutputStream output = OUTPUTS.get();
 		if (output == null) {
-			output = CodedOutputStream.newInstance();
-			outputs.set(output);
+			output = AbstractCodedOutputStream.newInstance();
+			OUTPUTS.set(output);
 		}
 		return output;
 	}
 
 	@Override
 	public byte[] toByteArray() {
-		try (CodedOutputStream output = this.getCodedOutputStream()) {
+		try (AbstractCodedOutputStream output = this.getCodedOutputStream()) {
 			this.writeTo(output);
 			return output.getByteArray();
 		}
@@ -43,5 +43,10 @@ public abstract class AbstractPacket implements Packet, ProtobufSerializable {
 	@Override
 	public void parseFrom(byte[] byteArray) {
 		this.readFrom(new CodedInputStream(byteArray));
+	}
+
+	@Override
+	public void close() throws Exception {
+		OUTPUTS.remove();
 	}
 }

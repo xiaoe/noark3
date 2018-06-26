@@ -20,8 +20,7 @@ package xyz.noark.log;
  * @author 小流氓(176543888@qq.com)
  */
 class LogExecutor implements Runnable {
-
-	private static final LogFileWriter logfile = new LogFileWriter();
+	private static final LogFileWriter LOGFILE = new LogFileWriter();
 	private Message message;
 
 	LogExecutor(Message message) {
@@ -45,7 +44,7 @@ class LogExecutor implements Runnable {
 				}
 			}
 
-			logfile.writer(message.getDate(), text);
+			LOGFILE.writer(message.getDate(), text);
 		} catch (Exception e) {
 			// logger.error("noark logger in exception.", e);
 		}

@@ -45,7 +45,7 @@ class NoarkInitializer {
 		ClassUtils.newInstance(klass).start();
 	}
 
-	// 根据启动参数分析加载相应的配置文件...
+	/** 根据启动参数分析加载相应的配置文件 */
 	private Map<String, String> loadProperties(String... args) {
 		// --noark.profiles.active=dev
 		String profiles = null;

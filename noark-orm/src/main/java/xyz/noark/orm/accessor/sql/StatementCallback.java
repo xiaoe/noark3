@@ -23,5 +23,13 @@ import java.sql.Statement;
  * @author 小流氓(176543888@qq.com)
  */
 public interface StatementCallback<T> {
+
+	/**
+	 * 获取Statement后的逻辑处理.
+	 * 
+	 * @param stmt Statement对象
+	 * @return 逻辑处理结果
+	 * @throws SQLException 处理过程可能会出现SQL异常
+	 */
 	T doInStatement(Statement stmt) throws SQLException;
 }

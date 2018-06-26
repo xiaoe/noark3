@@ -26,6 +26,7 @@ import javax.sql.DataSource;
 
 import xyz.noark.core.exception.DataAccessException;
 import xyz.noark.core.exception.DataException;
+import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.AbstractDataAccessor;
@@ -36,14 +37,17 @@ import xyz.noark.orm.accessor.AbstractDataAccessor;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class SqlDataAccessor extends AbstractDataAccessor {
+public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	protected final SqlExpert expert;
 	protected final DataSource dataSource;
-	protected boolean statementExecutableSqlLogEnable = false;// 是否输出执行SQL日志
-	protected boolean statementParameterSetLogEnable = false;// 是否输出执行SQL的参数日志(上一个必需要true)
-	protected int slowQuerySqlMillis = 0;// 慢查询时间阀值(单位：毫秒),如果为0则不监控
+	/** 是否输出执行SQL日志 */
+	protected boolean statementExecutableSqlLogEnable = false;
+	/** 是否输出执行SQL的参数日志(上一个必需要true) */
+	protected boolean statementParameterSetLogEnable = false;
+	/** 慢查询时间阀值(单位：毫秒),如果为0则不监控 */
+	protected int slowQuerySqlMillis = 0;
 
-	public SqlDataAccessor(SqlExpert expert, DataSource dataSource) {
+	public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {
 		this.expert = expert;
 		this.dataSource = dataSource;
 	}
@@ -94,7 +98,8 @@ public abstract class SqlDataAccessor extends AbstractDataAccessor {
 	}
 
 	private void logExecutableSql(PreparedStatementProxy statement, String sql, long startTime) {
-		if (!statementExecutableSqlLogEnable) {// 不输出，直接忽略所有.
+		// 不输出，直接忽略所有.
+		if (!statementExecutableSqlLogEnable) {
 			return;
 		}
 
@@ -201,10 +206,10 @@ public abstract class SqlDataAccessor extends AbstractDataAccessor {
 		});
 	}
 
-	// 如果是Text智能修补一下默认值.
+	/** 如果是Text智能修补一下默认值 */
 	private <T> void tryRepairTextDefaultValue(final EntityMapping<T> em, final FieldMapping fm) {
 		// 修正Text字段的默认值.
-		if (fm.getWidth() >= 65535 && fm.hasDefaultValue()) {
+		if (fm.getWidth() >= DataConstant.COLUMN_MAX_WIDTH && fm.hasDefaultValue()) {
 			final String sql = expert.genUpdateDefaultValueSql(em, fm);
 			logger.info("实体类[{}]中的字段[{}]不支持默认值，准备智能修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
 			this.execute(new StatementCallback<Void>() {
@@ -217,7 +222,7 @@ public abstract class SqlDataAccessor extends AbstractDataAccessor {
 		}
 	}
 
-	// 自动修补表结构...
+	/** 自动修补表结构 */
 	private <T> void autoUpdateTable(final EntityMapping<T> em, final FieldMapping fm) {
 		final String sql = expert.genAddTableColumnSql(em, fm);
 		logger.info("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);

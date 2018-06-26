@@ -38,11 +38,7 @@ public class ByteArrayUtils {
 	 * @return byte数组
 	 */
 	public static byte[] toByteArray(int num) {
-		return new byte[] { //
-				(byte) ((num >> 24) & 0xFF) //
-				, (byte) ((num >> 16) & 0xFF) //
-				, (byte) ((num >> 8) & 0xFF) //
-				, (byte) (num & 0xFF) };
+		return new byte[] { (byte) ((num >> 24) & 0xFF), (byte) ((num >> 16) & 0xFF), (byte) ((num >> 8) & 0xFF), (byte) (num & 0xFF) };
 	}
 
 	/**
@@ -52,9 +48,6 @@ public class ByteArrayUtils {
 	 * @return int类型的数字
 	 */
 	public static int toInt(byte[] bytes) {
-		return bytes[3] & 0xFF //
-				| (bytes[2] & 0xFF) << 8 //
-				| (bytes[1] & 0xFF) << 16//
-				| (bytes[0] & 0xFF) << 24;
+		return bytes[3] & 0xFF | (bytes[2] & 0xFF) << 8 | (bytes[1] & 0xFF) << 16 | (bytes[0] & 0xFF) << 24;
 	}
 }

@@ -11,55 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.codec;
-
-import xyz.noark.network.NetworkPacket;
+package xyz.noark.orm;
 
 /**
- * 抽象的封包.
+ * 数据存储常理类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractPacket implements NetworkPacket {
-	private Integer opcode;
-	private byte[] bytes;
-	/** 自增校验位 */
-	private int incode;
-	/** 封包CRC16 */
-	private int checksum;
+public final class DataConstant {
+	/**
+	 * 字段最大宽度，正常用在字符串上，超时此值时转化为Text类型
+	 */
+	public static final int COLUMN_MAX_WIDTH = 65535;
 
-	@Override
-	public Integer getOpcode() {
-		return opcode;
-	}
-
-	@Override
-	public byte[] getBytes() {
-		return bytes;
-	}
-
-	public void setBytes(byte[] bytes) {
-		this.bytes = bytes;
-	}
-
-	public int getIncode() {
-		return incode;
-	}
-
-	public void setIncode(int incode) {
-		this.incode = incode;
-	}
-
-	public int getChecksum() {
-		return checksum;
-	}
-
-	public void setChecksum(int checksum) {
-		this.checksum = checksum;
-	}
-
-	public void setOpcode(Integer opcode) {
-		this.opcode = opcode;
-	}
+	/**
+	 * 停止服务时存储数据最大等待时间，单位：分钟
+	 */
+	public static final int SHUTDOWN_MAX_TIME = 10;
+	
 }
