@@ -15,7 +15,7 @@ package xyz.noark.core.thread.command;
 
 import java.io.Serializable;
 
-import xyz.noark.core.ioc.wrap.method.ControllerMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 
 /**
  * 玩家线程处理的指令.
@@ -26,7 +26,7 @@ import xyz.noark.core.ioc.wrap.method.ControllerMethodWrapper;
 public class PlayerThreadCommand extends AbstractThreadCommand {
 	private final Serializable playerId;
 
-	public PlayerThreadCommand(Serializable playerId, ControllerMethodWrapper method, Object... args) {
+	public PlayerThreadCommand(Serializable playerId, AbstractControllerMethodWrapper method, Object... args) {
 		super(method, args);
 		this.playerId = playerId;
 	}

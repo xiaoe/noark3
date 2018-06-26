@@ -36,7 +36,7 @@ import xyz.noark.core.ioc.wrap.MethodWrapper;
  * @author 小流氓(176543888@qq.com)
  */
 public class NoarkIoc implements Ioc {
-	// 容器中所有托管的Bean对象.
+	/** 容器中所有托管的Bean对象. */
 	private final ConcurrentHashMap<Class<?>, Object> singletons = new ConcurrentHashMap<>(512);;
 
 	private final ConcurrentHashMap<Class<? extends Annotation>, List<MethodWrapper>> customMethods = new ConcurrentHashMap<>();
@@ -74,7 +74,7 @@ public class NoarkIoc implements Ioc {
 		this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(DefaultBeanDefinition::getBeanClass, v -> v.getSingle())));
 	}
 
-	// 初始化和依赖注入的关系
+	/** 初始化和依赖注入的关系 */
 	private void finishBeanInitialization(IocLoader loader, IocMaking making, Collection<? extends BeanDefinition> beans) {
 		beans.forEach(bean -> bean.injection(making));
 	}

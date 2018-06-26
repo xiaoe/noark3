@@ -35,7 +35,9 @@ public interface ThreadCommand {
 	String code();
 
 	/**
-	 * @return 是否输入执行时间日志.
+	 * 是否输入执行时间日志.
+	 * 
+	 * @return 如果为true则输出日志，false为不输出
 	 */
 	boolean isPrintLog();
 }

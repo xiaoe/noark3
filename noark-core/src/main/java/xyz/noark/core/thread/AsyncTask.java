@@ -22,7 +22,8 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓(176543888@qq.com)
  */
 public class AsyncTask implements Runnable {
-	protected final long createTime = System.nanoTime();// 任务创建时间
+	/** 任务创建时间 */
+	protected final long createTime = System.nanoTime();
 	protected final TaskQueue taskQueue;
 	private final ThreadCommand command;
 
@@ -33,14 +34,16 @@ public class AsyncTask implements Runnable {
 
 	@Override
 	public void run() {
-		long startExecuteTime = System.nanoTime();// 开始执行的时间
+		// 开始执行的时间
+		long startExecuteTime = System.nanoTime();
 		try {
 			command.exec();
 		} catch (Exception e) {
 			logger.error("async task exception.", e);
 		} finally {
 			if (command.isPrintLog()) {
-				long endExecuteTime = System.nanoTime();// 执行结束的时间
+				// 执行结束的时间
+				long endExecuteTime = System.nanoTime();
 				logger.info("handle {},delay={} ms,exe={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
 			}
 

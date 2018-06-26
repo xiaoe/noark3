@@ -48,17 +48,18 @@ import xyz.noark.util.MethodUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class DefaultBeanDefinition implements BeanDefinition {
-	private static final Set<Class<?>> ignoreAnnotationByMethods = new HashSet<>();
+	private static final Set<Class<?>> IGNORE_ANNOTATION_BY_METHODS = new HashSet<>();
 	static {
-		ignoreAnnotationByMethods.add(Override.class);
-		ignoreAnnotationByMethods.add(Deprecated.class);
-		ignoreAnnotationByMethods.add(SuppressWarnings.class);
+		IGNORE_ANNOTATION_BY_METHODS.add(Override.class);
+		IGNORE_ANNOTATION_BY_METHODS.add(Deprecated.class);
+		IGNORE_ANNOTATION_BY_METHODS.add(SuppressWarnings.class);
 	}
-
-	protected final Object single;// 缓存那个单例对象
+	/** 缓存那个单例对象 */
+	protected final Object single;
 	private final Class<?> beanClass;
 	protected final MethodAccess methodAccess;
-	private final ArrayList<FieldDefinition> autowiredFields = new ArrayList<>();// 所有需要注入的属性
+	/** 所有需要注入的属性 */
+	private final ArrayList<FieldDefinition> autowiredFields = new ArrayList<>();
 	protected final HashMap<Class<? extends Annotation>, List<MethodDefinition>> customMethods = new HashMap<>();
 
 	public DefaultBeanDefinition(Class<?> klass) {
@@ -108,7 +109,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 				for (Annotation annotation : annotations) {
 					final Class<? extends Annotation> annotationType = annotation.annotationType();
 					// 忽略一些系统警告类的注解
-					if (ignoreAnnotationByMethods.contains(annotationType)) {
+					if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
 						continue;
 					}
 					this.analysisMthodByAnnotation(annotationType, annotation, method);
@@ -128,7 +129,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		FieldUtils.getAllField(beanClass).stream().filter(v -> v.isAnnotationPresent(Autowired.class) || v.isAnnotationPresent(Value.class)).forEach(v -> analysisAutowiredOrValue(v));
 	}
 
-	// 分析注入的类型
+	/** 分析注入的类型 */
 	private void analysisAutowiredOrValue(Field field) {
 		final Class<?> fieldClass = field.getType();
 

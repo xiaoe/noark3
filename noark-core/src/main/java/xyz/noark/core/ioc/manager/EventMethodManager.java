@@ -31,12 +31,12 @@ import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 public class EventMethodManager {
 	private final Map<Class<? extends Event>, List<EventMethodWrapper>> handlers = new ConcurrentHashMap<>();
 
-	private static final EventMethodManager instance = new EventMethodManager();
+	private static final EventMethodManager INSTANCE = new EventMethodManager();
 
 	private EventMethodManager() {}
 
 	public static EventMethodManager getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	/**

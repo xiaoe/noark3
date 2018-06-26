@@ -34,12 +34,12 @@ import xyz.noark.reflectasm.MethodAccess;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class PacketMethodWrapper extends ControllerMethodWrapper {
+public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private final Integer opcode;
 	private final boolean inner;
 	private final ArrayList<ParamWrapper> parameters;
 
-	// 当前方法是否已废弃使用.
+	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
 
 	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, Controller controller) {
@@ -52,7 +52,7 @@ public class PacketMethodWrapper extends ControllerMethodWrapper {
 		Arrays.stream(md.getParameters()).forEach(v -> buildParamWrapper(v));
 	}
 
-	// 构建参数
+	/** 构建参数 */
 	private void buildParamWrapper(Parameter parameter) {
 		// Session
 		if (Session.class.isAssignableFrom(parameter.getType())) {

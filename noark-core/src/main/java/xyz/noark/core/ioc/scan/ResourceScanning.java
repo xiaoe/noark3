@@ -34,6 +34,7 @@ public class ResourceScanning {
 	private static final String URL_PROTOCOL_FILE = "file";
 	/** URL protocol for an entry from a jar file: "jar" */
 	private static final String URL_PROTOCOL_JAR = "jar";
+	private static final String BACKSLASH = "/";
 
 	/**
 	 * 私有化构造函数,这个类只用一次.
@@ -61,11 +62,10 @@ public class ResourceScanning {
 	 * @param callback 扫描到资源后的回调接口
 	 */
 	private static void scanPackage(String packagePath, ResourceCallback callback) {
-
 		// 处理一下包名到目录
 		packagePath = packagePath.replace('.', '/').replace('\\', '/');
-		if (!packagePath.endsWith("/")) {
-			packagePath += "/";
+		if (!packagePath.endsWith(BACKSLASH)) {
+			packagePath += BACKSLASH;
 		}
 
 		try {

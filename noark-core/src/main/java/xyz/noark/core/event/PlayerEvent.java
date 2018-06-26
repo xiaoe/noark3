@@ -25,7 +25,9 @@ import java.io.Serializable;
  */
 public interface PlayerEvent extends Event {
 	/**
-	 * @return 获取角色ID.
+	 * 获取角色ID.
+	 * 
+	 * @return 角色ID
 	 */
 	Serializable getPlayerId();
 }

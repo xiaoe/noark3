@@ -25,6 +25,7 @@ public class StaticComponentBeanDefinition extends DefaultBeanDefinition {
 		super(klass);
 	}
 
+	@Override
 	public StaticComponentBeanDefinition init() {
 		super.init();
 		return this;

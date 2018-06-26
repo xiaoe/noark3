@@ -24,7 +24,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class EventMethodWrapper extends ControllerMethodWrapper {
+public class EventMethodWrapper extends AbstractControllerMethodWrapper {
 	private final Class<? extends Event> eventClass;
 	private final boolean async;
 

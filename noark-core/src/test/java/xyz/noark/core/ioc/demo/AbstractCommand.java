@@ -11,28 +11,20 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.network;
+package xyz.noark.core.ioc.demo;
 
 /**
- * 默认的网络监听器.
- * <p>
- * 就是一堆空实现，有需要你就重载...
+ * 命令.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class DefaultNetworkListener implements NetworkListener {
+public abstract class AbstractCommand {
 
-	@Override
-	public boolean handleDuplicatePacket(Session session) {
-		return false;
-	}
-
-	@Override
-	public boolean handleChecksumFail(Session session) {
-		return false;
-	}
-
-	@Override
-	public void handleDeprecatedPacket(Session session) {}
+	/**
+	 * 做事.
+	 * 
+	 * @return 结果
+	 */
+	public abstract String doSomething();
 }

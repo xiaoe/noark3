@@ -41,6 +41,9 @@ public @interface Json {
 	 */
 	JsonStyle style() default JsonStyle.DefaultStyle;
 
+	/**
+	 * @author 小流氓(176543888@qq.com)
+	 */
 	public enum JsonStyle {
 		/**
 		 * 这个没有任何意义，只是个默认值.

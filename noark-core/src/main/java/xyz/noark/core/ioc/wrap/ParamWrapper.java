@@ -23,6 +23,12 @@ import xyz.noark.core.network.Session;
  */
 public interface ParamWrapper {
 
+	/**
+	 * 解析参数对象
+	 * 
+	 * @param session Session会话
+	 * @param bytes 封包内容
+	 * @return 返回参数对象
+	 */
 	public Object read(Session session, byte[] bytes);
-
 }

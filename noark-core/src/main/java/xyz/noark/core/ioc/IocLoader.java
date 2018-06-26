@@ -44,6 +44,8 @@ import xyz.noark.util.ClassUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class IocLoader {
+	private static final String PACKAGE_INFO_CLASS = "package-info.class";
+	private static final String CLASS_SUFFIX = ".class";
 	private final HashMap<Class<?>, DefaultBeanDefinition> beans = new HashMap<>(1024);
 	private final List<BeanDefinition> configurations = new ArrayList<>();
 	private final List<StaticComponentBeanDefinition> staticcomponents = new ArrayList<>();
@@ -66,12 +68,12 @@ public class IocLoader {
 		String resourceName = resource.getName();
 
 		// 忽略 package-info.class
-		if ("package-info.class".equals(resourceName)) {
+		if (PACKAGE_INFO_CLASS.equals(resourceName)) {
 			return;
 		}
 
 		// 忽略非Class文件
-		if (!resourceName.endsWith(".class")) {
+		if (!resourceName.endsWith(CLASS_SUFFIX)) {
 			return;
 		}
 
@@ -79,7 +81,11 @@ public class IocLoader {
 		analysisClass(ClassUtils.loadClass(resourceName.substring(0, resourceName.length() - 6).replaceAll("[/\\\\]", ".")));
 	}
 
-	// 分析Class
+	/**
+	 * 分析Class
+	 * 
+	 * @param klass Class
+	 */
 	private void analysisClass(Class<?> klass) {
 		// 接口、内部类、枚举、注解和匿名类 直接忽略
 		if (klass.isInterface() || klass.isMemberClass() || klass.isEnum() || klass.isAnnotation() || klass.isAnonymousClass()) {
@@ -132,12 +138,12 @@ public class IocLoader {
 		}
 	}
 
-	// 静态组件
+	/** 静态组件 */
 	private void analytical(Class<?> klass, StaticComponent component) {
 		staticcomponents.add(new StaticComponentBeanDefinition(klass).init());
 	}
 
-	// 组件类型的Bean...
+	/** 组件类型的Bean... */
 	private void analytical(Class<?> klass, Component component) {
 		beans.put(klass, new ComponentBeanDefinition(klass, component).init());
 	}

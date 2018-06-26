@@ -31,7 +31,9 @@ public interface Session {
 	public String getId();
 
 	/**
-	 * @return 获取当前Session链接的IP地址
+	 * 获取当前Session链接的IP地址
+	 * 
+	 * @return IP地址
 	 */
 	public String getIp();
 
@@ -64,6 +66,11 @@ public interface Session {
 	 */
 	public State getState();
 
+	/**
+	 * 获取玩家ID
+	 * 
+	 * @return 玩家ID
+	 */
 	public Serializable getPlayerId();
 
 	/**

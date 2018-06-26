@@ -23,6 +23,8 @@ public interface VipService {
 
 	/**
 	 * 做事.
+	 * 
+	 * @return 结果
 	 */
 	public abstract String doSomething();
 }

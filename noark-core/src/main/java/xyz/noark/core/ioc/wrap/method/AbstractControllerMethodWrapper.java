@@ -23,12 +23,12 @@ import xyz.noark.reflectasm.MethodAccess;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class ControllerMethodWrapper extends BaseMethodWrapper {
+public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper {
 	protected final Controller controller;
 	protected boolean printLog = false;
 	protected final String module;
 
-	public ControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Controller controller) {
+	public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Controller controller) {
 		super(methodAccess, single, methodIndex);
 		this.controller = controller;
 		this.module = single.getClass().getSimpleName();
@@ -50,5 +50,10 @@ public abstract class ControllerMethodWrapper extends BaseMethodWrapper {
 		return module;
 	}
 
+	/**
+	 * 记录日志的Code信息
+	 * 
+	 * @return Code信息
+	 */
 	public abstract String logCode();
 }

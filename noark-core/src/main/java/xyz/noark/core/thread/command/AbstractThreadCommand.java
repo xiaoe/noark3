@@ -13,7 +13,7 @@
  */
 package xyz.noark.core.thread.command;
 
-import xyz.noark.core.ioc.wrap.method.ControllerMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 import xyz.noark.core.thread.ThreadCommand;
 
 /**
@@ -23,10 +23,10 @@ import xyz.noark.core.thread.ThreadCommand;
  * @author 小流氓(176543888@qq.com)
  */
 public class AbstractThreadCommand implements ThreadCommand {
-	private final ControllerMethodWrapper method;
+	private final AbstractControllerMethodWrapper method;
 	private final Object[] args;
 
-	public AbstractThreadCommand(ControllerMethodWrapper method, Object... args) {
+	public AbstractThreadCommand(AbstractControllerMethodWrapper method, Object... args) {
 		this.method = method;
 		this.args = args;
 	}

@@ -29,7 +29,8 @@ import xyz.noark.util.StringUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class ValueFieldDefinition extends DefaultFieldDefinition {
-	private final String key;// 对应配置文件中的Key...
+	/** 对应配置文件中的Key... */
+	private final String key;
 
 	public ValueFieldDefinition(Field field, String key) {
 		super(field, false);

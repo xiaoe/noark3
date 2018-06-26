@@ -46,6 +46,8 @@ public @interface Entity {
 	 * 1.启动服务器的时候，初始化当前实体数据.<br>
 	 * 2.登录游戏的时候，初始化当前实体数据.<br>
 	 * 3.什么时候用，什么时候初始化当前实体数据.<br>
+	 * 
+	 * @author 小流氓(176543888@qq.com)
 	 */
 	public enum FeatchType {
 		/**

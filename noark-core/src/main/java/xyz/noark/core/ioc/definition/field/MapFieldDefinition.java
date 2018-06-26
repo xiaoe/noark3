@@ -35,7 +35,7 @@ public class MapFieldDefinition extends DefaultFieldDefinition {
 
 	@Override
 	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-		Map<String, Object> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>(32, 1);
 		making.findAllImpl(fieldClass).forEach(v -> Arrays.stream(v.getNames()).forEach(n -> result.put(n, v.getSingle())));
 		return result;
 	}

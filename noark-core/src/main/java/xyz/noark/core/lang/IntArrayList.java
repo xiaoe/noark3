@@ -31,10 +31,12 @@ import java.util.function.Consumer;
  */
 public class IntArrayList implements IntList, RandomAccess {
 	private static final int DEFAULT_CAPACITY = 10;
-	private static final int[] EMPTY_ELEMENTDATA = {};// 共享的空数组
+	/** 共享的空数组 */
+	private static final int[] EMPTY_ELEMENTDATA = {};
 
 	private int[] elementData;
-	private int size = 0;// 列表中元素的个数
+	/** 列表中元素的个数 */
+	private int size = 0;
 
 	/**
 	 * 构建一个空的列表.
@@ -79,6 +81,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	 *
 	 * @return the number of elements in this list
 	 */
+	@Override
 	public int size() {
 		return size;
 	}
@@ -88,6 +91,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	 *
 	 * @return <tt>true</tt> if this list contains no elements
 	 */
+	@Override
 	public boolean isEmpty() {
 		return size == 0;
 	}
@@ -101,6 +105,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	 * @param o element whose presence in this list is to be tested
 	 * @return <tt>true</tt> if this list contains the specified element
 	 */
+	@Override
 	public boolean contains(int o) {
 		return indexOf(o) >= 0;
 	}
@@ -114,9 +119,11 @@ public class IntArrayList implements IntList, RandomAccess {
 	 */
 	@Override
 	public int indexOf(int o) {
-		for (int i = 0; i < size; i++)
-			if (o == elementData[i])
+		for (int i = 0; i < size; i++) {
+			if (o == elementData[i]) {
 				return i;
+			}
+		}
 		return -1;
 	}
 
@@ -131,9 +138,11 @@ public class IntArrayList implements IntList, RandomAccess {
 	 * @return 列表中最后出现的指定元素的索引；如果列表不包含此元素，则返回 -1
 	 */
 	public int lastIndexOf(int x) {
-		for (int i = size - 1; i >= 0; i--)
-			if (x == elementData[i])
+		for (int i = size - 1; i >= 0; i--) {
+			if (x == elementData[i]) {
 				return i;
+			}
+		}
 		return -1;
 	}
 
@@ -145,6 +154,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	 * 
 	 * @return 按适当顺序包含该列表中所有元素的数组
 	 */
+	@Override
 	public int[] toArray() {
 		return Arrays.copyOf(elementData, size);
 	}
@@ -167,8 +177,9 @@ public class IntArrayList implements IntList, RandomAccess {
 	 * @param e element to be appended to this list
 	 * @return <tt>true</tt> (as specified by {@link Collection#add})
 	 */
+	@Override
 	public boolean add(int e) {
-		ensureCapacityInternal(size + 1); // Increments modCount!!
+		ensureCapacityInternal(size + 1);
 		elementData[size++] = e;
 		return true;
 	}
@@ -186,30 +197,34 @@ public class IntArrayList implements IntList, RandomAccess {
 	 * @param o element to be removed from this list, if present
 	 * @return <tt>true</tt> if this list contained the specified element
 	 */
+	@Override
 	public boolean remove(int o) {
-		for (int index = 0; index < size; index++)
+		for (int index = 0; index < size; index++) {
 			if (o == elementData[index]) {
 				fastRemove(index);
 				return true;
 			}
+		}
 		return false;
 	}
 
-	/*
+	/**
 	 * Private remove method that skips bounds checking and does not return the
 	 * value removed.
 	 */
 	private void fastRemove(int index) {
 		int numMoved = size - index - 1;
-		if (numMoved > 0)
+		if (numMoved > 0) {
 			System.arraycopy(elementData, index + 1, elementData, index, numMoved);
-		elementData[--size] = 0; // clear to let GC do its work
+		}
+		elementData[--size] = 0;
 	}
 
 	/**
 	 * Removes all of the elements from this list. The list will be empty after
 	 * this call returns.
 	 */
+	@Override
 	public void clear() {
 		size = 0;
 	}
@@ -228,7 +243,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	 */
 	public boolean addAll(int[] a) {
 		int numNew = a.length;
-		ensureCapacityInternal(size + numNew); // Increments modCount
+		ensureCapacityInternal(size + numNew);
 		System.arraycopy(a, 0, elementData, size, numNew);
 		size += numNew;
 		return numNew != 0;
@@ -241,8 +256,9 @@ public class IntArrayList implements IntList, RandomAccess {
 	 * ArrayIndexOutOfBoundsException if index is negative.
 	 */
 	private void rangeCheck(int index) {
-		if (index >= size)
+		if (index >= size) {
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+		}
 	}
 
 	/**
@@ -264,8 +280,9 @@ public class IntArrayList implements IntList, RandomAccess {
 
 	private void ensureExplicitCapacity(int minCapacity) {
 		// overflow-conscious code
-		if (minCapacity - elementData.length > 0)
+		if (minCapacity - elementData.length > 0) {
 			grow(minCapacity);
+		}
 	}
 
 	/**
@@ -285,17 +302,20 @@ public class IntArrayList implements IntList, RandomAccess {
 		// overflow-conscious code
 		int oldCapacity = elementData.length;
 		int newCapacity = oldCapacity + (oldCapacity >> 1);
-		if (newCapacity - minCapacity < 0)
+		if (newCapacity - minCapacity < 0) {
 			newCapacity = minCapacity;
-		if (newCapacity - MAX_ARRAY_SIZE > 0)
+		}
+		if (newCapacity - MAX_ARRAY_SIZE > 0) {
 			newCapacity = hugeCapacity(minCapacity);
+		}
 		// minCapacity is usually close to size, so this is a win:
 		elementData = Arrays.copyOf(elementData, newCapacity);
 	}
 
 	private static int hugeCapacity(int minCapacity) {
-		if (minCapacity < 0) // overflow
+		if (minCapacity < 0) {
 			throw new OutOfMemoryError();
+		}
 		return (minCapacity > MAX_ARRAY_SIZE) ? Integer.MAX_VALUE : MAX_ARRAY_SIZE;
 	}
 
@@ -310,17 +330,22 @@ public class IntArrayList implements IntList, RandomAccess {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		IntArrayList other = (IntArrayList) obj;
-		if (!Arrays.equals(elementData, other.elementData))
+		if (!Arrays.equals(elementData, other.elementData)) {
 			return false;
-		if (size != other.size)
+		}
+		if (size != other.size) {
 			return false;
+		}
 		return true;
 	}
 

@@ -14,7 +14,7 @@
 package xyz.noark.core.ioc.demo.map;
 
 import xyz.noark.core.annotation.Component;
-import xyz.noark.core.ioc.demo.Command;
+import xyz.noark.core.ioc.demo.AbstractCommand;
 
 /**
  * 添加经验的命令.
@@ -23,7 +23,7 @@ import xyz.noark.core.ioc.demo.Command;
  * @author 小流氓(176543888@qq.com)
  */
 @Component(name = { "// add exp" })
-public class AddExpCommand extends Command {
+public class AddExpCommand extends AbstractCommand {
 
 	@Override
 	public String doSomething() {

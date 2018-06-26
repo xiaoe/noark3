@@ -26,12 +26,12 @@ import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
  */
 public class PacketMethodManager {
 	private final ConcurrentMap<Integer, PacketMethodWrapper> handlers = new ConcurrentHashMap<>(2048);
-	private static final PacketMethodManager instance = new PacketMethodManager();
+	private static final PacketMethodManager INSTANCE = new PacketMethodManager();
 
 	private PacketMethodManager() {}
 
 	public static PacketMethodManager getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	public void resetPacketHandler(PacketMethodWrapper handler) {

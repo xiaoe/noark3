@@ -35,27 +35,27 @@ import xyz.noark.util.ClassUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class ConvertManager {
-	private static final ConvertManager instance = new ConvertManager();
-	private static final Map<Class<?>, Converter<?>> converters = new HashMap<>();
+	private static final ConvertManager INSTANCE = new ConvertManager();
+	private static final Map<Class<?>, Converter<?>> CONVERTERS = new HashMap<>();
 
 	static {
-		instance.regist(BooleanConverter.class);
-		instance.regist(IntegerConverter.class);
-		instance.regist(LongConverter.class);
-		instance.regist(StringConverter.class);
-		instance.regist(FloatConverter.class);
-		instance.regist(IntListConverter.class);
-		instance.regist(FloatListConverter.class);
+		INSTANCE.regist(BooleanConverter.class);
+		INSTANCE.regist(IntegerConverter.class);
+		INSTANCE.regist(LongConverter.class);
+		INSTANCE.regist(StringConverter.class);
+		INSTANCE.regist(FloatConverter.class);
+		INSTANCE.regist(IntListConverter.class);
+		INSTANCE.regist(FloatListConverter.class);
 	}
 
 	private ConvertManager() {}
 
 	public static ConvertManager getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	public Converter<?> getConverter(Class<?> type) {
-		return converters.get(type);
+		return CONVERTERS.get(type);
 	}
 
 	/**
@@ -72,14 +72,18 @@ public class ConvertManager {
 		this.putConvert((Converter<?>) object, templateConverter);
 	}
 
-	// 系统内部使用,不判定注解和接口
+	/**
+	 * 系统内部使用,不判定注解和接口
+	 * 
+	 * @param klass 转化类
+	 */
 	private void regist(Class<? extends Converter<?>> klass) {
 		this.putConvert(ClassUtils.newInstance(klass), klass.getAnnotation(TemplateConverter.class));
 	}
 
 	private void putConvert(Converter<?> converter, TemplateConverter annotation) {
 		for (Class<?> targetClass : annotation.value()) {
-			converters.put(targetClass, converter);
+			CONVERTERS.put(targetClass, converter);
 		}
 	}
 }

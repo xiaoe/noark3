@@ -38,10 +38,12 @@ public class NamedThreadFactory implements ThreadFactory {
 		StringBuilder threadName = new StringBuilder(56);
 		threadName.append(name).append("-").append(threadCounter.getAndIncrement());
 		Thread thread = new Thread(group, runnable, threadName.toString());
-		if (thread.isDaemon())
+		if (thread.isDaemon()) {
 			thread.setDaemon(false);
-		if (thread.getPriority() != Thread.NORM_PRIORITY)
+		}
+		if (thread.getPriority() != Thread.NORM_PRIORITY) {
 			thread.setPriority(Thread.NORM_PRIORITY);
+		}
 		return thread;
 	}
 }

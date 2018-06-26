@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class EnvConfigHolder {
 
-	// 处理过的系统配置参数...
+	/** 处理过的系统配置参数... */
 	private static Map<String, String> properties;
 
 	public static Map<String, String> getProperties() {

@@ -28,7 +28,7 @@ import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 public class IocMaking implements AutoCloseable {
 	private final IocLoader loader;
 
-	// 缓存接口的实现类
+	/** 缓存接口的实现类 */
 	private Map<Class<?>, List<DefaultBeanDefinition>> interfaceImplCache = new HashMap<>();
 
 	IocMaking(IocLoader loader) {

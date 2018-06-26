@@ -33,7 +33,7 @@ public class BagService {
 	@Autowired
 	private VipService vipService;
 	@Autowired
-	private Map<String, Command> commands;
+	private Map<String, AbstractCommand> abstractCommands;
 	@Autowired
 	private List<VipService> commandList;
 
@@ -49,8 +49,8 @@ public class BagService {
 		return vipService;
 	}
 
-	public Map<String, Command> getCommands() {
-		return commands;
+	public Map<String, AbstractCommand> getCommands() {
+		return abstractCommands;
 	}
 
 	public List<VipService> getCommandList() {

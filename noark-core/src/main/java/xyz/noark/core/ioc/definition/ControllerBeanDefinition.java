@@ -69,13 +69,13 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		this.doAnalysisEventHandler(noarkIoc);
 	}
 
-	// 分析事件处理入口.
+	/** 分析事件处理入口. */
 	private void doAnalysisEventHandler(NoarkIoc ioc) {
 		final EventMethodManager manager = EventMethodManager.getInstance();
 		emds.forEach(emd -> manager.resetEventHander(new EventMethodWrapper(methodAccess, single, emd, controller)));
 	}
 
-	// 分析一下封包处理方法.
+	/** 分析一下封包处理方法. */
 	private void doAnalysisPacketHandler(NoarkIoc noarkIoc) {
 		final PacketMethodManager manager = PacketMethodManager.getInstance();
 		pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, controller)));

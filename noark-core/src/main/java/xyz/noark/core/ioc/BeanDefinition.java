@@ -34,6 +34,8 @@ public interface BeanDefinition {
 
 	/**
 	 * 注入属性.
+	 * 
+	 * @param making 装配对象缓存
 	 */
 	public void injection(IocMaking making);
 }

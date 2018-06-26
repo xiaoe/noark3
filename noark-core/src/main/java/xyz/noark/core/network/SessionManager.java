@@ -27,17 +27,17 @@ import java.util.function.Function;
  * @author 小流氓(176543888@qq.com)
  */
 public class SessionManager {
-	// 所有链接服务器的会话.
-	private static final ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>(2048);
-	// 所有已进入游戏的会话.
-	private static final ConcurrentMap<Serializable, Session> playerId2Session = new ConcurrentHashMap<>(2048);
+	/** 所有链接服务器的会话. */
+	private static final ConcurrentMap<String, Session> SESSIONS = new ConcurrentHashMap<>(2048);
+	/** 所有已进入游戏的会话. */
+	private static final ConcurrentMap<Serializable, Session> PLAYER_ID_2_SESSION = new ConcurrentHashMap<>(2048);
 
 	public static Session createSession(String id, Function<String, Session> mappingFunction) {
-		return sessions.computeIfAbsent(id, mappingFunction);
+		return SESSIONS.computeIfAbsent(id, mappingFunction);
 	}
 
 	public static Session getSession(String id) {
-		return sessions.get(id);
+		return SESSIONS.get(id);
 	}
 
 	/**
@@ -49,11 +49,12 @@ public class SessionManager {
 	 */
 	public static void send(Integer opcode, Object protocal, Serializable... playerIds) {
 		byte[] packet = PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
-		if (playerIds.length == 0) {// 全服发送
-			playerId2Session.forEach((k, v) -> v.send(packet));
+		// 全服发送
+		if (playerIds.length == 0) {
+			PLAYER_ID_2_SESSION.forEach((k, v) -> v.send(packet));
 		} else {
 			for (Serializable playerId : playerIds) {
-				Session session = playerId2Session.get(playerId);
+				Session session = PLAYER_ID_2_SESSION.get(playerId);
 				if (session == null) {
 					logger.debug("未找到Session，无法发送, roleId={}", playerId);
 				} else {

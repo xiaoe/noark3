@@ -13,7 +13,7 @@
  */
 package xyz.noark.core.thread.command;
 
-import xyz.noark.core.ioc.wrap.method.ControllerMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 
 /**
  * 系统线程处理命令.
@@ -24,7 +24,7 @@ import xyz.noark.core.ioc.wrap.method.ControllerMethodWrapper;
 public class SystemThreadCommand extends AbstractThreadCommand {
 	private final String module;
 
-	public SystemThreadCommand(String module, ControllerMethodWrapper method, Object... args) {
+	public SystemThreadCommand(String module, AbstractControllerMethodWrapper method, Object... args) {
 		super(method, args);
 		this.module = module;
 	}

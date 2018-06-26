@@ -22,7 +22,9 @@ package xyz.noark.core.ioc.scan;
 public interface Resource {
 
 	/**
-	 * @return 获得资源的名称.
+	 * 获得资源的名称.
+	 * 
+	 * @return 资源的名称
 	 */
 	String getName();
 }

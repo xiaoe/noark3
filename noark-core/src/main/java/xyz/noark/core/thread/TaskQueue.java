@@ -24,7 +24,8 @@ import java.util.concurrent.ExecutorService;
  */
 public class TaskQueue {
 	private final ExecutorService threadPool;
-	private LinkedList<AsyncTask> queue;// 任务处理队列
+	/** 任务处理队列 */
+	private LinkedList<AsyncTask> queue;
 
 	public TaskQueue(ExecutorService threadPool) {
 		this.threadPool = threadPool;

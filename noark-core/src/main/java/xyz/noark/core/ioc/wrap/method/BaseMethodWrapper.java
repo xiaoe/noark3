@@ -23,7 +23,8 @@ import xyz.noark.reflectasm.MethodAccess;
  * @author 小流氓(176543888@qq.com)
  */
 public class BaseMethodWrapper implements MethodWrapper {
-	protected final Object single;// 缓存那个单例对象
+	/** 缓存那个单例对象 */
+	protected final Object single;
 	protected final int methodIndex;
 	protected final MethodAccess methodAccess;
 

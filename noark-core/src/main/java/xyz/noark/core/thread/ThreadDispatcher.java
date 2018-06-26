@@ -15,7 +15,8 @@ package xyz.noark.core.thread;
 
 import java.io.Serializable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import xyz.noark.core.annotation.Component;
@@ -39,11 +40,13 @@ import xyz.noark.core.thread.command.SystemThreadCommand;
  */
 @Component(name = "ThreadDispatcher")
 public class ThreadDispatcher {
-	private final ExecutorService logicPool;// 非场景类的线程池...
-	private final TimeoutHashMap<Serializable, TaskQueue> logicPoolTaskQueue;// 非场景线程处理的任务队列
+	/** 非场景类的线程池... */
+	private final ExecutorService logicPool;
+	/** 非场景线程处理的任务队列 */
+	private final TimeoutHashMap<Serializable, TaskQueue> logicPoolTaskQueue;
 
 	public ThreadDispatcher() {
-		this.logicPool = Executors.newFixedThreadPool(8, new NamedThreadFactory("logic"));
+		this.logicPool = new ThreadPoolExecutor(8, 8, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new NamedThreadFactory("logic"));
 		this.logicPoolTaskQueue = new TimeoutHashMap<>(1, TimeUnit.MINUTES, () -> new TaskQueue(logicPool));
 	}
 
@@ -63,26 +66,24 @@ public class ThreadDispatcher {
 		}
 	}
 
-	// 派发给Netty线程处理的逻辑.
+	/** 派发给Netty线程处理的逻辑. */
 	private void dispatchNettyThreadHandle(PacketMethodWrapper protocal, Object... args) {
 		protocal.invoke(args);
 	}
 
-	// 派发给系统线程处理的逻辑.
+	/** 派发给系统线程处理的逻辑. */
 	void dispatchSystemThreadHandle(SystemThreadCommand command) {
 		TaskQueue taskQueue = logicPoolTaskQueue.get(command.getModule());
 		taskQueue.submit(new AsyncTask(taskQueue, command));
 	}
 
-	// 派发给玩家线程处理的逻辑.
+	/** 派发给玩家线程处理的逻辑. */
 	void dispatchPlayerThreadHandle(PlayerThreadCommand command) {
 		TaskQueue taskQueue = logicPoolTaskQueue.get(command.getPlayerId());
 		taskQueue.submit(new AsyncTask(taskQueue, command));
 	}
 
-	/**
-	 * 派发事件任务给线程池.
-	 */
+	/** 派发事件任务给线程池. */
 	public void dispatchEvent(EventMethodWrapper handler, Event event) {
 		switch (handler.threadGroup()) {
 		case PlayerThreadGroup: {

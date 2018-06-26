@@ -47,6 +47,7 @@ public class PacketMethodDefinition extends SimpleMethodDefinition {
 		return packetMapping.inner();
 	}
 
+	@Override
 	public Parameter[] getParameters() {
 		return parameters;
 	}
