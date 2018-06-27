@@ -2,8 +2,8 @@ dependencies {
 	compile project(':noark-core')
 	compile project(':noark-network')
 	
-	api project(':noark-orm')
-	api project(':noark-csv')
+	implementation project(':noark-orm')
+	implementation project(':noark-csv')
 	
 	testCompile project(':noark-benchmark')
 }
