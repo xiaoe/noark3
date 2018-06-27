@@ -13,6 +13,8 @@
  */
 package xyz.noark.network.codec;
 
+import java.util.Arrays;
+
 import xyz.noark.network.NetworkPacket;
 
 /**
@@ -61,5 +63,10 @@ public abstract class AbstractPacket implements NetworkPacket {
 
 	public void setOpcode(Integer opcode) {
 		this.opcode = opcode;
+	}
+
+	@Override
+	public String toString() {
+		return "AbstractPacket [opcode=" + opcode + ", bytes=" + Arrays.toString(bytes) + ", incode=" + incode + ", checksum=" + checksum + "]";
 	}
 }

@@ -16,7 +16,7 @@ package xyz.noark.network.codec.protobufv2;
 import xyz.noark.network.codec.AbstractPacket;
 
 /**
- * Protobuf3版本的封包.
+ * Protobuf2版本的封包.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)

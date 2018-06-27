@@ -2,6 +2,7 @@ dependencies {
 	compile project(':noark-core')
 	compile 'io.netty:netty-all:4.1.+'
 	
+	testCompile group: 'com.google.protobuf', name: 'protobuf-java', version: '2.+'
 	testCompile 'com.alibaba:fastjson:1.+'
 	testCompile project(':noark-benchmark')
 }

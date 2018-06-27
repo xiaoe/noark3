@@ -50,6 +50,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 	}
 
 	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		logger.debug("异常，cause={}", cause);
+	}
+
+	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception {
 		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
 

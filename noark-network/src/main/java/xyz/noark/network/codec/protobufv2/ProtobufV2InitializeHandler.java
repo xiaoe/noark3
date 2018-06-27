@@ -29,12 +29,11 @@ public class ProtobufV2InitializeHandler extends AbstractInitializeHandler {
 
 	@Override
 	protected ByteToMessageDecoder createPacketDecoder() {
-		return new ProtobufV2Decoder();
+		return new ProtobufV2Codec();
 	}
 
 	@Override
 	protected MessageToByteEncoder<?> createPacketEncoder() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ProtobufV2Encoder();
 	}
 }
