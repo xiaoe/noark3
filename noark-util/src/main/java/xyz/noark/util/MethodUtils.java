@@ -63,4 +63,20 @@ public class MethodUtils {
 		}
 		return new ArrayList<>(result);
 	}
+
+	/**
+	 * 获取指定类中的指定名称和参数的方法
+	 * 
+	 * @param klass 类
+	 * @param name 方法名称
+	 * @param parameterTypes 方法参数
+	 * @return 方法
+	 */
+	public static Method getMethod(Class<?> klass, String name, Class<?>... parameterTypes) {
+		try {
+			return klass.getMethod(name, parameterTypes);
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException("反射调用方式时出现了异常情况...", e);
+		}
+	}
 }
