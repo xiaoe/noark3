@@ -62,4 +62,36 @@ subprojects {
     		links "http://docs.oracle.com/javase/8/docs/api/"
     	}
     }
+    
+    task sourceJar(type: Jar) {
+		from sourceSets.main.allJava
+	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				from components.java
+
+				artifact sourceJar {
+					classifier "sources"
+				}
+			}
+		}
+		
+		repositories {
+        	maven {
+        		//默认发布到Maven Nexus私服的发行库
+			    def nexusUrl ="http://192.168.51.234:8081/repository/maven-releases/"
+			    //如果为快照版本发布到Maven Nexus私服的快照库
+			    if(version.endsWith("-SNAPSHOT")) {
+			         nexusUrl ="http://192.168.51.234:8081/repository/maven-snapshots/"
+			    }
+            	url nexusUrl
+            	credentials {
+	                username = "admin"
+	                password = "admin123"
+	            }
+			}
+    	}
+	}
 }
