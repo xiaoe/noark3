@@ -1,8 +1,8 @@
 dependencies {
-	compile 'com.github.ben-manes.caffeine:caffeine:2.+'
+	compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.6.2'
 	
-	testCompile 'com.lmax:disruptor:3.3.5'
-	testCompile 'org.apache.logging.log4j:log4j-core:2.6.2'
-	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-	testCompile project(':noark-benchmark')
+	testImplementation 'com.lmax:disruptor:3.3.5'
+	testImplementation 'org.apache.logging.log4j:log4j-core:2.6.2'
+	testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	testImplementation project(':noark-benchmark')
 }

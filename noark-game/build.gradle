@@ -5,5 +5,5 @@ dependencies {
 	implementation project(':noark-orm')
 	implementation project(':noark-csv')
 	
-	testCompile project(':noark-benchmark')
+	testImplementation project(':noark-benchmark')
 }

@@ -1,8 +1,8 @@
 dependencies {
 	compile project(':noark-core')
-	compile 'io.netty:netty-all:4.1.+'
+	compile group: 'io.netty', name: 'netty-all', version: '4.1.25.Final'
 	
-	implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '2.+'
-	implementation 'com.alibaba:fastjson:1.+'
-	testCompile project(':noark-benchmark')
+	implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '2.6.1'
+	implementation 'com.alibaba:fastjson:1.2.47'
+	testImplementation project(':noark-benchmark')
 }
