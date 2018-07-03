@@ -38,8 +38,8 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 	public void handle(ChannelHandlerContext ctx) {
 		final ChannelPipeline pipeline = ctx.pipeline();
 		// TODO 确认没有并发可以优化一下单例方法
-		pipeline.addFirst(createPacketEncoder());
-		pipeline.addFirst(createPacketDecoder());
+		pipeline.addBefore("handler", "encoder", createPacketEncoder());
+		pipeline.addBefore("handler", "decoder", createPacketDecoder());
 
 		// 为Session绑定编解码.
 		final String id = ctx.channel().id().asLongText();

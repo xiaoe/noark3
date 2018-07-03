@@ -25,7 +25,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
@@ -33,6 +36,7 @@ import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.network.TcpServer;
 import xyz.noark.network.codec.InitializeDecoder;
 import xyz.noark.network.codec.InitializeManager;
+import xyz.noark.network.log.NettyLoggerFactory;
 
 /**
  * 基于Netty实现的一个网络服务.
@@ -80,15 +84,16 @@ public class NettyServer implements TcpServer {
 	@Value("network.websocket.path")
 	private String websocketPath;
 
+	/** 网络封包日志激活 */
+	@Value("network.log.active")
+	private boolean logActive = false;
+
 	@Autowired
 	private InitializeManager initializeManager;
 	@Autowired
 	private NettyServerHandler nettyServerHandler;
 
 	public NettyServer() {
-		// TODO 有时间来实现一个NoarkLog的工厂...
-		// InternalLoggerFactory.setDefaultFactory(Log4J2LoggerFactory.INSTANCE);
-
 		bootstrap = new ServerBootstrap();
 		this.workGroup = new NioEventLoopGroup(workthreads == 0 ? DEFAULT_EVENT_LOOP_THREADS : workthreads);
 		bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
@@ -116,13 +121,23 @@ public class NettyServer implements TcpServer {
 			pipeline.addLast("idleStateHandler", new IdleStateHandler(heartbeat, 0, 0, TimeUnit.SECONDS));
 		}
 
+		if (logActive) {
+			pipeline.addLast("logger", new LoggingHandler(LogLevel.DEBUG));
+		}
+
 		pipeline.addLast(new InitializeDecoder(initializeManager));
-		pipeline.addLast("handle", nettyServerHandler);
+		pipeline.addLast("handler", nettyServerHandler);
 	}
 
 	@Override
 	public void startup() {
 		logger.info("game tcp server start on {}", port);
+
+		// 如果封包日志打开的话，需要桥接进Noark日志实现
+		if (logActive) {
+			InternalLoggerFactory.setDefaultFactory(NettyLoggerFactory.INSTANCE);
+		}
+
 		try {
 			bootstrap.bind(port).sync();
 			logger.info("game tcp server start is success.");
