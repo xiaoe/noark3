@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.thread;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.io.Serializable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,6 +25,7 @@ import xyz.noark.core.annotation.Component;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.PlayerEvent;
 import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
@@ -50,13 +53,73 @@ public class ThreadDispatcher {
 		this.logicPoolTaskQueue = new TimeoutHashMap<>(1, TimeUnit.MINUTES, () -> new TaskQueue(logicPool));
 	}
 
-	public void dispatchPacket(Session session, PacketMethodWrapper pmw, Object[] args) {
+	/**
+	 * 派发游戏封包.
+	 * 
+	 * @param session Session对象
+	 * @param pmw 协议处理方法
+	 * @param args 处理方法参数
+	 */
+	public void dispatchPacket(Session session, Integer opcode, byte[] bytes) {
+		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
+		if (pmw == null) {
+			logger.warn("undefined protocol, opcode={}", opcode);
+			return;
+		}
+
+		// 是否已废弃使用.
+		if (pmw.isDeprecated()) {
+			logger.warn("deprecated protocol. opcode={}, playerId={}", opcode, session.getPlayerId());
+			return;
+		}
+
+		// 客户端发来的封包，是不可以调用内部处理器的.
+		if (pmw.isInner()) {
+			logger.warn(" ^0^ inner protocol. opcode={}, playerId={}", opcode, session.getPlayerId());
+			return;
+		}
+
+		// 增加协议计数.
+		pmw.incrCount();
+
+		// 具体分配哪个线程去执行.
+		this.dispatchPacket(session.getPlayerId(), pmw, pmw.analysisParam(session, bytes));
+	}
+
+	/**
+	 * 派发内部指令.
+	 * 
+	 * @param playerId 玩家ID
+	 * @param pmw 协议处理方法
+	 * @param args 处理方法参数
+	 */
+	public void dispatchInnerPacket(Serializable playerId, Integer opcode, Object protocal) {
+		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
+		if (pmw == null) {
+			logger.warn("undefined protocol, opcode={}", opcode);
+			return;
+		}
+
+		// 是否已废弃使用.
+		if (pmw.isDeprecated()) {
+			logger.warn("deprecated protocol. opcode={}, playerId={}", opcode, playerId);
+			return;
+		}
+
+		// 增加协议计数.
+		pmw.incrCount();
+
+		// 具体分配哪个线程去执行.
+		this.dispatchPacket(playerId, pmw, pmw.analysisParam(playerId, protocal));
+	}
+
+	private void dispatchPacket(Serializable playerId, PacketMethodWrapper pmw, Object... args) {
 		switch (pmw.threadGroup()) {
 		case NettyThreadGroup:
 			this.dispatchNettyThreadHandle(pmw, args);
 			break;
 		case PlayerThreadGroup:
-			this.dispatchPlayerThreadHandle(new PlayerThreadCommand(session.getPlayerId(), pmw, args));
+			this.dispatchPlayerThreadHandle(new PlayerThreadCommand(playerId, pmw, args));
 			break;
 		case ModuleThreadGroup:
 			this.dispatchSystemThreadHandle(new SystemThreadCommand(pmw.getModule(), pmw, args));

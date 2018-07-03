@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.ioc.wrap;
 
+import java.io.Serializable;
+
 import xyz.noark.core.network.Session;
 
 /**
@@ -31,4 +33,13 @@ public interface ParamWrapper {
 	 * @return 返回参数对象
 	 */
 	public Object read(Session session, byte[] bytes);
+
+	/**
+	 * 解析参数对象
+	 * 
+	 * @param playerId 玩家ID.
+	 * @param protocal 协议对象
+	 * @return 返回参数对象
+	 */
+	public Object read(Serializable playerId, Object protocal);
 }

@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.ioc.wrap.field;
 
+import java.io.Serializable;
+
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.Session;
 
@@ -27,5 +29,10 @@ public class PlayerIdParamWrapper implements ParamWrapper {
 	@Override
 	public Object read(Session session, byte[] bytes) {
 		return session.getPlayerId();
+	}
+
+	@Override
+	public Object read(Serializable playerId, Object protocal) {
+		return playerId;
 	}
 }

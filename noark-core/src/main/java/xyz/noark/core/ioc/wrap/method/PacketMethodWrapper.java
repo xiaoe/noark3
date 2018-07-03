@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import java.io.Serializable;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +23,8 @@ import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
-import xyz.noark.core.ioc.wrap.field.PlayerIdParamWrapper;
 import xyz.noark.core.ioc.wrap.field.PacketCodecWrapper;
+import xyz.noark.core.ioc.wrap.field.PlayerIdParamWrapper;
 import xyz.noark.core.ioc.wrap.field.SessionParamWrapper;
 import xyz.noark.core.network.Session;
 import xyz.noark.reflectasm.MethodAccess;
@@ -73,11 +74,27 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 * 
 	 * @param session Session对象
 	 * @param msg 协议封包
+	 * @return 参数列表
 	 */
 	public Object[] analysisParam(Session session, byte[] msg) {
 		List<Object> args = new ArrayList<>(parameters.size());
 		for (ParamWrapper parameter : parameters) {
 			args.add(parameter.read(session, msg));
+		}
+		return args.toArray();
+	}
+
+	/**
+	 * 分析参数.
+	 * 
+	 * @param playerId 玩家ID
+	 * @param protocal 协议对象
+	 * @return 参数列表
+	 */
+	public Object[] analysisParam(Serializable playerId, Object protocal) {
+		List<Object> args = new ArrayList<>(parameters.size());
+		for (ParamWrapper parameter : parameters) {
+			args.add(parameter.read(playerId, protocal));
 		}
 		return args.toArray();
 	}

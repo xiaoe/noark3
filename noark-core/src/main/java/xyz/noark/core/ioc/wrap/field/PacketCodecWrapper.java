@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.ioc.wrap.field;
 
+import java.io.Serializable;
+
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session;
@@ -33,5 +35,10 @@ public class PacketCodecWrapper implements ParamWrapper {
 	@Override
 	public Object read(Session session, byte[] bytes) {
 		return PacketCodecHolder.getPacketCodec().decodeProtocal(bytes, klass);
+	}
+
+	@Override
+	public Object read(Serializable playerId, Object protocal) {
+		return protocal;
 	}
 }

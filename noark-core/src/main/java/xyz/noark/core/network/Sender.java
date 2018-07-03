@@ -15,6 +15,9 @@ package xyz.noark.core.network;
 
 import java.io.Serializable;
 
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.StaticComponent;
+import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.util.ArrayUtils;
 
 /**
@@ -23,7 +26,11 @@ import xyz.noark.util.ArrayUtils;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
+@StaticComponent
 public final class Sender {
+
+	@Autowired
+	private static ThreadDispatcher threadDispatcher;
 
 	/**
 	 * 给全服在线玩家转发一个封包.
@@ -64,13 +71,12 @@ public final class Sender {
 	/**
 	 * 游戏服务器内部转发封包.
 	 * <p>
-	 * 主要用于跨服线程，穿透场景等...
 	 * 
-	 * @param roleId 指定玩家的ID
-	 * @param opcode 封包操作码
-	 * @param packet 封包对象
+	 * @param playerId 指定玩家的ID
+	 * @param opcode 协议编号
+	 * @param packet 协议对象
 	 */
-	public static void innerRelayPacket(Serializable roleId, Integer opcode, Object protocal) {
-		// TODO 临时先空一下，有些情况还没想好...
+	public static void innerRelayPacket(Serializable playerId, Integer opcode, Object protocal) {
+		threadDispatcher.dispatchInnerPacket(playerId, opcode, protocal);
 	}
 }

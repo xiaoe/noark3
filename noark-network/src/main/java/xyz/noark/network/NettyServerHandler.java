@@ -20,8 +20,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
-import xyz.noark.core.ioc.manager.PacketMethodManager;
-import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
@@ -44,12 +42,12 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		logger.debug("发现客户端链接，channel={}", ctx.channel());
+		logger.info("发现客户端链接，channel={}", ctx.channel());
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		logger.debug("客户端断开链接，channel={}", ctx.channel());
+		logger.info("客户端断开链接，channel={}", ctx.channel());
 		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
 		if (session != null) {
 			try {
@@ -68,38 +66,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception {
 		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
-
-		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(msg.getOpcode());
-
-		if (pmw == null) {
-			logger.warn("undefined protocol, opcode={}", msg.getOpcode());
-			return;
-		}
-
-		// 是否已废弃使用.
-		if (pmw.isDeprecated()) {
-			logger.warn("deprecated protocol. opcode={}, playerId={}", msg.getOpcode(), session.getPlayerId());
-			return;
-		}
-
-		// 客户端发来的封包，是不可以调用内部处理器的.
-		if (pmw.isInner()) {
-			logger.warn(" ^0^ inner protocol. opcode={}, playerId={}", msg.getOpcode(), session.getPlayerId());
-			return;
-		}
-
-		// 增加协议计数.
-		pmw.incrCount();
-
-		this.localDispatch(session, pmw, msg);
+		threadDispatcher.dispatchPacket(session, msg.getOpcode(), msg.getBytes());
 	}
-
-	private void localDispatch(Session session, PacketMethodWrapper pmw, NetworkPacket msg) {
-		// 参数列表.
-		Object[] args = pmw.analysisParam(session, msg.getBytes());
-
-		threadDispatcher.dispatchPacket(session, pmw, args);
-
-	}
-
 }
