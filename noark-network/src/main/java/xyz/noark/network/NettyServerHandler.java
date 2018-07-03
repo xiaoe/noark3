@@ -22,6 +22,7 @@ import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.ThreadDispatcher;
@@ -38,6 +39,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 
 	@Autowired
 	private ThreadDispatcher threadDispatcher;
+	@Autowired(required = false)
+	private NetworkListener networkListener;
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -47,6 +50,14 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		logger.debug("客户端断开链接，channel={}", ctx.channel());
+		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
+		if (session != null) {
+			try {
+				networkListener.channelInactive(session);
+			} finally {
+				SessionManager.removeSession(session);
+			}
+		}
 	}
 
 	@Override

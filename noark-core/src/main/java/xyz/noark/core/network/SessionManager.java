@@ -16,9 +16,14 @@ package xyz.noark.core.network;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
+
+import xyz.noark.util.StringUtils;
 
 /**
  * Session管理器.
@@ -31,13 +36,11 @@ public class SessionManager {
 	private static final ConcurrentMap<String, Session> SESSIONS = new ConcurrentHashMap<>(2048);
 	/** 所有已进入游戏的会话. */
 	private static final ConcurrentMap<Serializable, Session> PLAYER_ID_2_SESSION = new ConcurrentHashMap<>(2048);
+	/** 账号与Session，用来顶号时踢除上一个链接 */
+	private static final ConcurrentMap<Serializable, Session> UID_2_SESSION = new ConcurrentHashMap<>(2048);
 
 	public static Session createSession(String id, Function<String, Session> mappingFunction) {
 		return SESSIONS.computeIfAbsent(id, mappingFunction);
-	}
-
-	public static Session getSession(String id) {
-		return SESSIONS.get(id);
 	}
 
 	/**
@@ -56,11 +59,95 @@ public class SessionManager {
 			for (Serializable playerId : playerIds) {
 				Session session = PLAYER_ID_2_SESSION.get(playerId);
 				if (session == null) {
-					logger.debug("未找到Session，无法发送, roleId={}", playerId);
+					logger.debug("未找到Session，无法发送, playerId={}", playerId);
 				} else {
 					session.send(packet);
 				}
 			}
 		}
+	}
+
+	/**
+	 * 当客户端断开后清理Session的方法.
+	 * 
+	 * @param session Session对象
+	 */
+	public static void removeSession(Session session) {
+		SESSIONS.remove(session.getId());
+
+		if (session.getPlayerId() != null) {
+			PLAYER_ID_2_SESSION.remove(session.getPlayerId());
+		}
+
+		// ConcurrentHashMap是不可以删除Key为null的情况
+		if (StringUtils.isNotEmpty(session.getUid())) {
+			UID_2_SESSION.remove(session.getUid());
+		}
+	}
+
+	/**
+	 * 修复账号与Session新对应关系.
+	 * 
+	 * @param uid 账号
+	 * @param session Session对象
+	 * @return 如果原来有对应关系则返回老的Session，否返回Optional.empty()
+	 */
+	public static Optional<Session> setUidAndSession(String uid, Session session) {
+		return Optional.ofNullable(UID_2_SESSION.put(uid, session));
+	}
+
+	/**
+	 * 将角色ID和Session绑定.
+	 */
+	public static void bindPlayerIdAndSession(Serializable playerId, Session session) {
+		PLAYER_ID_2_SESSION.put(playerId, session);
+	}
+
+	/**
+	 * 根据链接ID来获取Session.
+	 * 
+	 * @param id 链接ID
+	 * @return Session对象
+	 */
+	public static Session getSession(String id) {
+		return SESSIONS.get(id);
+	}
+
+	/**
+	 * 根据玩家ID来获取Session对象.
+	 * 
+	 * @param playerId 玩家ID
+	 * @return Session对象
+	 */
+	public static Session getSessionByPlayerId(Serializable playerId) {
+		return PLAYER_ID_2_SESSION.get(playerId);
+	}
+
+	/**
+	 * 获取所有在线玩家Session集合.
+	 * 
+	 * @return Session集合
+	 */
+	public static Collection<Session> getOnlineSessionList() {
+		return PLAYER_ID_2_SESSION.values();
+	}
+
+	/**
+	 * 获取所有在线玩家ID集合.
+	 * 
+	 * @return 玩家ID集合
+	 */
+	public static Set<Serializable> getOnlinePlayerIdList() {
+		return PLAYER_ID_2_SESSION.keySet();
+	}
+
+	/**
+	 * 判定一个玩家当前是否在线.
+	 * 
+	 * @param playerId 玩家ID
+	 * @return 如果玩家在线则返回true,否则返回false.
+	 */
+	public static boolean isOnline(Serializable playerId) {
+		return PLAYER_ID_2_SESSION.containsKey(playerId);
 	}
 }

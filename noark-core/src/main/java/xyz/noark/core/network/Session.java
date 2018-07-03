@@ -67,6 +67,13 @@ public interface Session {
 	public State getState();
 
 	/**
+	 * 获取玩家的UID.
+	 * 
+	 * @return 玩家的UID
+	 */
+	public String getUid();
+
+	/**
 	 * 获取玩家ID
 	 * 
 	 * @return 玩家ID

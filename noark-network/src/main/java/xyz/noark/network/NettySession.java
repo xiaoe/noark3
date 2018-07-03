@@ -32,6 +32,7 @@ import xyz.noark.core.network.PacketCodecHolder;
  */
 public class NettySession extends AbstractSession {
 	private final Channel channel;
+	private String uid;
 	private Serializable playerId;
 	/** 是否为websocket链接. */
 	private boolean websocket = false;
@@ -44,6 +45,15 @@ public class NettySession extends AbstractSession {
 	@Override
 	public void close() {
 		channel.close();
+	}
+
+	@Override
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
 	@Override
@@ -68,13 +78,13 @@ public class NettySession extends AbstractSession {
 	public void send(byte[] packet) {
 		// 链接已关闭了...
 		if (!channel.isActive()) {
-			logger.warn("send packet fail isActive=false. session={},playerId={}", id, playerId);
+			logger.warn("send packet fail isActive=false. channel={}, playerId={}", channel, playerId);
 			return;
 		}
 
 		// 不可写，未发送的数据已达最高水位了...
 		if (!channel.isWritable()) {
-			logger.warn("send packet fail isWritable=false. session={},playerId={}", id, playerId);
+			logger.warn("send packet fail isWritable=false. channel={}, playerId={}", channel, playerId);
 			return;
 		}
 
