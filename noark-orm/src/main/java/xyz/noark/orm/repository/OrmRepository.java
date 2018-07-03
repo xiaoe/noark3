@@ -19,8 +19,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.orm.DataCheckAndInit;
 import xyz.noark.orm.AnnotationEntityMaker;
-import xyz.noark.orm.DataCheckAndInit;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.accessor.DataAccessor;
 

@@ -18,11 +18,11 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import xyz.noark.core.Modular;
+import xyz.noark.core.annotation.orm.DataCheckAndInit;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.game.template.ReloadManager;
 import xyz.noark.network.NettyServer;
 import xyz.noark.network.codec.json.SimpleJsonCodec;
-import xyz.noark.orm.DataCheckAndInit;
 
 /**
  * 一个默认的服务器启动引导类.
