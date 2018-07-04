@@ -32,9 +32,9 @@ import xyz.noark.network.codec.json.SimpleJsonCodec;
  */
 public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 
-	private NettyServer nettyServer;
-	private Optional<Modular> dataModular;
-	private Optional<Modular> eventModular;
+	protected NettyServer nettyServer;
+	protected Optional<Modular> dataModular;
+	protected Optional<Modular> eventModular;
 
 	@Override
 	protected void onStart() {
@@ -55,6 +55,10 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 		// HTTP服务
 
 		// 对外网络...
+		this.initNetworkModular();
+	}
+
+	protected void initNetworkModular() {
 		nettyServer = ioc.get(NettyServer.class);
 		nettyServer.startup();
 	}

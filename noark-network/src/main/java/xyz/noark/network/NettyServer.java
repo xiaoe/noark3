@@ -70,28 +70,28 @@ public class NettyServer implements TcpServer {
 
 	/** Netty监听端口 */
 	@Value("network.port")
-	private int port = 8888;
+	protected int port = 8888;
 
 	/** 心跳功能，默认值为0，则不生效 */
 	@Value("network.heartbeat")
-	private int heartbeat = 0;
+	protected int heartbeat = 0;
 
 	/** Netty的Work线程数 */
 	@Value("network.work.threads")
-	private int workthreads = 0;
+	protected int workthreads = 0;
 
 	/** 是否为WebSocket */
 	@Value("network.websocket.path")
-	private String websocketPath;
+	protected String websocketPath;
 
 	/** 网络封包日志激活 */
 	@Value("network.log.active")
-	private boolean logActive = false;
+	protected boolean logActive = false;
 
 	@Autowired
-	private InitializeManager initializeManager;
+	protected InitializeManager initializeManager;
 	@Autowired
-	private NettyServerHandler nettyServerHandler;
+	protected NettyServerHandler nettyServerHandler;
 
 	public NettyServer() {
 		bootstrap = new ServerBootstrap();
