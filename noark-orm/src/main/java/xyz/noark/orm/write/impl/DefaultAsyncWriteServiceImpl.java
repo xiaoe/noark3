@@ -61,7 +61,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 		RemovalListener<Serializable, AsyncWriteContainer> listener = new RemovalListener<Serializable, AsyncWriteContainer>() {
 			@Override
 			public void onRemoval(Serializable key, AsyncWriteContainer value, RemovalCause cause) {
-				logger.debug("销毁{}秒都没有读写操作的异步回写容器， roleId={}", offlineInterval, key);
+				logger.debug("销毁{}秒都没有读写操作的异步回写容器， playerId={}", offlineInterval, key);
 				value.syncFlush();
 				value.close();
 			}
@@ -69,9 +69,9 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 
 		CacheLoader<Serializable, AsyncWriteContainer> loader = new CacheLoader<Serializable, AsyncWriteContainer>() {
 			@Override
-			public AsyncWriteContainer load(Serializable roleId) {
-				logger.debug("创建异步回写容器， roleId={}", roleId);
-				return new AsyncWriteContainer(roleId, saveInterval);
+			public AsyncWriteContainer load(Serializable playerId) {
+				logger.debug("创建异步回写容器， playerId={}", playerId);
+				return new AsyncWriteContainer(playerId, saveInterval);
 			}
 		};
 
@@ -179,7 +179,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	 * @author 小流氓(176543888@qq.com)
 	 */
 	private class AsyncWriteContainer implements Runnable {
-		private final Serializable roleId;
+		private final Serializable playerId;
 		/** 当前已修改过的数据 */
 		private Map<String, EntityOperate<?>> entityOperates = new HashMap<>();
 		/** 最终需要保存的数据 */
@@ -189,8 +189,8 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 		/** 记录异步操作的结果，以便有需求时，操纵这个结果 */
 		private final ScheduledFuture<?> future;
 
-		private AsyncWriteContainer(Serializable roleId, int saveInterval) {
-			this.roleId = roleId;
+		private AsyncWriteContainer(Serializable playerId, int saveInterval) {
+			this.playerId = playerId;
 			this.future = SCHEDULED_EXECUTOR.scheduleAtFixedRate(this, saveInterval, saveInterval, TimeUnit.SECONDS);
 		}
 
@@ -289,7 +289,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 				if (flushOperates != null) {
 					try {
 						if (!flushOperates.isEmpty()) {
-							logger.info("开始保存数据，roleId={}", roleId);
+							logger.info("开始保存数据，playerId={}", playerId);
 							for (EntityOperate<?> opx : flushOperates.values()) {
 								try {
 									@SuppressWarnings("unchecked")
@@ -307,11 +307,11 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 										throw new DataException("未知的操作实现...");
 									}
 								} catch (Exception ex) {
-									logger.error("保存实体时数据异常，roleId=" + roleId, ex);
+									logger.error("保存实体时数据异常，playerId={}{}", playerId, ex);
 									logger.error("保存实体时的异常数据 entity={}", opx.getEntity());
 								}
 							}
-							logger.info("保存数据完成，roleId={}", roleId);
+							logger.info("保存数据完成，playerId={}", playerId);
 						}
 					} finally {
 						this.flushOperates = null;
@@ -327,7 +327,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 			try {
 				this.syncFlush();
 			} catch (Exception e) {// 每次保存必需保证定时器不能停了.
-				logger.error("保存个人数据时异常，roleId=" + roleId, e);
+				logger.error("保存个人数据时异常，playerId=" + playerId, e);
 			}
 		}
 

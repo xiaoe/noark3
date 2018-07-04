@@ -24,4 +24,11 @@ import java.io.Serializable;
 public class DefaultId implements Serializable {
 	private static final long serialVersionUID = -6529401819014260134L;
 	public static final DefaultId INSTANCE = new DefaultId();
+
+	private DefaultId() {}
+
+	@Override
+	public String toString() {
+		return DefaultId.class.getSimpleName();
+	}
 }
