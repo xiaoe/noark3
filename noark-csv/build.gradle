@@ -1,6 +1,6 @@
 dependencies {
-	compile project(':noark-core')
-	compile project(':noark-util')
+	implementation project(':noark-core')
+	implementation project(':noark-util')
 	
-	testCompile project(':noark-benchmark')
+	testImplementation project(':noark-benchmark')
 }

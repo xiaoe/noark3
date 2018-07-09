@@ -1,6 +1,6 @@
 dependencies {
-	compile project(':noark-core')
-	compile 'com.alibaba:fastjson:1.2.47'
+	implementation project(':noark-core')
+	implementation 'com.alibaba:fastjson:1.2.47'
 	
-	testCompile project(':noark-benchmark')
+	testImplementation project(':noark-benchmark')
 }

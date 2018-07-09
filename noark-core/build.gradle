@@ -3,5 +3,5 @@ dependencies {
 	compile project(':noark-log')
 	compile project(':noark-util')
 
-	testCompile project(':noark-benchmark')
+	testImplementation project(':noark-benchmark')
 }

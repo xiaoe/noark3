@@ -1,8 +1,8 @@
 dependencies {
-	compile project(':noark-core')
-	compile project(':noark-network')
+	implementation project(':noark-core')
+	implementation project(':noark-network')
 	
-	implementation project(':noark-csv')
+	compileOnly project(':noark-csv')
 	
 	testImplementation project(':noark-benchmark')
 }

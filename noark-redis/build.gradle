@@ -1,6 +1,6 @@
 dependencies {
-	compile project(':noark-core')
-	compile 'redis.clients:jedis:2.9.0'
+	implementation project(':noark-core')
+	implementation 'redis.clients:jedis:2.9.0'
 	
-	testCompile project(':noark-benchmark')
+	testImplementation project(':noark-benchmark')
 }
