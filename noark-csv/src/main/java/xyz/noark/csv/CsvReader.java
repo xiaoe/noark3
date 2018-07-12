@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 class CsvReader implements AutoCloseable {
 	/** 换行符 */
 	private static final int LF = '\n';
+	private static final int CR = '\r';
 	/** 双引号 */
 	private static final int QUOTE = '"';
 
@@ -166,6 +167,12 @@ class CsvReader implements AutoCloseable {
 			this.processed = true;
 			sbing.append((char) cur);
 		}
+
+		// 删除最后一个\r
+		if (sbing.length() > 1 && sbing.charAt(sbing.length() - 1) == CR) {
+			sbing.deleteCharAt(sbing.length() - 1);
+		}
+
 		return sbing.toString();
 	}
 
