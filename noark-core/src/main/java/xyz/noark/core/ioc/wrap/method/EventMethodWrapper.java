@@ -29,7 +29,7 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper {
 	private final boolean async;
 
 	public EventMethodWrapper(MethodAccess methodAccess, Object single, EventMethodDefinition emd, Controller controller) {
-		super(methodAccess, single, emd.getMethodIndex(), controller);
+		super(methodAccess, single, emd.getMethodIndex(), controller, emd.getOrder());
 		this.eventClass = emd.getEventClass();
 		this.printLog = emd.isPrintLog();
 		this.async = emd.isAsync();

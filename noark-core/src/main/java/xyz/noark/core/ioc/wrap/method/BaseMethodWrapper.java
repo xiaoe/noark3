@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import xyz.noark.core.annotation.Order;
 import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -27,11 +28,13 @@ public class BaseMethodWrapper implements MethodWrapper {
 	protected final Object single;
 	protected final int methodIndex;
 	protected final MethodAccess methodAccess;
+	private final int order;
 
-	public BaseMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex) {
+	public BaseMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Order order) {
 		this.single = single;
 		this.methodIndex = methodIndex;
 		this.methodAccess = methodAccess;
+		this.order = order == null ? Integer.MAX_VALUE : order.value();
 	}
 
 	@Override
@@ -41,5 +44,10 @@ public class BaseMethodWrapper implements MethodWrapper {
 		} else {
 			return methodAccess.invoke(single, methodIndex, args);
 		}
+	}
+
+	@Override
+	public int getOrder() {
+		return order;
 	}
 }

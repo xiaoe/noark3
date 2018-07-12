@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.definition.method;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
+import xyz.noark.core.annotation.Order;
 import xyz.noark.core.ioc.MethodDefinition;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -49,5 +50,10 @@ public class SimpleMethodDefinition implements MethodDefinition {
 	@Override
 	public Parameter[] getParameters() {
 		return parameters;
+	}
+
+	@Override
+	public Order getOrder() {
+		return method.getAnnotation(Order.class);
 	}
 }

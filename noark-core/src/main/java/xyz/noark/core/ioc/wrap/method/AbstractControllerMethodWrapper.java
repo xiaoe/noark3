@@ -14,6 +14,7 @@
 package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -28,8 +29,8 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
 	protected boolean printLog = false;
 	protected final String module;
 
-	public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Controller controller) {
-		super(methodAccess, single, methodIndex);
+	public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Controller controller, Order order) {
+		super(methodAccess, single, methodIndex, order);
 		this.controller = controller;
 		this.module = single.getClass().getSimpleName();
 	}

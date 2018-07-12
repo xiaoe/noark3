@@ -44,7 +44,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private boolean deprecated = false;
 
 	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, Controller controller) {
-		super(methodAccess, single, md.getMethodIndex(), controller);
+		super(methodAccess, single, md.getMethodIndex(), controller, md.getOrder());
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();
 		this.printLog = md.isPrintLog();

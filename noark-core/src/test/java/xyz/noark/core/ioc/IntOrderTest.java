@@ -11,28 +11,30 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc.wrap;
+package xyz.noark.core.ioc;
+
+import static org.junit.Assert.assertArrayEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
 
 /**
- * 可执行的方法.
+ * Int类型排序测试.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface MethodWrapper {
+public class IntOrderTest {
 
-	/**
-	 * 获取方法排序值.
-	 * 
-	 * @return 排序值
-	 */
-	public int getOrder();
-
-	/**
-	 * 执行.
-	 * 
-	 * @param args 参数列表
-	 * @return 返回值
-	 */
-	public Object invoke(Object... args);
+	@Test
+	public void test() {
+		List<Integer> list = new ArrayList<>();
+		list.add(3);
+		list.add(1);
+		list.add(2);
+		list.sort((m1, m2) -> m1 - m2);
+		assertArrayEquals(list.toArray(new Integer[] {}), new Integer[] { 1, 2, 3 });
+	}
 }

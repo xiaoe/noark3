@@ -15,6 +15,7 @@ package xyz.noark.core.ioc;
 
 import java.lang.reflect.Parameter;
 
+import xyz.noark.core.annotation.Order;
 import xyz.noark.reflectasm.MethodAccess;
 
 /**
@@ -45,4 +46,11 @@ public interface MethodDefinition {
 	 * @return 参数
 	 */
 	public Parameter[] getParameters();
+
+	/**
+	 * 获取当前方法的排序注解
+	 * 
+	 * @return 排序注解
+	 */
+	public Order getOrder();
 }
