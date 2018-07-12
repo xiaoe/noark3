@@ -49,7 +49,19 @@ public class EventMethodManager {
 		return handlers.getOrDefault(eventClass, Collections.emptyList());
 	}
 
+	/**
+	 * 注册事件处理方法.
+	 * 
+	 * @param eventWrapper 事件处理方法包装对象
+	 */
 	public void resetEventHander(EventMethodWrapper eventWrapper) {
 		handlers.computeIfAbsent(eventWrapper.getEventClass(), key -> new ArrayList<>()).add(eventWrapper);
+	}
+
+	/**
+	 * 事件处理器排序执行
+	 */
+	public void sort() {
+		handlers.values().forEach(v -> v.sort((h1, h2) -> h1.getOrder() - h2.getOrder()));
 	}
 }
