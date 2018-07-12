@@ -91,6 +91,17 @@ public class MultiCacheRepository<T, K extends Serializable> extends AbstractCac
 	 * @param filter 条件过滤器
 	 * @return 实体对象.
 	 */
+	public T cacheGet(Serializable playerId, Predicate<T> filter) {
+		return this.cacheLoad(playerId, filter).orElse(null);
+	}
+
+	/**
+	 * 从角色缓存中根据过滤器获取对象.
+	 * 
+	 * @param playerId 角色Id
+	 * @param filter 条件过滤器
+	 * @return 实体对象.
+	 */
 	public Optional<T> cacheLoad(Serializable playerId, Predicate<T> filter) {
 		return Optional.ofNullable(dataCache.load(playerId, filter));
 	}

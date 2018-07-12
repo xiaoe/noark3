@@ -124,7 +124,7 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 
 	@Override
 	public T load(Serializable playerId, Predicate<T> filter) {
-		return caches.get(playerId).values().stream().filter(filter).findFirst().orElseGet(null);
+		return caches.get(playerId).values().stream().filter(filter).findFirst().orElse(null);
 	}
 
 	@Override
