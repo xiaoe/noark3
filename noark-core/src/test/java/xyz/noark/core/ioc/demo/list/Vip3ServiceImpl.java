@@ -11,30 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc.definition.field;
+package xyz.noark.core.ioc.demo.list;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.stream.Collectors;
-
-import xyz.noark.core.ioc.IocMaking;
+import xyz.noark.core.annotation.Order;
+import xyz.noark.core.annotation.Service;
+import xyz.noark.core.ioc.demo.VipService;
 
 /**
- * List类型的注入.
- * <p>
- * 所有实现此接口或继承此类的都算.
+ * VIP服务实现3.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class ListFieldDefinition extends DefaultFieldDefinition {
+@Service
+@Order(3)
+public class Vip3ServiceImpl implements VipService {
 
-	public ListFieldDefinition(Field field, boolean required) {
-		super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0], required);
+	@Override
+	public String doSomething() {
+		return "3";
 	}
 
 	@Override
-	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-		return making.findAllImpl(fieldClass).stream().sorted((b1, b2) -> b1.getOrder() - b2.getOrder()).map(b -> b.getSingle()).collect(Collectors.toList());
+	public String toString() {
+		return this.getClass().getSimpleName();
 	}
 }

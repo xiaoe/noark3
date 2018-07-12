@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.ioc.BeanDefinition;
 import xyz.noark.core.ioc.FieldDefinition;
@@ -57,6 +58,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	/** 缓存那个单例对象 */
 	protected final Object single;
 	private final Class<?> beanClass;
+	private final int order;// 注入排序值
 	protected final MethodAccess methodAccess;
 	/** 所有需要注入的属性 */
 	private final ArrayList<FieldDefinition> autowiredFields = new ArrayList<>();
@@ -70,6 +72,9 @@ public class DefaultBeanDefinition implements BeanDefinition {
 		this.single = object;
 		this.beanClass = object.getClass();
 		this.methodAccess = MethodAccess.get(beanClass);
+
+		Order order = beanClass.getAnnotation(Order.class);
+		this.order = order == null ? Integer.MAX_VALUE : order.value();
 	}
 
 	public DefaultBeanDefinition init() {
@@ -99,6 +104,15 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	 */
 	public Class<?> getBeanClass() {
 		return beanClass;
+	}
+
+	/**
+	 * 注入排序值.
+	 * 
+	 * @return 排序值
+	 */
+	public int getOrder() {
+		return order;
 	}
 
 	private void analysisMethod() {

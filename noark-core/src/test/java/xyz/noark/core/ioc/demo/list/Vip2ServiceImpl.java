@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc.demo.list;
 
+import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.ioc.demo.VipService;
 
@@ -23,10 +24,16 @@ import xyz.noark.core.ioc.demo.VipService;
  * @author 小流氓(176543888@qq.com)
  */
 @Service
+@Order(2)
 public class Vip2ServiceImpl implements VipService {
 
 	@Override
 	public String doSomething() {
 		return "2";
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
 	}
 }

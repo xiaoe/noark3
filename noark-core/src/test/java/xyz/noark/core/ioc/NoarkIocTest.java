@@ -38,11 +38,12 @@ public class NoarkIocTest {
 		assertNotNull(bagService.getVipService());
 		assertNotNull(bagService.getCommands());
 		assertTrue(bagService.getCommands().size() == 3);
-		assertTrue(bagService.getCommandList().size() == 2);
+		assertTrue(bagService.getCommandList().size() == 3);
 		// Map注入...
 		assertTrue("rmb".equals(bagService.getCommands().get("// add rmb").doSomething()));
 		assertTrue("item".equals(bagService.getCommands().get("// add item").doSomething()));
 		assertTrue("exp".equals(bagService.getCommands().get("// add exp").doSomething()));
 
+		System.out.println(bagService.getCommandList());
 	}
 }
