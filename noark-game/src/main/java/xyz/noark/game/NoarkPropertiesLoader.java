@@ -32,6 +32,7 @@ import xyz.noark.util.StringUtils;
  */
 class NoarkPropertiesLoader {
 	private static final String DEFAULT_PROPERTIES = "application.properties";
+	private static final String TEST_PROPERTIES = "application-test.properties";
 	private static final String PROFILE_PREFIX = "application-";
 	private static final String PROFILE_SUFFIX = ".properties";
 
@@ -49,8 +50,13 @@ class NoarkPropertiesLoader {
 
 		loadPorperties(loader, DEFAULT_PROPERTIES, result);
 
+		// 加载指定的Profile
 		if (StringUtils.isNotEmpty(profile)) {
 			loadPorperties(loader, PROFILE_PREFIX + profile + PROFILE_SUFFIX, result);
+		}
+		// 没有配置的情况，要加载那个Test配置
+		else {
+			loadPorperties(loader, TEST_PROPERTIES, result);
 		}
 
 		// 表达式引用...
