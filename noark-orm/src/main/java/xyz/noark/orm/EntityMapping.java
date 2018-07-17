@@ -54,10 +54,6 @@ public class EntityMapping<T> {
 		this.constructorAccess = ConstructorAccess.get(klass);
 	}
 
-	public Class<T> getKlass() {
-		return klass;
-	}
-
 	public FeatchType getFeatchType() {
 		return featchType;
 	}

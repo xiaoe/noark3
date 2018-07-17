@@ -117,22 +117,22 @@ public class AnnotationEntityMaker {
 			fm.setType(FieldType.AsLocalDateTime);
 		}
 		// 明确标识为JSON类型的属性
-		else if (fm.getJson() != null) {
+		else if (fm.isJson()) {
 			fm.setType(FieldType.AsJson);
 			fm.setWidth(fm.getColumn() == null ? 1024 : fm.getColumn().length());
 		}
 		// 整型
-		else if (type == int.class || type == Integer.class) {
+		else if (fm.isInt()) {
 			fm.setWidth(8);
 			fm.setType(FieldType.AsInteger);
 		}
 		// 字符串
-		else if (type == String.class) {
+		else if (fm.isString()) {
 			fm.setType(FieldType.AsString);
 			fm.setWidth(fm.getColumn() == null ? 255 : fm.getColumn().length());
 		}
 		// 长整型
-		else if (type == long.class || type == Long.class) {
+		else if (fm.isLong()) {
 			fm.setWidth(16);
 			fm.setType(FieldType.AsLong);
 		}
@@ -141,21 +141,25 @@ public class AnnotationEntityMaker {
 			fm.setType(FieldType.AsInstant);
 		}
 		// 布尔
-		else if (boolean.class == type || Boolean.class == type) {
+		else if (fm.isBoolean()) {
 			fm.setType(FieldType.AsBoolean);
 		}
 		// Float
-		else if (float.class == type || Float.class == type) {
+		else if (fm.isFloat()) {
 			fm.setType(FieldType.AsFloat);
 		}
 		// Double
-		else if (double.class == type || Double.class == type) {
+		else if (fm.isDouble()) {
 			fm.setType(FieldType.AsDouble);
 		}
 		// AtomicInteger
 		else if (type == AtomicInteger.class) {
 			fm.setWidth(8);
 			fm.setType(FieldType.AsAtomicInteger);
+		}
+		// Blob或byte[]
+		else if (fm.isBlob()) {
+			fm.setType(FieldType.AsBlob);
 		}
 		// 其他就是Json类型的.
 		else {

@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.orm.Blob;
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.annotation.orm.Json;
@@ -73,18 +74,6 @@ public class FieldMapping {
 		return column;
 	}
 
-	public Id getId() {
-		return id;
-	}
-
-	public PlayerId getPlayerId() {
-		return playerId;
-	}
-
-	public Json getJson() {
-		return json;
-	}
-
 	public void setColumnName(String columnName) {
 		this.columnName = columnName;
 	}
@@ -101,13 +90,11 @@ public class FieldMapping {
 		return width;
 	}
 
-	// ---------------------
-
 	public FieldType getType() {
 		return type;
 	}
 
-	public void setType(FieldType type) {
+	void setType(FieldType type) {
 		this.type = type;
 	}
 
@@ -117,36 +104,6 @@ public class FieldMapping {
 
 	public boolean isPlayerId() {
 		return playerId != null;
-	}
-
-	public boolean isString() {
-		return CharSequence.class.isAssignableFrom(field.getClass());
-	}
-
-	public boolean isInt() {
-		return klass == int.class || klass == Integer.class;
-	}
-
-	public boolean isLong() {
-		return klass == long.class || klass == Long.class;
-	}
-
-	public boolean isBoolean() {
-		return klass == boolean.class || klass == Boolean.class;
-	}
-
-	/**
-	 * @return 当前对象是否为浮点
-	 */
-	public boolean isFloat() {
-		return klass == float.class || klass == Float.class;
-	}
-
-	/**
-	 * @return 当前对象是否为双精度浮点
-	 */
-	public boolean isDouble() {
-		return klass == double.class || klass == Double.class;
 	}
 
 	public int getPrecision() {
@@ -183,5 +140,45 @@ public class FieldMapping {
 
 	public int getSetMethodIndex() {
 		return setMethodIndex;
+	}
+
+	// ----------- 类型判定 ---------------------------
+
+	public boolean isString() {
+		return String.class == klass;
+	}
+
+	public boolean isBoolean() {
+		return klass == boolean.class || klass == Boolean.class;
+	}
+
+	public boolean isInt() {
+		return klass == int.class || klass == Integer.class;
+	}
+
+	public boolean isLong() {
+		return klass == long.class || klass == Long.class;
+	}
+
+	/**
+	 * @return 当前对象是否为浮点
+	 */
+	public boolean isFloat() {
+		return klass == float.class || klass == Float.class;
+	}
+
+	/**
+	 * @return 当前对象是否为双精度浮点
+	 */
+	public boolean isDouble() {
+		return klass == double.class || klass == Double.class;
+	}
+
+	public boolean isBlob() {
+		return field.isAnnotationPresent(Blob.class) || klass == byte[].class;
+	}
+
+	public boolean isJson() {
+		return json != null;
 	}
 }
