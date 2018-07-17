@@ -38,6 +38,7 @@ public class ValueAdaptorManager {
 		ADAPTOR.put(FieldType.AsJson, new JsonAdaptor());
 		ADAPTOR.put(FieldType.AsLocalDateTime, new LocalDateTimeAdaptor());
 		ADAPTOR.put(FieldType.AsInstant, new InstantAdaptor());
+		ADAPTOR.put(FieldType.AsBlob, new BlobAdaptor());
 	}
 
 	public static AbstractValueAdaptor<?> getValueAdaptor(FieldType type) {
