@@ -56,4 +56,13 @@ public class SimpleMethodDefinition implements MethodDefinition {
 	public Order getOrder() {
 		return method.getAnnotation(Order.class);
 	}
+
+	/**
+	 * 返回当前方法是否为过期的
+	 * 
+	 * @return 如果标识已过期则返回true.
+	 */
+	public boolean isDeprecated() {
+		return method.isAnnotationPresent(Deprecated.class);
+	}
 }

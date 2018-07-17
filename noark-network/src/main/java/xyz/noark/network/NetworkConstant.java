@@ -30,4 +30,23 @@ public class NetworkConstant {
 	public static final String WEBSOCKET_PATH = "network.websocket.path";
 	/** 网络封包日志激活 */
 	public static final String LOG_ACTIVE = "network.log.active";
+
+	/** 向内部提供HTTP服务的端口 */
+	public static final String HTTP_PORT = "network.http.port";
+	/** 向内部提供HTTP服务的密钥 */
+	public static final String HTTP_SECRET_KEY = "network.http.secret.key";
+
+	private static final int CPU_MIN_COUNT = 4;
+	private static final int CPU_MAX_COUNT = 8;
+	public static final int DEFAULT_EVENT_LOOP_THREADS;
+	static {
+		int count = Runtime.getRuntime().availableProcessors();
+		if (count <= CPU_MIN_COUNT) {
+			DEFAULT_EVENT_LOOP_THREADS = count * 2;
+		} else if (count <= CPU_MAX_COUNT) {
+			DEFAULT_EVENT_LOOP_THREADS = count + 4;
+		} else {
+			DEFAULT_EVENT_LOOP_THREADS = 12;
+		}
+	}
 }

@@ -23,9 +23,9 @@ import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
-import xyz.noark.core.ioc.wrap.field.PacketCodecWrapper;
-import xyz.noark.core.ioc.wrap.field.PlayerIdParamWrapper;
-import xyz.noark.core.ioc.wrap.field.SessionParamWrapper;
+import xyz.noark.core.ioc.wrap.param.PacketParamWrapper;
+import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
+import xyz.noark.core.ioc.wrap.param.SessionParamWrapper;
 import xyz.noark.core.network.Session;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -48,6 +48,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();
 		this.printLog = md.isPrintLog();
+		this.deprecated = md.isDeprecated();
 		this.parameters = new ArrayList<>(md.getParameters().length);
 
 		Arrays.stream(md.getParameters()).forEach(v -> buildParamWrapper(v));
@@ -65,7 +66,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 		}
 		// 无法识别的只能依靠Session内置解码器来转化了.
 		else {
-			this.parameters.add(new PacketCodecWrapper(parameter.getType()));
+			this.parameters.add(new PacketParamWrapper(parameter.getType()));
 		}
 	}
 

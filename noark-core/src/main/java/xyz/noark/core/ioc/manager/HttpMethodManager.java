@@ -11,32 +11,37 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package xyz.noark.core.ioc.manager;
 
-import xyz.noark.core.Modular;
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
-import xyz.noark.game.event.delay.DelayEventManager;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 
 /**
- * 事件模块.
+ * HTTP方法管理类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = Modular.EVENT_MODULAR)
-public class EventModular implements Modular {
+public class HttpMethodManager {
+	private final ConcurrentMap<String, HttpMethodWrapper> handlers = new ConcurrentHashMap<>(2048);
+	private static final HttpMethodManager INSTANCE = new HttpMethodManager();
 
-	@Autowired
-	private DelayEventManager eventManager;
+	private HttpMethodManager() {}
 
-	@Override
-	public void init() {
-		eventManager.init();
+	public static HttpMethodManager getInstance() {
+		return INSTANCE;
 	}
 
-	@Override
-	public void destroy() {
-		eventManager.destroy();
+	public void resetHttpHandler(HttpMethodWrapper handler) {
+		if (handlers.containsKey(handler.getUri())) {
+			throw new RuntimeException("重复定义的URI：" + handler.getUri());
+		}
+		handlers.put(handler.getUri(), handler);
+	}
+
+	public HttpMethodWrapper getHttpHandler(String uri) {
+		return handlers.get(uri);
 	}
 }

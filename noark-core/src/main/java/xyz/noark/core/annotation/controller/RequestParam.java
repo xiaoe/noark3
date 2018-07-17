@@ -11,32 +11,45 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package xyz.noark.core.annotation.controller;
 
-import xyz.noark.core.Modular;
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
-import xyz.noark.game.event.delay.DelayEventManager;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 事件模块.
+ * 用于HTTP请求时参数注入
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = Modular.EVENT_MODULAR)
-public class EventModular implements Modular {
+@Documented
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RequestParam {
 
-	@Autowired
-	private DelayEventManager eventManager;
+	/**
+	 * 参数名称，必需要写.
+	 * <p>
+	 * <b>注意：大小写非常敏感</b>
+	 * 
+	 * @return 参数名称
+	 */
+	String name();
 
-	@Override
-	public void init() {
-		eventManager.init();
-	}
+	/**
+	 * 标识此参数是否为必选参数，如果是则必需有，否则请求失败
+	 * 
+	 * @return 是否为必选
+	 */
+	boolean required() default true;
 
-	@Override
-	public void destroy() {
-		eventManager.destroy();
-	}
+	/**
+	 * 当此参数不是必选，此默认值生效.
+	 * 
+	 * @return 默认值
+	 */
+	String defaultValue() default "";
 }

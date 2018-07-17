@@ -21,6 +21,18 @@ package xyz.noark.core;
  * @author 小流氓(176543888@qq.com)
  */
 public interface Modular {
+	/**
+	 * 数据存储模块.
+	 */
+	public static final String DATA_MODULAR = "DataModular";
+	/**
+	 * 异步事件模块.
+	 */
+	public static final String EVENT_MODULAR = "EventModular";
+	/**
+	 * HTTP服务模块.
+	 */
+	public static final String HTTP_MODULAR = "HttpModular";
 
 	/**
 	 * 模块初始化.

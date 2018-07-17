@@ -19,13 +19,17 @@ import java.util.ArrayList;
 
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.EventListener;
+import xyz.noark.core.annotation.controller.HttpHandler;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
+import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.manager.EventMethodManager;
+import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 
 /**
@@ -38,6 +42,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	private final Controller controller;
 	private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
 	private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
+	private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
 
 	public ControllerBeanDefinition(Class<?> klass, Controller controller) {
 		super(klass);
@@ -54,6 +59,10 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		else if (annotationType == EventListener.class) {
 			emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation)));
 		}
+		// HTTP服务
+		else if (annotationType == HttpHandler.class) {
+			hmds.add(new HttpMethodDefinition(methodAccess, method, HttpHandler.class.cast(annotation)));
+		}
 		// 其他的交给父类去处理
 		else {
 			super.analysisMthodByAnnotation(annotationType, annotation, method);
@@ -67,6 +76,14 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		this.doAnalysisPacketHandler(noarkIoc);
 
 		this.doAnalysisEventHandler(noarkIoc);
+
+		this.doAnalysisHttpHandler(noarkIoc);
+	}
+
+	/** 分析HTTP处理入口. */
+	private void doAnalysisHttpHandler(NoarkIoc noarkIoc) {
+		final HttpMethodManager manager = HttpMethodManager.getInstance();
+		hmds.forEach(hmd -> manager.resetHttpHandler(new HttpMethodWrapper(methodAccess, single, hmd, controller)));
 	}
 
 	/** 分析事件处理入口. */

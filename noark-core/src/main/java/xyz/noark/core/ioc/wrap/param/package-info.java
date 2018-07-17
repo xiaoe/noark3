@@ -3,4 +3,4 @@
  *
  * @since 3.0
  */
-package xyz.noark.core.ioc.wrap.field;
+package xyz.noark.core.ioc.wrap.param;

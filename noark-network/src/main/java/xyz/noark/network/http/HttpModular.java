@@ -11,29 +11,31 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc.wrap.field;
+package xyz.noark.network.http;
 
-import java.io.Serializable;
-
-import xyz.noark.core.ioc.wrap.ParamWrapper;
-import xyz.noark.core.network.Session;
-import xyz.noark.core.network.SessionManager;
+import xyz.noark.core.Modular;
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Component;
 
 /**
- * Session对象.
+ * HTTP服务
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SessionParamWrapper implements ParamWrapper {
+@Component(name = Modular.HTTP_MODULAR)
+public class HttpModular implements Modular {
+
+	@Autowired
+	private HttpServer httpServer;
 
 	@Override
-	public Object read(Session session, byte[] bytes) {
-		return session;
+	public void init() {
+		httpServer.startup();
 	}
 
 	@Override
-	public Object read(Serializable playerId, Object protocal) {
-		return SessionManager.getSessionByPlayerId(playerId);
+	public void destroy() {
+		httpServer.shutdown();
 	}
 }

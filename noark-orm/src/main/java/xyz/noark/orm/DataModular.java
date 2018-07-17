@@ -28,7 +28,7 @@ import xyz.noark.orm.write.AsyncWriteService;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = "DataModular")
+@Component(name = Modular.DATA_MODULAR)
 public class DataModular implements Modular {
 	/** 服务器数据存档间隔，单位：秒，默认值：5分钟 */
 	public static final String DATA_SAVE_INERVAL = "data.save.inerval";

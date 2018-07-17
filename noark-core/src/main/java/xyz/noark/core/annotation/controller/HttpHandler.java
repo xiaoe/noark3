@@ -11,28 +11,28 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.ioc.wrap.field;
+package xyz.noark.core.annotation.controller;
 
-import java.io.Serializable;
-
-import xyz.noark.core.ioc.wrap.ParamWrapper;
-import xyz.noark.core.network.Session;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 注入PlayerId.
+ * HttpHandler注解用来标识一个HTTP请求到一个处理方法.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class PlayerIdParamWrapper implements ParamWrapper {
-
-	@Override
-	public Object read(Session session, byte[] bytes) {
-		return session.getPlayerId();
-	}
-
-	@Override
-	public Object read(Serializable playerId, Object protocal) {
-		return playerId;
-	}
+@Documented
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface HttpHandler {
+	/**
+	 * 区服的URI入口
+	 * 
+	 * @return URI
+	 */
+	String uri();
 }

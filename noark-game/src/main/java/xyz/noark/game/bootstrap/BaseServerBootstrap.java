@@ -35,11 +35,12 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	protected NettyServer nettyServer;
 	protected Optional<Modular> dataModular;
 	protected Optional<Modular> eventModular;
+	protected Optional<Modular> httpModular;
 
 	@Override
 	protected void onStart() {
 		// 1、DB检测与缓存初始化
-		dataModular = modularManager.getModular("DataModular");
+		dataModular = modularManager.getModular(Modular.DATA_MODULAR);
 		dataModular.ifPresent(v -> initDataModular(v));
 
 		// 2、重载所有策划模板数据.
@@ -49,10 +50,12 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 		ioc.invokeCustomAnnotationMethod(PostConstruct.class);
 
 		// 4、延迟事件动起来.
-		eventModular = modularManager.getModular("EventModular");
+		eventModular = modularManager.getModular(Modular.EVENT_MODULAR);
 		eventModular.ifPresent(v -> v.init());
 
 		// HTTP服务
+		httpModular = modularManager.getModular(Modular.HTTP_MODULAR);
+		httpModular.ifPresent(v -> v.init());
 
 		// 对外网络...
 		this.initNetworkModular();
@@ -63,7 +66,7 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 		nettyServer.startup();
 	}
 
-	private void initDataModular(Modular modular) {
+	protected void initDataModular(Modular modular) {
 		modular.init();
 		ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);
 	}
@@ -77,6 +80,8 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	protected void onStop() {
 		// 停止对外网络
 		nettyServer.shutdown();
+		// 停止HTTP服务
+		httpModular.ifPresent(v -> v.destroy());
 		// 停止延迟任务调度
 		eventModular.ifPresent(v -> v.destroy());
 

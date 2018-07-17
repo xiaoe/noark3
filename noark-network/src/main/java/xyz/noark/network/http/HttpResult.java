@@ -11,32 +11,47 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package xyz.noark.network.http;
 
-import xyz.noark.core.Modular;
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
-import xyz.noark.game.event.delay.DelayEventManager;
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
- * 事件模块.
+ * HTTP处理结果.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = Modular.EVENT_MODULAR)
-public class EventModular implements Modular {
+public class HttpResult {
+	// 返回编码
+	@JSONField(name = "req")
+	private int req = 0;
+	// 错误信息
+	@JSONField(name = "msg")
+	private String msg = null;
+	// 数据
+	@JSONField(name = "data")
+	private Object data;
 
-	@Autowired
-	private DelayEventManager eventManager;
+	public HttpResult() {}
 
-	@Override
-	public void init() {
-		eventManager.init();
+	public HttpResult(int code) {
+		this.req = code;
 	}
 
-	@Override
-	public void destroy() {
-		eventManager.destroy();
+	public HttpResult(int code, String msg) {
+		this.req = code;
+		this.msg = msg;
+	}
+
+	public int getReq() {
+		return req;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
 	}
 }

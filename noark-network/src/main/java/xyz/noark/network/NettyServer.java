@@ -46,27 +46,12 @@ import xyz.noark.network.log.NettyLoggerFactory;
  */
 @Component(name = "NettyServer")
 public class NettyServer implements TcpServer {
-	private static final int CPU_MIN_COUNT = 4;
-	private static final int CPU_MAX_COUNT = 8;
 
 	/** Boss线程就用一个线程 */
 	private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 	/** Work线程:CPU<=4的话CPU*2,CPU<=8的话CPU+4, 其他直接使用12 */
 	private final EventLoopGroup workGroup;
-
 	private final ServerBootstrap bootstrap;
-
-	private static final int DEFAULT_EVENT_LOOP_THREADS;
-	static {
-		int count = Runtime.getRuntime().availableProcessors();
-		if (count <= CPU_MIN_COUNT) {
-			DEFAULT_EVENT_LOOP_THREADS = count * 2;
-		} else if (count <= CPU_MAX_COUNT) {
-			DEFAULT_EVENT_LOOP_THREADS = count + 4;
-		} else {
-			DEFAULT_EVENT_LOOP_THREADS = 12;
-		}
-	}
 
 	/** Netty监听端口 */
 	@Value(NetworkConstant.PORT)
@@ -95,11 +80,13 @@ public class NettyServer implements TcpServer {
 
 	public NettyServer() {
 		bootstrap = new ServerBootstrap();
-		this.workGroup = new NioEventLoopGroup(workthreads == 0 ? DEFAULT_EVENT_LOOP_THREADS : workthreads);
+		this.workGroup = new NioEventLoopGroup(workthreads == 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workthreads);
 		bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
 
 		// http://www.jianshu.com/p/0bff7c020af2
 		bootstrap.option(ChannelOption.SO_REUSEADDR, true);
+		// Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝。默认值，Windows为200，其他为128。
+		bootstrap.option(ChannelOption.SO_BACKLOG, 65535);
 
 		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
