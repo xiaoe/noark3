@@ -17,6 +17,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import xyz.noark.benchmark.Benchmark;
+
 /**
  * 字符串工具类测试用例.
  *
@@ -24,6 +26,7 @@ import org.junit.Test;
  * @author 小流氓(176543888@qq.com)
  */
 public class StringUtilsTest {
+	private final Benchmark benchmark = new Benchmark(1000_0000);
 
 	@Test
 	public void testIsEmpty() {
@@ -57,5 +60,18 @@ public class StringUtilsTest {
 		assertTrue(StringUtils.split("1,2,3", ",").length == 3);
 		assertTrue(StringUtils.split("1,2,3,", ",").length == 3);
 		assertTrue(StringUtils.split("1,2,3,,,", ",").length == 3);
+	}
+
+	@Test
+	public void asciiSizeInBytes() {
+
+	}
+
+	@Test
+	public void test() throws Exception {
+		long value = Long.MIN_VALUE;
+		assertTrue(StringUtils.asciiSizeInBytes(value) == String.valueOf(value).length());
+		benchmark.doSomething("OKIO的方案:", () -> StringUtils.asciiSizeInBytes(value));
+		benchmark.doSomething("成龙的方案:", () -> String.valueOf(value).length());
 	}
 }

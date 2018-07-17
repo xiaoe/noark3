@@ -30,6 +30,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RandomUtils {
 
 	/**
+	 * 返回一个随机Boolean值.
+	 * 
+	 * @return 随机Boolean值
+	 */
+	public static boolean nextBoolean() {
+		return ThreadLocalRandom.current().nextBoolean();
+	}
+
+	/**
 	 * 返回一个0到指定区间的随机数字.
 	 * <p>
 	 * 0 &lt;= random &lt; bound
