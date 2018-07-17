@@ -18,8 +18,10 @@ import static xyz.noark.log.LogHelper.logger;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
@@ -40,6 +42,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 	@Autowired(required = false)
 	private NetworkListener networkListener;
 
+	/** 心跳功能，默认值为0，则不生效 */
+	@Value(NetworkConstant.HEARTBEAT)
+	protected int heartbeat = 0;
+
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		logger.info("发现客户端链接，channel={}", ctx.channel());
@@ -55,6 +61,14 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 			} finally {
 				SessionManager.removeSession(session);
 			}
+		}
+	}
+
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		super.userEventTriggered(ctx, evt);
+		if (heartbeat > 0 && evt instanceof IdleStateEvent) {
+			ctx.close();// 超时T人.
 		}
 	}
 
