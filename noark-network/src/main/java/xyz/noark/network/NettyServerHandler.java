@@ -15,6 +15,8 @@ package xyz.noark.network;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.io.IOException;
+
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -74,7 +76,9 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.debug("异常，cause={}", cause);
+		if (!(cause instanceof IOException)) {
+			logger.debug("Netty捕获异常，cause={}", cause);
+		}
 	}
 
 	@Override
