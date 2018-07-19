@@ -58,7 +58,8 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	/** 缓存那个单例对象 */
 	protected final Object single;
 	private final Class<?> beanClass;
-	private final int order;// 注入排序值
+	/** 注入排序值 */
+	private final int order;
 	protected final MethodAccess methodAccess;
 	/** 所有需要注入的属性 */
 	private final ArrayList<FieldDefinition> autowiredFields = new ArrayList<>();
