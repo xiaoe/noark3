@@ -52,6 +52,11 @@ public class NettySession extends AbstractSession {
 		return uid;
 	}
 
+	/**
+	 * 设置玩家UID.
+	 * 
+	 * @param uid 玩家UID
+	 */
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
@@ -61,6 +66,13 @@ public class NettySession extends AbstractSession {
 		return playerId;
 	}
 
+	/**
+	 * 设置玩家ID.
+	 * <p>
+	 * 这个值只能在设置玩家UId后调用.
+	 * 
+	 * @param playerId 玩家ID
+	 */
 	public void setPlayerId(Serializable playerId) {
 		this.playerId = playerId;
 	}

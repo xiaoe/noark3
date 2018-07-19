@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 import xyz.noark.core.annotation.controller.PacketMapping;
+import xyz.noark.core.network.Session;
 import xyz.noark.reflectasm.MethodAccess;
 
 /**
@@ -45,6 +46,10 @@ public class PacketMethodDefinition extends SimpleMethodDefinition {
 
 	public boolean isInnerPacket() {
 		return packetMapping.inner();
+	}
+
+	public Session.State getState() {
+		return packetMapping.state();
 	}
 
 	@Override

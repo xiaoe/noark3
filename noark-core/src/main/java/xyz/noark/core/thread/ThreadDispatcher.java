@@ -79,6 +79,12 @@ public class ThreadDispatcher {
 			return;
 		}
 
+		// 权限
+		if (pmw.getState() != session.getState()) {
+			logger.warn(" ^0^ session state error. opcode={}, playerId={}", opcode, session.getPlayerId());
+			return;
+		}
+
 		// 增加协议计数.
 		pmw.incrCount();
 

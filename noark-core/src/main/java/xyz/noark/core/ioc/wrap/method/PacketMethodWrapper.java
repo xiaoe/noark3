@@ -38,6 +38,7 @@ import xyz.noark.reflectasm.MethodAccess;
 public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private final Integer opcode;
 	private final boolean inner;
+	private final Session.State state;
 	private final ArrayList<ParamWrapper> parameters;
 
 	/** 当前方法是否已废弃使用. */
@@ -45,6 +46,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 
 	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, Controller controller) {
 		super(methodAccess, single, md.getMethodIndex(), controller, md.getOrder());
+		this.state = md.getState();
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();
 		this.printLog = md.isPrintLog();
@@ -136,6 +138,15 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 */
 	public boolean isInner() {
 		return inner;
+	}
+
+	/**
+	 * 获取当前方法在什么Session状态才可以被执行.
+	 * 
+	 * @return 可执行的Session状态
+	 */
+	public Session.State getState() {
+		return state;
 	}
 
 	public void incrCount() {

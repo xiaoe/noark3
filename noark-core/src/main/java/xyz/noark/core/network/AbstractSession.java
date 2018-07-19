@@ -44,6 +44,15 @@ public abstract class AbstractSession implements Session {
 		return state;
 	}
 
+	/**
+	 * 设计当前Session的状态.
+	 * 
+	 * @param state 状态
+	 */
+	public void setState(State state) {
+		this.state = state;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
