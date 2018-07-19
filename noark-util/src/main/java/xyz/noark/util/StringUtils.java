@@ -284,4 +284,60 @@ public class StringUtils {
 										: v < 1000000000000000000L ? 18 : 19;//
 		return negative ? width + 1 : width;
 	}
+
+	/**
+	 * 拼接字符串.
+	 * 
+	 * @param strings 需要拼接的字串
+	 * @return 拼接后的字符串
+	 */
+	public static String join(String... strings) {
+		int len = 0;
+		for (String str : strings) {
+			len += str.length();
+		}
+		final StringBuilder result = new StringBuilder(len);
+		for (String str : strings) {
+			result.append(str);
+		}
+		return result.toString();
+	}
+
+	/**
+	 * 拼接字符串.
+	 * <p>
+	 * 在比较长或多的情况计算长度比StringJoiner性能好.<br>
+	 * 
+	 * <pre>
+	 *	StringJoiner result = new StringJoiner(delimiter, prefix, suffix);
+	 *	for (String str : strings) {
+	 *		result.add(str);
+	 *	}
+	 *	return result.toString();
+	 *	
+	 *	Stream.of(strings).collect(Collectors.joining(delimiter, prefix, suffix))
+	 * </pre>
+	 * 
+	 * @param delimiter 分隔符
+	 * @param prefix 前缀
+	 * @param suffix 后缀
+	 * @param strings 需要拼接的字串
+	 * @return 拼接后的字符串
+	 */
+	public static String join(String delimiter, String prefix, String suffix, String... strings) {
+		int len = prefix.length() + suffix.length() + (strings.length - 1) * delimiter.length();
+		for (String str : strings) {
+			len += str.length();
+		}
+		StringBuilder result = new StringBuilder(len);
+		result.append(prefix);
+		for (String str : strings) {
+			result.append(str).append(delimiter);
+		}
+		if (result.length() > prefix.length()) {
+			result.deleteCharAt(result.length() - 1);
+		}
+		result.append(suffix);
+		return result.toString();
+	}
 }

@@ -13,7 +13,11 @@
  */
 package xyz.noark.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -63,15 +67,30 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void asciiSizeInBytes() {
-
-	}
-
-	@Test
-	public void test() throws Exception {
+	public void asciiSizeInBytes() throws Exception {
 		long value = Long.MIN_VALUE;
 		assertTrue(StringUtils.asciiSizeInBytes(value) == String.valueOf(value).length());
 		benchmark.doSomething("OKIO的方案:", () -> StringUtils.asciiSizeInBytes(value));
 		benchmark.doSomething("成龙的方案:", () -> String.valueOf(value).length());
+	}
+
+	@Test
+	public void test() throws Exception {
+		String[] strings = new String[] { "aaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbbbbbbbbbbb" };
+		benchmark.doSomething("join:", () -> StringUtils.join(",", "{", "}", strings));
+		benchmark.doSomething("join1:", () -> join1(",", "{", "}", strings));
+		benchmark.doSomething("join2:", () -> join2(",", "{", "}", strings));
+	}
+
+	private static String join1(String delimiter, String prefix, String suffix, String... strings) {
+		StringJoiner result = new StringJoiner(delimiter, prefix, suffix);
+		for (String str : strings) {
+			result.add(str);
+		}
+		return result.toString();
+	}
+
+	private static String join2(String delimiter, String prefix, String suffix, String... strings) {
+		return Stream.of(strings).collect(Collectors.joining(delimiter, prefix, suffix));
 	}
 }
