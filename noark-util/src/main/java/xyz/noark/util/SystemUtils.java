@@ -34,6 +34,11 @@ public class SystemUtils {
 	public static final boolean IS_OS_LINUX = getOSMatchesName("linux");
 
 	/**
+	 * 如果当前系统为Windows则返回{@code true}.
+	 */
+	public static final boolean IS_OS_WINDOWS = getOSMatchesName("win");
+
+	/**
 	 * 对系统名称匹配结果.
 	 * <p>
 	 * 忽略大小写噢...

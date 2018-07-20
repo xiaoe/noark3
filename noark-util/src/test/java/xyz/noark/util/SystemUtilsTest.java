@@ -11,35 +11,22 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game;
+package xyz.noark.util;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
- * Noark的一些常用配置类.
+ * 系统相关工具类测试.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class NoarkConstant {
+public class SystemUtilsTest {
 
-	/**
-	 * 激活Noark的Profile的Key.
-	 */
-	public static final String NOARK_PROFILES_ACTIVE = "--noark.profiles.active=";
-
-	/**
-	 * 配置区服ID的Key
-	 */
-	public static final String SERVER_ID = "server.id";
-	/**
-	 * 配置区服名称的Key
-	 */
-	public static final String SERVER_NAME = "server.name";
-	/**
-	 * 配置区服是否可以调试的Key
-	 */
-	public static final String SERVER_DEBUG = "server.debug";
-	/**
-	 * 配置区服所需策划模板文件的路径
-	 */
-	public static final String TEMPLATE_PATH = "template.path";
+	@Test
+	public void test() {
+		assertTrue(SystemUtils.IS_OS_WINDOWS);
+	}
 }

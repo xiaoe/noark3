@@ -15,11 +15,16 @@ package xyz.noark.game.bootstrap;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.io.IOException;
+
 import xyz.noark.core.ModularManager;
+import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.game.NoarkConstant;
 import xyz.noark.log.LogManager;
+import xyz.noark.util.SystemUtils;
 
 /**
  * 抽象的启动服务类.
@@ -60,8 +65,10 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			this.ioc = new NoarkIoc(this.getClass().getPackage().getName());
 			this.modularManager = ioc.get(ModularManager.class);
 
-			PacketCodecHolder.setPacketCodec(getPacketCodec());
+			// 服务器启动之前的逻辑...
+			this.onBeginStart();
 
+			// 启动逻辑
 			this.onStart();
 
 			float interval = (System.nanoTime() - startTime) / 1000_000f;
@@ -71,6 +78,22 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			e.printStackTrace();
 			logger.error("failed to starting service:{}", this.getServerName(), e);
 			System.exit(1);
+		}
+	}
+
+	protected void onBeginStart() {
+		PacketCodecHolder.setPacketCodec(getPacketCodec());
+
+		// 如果开启动了Debug模式且为Window那就要添加一个回车停服功能
+		if (SystemUtils.IS_OS_WINDOWS && Boolean.valueOf(EnvConfigHolder.getProperties().getOrDefault(NoarkConstant.SERVER_DEBUG, "false"))) {
+			new Thread(() -> {
+				try {
+					System.in.read();
+				} catch (IOException e) {
+					logger.error("{}", e);
+				}
+				System.exit(0);
+			}, "安全停服：测试启用").start();
 		}
 	}
 
