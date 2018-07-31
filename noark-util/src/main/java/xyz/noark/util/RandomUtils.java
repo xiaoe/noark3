@@ -88,6 +88,10 @@ public class RandomUtils {
 	 * @return 随机返回集合中的一个元素.
 	 */
 	public static <T> T randomList(List<T> list) {
+		// 没有东东的集合，随机个毛线啊...
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
 		return list.get(nextInt(list.size()));
 	}
 
