@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 import xyz.noark.core.lang.PairHashMap;
 import xyz.noark.core.lang.PairMap;
+import xyz.noark.core.lang.TripleHashMap;
+import xyz.noark.core.lang.TripleMap;
 
 /**
  * 抽象实现的模板加载器.
@@ -41,5 +43,10 @@ public abstract class AbstractTemplateLoader implements TemplateLoader {
 	@Override
 	public <L, R, T> PairMap<L, R, T> loadAll(Class<T> klass, Function<? super T, ? extends L> leftMapper, Function<? super T, ? extends R> rightMapper) {
 		return new PairHashMap<>(loadAll(klass), leftMapper, rightMapper);
+	}
+
+	@Override
+	public <L, M, R, T> TripleMap<L, M, R, T> loadAll(Class<T> klass, Function<? super T, ? extends L> leftMapper, Function<? super T, ? extends M> middleMapper, Function<? super T, ? extends R> rightMapper) {
+		return new TripleHashMap<>(loadAll(klass), leftMapper, middleMapper, rightMapper);
 	}
 }

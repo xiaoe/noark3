@@ -47,9 +47,9 @@ public final class ImmutablePair<L, R> extends AbstractPair<L, R> {
 	}
 
 	/** 左边元素 */
-	public final L left;
+	private final L left;
 	/** 右边元素 */
-	public final R right;
+	private final R right;
 
 	/**
 	 * 创建一个抽象对象.

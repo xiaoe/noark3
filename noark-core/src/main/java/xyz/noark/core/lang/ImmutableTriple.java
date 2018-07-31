@@ -14,39 +14,56 @@
 package xyz.noark.core.lang;
 
 /**
- * 一个可变改变两个元素组成的抽象对象实现.
+ * 一个不可变改变三个元素组成的抽象对象实现.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public final class MutablePair<L, R> extends AbstractPair<L, R> {
-	private static final long serialVersionUID = 6743761112060610726L;
+public class ImmutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
+	private static final long serialVersionUID = -6674651089600628940L;
+	@SuppressWarnings("rawtypes")
+	private static final ImmutableTriple NULL = ImmutableTriple.of(null, null, null);
+
+	/**
+	 * 返回一个三null组成的抽象对象.
+	 * 
+	 * @return 一个三null组成的抽象对象.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <L, M, R> ImmutableTriple<L, M, R> nullPair() {
+		return NULL;
+	}
 
 	/**
 	 * 根据参数类型自动推断出一个不可变的抽象对象.
 	 * <p>
 	 * 
 	 * @param left 左边元素
+	 * @param middle 中间元素
 	 * @param right 右边元素
 	 * @return 一个不可变的抽象对象
 	 */
-	public static <L, R> MutablePair<L, R> of(final L left, final R right) {
-		return new MutablePair<>(left, right);
+	public static <L, M, R> ImmutableTriple<L, M, R> of(final L left, final M middle, final R right) {
+		return new ImmutableTriple<>(left, middle, right);
 	}
 
 	/** 左边元素 */
-	private L left;
+	private final L left;
+	/** 中间元素 */
+	private final M middle;
 	/** 右边元素 */
-	private R right;
+	private final R right;
 
 	/**
 	 * 创建一个抽象对象.
 	 * 
 	 * @param left 左边元素
+	 * @param middle 中间元素
 	 * @param right 右边元素
 	 */
-	public MutablePair(final L left, final R right) {
+	public ImmutableTriple(final L left, final M middle, final R right) {
 		this.left = left;
+		this.middle = middle;
 		this.right = right;
 	}
 
@@ -60,32 +77,8 @@ public final class MutablePair<L, R> extends AbstractPair<L, R> {
 		return right;
 	}
 
-	/**
-	 * 设置左边的值
-	 * 
-	 * @param left 左边的值
-	 */
-	public void setLeft(L left) {
-		this.left = left;
-	}
-
-	/**
-	 * 设置右边的值
-	 * 
-	 * @param left 右边的值
-	 */
-	public void setRight(R right) {
-		this.right = right;
-	}
-
-	/**
-	 * 不可变对象，是不可以设计初始值的.<br>
-	 * {@link UnsupportedOperationException}
-	 */
 	@Override
-	public R setValue(final R value) {
-		final R result = getRight();
-		setRight(value);
-		return result;
+	public M getMiddle() {
+		return middle;
 	}
 }

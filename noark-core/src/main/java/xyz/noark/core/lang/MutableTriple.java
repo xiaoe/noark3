@@ -14,28 +14,31 @@
 package xyz.noark.core.lang;
 
 /**
- * 一个可变改变两个元素组成的抽象对象实现.
+ * 一个可变改变三个元素组成的抽象对象实现.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public final class MutablePair<L, R> extends AbstractPair<L, R> {
-	private static final long serialVersionUID = 6743761112060610726L;
+public final class MutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
+	private static final long serialVersionUID = 7749006784321924652L;
 
 	/**
 	 * 根据参数类型自动推断出一个不可变的抽象对象.
 	 * <p>
 	 * 
 	 * @param left 左边元素
+	 * @param middle 中间元素
 	 * @param right 右边元素
 	 * @return 一个不可变的抽象对象
 	 */
-	public static <L, R> MutablePair<L, R> of(final L left, final R right) {
-		return new MutablePair<>(left, right);
+	public static <L, M, R> MutableTriple<L, M, R> of(final L left, final M middle, final R right) {
+		return new MutableTriple<>(left, middle, right);
 	}
 
 	/** 左边元素 */
 	private L left;
+	/** 中间元素 */
+	private M middle;
 	/** 右边元素 */
 	private R right;
 
@@ -43,16 +46,23 @@ public final class MutablePair<L, R> extends AbstractPair<L, R> {
 	 * 创建一个抽象对象.
 	 * 
 	 * @param left 左边元素
+	 * @param middle 中间元素
 	 * @param right 右边元素
 	 */
-	public MutablePair(final L left, final R right) {
+	public MutableTriple(final L left, final M middle, final R right) {
 		this.left = left;
+		this.middle = middle;
 		this.right = right;
 	}
 
 	@Override
 	public L getLeft() {
 		return left;
+	}
+
+	@Override
+	public M getMiddle() {
+		return middle;
 	}
 
 	@Override
@@ -70,22 +80,20 @@ public final class MutablePair<L, R> extends AbstractPair<L, R> {
 	}
 
 	/**
+	 * 设置中间的值
+	 * 
+	 * @param middle 中间的值
+	 */
+	public void setMiddle(M middle) {
+		this.middle = middle;
+	}
+
+	/**
 	 * 设置右边的值
 	 * 
 	 * @param left 右边的值
 	 */
 	public void setRight(R right) {
 		this.right = right;
-	}
-
-	/**
-	 * 不可变对象，是不可以设计初始值的.<br>
-	 * {@link UnsupportedOperationException}
-	 */
-	@Override
-	public R setValue(final R value) {
-		final R result = getRight();
-		setRight(value);
-		return result;
 	}
 }
