@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import xyz.noark.core.lang.PairMap;
+
 /**
  * 模板资源加载器.
  *
@@ -41,8 +43,8 @@ public interface TemplateLoader {
 	 * 加载模板数据.
 	 * 
 	 * <pre>
-	 * Map&lt;Integer, ItemTemplate&lt; itemplates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId);<br>
-	 * Map&lt;String, ItemTemplate&lt; itemplates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getName);
+	 * Map&lt;Integer, ItemTemplate&gt; itemplates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId);<br>
+	 * Map&lt;String, ItemTemplate&gt; itemplates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getName);
 	 * </pre>
 	 * 
 	 * @param <K> Map的主键
@@ -52,4 +54,21 @@ public interface TemplateLoader {
 	 * @return 模板数据Map集合
 	 */
 	public <K, T> Map<K, T> loadAll(Class<T> klass, Function<? super T, ? extends K> keyMapper);
+
+	/**
+	 * 加载模板数据.
+	 * 
+	 * <pre>
+	 * PairMap&lt;Integer, Integer, ItemTemplate&gt; itemplates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId, ItemTemplate::getLevel);<br>
+	 * </pre>
+	 * 
+	 * @param <L> Map的主键之左边元素
+	 * @param <R> Map的主键之右边元素
+	 * @param <T> 加载模板类类型
+	 * @param klass 模板类
+	 * @param leftMapper 左边元素
+	 * @param rightMapper 右边元素
+	 * @return 模板数据Map集合
+	 */
+	public <L, R, T> PairMap<L, R, T> loadAll(Class<T> klass, Function<? super T, ? extends L> leftMapper, Function<? super T, ? extends R> rightMapper);
 }
