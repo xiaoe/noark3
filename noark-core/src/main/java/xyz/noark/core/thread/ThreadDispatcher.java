@@ -21,7 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import xyz.noark.core.annotation.Component;
+import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.PlayerEvent;
 import xyz.noark.core.exception.UnrealizedException;
@@ -41,16 +41,26 @@ import xyz.noark.core.thread.command.SystemThreadCommand;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = "ThreadDispatcher")
+@Service
 public class ThreadDispatcher {
-	/** 非场景类的线程池... */
-	private final ExecutorService logicPool;
-	/** 非场景线程处理的任务队列 */
-	private final TimeoutHashMap<Serializable, TaskQueue> logicPoolTaskQueue;
+	private static final int SHUTDOWN_MAX_TIME = 10;
+	/** 处理业务逻辑的线程池... */
+	private ExecutorService businessThreadPool;
+	/** 处理业务逻辑的任务队列 */
+	private TimeoutHashMap<Serializable, TaskQueue> businessThreadPoolTaskQueue;
 
-	public ThreadDispatcher() {
-		this.logicPool = new ThreadPoolExecutor(8, 8, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new NamedThreadFactory("logic"));
-		this.logicPoolTaskQueue = new TimeoutHashMap<>(1, TimeUnit.MINUTES, () -> new TaskQueue(logicPool));
+	public ThreadDispatcher() {}
+
+	/**
+	 * 初始线程调度器的配置.
+	 * 
+	 * @param poolSize 处理业务逻辑的线程数量
+	 * @param threadNamePrefix 线程名称前缀
+	 * @param timeout 队列超时销毁时间，单位：分钟
+	 */
+	public void init(int poolSize, String threadNamePrefix, int timeout) {
+		this.businessThreadPool = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new NamedThreadFactory(threadNamePrefix));
+		this.businessThreadPoolTaskQueue = new TimeoutHashMap<>(timeout, TimeUnit.MINUTES, () -> new TaskQueue(businessThreadPool));
 	}
 
 	/**
@@ -142,13 +152,13 @@ public class ThreadDispatcher {
 
 	/** 派发给系统线程处理的逻辑. */
 	void dispatchSystemThreadHandle(SystemThreadCommand command) {
-		TaskQueue taskQueue = logicPoolTaskQueue.get(command.getModule());
+		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
 		taskQueue.submit(new AsyncTask(taskQueue, command));
 	}
 
 	/** 派发给玩家线程处理的逻辑. */
 	void dispatchPlayerThreadHandle(PlayerThreadCommand command) {
-		TaskQueue taskQueue = logicPoolTaskQueue.get(command.getPlayerId());
+		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
 		taskQueue.submit(new AsyncTask(taskQueue, command));
 	}
 
@@ -169,6 +179,24 @@ public class ThreadDispatcher {
 			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
+		}
+	}
+
+	/**
+	 * 停止接受新的任务，把老的都处理掉.
+	 */
+	public void shutdown() {
+		logger.info("开始通知停止处理业务逻辑的线程池停止服务.");
+		businessThreadPool.shutdown();
+		try {
+			if (!businessThreadPool.awaitTermination(SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
+				businessThreadPool.shutdownNow();
+			}
+			logger.info("处理业务逻辑的线程池已停止服务");
+		} catch (InterruptedException ie) {
+			logger.error("停止处理业务逻辑的线程池时发生异常.", ie);
+			businessThreadPool.shutdownNow();
+			Thread.currentThread().interrupt();
 		}
 	}
 }

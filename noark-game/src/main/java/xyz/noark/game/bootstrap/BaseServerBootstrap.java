@@ -36,9 +36,14 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	protected Optional<Modular> dataModular;
 	protected Optional<Modular> eventModular;
 	protected Optional<Modular> httpModular;
+	protected Optional<Modular> threadModular;
 
 	@Override
 	protected void onStart() {
+		// 0、线程模型
+		threadModular = modularManager.getModular(Modular.THREAD_MODULAR);
+		threadModular.ifPresent(v -> v.init());
+
 		// 1、DB检测与缓存初始化
 		dataModular = modularManager.getModular(Modular.DATA_MODULAR);
 		dataModular.ifPresent(v -> initDataModular(v));
@@ -86,6 +91,7 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 		eventModular.ifPresent(v -> v.destroy());
 
 		// 等待所有任务处理完
+		threadModular.ifPresent(v -> v.destroy());
 
 		// 保存数据
 		dataModular.ifPresent(v -> v.destroy());

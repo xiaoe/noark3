@@ -22,6 +22,10 @@ package xyz.noark.core;
  */
 public interface Modular {
 	/**
+	 * 线程模块.
+	 */
+	public static final String THREAD_MODULAR = "ThreadModular";
+	/**
 	 * 数据存储模块.
 	 */
 	public static final String DATA_MODULAR = "DataModular";
