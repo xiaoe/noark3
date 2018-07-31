@@ -112,4 +112,13 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
 
 		asyncWriteService.update(entityMapping, entity);
 	}
+
+	/**
+	 * 从缓存中获取所有缓存数据.
+	 * 
+	 * @return 所有缓存数据
+	 */
+	public List<T> cacheLoadAll() {
+		return dataCache.loadAll();
+	}
 }

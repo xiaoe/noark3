@@ -69,15 +69,6 @@ public class UniqueCacheRepository<T, K extends Serializable> extends AbstractCa
 	}
 
 	/**
-	 * 从缓存中获取所有缓存数据.
-	 * 
-	 * @return 所有缓存数据
-	 */
-	public List<T> cacheLoadAll() {
-		return dataCache.loadAll();
-	}
-
-	/**
 	 * 根据条件从缓存中获取所有缓存数据.
 	 * 
 	 * @param filter 条件
