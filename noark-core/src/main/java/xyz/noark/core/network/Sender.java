@@ -18,7 +18,7 @@ import java.io.Serializable;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.thread.ThreadDispatcher;
-import xyz.noark.util.ArrayUtils;
+import xyz.noark.core.util.ArrayUtils;
 
 /**
  * 网络层的封包发送工具类.

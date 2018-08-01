@@ -19,7 +19,7 @@ import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.lang.DoubleArrayList;
 import xyz.noark.core.lang.DoubleList;
-import xyz.noark.util.StringUtils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * DoubleList转化器.

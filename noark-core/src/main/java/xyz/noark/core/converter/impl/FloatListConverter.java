@@ -19,7 +19,7 @@ import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.lang.FloatArrayList;
 import xyz.noark.core.lang.FloatList;
-import xyz.noark.util.StringUtils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * FloatList转化器.

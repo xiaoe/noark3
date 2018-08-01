@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import xyz.noark.core.exception.ServerBootstrapException;
-import xyz.noark.util.StringUtils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * 属性文件加载器.

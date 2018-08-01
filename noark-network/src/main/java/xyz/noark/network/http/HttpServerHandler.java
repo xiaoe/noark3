@@ -48,8 +48,8 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
-import xyz.noark.util.Md5Utils;
-import xyz.noark.util.StringUtils;
+import xyz.noark.core.util.Md5Utils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * HTTP封包处理逻辑类.

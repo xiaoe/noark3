@@ -16,9 +16,9 @@ package xyz.noark.game;
 import java.util.Map;
 
 import xyz.noark.core.env.EnvConfigHolder;
+import xyz.noark.core.util.ClassUtils;
 import xyz.noark.game.bootstrap.ServerBootstrap;
 import xyz.noark.log.LogManager;
-import xyz.noark.util.ClassUtils;
 
 /**
  * Noark系统初始化.

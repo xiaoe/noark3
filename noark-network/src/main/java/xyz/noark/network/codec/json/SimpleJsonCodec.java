@@ -19,8 +19,8 @@ import com.alibaba.fastjson.JSON;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import xyz.noark.core.util.ByteArrayUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
-import xyz.noark.util.ByteArrayUtils;
 
 /**
  * Json封包解码器.

@@ -1,7 +1,6 @@
 dependencies {
 	compile project(':noark-asm')
 	compile project(':noark-log')
-	compile project(':noark-util')
 
 	testImplementation project(':noark-benchmark')
 }

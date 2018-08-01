@@ -21,10 +21,10 @@ import xyz.noark.core.annotation.orm.Blob;
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.annotation.orm.Json;
+import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.accessor.FieldType;
 import xyz.noark.reflectasm.MethodAccess;
-import xyz.noark.util.FieldUtils;
-import xyz.noark.util.StringUtils;
 
 /**
  * 属性映射描述类.

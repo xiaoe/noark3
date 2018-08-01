@@ -1,6 +1,5 @@
 dependencies {
 	implementation project(':noark-core')
-	implementation project(':noark-util')
 	
 	testImplementation project(':noark-benchmark')
 }

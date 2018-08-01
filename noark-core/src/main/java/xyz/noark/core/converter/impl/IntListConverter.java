@@ -19,7 +19,7 @@ import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.lang.IntArrayList;
 import xyz.noark.core.lang.IntList;
-import xyz.noark.util.StringUtils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * IntList转化器.

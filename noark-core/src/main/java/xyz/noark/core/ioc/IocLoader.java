@@ -35,7 +35,7 @@ import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.ioc.definition.StaticComponentBeanDefinition;
 import xyz.noark.core.ioc.scan.Resource;
 import xyz.noark.core.ioc.scan.ResourceScanning;
-import xyz.noark.util.ClassUtils;
+import xyz.noark.core.util.ClassUtils;
 
 /**
  * 加载IOC容器接管的Bean资源.

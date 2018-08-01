@@ -37,10 +37,10 @@ import xyz.noark.core.ioc.definition.field.MapFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ValueFieldDefinition;
 import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
 import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
+import xyz.noark.core.util.ClassUtils;
+import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.MethodUtils;
 import xyz.noark.reflectasm.MethodAccess;
-import xyz.noark.util.ClassUtils;
-import xyz.noark.util.FieldUtils;
-import xyz.noark.util.MethodUtils;
 
 /**
  * 默认的Bean定义描述类.

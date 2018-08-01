@@ -19,8 +19,8 @@ import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.ioc.IocMaking;
-import xyz.noark.util.FieldUtils;
-import xyz.noark.util.StringUtils;
+import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * Value方式注入配置参数.

@@ -24,7 +24,7 @@ import xyz.noark.core.converter.impl.IntListConverter;
 import xyz.noark.core.converter.impl.IntegerConverter;
 import xyz.noark.core.converter.impl.LongConverter;
 import xyz.noark.core.converter.impl.StringConverter;
-import xyz.noark.util.ClassUtils;
+import xyz.noark.core.util.ClassUtils;
 
 /**
  * 模板转换实现管理类.

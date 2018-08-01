@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import xyz.noark.core.ioc.FieldDefinition;
 import xyz.noark.core.ioc.IocMaking;
-import xyz.noark.util.FieldUtils;
+import xyz.noark.core.util.FieldUtils;
 
 /**
  * 一个被IOC容器所管理的JavaBean定义描述类.

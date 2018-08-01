@@ -28,10 +28,10 @@ import xyz.noark.core.annotation.orm.Entity;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.annotation.orm.Table;
 import xyz.noark.core.exception.NoEntityException;
+import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.accessor.FieldType;
 import xyz.noark.reflectasm.MethodAccess;
-import xyz.noark.util.FieldUtils;
-import xyz.noark.util.StringUtils;
 
 /**
  * 实体对象解析生成器.

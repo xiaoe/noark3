@@ -11,22 +11,31 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.util;
+package xyz.noark.core.util;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import java.io.InputStream;
+import java.util.Optional;
 
 /**
- * 系统相关工具类测试.
+ * 文件操作工具类.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SystemUtilsTest {
+public class FileUtils {
 
-	@Test
-	public void test() {
-		assertTrue(SystemUtils.IS_OS_WINDOWS);
+	/**
+	 * 加载类路径下指定名称文件中的文本.
+	 * 
+	 * @param name 文件名称
+	 * @return 返回文件中的文本
+	 */
+	public static Optional<String> getFileText(String name) {
+		try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(name)) {
+			byte[] bytes = new byte[is.available()];
+			is.read(bytes);
+			return Optional.of(new String(bytes));
+		} catch (Exception e) {}
+		return Optional.empty();
 	}
 }

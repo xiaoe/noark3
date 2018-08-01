@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
-import xyz.noark.util.StringUtils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * Session管理器.

@@ -2,7 +2,7 @@
 rootProject.name = 'noark3'
 
 // 核心工程 
-include "noark-asm", "noark-benchmark", "noark-util", "noark-log", "noark-core"
+include "noark-asm", "noark-benchmark", "noark-log", "noark-core"
 
 // 功能模块
 include "noark-network", "noark-protobuf", "noark-csv", "noark-orm", "noark-redis"

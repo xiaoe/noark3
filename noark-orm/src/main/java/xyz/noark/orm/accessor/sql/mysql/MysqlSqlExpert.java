@@ -13,12 +13,12 @@
  */
 package xyz.noark.orm.accessor.sql.mysql;
 
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.FieldType;
 import xyz.noark.orm.accessor.sql.AbstractSqlExpert;
-import xyz.noark.util.StringUtils;
 
 /**
  * Mysql

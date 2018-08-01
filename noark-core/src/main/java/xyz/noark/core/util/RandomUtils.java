@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.util;
+package xyz.noark.core.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,11 +123,11 @@ public class RandomUtils {
 		}
 
 		// 随机位，最后一个元素向前移动的方式
-		T[] rs = (T[]) source.toArray();
+		Object[] rs = source.toArray();
 		List<T> result = new ArrayList<>(num);
 		for (int i = 0; i < num; i++) {
 			int index = nextInt(rs.length - i);
-			result.add(rs[index]);
+			result.add((T) rs[index]);
 			rs[index] = rs[rs.length - 1 - i];
 		}
 		return result;
@@ -152,6 +152,6 @@ public class RandomUtils {
 				return e.getKey();
 			}
 		}
-		throw new RuntimeException("randomByWeight的实现有Bug：" + random);// ...
+		throw new RuntimeException("randomByWeight的实现有Bug：" + random);
 	}
 }

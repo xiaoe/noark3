@@ -22,9 +22,9 @@ import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.util.SystemUtils;
 import xyz.noark.game.NoarkConstant;
 import xyz.noark.log.LogManager;
-import xyz.noark.util.SystemUtils;
 
 /**
  * 抽象的启动服务类.

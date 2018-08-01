@@ -24,9 +24,9 @@ import com.google.protobuf.GeneratedMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.CorruptedFrameException;
+import xyz.noark.core.util.MethodUtils;
+import xyz.noark.core.util.ProtobufUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
-import xyz.noark.util.MethodUtils;
-import xyz.noark.util.ProtobufUtils;
 
 /**
  * Json封包解码器.
