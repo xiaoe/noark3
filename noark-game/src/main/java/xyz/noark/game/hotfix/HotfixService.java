@@ -22,7 +22,7 @@ import java.lang.instrument.UnmodifiableClassException;
  * 需要在启动命令行添加参数:java -javaagent:agent.jar -jar game-server.jar<br>
  * agent.jar 可以直接使用/noark-game/src/test/resources目录下已准备的
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
 public class HotfixService {

@@ -11,29 +11,33 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.hotfix;
+package xyz.noark.game.script;
 
-import java.lang.instrument.Instrumentation;
+import static xyz.noark.log.LogHelper.logger;
+
+import groovy.lang.GroovyClassLoader;
+import xyz.noark.core.util.ExceptionUtils;
 
 /**
- * JavaAgent是一种能够在运行状态下动态修改字节码.
- * <p>
- * 不能新增方法，不能修改方法参数，不能修改静态常量值...<br>
- * 导出打包需要添加两个参数：
- * 
- * <pre>
- * 	Manifest-Version: 1.0
- *	Premain-Class:xyz.noark.game.hotfix.JavaAgent
- *	Can-Redefine-Classes: true
- * </pre>
- * 
+ * 提供一套可直接执行Groovy脚本的服务类.
+ *
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class JavaAgent {
-	public static Instrumentation INST = null;
+public class GroovyScriptService {
 
-	public static void premain(String agentArgs, Instrumentation inst) {
-		INST = inst;
+	/**
+	 * 执行一段Groovy脚本.
+	 * 
+	 * @param script Groovy脚本
+	 * @return 执行结果
+	 */
+	public String execute(String script) {
+		try (GroovyClassLoader loader = new GroovyClassLoader(GroovyScriptService.class.getClassLoader())) {
+			return ((GroovyScript) loader.parseClass(script).newInstance()).execute();
+		} catch (Exception e) {
+			logger.error("groovy script execute exception.{}", e);
+			return ExceptionUtils.toString(e);
+		}
 	}
 }
