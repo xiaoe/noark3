@@ -20,6 +20,10 @@ package xyz.noark.core.util;
  * @author 小流氓(176543888@qq.com)
  */
 public class ByteArrayUtils {
+	/**
+	 * 一个空的字节数组.
+	 */
+	public static final byte[] EMPTY_BYTE_ARRAY = {};
 
 	/**
 	 * 一个short类型的数字转化为2位byte数组

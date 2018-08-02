@@ -47,6 +47,18 @@ public class HttpResult {
 		return req;
 	}
 
+	public void setReq(int req) {
+		this.req = req;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
 	public Object getData() {
 		return data;
 	}
