@@ -44,7 +44,7 @@ public class DelayEventManager implements EventManager {
 	}
 
 	public void destroy() {
-		handler.setStarting(false);
+		handler.shutdown();
 	}
 
 	@Override

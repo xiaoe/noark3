@@ -15,7 +15,9 @@ package xyz.noark.game.event.delay;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.DelayQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 延迟事件处理线程.
@@ -24,6 +26,7 @@ import java.util.concurrent.DelayQueue;
  * @author 小流氓(176543888@qq.com)
  */
 class DelayEventThread extends Thread {
+	private static final int SHUTDOWN_TIMEOUT = 1;
 	private static final DelayQueue<DelayEvent> QUEUE = new DelayQueue<>();
 	private final DelayEventManager eventManager;
 	private volatile boolean starting = true;
@@ -38,20 +41,18 @@ class DelayEventThread extends Thread {
 		logger.info("延迟任务调度线程开始啦...");
 		while (starting) {
 			try {
-				eventManager.notifyListeners(QUEUE.take());
+				DelayEvent event = QUEUE.take();
+				if (event instanceof ShutdownEvent) {
+					logger.info("延迟任务调度线程停止啦...");
+					this.starting = false;
+					((ShutdownEvent) event).countDown();
+				} else {
+					eventManager.notifyListeners(event);
+				}
 			} catch (Throwable e) {
 				logger.error("调度线程异常", e);
 			}
 		}
-		logger.info("延迟任务调度线程停止啦...");
-	}
-
-	public boolean isStarting() {
-		return starting;
-	}
-
-	public void setStarting(boolean starting) {
-		this.starting = starting;
 	}
 
 	public boolean addDelayEvent(DelayEvent event) {
@@ -60,5 +61,18 @@ class DelayEventThread extends Thread {
 
 	public boolean remove(DelayEvent event) {
 		return QUEUE.remove(event);
+	}
+
+	/**
+	 * 停止执行延迟事件.
+	 */
+	public void shutdown() {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		this.addDelayEvent(new ShutdownEvent(countDownLatch));
+		try {
+			countDownLatch.await(SHUTDOWN_TIMEOUT, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			logger.warn("shutdown event exec exception. {}", e);
+		}
 	}
 }

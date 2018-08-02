@@ -14,25 +14,40 @@
 package xyz.noark.game.event.delay;
 
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Delayed;
-
-import xyz.noark.core.event.Event;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 延迟事件.
- * <p>
- * 在事件的基础上添加一个延迟执行的功能.<br>
- * <b>一定要重新HashCode和equals</b>
+ * 停服事件.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface DelayEvent extends Event, Delayed {
+public class ShutdownEvent implements DelayEvent {
+	private final CountDownLatch countDownLatch;
+	private final Date endTime = new Date();
 
-	/**
-	 * 获取当前延迟事件的结束时间.
-	 * 
-	 * @return 结束时间
-	 */
-	public Date getEndTime();
+	public ShutdownEvent(CountDownLatch countDownLatch) {
+		this.countDownLatch = countDownLatch;
+	}
+
+	@Override
+	public int compareTo(Delayed o) {
+		return endTime.compareTo(((DelayEvent) o).getEndTime());
+	}
+
+	@Override
+	public long getDelay(TimeUnit unit) {
+		return unit.convert(endTime.getTime() - System.currentTimeMillis(), TimeUnit.NANOSECONDS);
+	}
+
+	@Override
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void countDown() {
+		countDownLatch.countDown();
+	}
 }
