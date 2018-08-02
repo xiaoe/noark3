@@ -73,7 +73,7 @@ class NoarkPropertiesLoader {
 		for (Map.Entry<String, String> e : result.entrySet()) {
 			String value = e.getValue();
 			int startIndex = value.indexOf("${");
-			while (startIndex > 0) {
+			while (startIndex >= 0) {
 				int endIndex = value.indexOf("}", startIndex);
 				if (endIndex > 0) {
 					String elKey = value.substring(startIndex + 2, endIndex);
