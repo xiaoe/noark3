@@ -11,45 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.http;
+package xyz.noark.core.util;
 
-import java.util.HashMap;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.alibaba.fastjson.JSON;
-
-import xyz.noark.core.util.HttpUtils;
-
 /**
- * Http服务器测试
+ * HTTP工具类测试
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class HttpServerTest {
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
+public class HttpUtilsTest {
 
 	@Test
-	public void test() {
-		HttpServer httpServer = new HttpServer();
-		httpServer.setPort(12345);
-		httpServer.setSecretKey("1dcypsz1/2jss1/2j#f00");
-		httpServer.startup();
-
-		HashMap<String, String> params = new HashMap<>();
-		params.put("time", "1533118010926");
-		params.put("sign", "df7a902adaaad47d7e2d9eb5aada4677");
-		params.put("byte", new String("pub!@~#$%^&*(\"\"::;;'')_+lic skdfsdaf ?!@#!$!@$   ".getBytes()));
-
-		System.out.println();
-
-		for (int i = 0; i < 10; i++) {
-			HttpUtils.post("http://192.168.50.40:12345/api/hotfix/", JSON.toJSONString(params));
+	public void testSendGet() {
+		for (int i = 0; i < 5; i++) {
+			HttpUtils.get("http://www.baidu.com");
 		}
 	}
 
+	@Test
+	public void testSendPost() {
+		for (int i = 0; i < 5; i++) {
+			HttpUtils.post("http://www.baidu.com", "params");
+		}
+	}
 }
