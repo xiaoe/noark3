@@ -23,7 +23,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
@@ -47,6 +49,24 @@ public class HttpServer implements TcpServer {
 	@Value(NetworkConstant.HTTP_SECRET_KEY)
 	private String secretKey = null;
 
+	/**
+	 * 设置端口.
+	 * 
+	 * @param port 端口
+	 */
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	/**
+	 * 设置密钥.
+	 * 
+	 * @param secretKey 密钥
+	 */
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
+
 	@Override
 	public void startup() {
 		logger.info("game http server start on {}", port);
@@ -62,6 +82,8 @@ public class HttpServer implements TcpServer {
 			public void initChannel(SocketChannel ch) {
 				ChannelPipeline p = ch.pipeline();
 				p.addLast(new HttpServerCodec());
+				p.addLast(new HttpObjectAggregator(65536));
+				p.addLast(new ChunkedWriteHandler());
 				p.addLast(new HttpServerHandler(secretKey));
 			}
 		});

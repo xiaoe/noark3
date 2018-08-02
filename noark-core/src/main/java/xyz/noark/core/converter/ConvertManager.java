@@ -36,7 +36,7 @@ import xyz.noark.core.util.ClassUtils;
  */
 public class ConvertManager {
 	private static final ConvertManager INSTANCE = new ConvertManager();
-	private static final Map<Class<?>, Converter<?>> CONVERTERS = new HashMap<>();
+	private static final Map<Class<?>, Converter<?>> CONVERTERS = new HashMap<>(128);
 
 	static {
 		INSTANCE.regist(BooleanConverter.class);
@@ -46,6 +46,7 @@ public class ConvertManager {
 		INSTANCE.regist(FloatConverter.class);
 		INSTANCE.regist(IntListConverter.class);
 		INSTANCE.regist(FloatListConverter.class);
+		// 使用了IOC功能，有自动扫描功能了，就不再需要手工添加...
 	}
 
 	private ConvertManager() {}

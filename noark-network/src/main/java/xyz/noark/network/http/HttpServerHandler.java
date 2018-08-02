@@ -13,9 +13,6 @@
  */
 package xyz.noark.network.http;
 
-import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.io.IOException;
@@ -27,20 +24,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.handler.codec.http.multipart.Attribute;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.util.AsciiString;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
@@ -59,15 +54,10 @@ import xyz.noark.core.util.StringUtils;
  */
 public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-	private static final AsciiString CONTENT_TYPE = new AsciiString("Content-Type");
-	private static final AsciiString CONTENT_LENGTH = new AsciiString("Content-Length");
-	private static final AsciiString CONNECTION = new AsciiString("Connection");
-	private static final AsciiString KEEP_ALIVE = new AsciiString("keep-alive");
 	private static final String SIGN = "sign";// 签名Key...
 	private static final String TIME = "time";// 时间戳Key...
 
 	private final String secretKey;
-	private HttpRequest request;// 缓存一下请求...
 
 	public HttpServerHandler(String secretKey) {
 		this.secretKey = secretKey;
@@ -80,31 +70,16 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		if (msg instanceof HttpRequest) {
-			request = (HttpRequest) msg;
-			logger.info("http request. uri={}", request.uri());
-			if (HttpUtil.is100ContinueExpected(request)) {
-				ctx.write(new DefaultFullHttpResponse(HTTP_1_1, CONTINUE));
-			}
-		} else if (msg instanceof HttpContent) {
-			HttpResult result = this.exec(request, (HttpContent) msg);
-
-			FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(JSON.toJSONString(result).getBytes(DEFAULT_CHARSET)));
-			response.headers().set(CONTENT_TYPE, "text/plain");
-			response.headers().setInt(CONTENT_LENGTH, response.content().readableBytes());
-
-			if (HttpUtil.isKeepAlive(request)) {
-				response.headers().set(CONNECTION, KEEP_ALIVE);
-				ctx.write(response);
-			} else {
-				ctx.write(response).addListener(ChannelFutureListener.CLOSE);
-			}
+		if (msg instanceof FullHttpRequest) {
+			HttpResult result = this.exec((FullHttpRequest) msg);
+			ByteBuf buf = Unpooled.wrappedBuffer(JSON.toJSONString(result).getBytes(DEFAULT_CHARSET));
+			FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
+			ctx.write(response).addListener(ChannelFutureListener.CLOSE);
 		}
 	}
 
-	private HttpResult exec(HttpRequest req, HttpContent content) {
-		QueryStringDecoder queryStringDecoder = new QueryStringDecoder(req.uri(), DEFAULT_CHARSET);
-		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(queryStringDecoder.path());
+	private HttpResult exec(FullHttpRequest fhr) {
+		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(fhr.uri());
 
 		// API不存在...
 		if (handler == null) {
@@ -116,15 +91,26 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			return new HttpResult(HttpErrorCode.API_DEPRECATED, "client request's API Deprecated.");
 		}
 
+		// 解析参数...
+		Map<String, String> parameters = Collections.emptyMap();
+		try {
+			final ByteBuf buf = fhr.content();
+			byte[] bs = new byte[buf.readableBytes()];
+			buf.readBytes(bs);
+			parameters = JSON.parseObject(new String(bs), new TypeReference<Map<String, String>>() {});
+		} catch (Exception e) {
+			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters not json.");
+		}
+
 		// 签名失败...
-		if (!checkSign(queryStringDecoder)) {
+		if (!checkSign(parameters.getOrDefault(TIME, StringUtils.EMPTY), parameters.get(SIGN))) {
 			return new HttpResult(HttpErrorCode.SIGN_FAILED, "client request's sign failed.");
 		}
 
 		// 参数解析...
 		Object[] args = null;
 		try {
-			args = this.analysisParam(handler, req, content);
+			args = this.analysisParam(handler, fhr.uri(), parameters);
 		} catch (Exception e) {
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters are invalid, " + e.getMessage());
 		}
@@ -146,30 +132,27 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		}
 	}
 
-	public Object[] analysisParam(HttpMethodWrapper handler, HttpRequest request, HttpContent content) throws IOException {
+	public Object[] analysisParam(HttpMethodWrapper handler, String uri, Map<String, String> parameters) throws IOException {
 		if (handler.getParameters().isEmpty()) {// 如果没有参数，返回null.
 			return null;
 		}
 
 		List<Object> args = new ArrayList<>(handler.getParameters().size());
-		HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(request);
-		decoder.offer(content);
-
 		for (HttpParamWrapper param : handler.getParameters()) {
-			Attribute data = (Attribute) decoder.getBodyHttpData(param.getName());
 			Converter<?> converter = this.getConverter(param.getParameter());
+			String data = parameters.get(param.getName());
 
 			if (param.getRequestParam().required() || data != null) {
 				try {
-					args.add(converter.convert(data.getValue()));
+					args.add(converter.convert(data));
 				} catch (Exception e) {
-					throw new ConvertException("HTTP request param error. uri=" + request.uri() + "," + param.getName() + "=" + data.getValue() + "-->" + converter.buildErrorMsg(), e);
+					throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + "=" + data + "-->" + converter.buildErrorMsg(), e);
 				}
 			} else {
 				try {
 					args.add(converter.convert(param.getRequestParam().defaultValue()));
 				} catch (Exception e) {
-					throw new ConvertException("HTTP request default param error. uri=" + request.uri() + "," + param.getName() + "=" + param.getRequestParam().defaultValue() + "-->" + converter.buildErrorMsg(), e);
+					throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getRequestParam().defaultValue() + "-->" + converter.buildErrorMsg(), e);
 				}
 			}
 		}
@@ -187,23 +170,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	/**
 	 * 检测签名.
 	 */
-	public boolean checkSign(QueryStringDecoder decoder) {
-		// 如果未配置密钥，则不对签名认证...
-		if (StringUtils.isEmpty(secretKey)) {
-			return true;
-		}
-
-		Map<String, List<String>> parameters = decoder.parameters();
-		List<String> times = parameters.getOrDefault(TIME, Collections.emptyList());
-		if (times.isEmpty()) {
-			return false;
-		}
-		List<String> signs = parameters.getOrDefault(SIGN, Collections.emptyList());
-		if (signs.isEmpty()) {
-			return false;
-		}
-		String time = times.get(0);
-		String sign = signs.get(0);
+	private boolean checkSign(String time, String sign) {
 		return Md5Utils.encrypt(new StringBuilder(time.length() + secretKey.length() + 1).append(secretKey).append("+").append(time).toString()).equalsIgnoreCase(sign);
 	}
 
