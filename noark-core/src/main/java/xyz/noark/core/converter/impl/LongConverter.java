@@ -14,7 +14,7 @@
 package xyz.noark.core.converter.impl;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 
 /**
  * Long转化器.
@@ -23,7 +23,7 @@ import xyz.noark.core.converter.Converter;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter({ long.class, Long.class })
-public class LongConverter implements Converter<Long> {
+public class LongConverter extends AbstractConverter<Long> {
 
 	@Override
 	public Long convert(String value) {

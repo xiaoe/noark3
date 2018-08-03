@@ -14,7 +14,7 @@
 package xyz.noark.core.converter.impl;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 
 /**
  * Double转化器.
@@ -23,7 +23,7 @@ import xyz.noark.core.converter.Converter;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter({ Double.class, double.class })
-public class DoubleConverter implements Converter<Double> {
+public class DoubleConverter extends AbstractConverter<Double> {
 
 	@Override
 	public Double convert(String value) {

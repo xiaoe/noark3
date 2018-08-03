@@ -117,7 +117,7 @@ public class Csv {
 
 			Converter<?> converter = this.getConverter(field);
 			try {
-				FieldUtils.writeField(result, field, converter.convert(value));
+				FieldUtils.writeField(result, field, converter.convert(field, value));
 			} catch (Exception e) {
 				throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
 			}

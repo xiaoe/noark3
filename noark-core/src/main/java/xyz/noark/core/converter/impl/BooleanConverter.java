@@ -14,7 +14,7 @@
 package xyz.noark.core.converter.impl;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 
 /**
  * Boolean转化器.
@@ -25,7 +25,7 @@ import xyz.noark.core.converter.Converter;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter({ boolean.class, Boolean.class })
-public class BooleanConverter implements Converter<Boolean> {
+public class BooleanConverter extends AbstractConverter<Boolean> {
 
 	@Override
 	public Boolean convert(String value) {

@@ -13,36 +13,41 @@
  */
 package xyz.noark.core.converter.impl;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import xyz.noark.core.annotation.DateTimeFormat;
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.AbstractConverter;
-import xyz.noark.core.lang.IntArrayList;
-import xyz.noark.core.lang.IntList;
-import xyz.noark.core.util.StringUtils;
+import xyz.noark.core.converter.Converter;
 
 /**
- * IntList转化器.
+ * Date类型的转化器.
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-@TemplateConverter({ IntList.class, IntArrayList.class })
-public class IntListConverter extends AbstractConverter<IntList> {
-	@Override
-	public IntList convert(String value) {
-		if (StringUtils.isEmpty(value)) {
-			return new IntArrayList();
-		}
-
-		String[] array = StringUtils.split(value, ",");
-		IntList result = new IntArrayList(array.length);
-		Arrays.stream(array).forEach(v -> result.add(Integer.parseInt(v)));
-		return result;
-	}
+@TemplateConverter(Date.class)
+public class DateConverter implements Converter<Date> {
 
 	@Override
 	public String buildErrorMsg() {
-		return "数字类型的数组应该是以英文逗号分隔的，如：1,2,3,4";
+		return "不是一个Date类型的字符串";
+	}
+
+	@Override
+	public Date convert(Field field, String value) throws Exception {
+		return this.convert(field.getAnnotation(DateTimeFormat.class), value);
+	}
+
+	@Override
+	public Date convert(Parameter parameter, String value) throws Exception {
+		return this.convert(parameter.getAnnotation(DateTimeFormat.class), value);
+	}
+
+	private Date convert(DateTimeFormat foramt, String value) throws ParseException {
+		return new SimpleDateFormat(foramt == null ? "yyyy-MM-dd HH:mm:ss" : foramt.pattern()).parse(value);
 	}
 }

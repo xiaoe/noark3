@@ -14,7 +14,7 @@
 package xyz.noark.core.converter.impl;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 
 /**
  * Float转化器.
@@ -23,7 +23,7 @@ import xyz.noark.core.converter.Converter;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter({ Float.class, float.class })
-public class FloatConverter implements Converter<Float> {
+public class FloatConverter extends AbstractConverter<Float> {
 
 	@Override
 	public Float convert(String value) {

@@ -16,7 +16,7 @@ package xyz.noark.core.converter.impl;
 import java.util.Arrays;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 import xyz.noark.core.lang.DoubleArrayList;
 import xyz.noark.core.lang.DoubleList;
 import xyz.noark.core.util.StringUtils;
@@ -28,7 +28,7 @@ import xyz.noark.core.util.StringUtils;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter({ DoubleList.class, DoubleArrayList.class })
-public class DoubleListConverter implements Converter<DoubleList> {
+public class DoubleListConverter extends AbstractConverter<DoubleList> {
 	@Override
 	public DoubleList convert(String value) {
 		if (StringUtils.isEmpty(value)) {

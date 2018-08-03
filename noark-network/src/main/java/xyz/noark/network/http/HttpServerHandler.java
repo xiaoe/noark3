@@ -144,13 +144,13 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
 			if (param.getRequestParam().required() || data != null) {
 				try {
-					args.add(converter.convert(data));
+					args.add(converter.convert(param.getParameter(), data));
 				} catch (Exception e) {
 					throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + "=" + data + "-->" + converter.buildErrorMsg(), e);
 				}
 			} else {
 				try {
-					args.add(converter.convert(param.getRequestParam().defaultValue()));
+					args.add(converter.convert(param.getParameter(), param.getRequestParam().defaultValue()));
 				} catch (Exception e) {
 					throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getRequestParam().defaultValue() + "-->" + converter.buildErrorMsg(), e);
 				}

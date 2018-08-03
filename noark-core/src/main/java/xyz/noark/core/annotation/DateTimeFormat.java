@@ -11,39 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.util;
+package xyz.noark.core.annotation;
 
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
-
-import xyz.noark.core.lang.TimeoutHashMap;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 锁工具类.
+ * 提供由字符串转化日期的相关参数.
  *
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public final class LockUtils {
-	/** 5分钟的缓存时间 */
-	private static final int DURATION = 5;
-	/**
-	 * 零长度的byte数组对象创建起来将比任何对象都经济<br>
-	 * 查看编译后的字节码：生成零长度的byte[]对象只需3条操作码，<br>
-	 * 而Object lock = new Object()则需要7行操作码
-	 */
-	private static final TimeoutHashMap<Serializable, byte[]> LOCKER_STORE = new TimeoutHashMap<>(DURATION, TimeUnit.MINUTES, () -> new byte[0]);
-
-	private LockUtils() {}
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
+public @interface DateTimeFormat {
 
 	/**
-	 * 获取个人锁.
-	 * <p>
+	 * 字符串转化日期时所需具体格式化样式.
 	 * 
-	 * @param id 要锁的唯一ID.
-	 * @return 个人锁
+	 * @return 格式化样式
 	 */
-	public static Object getLock(Serializable id) {
-		return LOCKER_STORE.get(id);
-	}
+	String pattern() default "yyyy-MM-dd HH:mm:ss";
 }

@@ -16,7 +16,7 @@ package xyz.noark.core.converter.impl;
 import java.util.Arrays;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 import xyz.noark.core.lang.FloatArrayList;
 import xyz.noark.core.lang.FloatList;
 import xyz.noark.core.util.StringUtils;
@@ -28,7 +28,7 @@ import xyz.noark.core.util.StringUtils;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter({ FloatList.class, FloatArrayList.class })
-public class FloatListConverter implements Converter<FloatList> {
+public class FloatListConverter extends AbstractConverter<FloatList> {
 	@Override
 	public FloatList convert(String value) {
 		if (StringUtils.isEmpty(value)) {

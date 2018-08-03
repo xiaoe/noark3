@@ -14,7 +14,7 @@
 package xyz.noark.core.converter.impl;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 import xyz.noark.core.util.ByteArrayUtils;
 import xyz.noark.core.util.StringUtils;
 
@@ -25,7 +25,7 @@ import xyz.noark.core.util.StringUtils;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter(byte[].class)
-public class ByteArrayConverter implements Converter<byte[]> {
+public class ByteArrayConverter extends AbstractConverter<byte[]> {
 
 	@Override
 	public byte[] convert(String value) throws Exception {

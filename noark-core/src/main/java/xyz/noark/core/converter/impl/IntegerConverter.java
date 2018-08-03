@@ -14,7 +14,7 @@
 package xyz.noark.core.converter.impl;
 
 import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.Converter;
+import xyz.noark.core.converter.AbstractConverter;
 
 /**
  * Integer转化器.
@@ -23,7 +23,7 @@ import xyz.noark.core.converter.Converter;
  * @author 小流氓(176543888@qq.com)
  */
 @TemplateConverter({ int.class, Integer.class })
-public class IntegerConverter implements Converter<Integer> {
+public class IntegerConverter extends AbstractConverter<Integer> {
 
 	@Override
 	public Integer convert(String value) {

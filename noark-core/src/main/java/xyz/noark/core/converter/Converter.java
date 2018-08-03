@@ -13,6 +13,9 @@
  */
 package xyz.noark.core.converter;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
+
 /**
  * 转化接口.
  *
@@ -22,13 +25,24 @@ package xyz.noark.core.converter;
 public interface Converter<T> {
 
 	/**
-	 * 将一个字符串转化成目标对象.
+	 * 将一个字符串转化成目标对象
 	 * 
+	 * @param field 类的属性
 	 * @param value 字符串
 	 * @return 目标对象
 	 * @throws Exception 转化字符串时可能出现不可知异常情况
 	 */
-	public T convert(String value) throws Exception;
+	public T convert(Field field, String value) throws Exception;
+
+	/**
+	 * 将一个字符串转化成目标对象
+	 * 
+	 * @param parameter 方法的参数
+	 * @param value 字符串
+	 * @return 目标对象
+	 * @throws Exception 转化字符串时可能出现不可知异常情况
+	 */
+	public T convert(Parameter parameter, String value) throws Exception;
 
 	/**
 	 * 构建错误提示.

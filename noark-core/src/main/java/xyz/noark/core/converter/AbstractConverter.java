@@ -11,39 +11,35 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.util;
+package xyz.noark.core.converter;
 
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
-
-import xyz.noark.core.lang.TimeoutHashMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 
 /**
- * 锁工具类.
+ * 抽象实现的转化器.
  *
- * @since 3.1
+ * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public final class LockUtils {
-	/** 5分钟的缓存时间 */
-	private static final int DURATION = 5;
-	/**
-	 * 零长度的byte数组对象创建起来将比任何对象都经济<br>
-	 * 查看编译后的字节码：生成零长度的byte[]对象只需3条操作码，<br>
-	 * 而Object lock = new Object()则需要7行操作码
-	 */
-	private static final TimeoutHashMap<Serializable, byte[]> LOCKER_STORE = new TimeoutHashMap<>(DURATION, TimeUnit.MINUTES, () -> new byte[0]);
+public abstract class AbstractConverter<T> implements Converter<T> {
 
-	private LockUtils() {}
-
-	/**
-	 * 获取个人锁.
-	 * <p>
-	 * 
-	 * @param id 要锁的唯一ID.
-	 * @return 个人锁
-	 */
-	public static Object getLock(Serializable id) {
-		return LOCKER_STORE.get(id);
+	@Override
+	public T convert(Field field, String value) throws Exception {
+		return convert(value);
 	}
+
+	@Override
+	public T convert(Parameter parameter, String value) throws Exception {
+		return convert(value);
+	}
+
+	/**
+	 * 将一个字符串转化成目标对象.
+	 * 
+	 * @param value 字符串
+	 * @return 目标对象
+	 * @throws Exception 转化字符串时可能出现不可知异常情况
+	 */
+	protected abstract T convert(String value) throws Exception;
 }

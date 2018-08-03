@@ -27,7 +27,7 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class Crc32UtilsTest {
-	private final static Benchmark benchmark = new Benchmark(1000_0000);
+	private final static Benchmark BENCHMARK = new Benchmark(1000_0000);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {}
@@ -39,8 +39,8 @@ public class Crc32UtilsTest {
 
 		assertTrue(Crc32Utils.calculate(buf) == crc32(buf));
 
-		benchmark.doSomething("Noark-CRC32:", () -> Crc32Utils.calculate(buf));
-		benchmark.doSomething("JDK-CRC32:", () -> crc32(buf));
+		BENCHMARK.doSomething("Noark-CRC32:", () -> Crc32Utils.calculate(buf));
+		BENCHMARK.doSomething("JDK-CRC32:", () -> crc32(buf));
 		// 生成多项式为G(x)=x^8+x^2+x+1
 	}
 

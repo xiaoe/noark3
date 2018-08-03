@@ -18,6 +18,8 @@ import java.lang.reflect.Field;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.env.EnvConfigHolder;
+import xyz.noark.core.exception.ConvertException;
+import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.IocMaking;
 import xyz.noark.core.util.FieldUtils;
 import xyz.noark.core.util.StringUtils;
@@ -47,12 +49,12 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 			Converter<?> converter = ConvertManager.getInstance().getConverter(field.getType());
 			if (converter != null) {
 				try {
-					FieldUtils.writeField(single, field, converter.convert(value));
+					FieldUtils.writeField(single, field, converter.convert(field, value));
 				} catch (Exception e) {
-					throw new RuntimeException(converter.buildErrorMsg());
+					throw new ConvertException(single.getClass().getName() + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
 				}
 			} else {
-				throw new RuntimeException("XXX类XX属性没有配置参数噢....");
+				throw new UnrealizedException("类：" + single.getClass().getName() + "中的属性：" + field.getName() + "类型未实现此转化器");
 			}
 		}
 	}
