@@ -45,4 +45,40 @@ public class PacketMethodManager {
 	public PacketMethodWrapper getPacketMethodWrapper(Integer opcode) {
 		return handlers.get(opcode);
 	}
+
+	/**
+	 * 临时关闭协议的入口.
+	 * <p>
+	 * 当XX模块发生了Bug时，可临时关闭此功能入口<br>
+	 * 也只有协议编号不存在时才会返回失败吧...<br>
+	 * 
+	 * @param opcode 协议编号
+	 * @return 如果关闭成功返回true,否则返回false.
+	 */
+	public boolean temporarilyClosed(Integer opcode) {
+		PacketMethodWrapper method = this.getPacketMethodWrapper(opcode);
+		if (method == null) {
+			return false;
+		}
+		method.setDeprecated(true);
+		return true;
+	}
+
+	/**
+	 * 临时开启协议的入口.
+	 * <p>
+	 * 当XX模块修复了Bug时，可临时开启此功能入口<br>
+	 * 也只有协议编号不存在时才会返回失败吧...<br>
+	 * 
+	 * @param opcode 协议编号
+	 * @return 如果开启成功返回true,否则返回false.
+	 */
+	public boolean temporaryOpening(Integer opcode) {
+		PacketMethodWrapper method = this.getPacketMethodWrapper(opcode);
+		if (method == null) {
+			return false;
+		}
+		method.setDeprecated(false);
+		return true;
+	}
 }

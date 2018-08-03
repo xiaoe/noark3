@@ -59,7 +59,9 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
 		if (session != null) {
 			try {
-				networkListener.channelInactive(session);
+				if (networkListener != null) {
+					networkListener.channelInactive(session);
+				}
 			} finally {
 				SessionManager.removeSession(session);
 			}

@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.PlayerEvent;
@@ -29,6 +30,7 @@ import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
+import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.thread.command.PlayerThreadCommand;
 import xyz.noark.core.thread.command.SystemThreadCommand;
@@ -48,6 +50,9 @@ public class ThreadDispatcher {
 	private ExecutorService businessThreadPool;
 	/** 处理业务逻辑的任务队列 */
 	private TimeoutHashMap<Serializable, TaskQueue> businessThreadPoolTaskQueue;
+
+	@Autowired(required = false)
+	private NetworkListener networkListener;
 
 	public ThreadDispatcher() {}
 
@@ -80,6 +85,9 @@ public class ThreadDispatcher {
 		// 是否已废弃使用.
 		if (pmw.isDeprecated()) {
 			logger.warn("deprecated protocol. opcode={}, playerId={}", opcode, session.getPlayerId());
+			if (networkListener != null) {
+				networkListener.handleDeprecatedPacket(session);
+			}
 			return;
 		}
 

@@ -18,6 +18,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.LongAdder;
 
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.PlayerId;
@@ -40,6 +41,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private final boolean inner;
 	private final Session.State state;
 	private final ArrayList<ParamWrapper> parameters;
+	private final LongAdder counter = new LongAdder();
 
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
@@ -149,9 +151,11 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 		return state;
 	}
 
+	/**
+	 * 调用次数自增
+	 */
 	public void incrCount() {
-		// TODO Auto-generated method stub
-
+		counter.increment();
 	}
 
 	@Override

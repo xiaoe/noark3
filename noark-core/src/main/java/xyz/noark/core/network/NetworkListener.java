@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.network;
 
+import xyz.noark.core.ioc.manager.PacketMethodManager;
+
 /**
  * 网络监听接口.
  * <p>
@@ -58,7 +60,8 @@ public interface NetworkListener {
 	/**
 	 * 处理过期或维护中的封包.
 	 * <p>
-	 * 给个提示
+	 * 给个提示<br>
+	 * 临时关闭参考 {@link PacketMethodManager#temporarilyClosed(Integer)}
 	 * 
 	 * @param session Session对象
 	 */
