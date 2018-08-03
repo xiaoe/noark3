@@ -150,4 +150,31 @@ public class SessionManager {
 	public static boolean isOnline(Serializable playerId) {
 		return PLAYER_ID_2_SESSION.containsKey(playerId);
 	}
+
+	/**
+	 * 统计当前在线玩家数量.
+	 * 
+	 * @return 在线玩家数量
+	 */
+	public static int statOnlinePlayerNum() {
+		return PLAYER_ID_2_SESSION.size();
+	}
+
+	/**
+	 * 统计当前在线账号数量.
+	 * 
+	 * @return 在线账号数量
+	 */
+	public static int statOnlineUidNum() {
+		return UID_2_SESSION.size();
+	}
+
+	/**
+	 * 统计当前链接数量.
+	 * 
+	 * @return 链接数量
+	 */
+	public static int statSessionNum() {
+		return SESSIONS.size();
+	}
 }
