@@ -29,7 +29,7 @@ public class MonitorManager {
 	private final ScheduledExecutorService scheduledExecutor;
 
 	public MonitorManager() {
-		this.scheduledExecutor = new ScheduledThreadPoolExecutor(POOL_SIZE, new NamedThreadFactory("monitor"));
+		this.scheduledExecutor = new ScheduledThreadPoolExecutor(POOL_SIZE, new NamedThreadFactory("monitor", false));
 	}
 
 	public void addMonitorService(AbstractMonitorService abstractMonitorService) {
