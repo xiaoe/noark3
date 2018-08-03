@@ -104,7 +104,7 @@ public class ThreadDispatcher {
 		}
 
 		// 增加协议计数.
-		pmw.incrCount();
+		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
 		this.dispatchPacket(session.getPlayerId(), pmw, pmw.analysisParam(session, bytes));
@@ -131,7 +131,7 @@ public class ThreadDispatcher {
 		}
 
 		// 增加协议计数.
-		pmw.incrCount();
+		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
 		this.dispatchPacket(playerId, pmw, pmw.analysisParam(playerId, protocal));

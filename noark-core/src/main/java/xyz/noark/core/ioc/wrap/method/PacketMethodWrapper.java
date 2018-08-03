@@ -41,7 +41,8 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private final boolean inner;
 	private final Session.State state;
 	private final ArrayList<ParamWrapper> parameters;
-	private final LongAdder counter = new LongAdder();
+	/** 调用总次数 */
+	private final LongAdder callNum = new LongAdder();
 
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
@@ -154,8 +155,17 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	/**
 	 * 调用次数自增
 	 */
-	public void incrCount() {
-		counter.increment();
+	public void incrCallNum() {
+		callNum.increment();
+	}
+
+	/**
+	 * 获取当前被调用的次数.
+	 * 
+	 * @return 调用的次数
+	 */
+	public long getCallNum() {
+		return callNum.longValue();
 	}
 
 	@Override

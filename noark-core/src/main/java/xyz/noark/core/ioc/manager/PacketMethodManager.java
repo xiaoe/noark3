@@ -13,6 +13,9 @@
  */
 package xyz.noark.core.ioc.manager;
 
+import static xyz.noark.log.LogHelper.logger;
+
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -80,5 +83,14 @@ public class PacketMethodManager {
 		}
 		method.setDeprecated(false);
 		return true;
+	}
+
+	public void outputStatInfo() {
+		for (Map.Entry<Integer, PacketMethodWrapper> e : handlers.entrySet()) {
+			final long num = e.getValue().getCallNum();
+			if (num > 0) {
+				logger.info("protocal stat. opcode={}, call={}", e.getKey(), num);
+			}
+		}
 	}
 }
