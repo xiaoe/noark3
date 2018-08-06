@@ -39,7 +39,7 @@ public class AsyncTask implements Runnable {
 		try {
 			command.exec();
 		} catch (Exception e) {
-			logger.error("async task exception.", e);
+			logger.error("async task exception.{}", e);
 		} finally {
 			if (command.isPrintLog()) {
 				// 执行结束的时间

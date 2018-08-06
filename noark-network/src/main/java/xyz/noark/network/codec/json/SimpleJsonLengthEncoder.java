@@ -11,44 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.codec;
+package xyz.noark.network.codec.json;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import xyz.noark.core.network.PacketCodec;
-import xyz.noark.network.NetworkPacket;
 
 /**
- * 基本Netty实现的一个抽象编解码器
+ * 这个主要用来添加包长的.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractPacketCodec implements PacketCodec {
-	/**
-	 * 长度编码器.
-	 * <p>
-	 * 这个需要独立分离出来，因为WebSocket没有包长的概念.
-	 * 
-	 * @return 长度编码器
-	 */
-	public abstract MessageToByteEncoder<?> lengthEncoder();
+public class SimpleJsonLengthEncoder extends MessageToByteEncoder<byte[]> {
 
-	/**
-	 * 长度解码器
-	 * <p>
-	 * 这个需要独立分离出来，因为WebSocket没有包长的概念.
-	 * 
-	 * @return 长度解码器
-	 */
-	public abstract ByteToMessageDecoder lengthDecoder();
-
-	/**
-	 * 将二进制数据转化为网络封包对象.
-	 * 
-	 * @param byteBuf 二进制数据
-	 * @return 网络封包对象
-	 */
-	public abstract NetworkPacket decodePacket(ByteBuf byteBuf);
+	@Override
+	protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) throws Exception {
+		out.writeShort(msg.length);
+		out.writeBytes(msg);
+	}
 }

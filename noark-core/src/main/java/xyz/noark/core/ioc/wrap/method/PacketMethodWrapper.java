@@ -27,6 +27,7 @@ import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PacketParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
 import xyz.noark.core.ioc.wrap.param.SessionParamWrapper;
+import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.Session;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -79,13 +80,13 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 * 分析参数.
 	 * 
 	 * @param session Session对象
-	 * @param msg 协议封包
+	 * @param bytes 协议封包
 	 * @return 参数列表
 	 */
-	public Object[] analysisParam(Session session, byte[] msg) {
+	public Object[] analysisParam(Session session, ByteArray bytes) {
 		List<Object> args = new ArrayList<>(parameters.size());
 		for (ParamWrapper parameter : parameters) {
-			args.add(parameter.read(session, msg));
+			args.add(parameter.read(session, bytes));
 		}
 		return args.toArray();
 	}

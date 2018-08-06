@@ -11,39 +11,32 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.network;
+package xyz.noark.network.codec;
 
+import io.netty.buffer.ByteBuf;
 import xyz.noark.core.lang.ByteArray;
 
 /**
- * 封包的编解码.
- * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
- * 
- * @since 3.0
+ * 基于ByteBuf实现的字节数组接口实现.
+ *
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public interface PacketCodec {
+public class ByteBufWrapper implements ByteArray {
+	private final ByteBuf byteBuf;
+	private byte[] array = null;
 
-	/**
-	 * 解码为协议对象.
-	 * <p>
-	 * 这里其实就是封包打开后的内容转协议
-	 * 
-	 * @param bytes 字节数组
-	 * @param klass 协议类
-	 * @return 协议对象
-	 */
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass);
+	public ByteBufWrapper(ByteBuf byteBuf) {
+		this.byteBuf = byteBuf;
+	}
 
-	/**
-	 * 这步是协议转化封包.
-	 * <p>
-	 * 这里没有独立出来协议先转封包内容，直接一步到位了.
-	 * 
-	 * @param opcode 协议编号
-	 * @param protocal 协议对象
-	 * @return 封包字节数组
-	 */
-	public byte[] encodePacket(Integer opcode, Object protocal);
+	@Override
+	public byte[] array() {
+		if (array == null) {
+			array = new byte[byteBuf.readableBytes()];
+			byteBuf.readBytes(array);
+			byteBuf.release();// 拿出一个带引用的ByteBuf，这里--
+		}
+		return array;
+	}
 }

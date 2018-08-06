@@ -11,36 +11,44 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.codec.json;
+package xyz.noark.network.codec.protobuf;
 
-import com.alibaba.fastjson.JSON;
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.google.protobuf.GeneratedMessage;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.lang.ByteArray;
-import xyz.noark.core.util.ByteArrayUtils;
+import xyz.noark.core.util.MethodUtils;
+import xyz.noark.core.util.ProtobufUtils;
 import xyz.noark.network.NetworkPacket;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;
 
 /**
- * Json封包解码器.
- * 
- * @since 3.0
+ * ProtobufV3版本的编码解码器.
+ *
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class SimpleJsonCodec extends AbstractPacketCodec {
+public class ProtobufCodec extends AbstractPacketCodec {
+	private static final ConcurrentHashMap<Class<?>, Method> CACHES = new ConcurrentHashMap<>(1024);
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass) {
-		return JSON.parseObject(bytes.array(), klass);
+		Method method = CACHES.computeIfAbsent(klass, key -> MethodUtils.getMethod(key, "parseFrom", byte[].class));
+		return (T) MethodUtils.invoke(null, method, bytes.array());
 	}
 
 	@Override
 	public byte[] encodePacket(Integer opcode, Object protocal) {
-		byte[] bytes = JSON.toJSONBytes(protocal);
-		byte[] data2 = ByteArrayUtils.toByteArray(opcode);
+		byte[] bytes = ((GeneratedMessage) protocal).toByteArray();
+		byte[] data2 = ProtobufUtils.encodeInt32(opcode);
 		byte[] data3 = new byte[bytes.length + data2.length];
 		System.arraycopy(data2, 0, data3, 0, data2.length);
 		System.arraycopy(bytes, 0, data3, data2.length, bytes.length);
@@ -48,13 +56,13 @@ public class SimpleJsonCodec extends AbstractPacketCodec {
 	}
 
 	@Override
-	public SimpleJsonLengthEncoder lengthEncoder() {
-		return new SimpleJsonLengthEncoder();
+	public MessageToByteEncoder<?> lengthEncoder() {
+		return new ProtobufLengthEncoder();
 	}
 
 	@Override
 	public ByteToMessageDecoder lengthDecoder() {
-		return new SimpleJsonLengthDecoder(this);
+		return new ProtobufLengthDecoder(this);
 	}
 
 	@Override

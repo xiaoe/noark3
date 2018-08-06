@@ -34,8 +34,6 @@ import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.network.TcpServer;
-import xyz.noark.network.codec.InitializeDecoder;
-import xyz.noark.network.codec.InitializeManager;
 import xyz.noark.network.log.NettyLoggerFactory;
 
 /**
@@ -65,16 +63,12 @@ public class NettyServer implements TcpServer {
 	@Value(NetworkConstant.WORK_THREADS)
 	protected int workthreads = 0;
 
-	/** 是否为WebSocket */
-	@Value(NetworkConstant.WEBSOCKET_PATH)
-	protected String websocketPath;
-
 	/** 网络封包日志激活 */
 	@Value(NetworkConstant.LOG_ACTIVE)
 	protected boolean logActive = false;
 
 	@Autowired
-	protected InitializeManager initializeManager;
+	protected InitializeHandlerManager initializeHandlerManager;
 	@Autowired
 	protected NettyServerHandler nettyServerHandler;
 
@@ -108,12 +102,16 @@ public class NettyServer implements TcpServer {
 			pipeline.addLast("idleStateHandler", new IdleStateHandler(heartbeat, 0, 0, TimeUnit.SECONDS));
 		}
 
+		// 输出具体的Netty接受与发送封包的日志
 		if (logActive) {
 			pipeline.addLast("logger", new LoggingHandler(LogLevel.DEBUG));
 		}
 
-		pipeline.addLast(new InitializeDecoder(initializeManager));
-		pipeline.addLast("handler", nettyServerHandler);
+		// 统一默认的事件处理...
+		pipeline.addLast(nettyServerHandler);
+
+		// 初始化封包处理器.
+		pipeline.addLast(new InitializeDecoder(initializeHandlerManager));
 	}
 
 	@Override

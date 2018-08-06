@@ -38,7 +38,7 @@ public class NettySession extends AbstractSession {
 	private boolean websocket = false;
 
 	public NettySession(Channel channel) {
-		super(channel.id().asLongText(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
+		super(channel.id(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 		this.channel = channel;
 	}
 
@@ -101,7 +101,7 @@ public class NettySession extends AbstractSession {
 		}
 
 		if (websocket) {
-			channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.copiedBuffer(packet)), channel.voidPromise());
+			channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(packet)), channel.voidPromise());
 		} else {
 			channel.writeAndFlush(packet, channel.voidPromise());
 		}

@@ -13,6 +13,8 @@
  */
 package xyz.noark.network;
 
+import xyz.noark.core.lang.ByteArray;
+
 /**
  * 一个网络封包.
  *
@@ -33,5 +35,5 @@ public interface NetworkPacket {
 	 * 
 	 * @return 内容
 	 */
-	public byte[] getBytes();
+	public ByteArray getBytes();
 }

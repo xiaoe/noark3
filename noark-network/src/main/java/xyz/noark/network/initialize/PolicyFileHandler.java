@@ -11,39 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.network;
+package xyz.noark.network.initialize;
 
-import xyz.noark.core.lang.ByteArray;
+import static xyz.noark.log.LogHelper.logger;
+
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import xyz.noark.core.annotation.Component;
+import xyz.noark.network.InitializeHandler;
 
 /**
- * 封包的编解码.
- * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
- * 
+ * Flash所需要的策略文件.
+ *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface PacketCodec {
+@Component(name = "<policy-file-request/>\0")
+public class PolicyFileHandler implements InitializeHandler {
 
-	/**
-	 * 解码为协议对象.
-	 * <p>
-	 * 这里其实就是封包打开后的内容转协议
-	 * 
-	 * @param bytes 字节数组
-	 * @param klass 协议类
-	 * @return 协议对象
-	 */
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass);
+	private final static byte[] POLICY = "<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\"/></cross-domain-policy>\0".getBytes();
 
-	/**
-	 * 这步是协议转化封包.
-	 * <p>
-	 * 这里没有独立出来协议先转封包内容，直接一步到位了.
-	 * 
-	 * @param opcode 协议编号
-	 * @param protocal 协议对象
-	 * @return 封包字节数组
-	 */
-	public byte[] encodePacket(Integer opcode, Object protocal);
+	@Override
+	public void handle(ChannelHandlerContext ctx) {
+		ctx.writeAndFlush(POLICY).addListener(ChannelFutureListener.CLOSE);
+		logger.warn("无法访问843端口,从主端口获取安全策略文件 ip={}", ctx.channel().remoteAddress());
+	}
 }

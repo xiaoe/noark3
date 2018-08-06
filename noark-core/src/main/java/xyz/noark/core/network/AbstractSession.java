@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.network;
 
+import java.io.Serializable;
+
 /**
  * 抽象的Session实现.
  *
@@ -21,16 +23,16 @@ package xyz.noark.core.network;
  */
 public abstract class AbstractSession implements Session {
 	protected State state = State.CONNECTED;
-	protected final String id;
+	protected final Serializable id;
 	protected final String ip;
 
-	protected AbstractSession(String id, String ip) {
+	protected AbstractSession(Serializable id, String ip) {
 		this.id = id;
 		this.ip = ip;
 	}
 
 	@Override
-	public String getId() {
+	public Serializable getId() {
 		return id;
 	}
 

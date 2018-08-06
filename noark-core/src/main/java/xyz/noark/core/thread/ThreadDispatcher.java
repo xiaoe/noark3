@@ -29,6 +29,7 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
@@ -72,10 +73,10 @@ public class ThreadDispatcher {
 	 * 派发游戏封包.
 	 * 
 	 * @param session Session对象
-	 * @param pmw 协议处理方法
-	 * @param args 处理方法参数
+	 * @param opcode 协议编号
+	 * @param bytes 字节数组流
 	 */
-	public void dispatchPacket(Session session, Integer opcode, byte[] bytes) {
+	public void dispatchPacket(Session session, Integer opcode, ByteArray bytes) {
 		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
 		if (pmw == null) {
 			logger.warn("undefined protocol, opcode={}", opcode);

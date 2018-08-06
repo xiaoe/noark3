@@ -33,13 +33,13 @@ import xyz.noark.core.util.StringUtils;
  */
 public class SessionManager {
 	/** 所有链接服务器的会话. */
-	private static final ConcurrentMap<String, Session> SESSIONS = new ConcurrentHashMap<>(2048);
+	private static final ConcurrentMap<Serializable, Session> SESSIONS = new ConcurrentHashMap<>(2048);
 	/** 所有已进入游戏的会话. */
 	private static final ConcurrentMap<Serializable, Session> PLAYER_ID_2_SESSION = new ConcurrentHashMap<>(2048);
 	/** 账号与Session，用来顶号时踢除上一个链接 */
 	private static final ConcurrentMap<Serializable, Session> UID_2_SESSION = new ConcurrentHashMap<>(2048);
 
-	public static Session createSession(String id, Function<String, Session> mappingFunction) {
+	public static Session createSession(Serializable id, Function<Serializable, Session> mappingFunction) {
 		return SESSIONS.computeIfAbsent(id, mappingFunction);
 	}
 
@@ -109,7 +109,7 @@ public class SessionManager {
 	 * @param id 链接ID
 	 * @return Session对象
 	 */
-	public static Session getSession(String id) {
+	public static Session getSession(Serializable id) {
 		return SESSIONS.get(id);
 	}
 

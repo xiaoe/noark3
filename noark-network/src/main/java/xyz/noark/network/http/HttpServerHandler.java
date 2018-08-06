@@ -54,8 +54,10 @@ import xyz.noark.core.util.StringUtils;
  */
 public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-	private static final String SIGN = "sign";// 签名Key...
-	private static final String TIME = "time";// 时间戳Key...
+	/** 签名Key... */
+	private static final String SIGN = "sign";
+	/** 时间戳Key... */
+	private static final String TIME = "time";
 
 	private final String secretKey;
 
@@ -133,7 +135,8 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	public Object[] analysisParam(HttpMethodWrapper handler, String uri, Map<String, String> parameters) throws IOException {
-		if (handler.getParameters().isEmpty()) {// 如果没有参数，返回null.
+		// 如果没有参数，返回null.
+		if (handler.getParameters().isEmpty()) {
 			return null;
 		}
 

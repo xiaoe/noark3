@@ -11,22 +11,21 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.codec;
+package xyz.noark.network.initialize;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
+import xyz.noark.network.InitializeHandler;
 import xyz.noark.network.NettySession;
 
 /**
  * 抽象实现的初始化协议处理器.
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractInitializeHandler implements InitializeHandler {
@@ -36,14 +35,10 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
-		final ChannelPipeline pipeline = ctx.pipeline();
-		// TODO 确认没有并发可以优化一下单例方法
-		pipeline.addBefore("handler", "encoder", createPacketEncoder());
-		pipeline.addBefore("handler", "decoder", createPacketDecoder());
+		this.build(ctx.pipeline());
 
-		// 为Session绑定编解码.
-		final String id = ctx.channel().id().asLongText();
-		Session session = SessionManager.createSession(id, key -> new NettySession(ctx.channel()));
+		// 只要第一个协议对了就要创建Session...
+		Session session = SessionManager.createSession(ctx.channel().id(), key -> new NettySession(ctx.channel()));
 
 		if (networkListener != null) {
 			networkListener.channelActive(session);
@@ -51,16 +46,9 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 	}
 
 	/**
-	 * 创建一个封包解码器.
+	 * 判定具体协议后再重装ChannelPipeline对象.
 	 * 
-	 * @return 封包解码器
+	 * @param pipeline ChannelPipeline对象
 	 */
-	protected abstract ByteToMessageDecoder createPacketDecoder();
-
-	/**
-	 * 创建一个封包解码器.
-	 * 
-	 * @return 封包解码器
-	 */
-	protected abstract MessageToByteEncoder<?> createPacketEncoder();
+	protected abstract void build(ChannelPipeline pipeline);
 }

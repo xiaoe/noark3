@@ -22,13 +22,13 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @author 小流氓(176543888@qq.com)
  */
 public class HttpResult {
-	// 返回编码
+	/** 返回编码 */
 	@JSONField(name = "req")
 	private int req = 0;
-	// 错误信息
+	/** 错误信息 */
 	@JSONField(name = "msg")
 	private String msg = null;
-	// 数据
+	/** 数据 */
 	@JSONField(name = "data")
 	private Object data;
 

@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.wrap.param;
 import java.io.Serializable;
 
 import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session;
 
@@ -33,7 +34,7 @@ public class PacketParamWrapper implements ParamWrapper {
 	}
 
 	@Override
-	public Object read(Session session, byte[] bytes) {
+	public Object read(Session session, ByteArray bytes) {
 		return PacketCodecHolder.getPacketCodec().decodeProtocal(bytes, klass);
 	}
 

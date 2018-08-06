@@ -28,7 +28,7 @@ public interface Session {
 	 * 
 	 * @return 实际就是链接Channel的ID
 	 */
-	public String getId();
+	public Serializable getId();
 
 	/**
 	 * 获取当前Session链接的IP地址

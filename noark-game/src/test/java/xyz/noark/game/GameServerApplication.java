@@ -11,42 +11,38 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.http;
+package xyz.noark.game;
 
-import java.util.HashMap;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.alibaba.fastjson.JSON;
-
-import xyz.noark.core.util.HttpUtils;
+import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.annotation.controller.PacketMapping;
+import xyz.noark.game.bootstrap.BaseServerBootstrap;
 
 /**
- * Http服务器测试
+ * 一个简单的服务器启动测试入口.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class HttpServerTest {
+@Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
+public class GameServerApplication extends BaseServerBootstrap {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
-
-	@Test
-	public void test() {
-		HttpServer httpServer = new HttpServer();
-		httpServer.setPort(12345);
-		httpServer.setSecretKey("1dcypsz1/2jss1/2j#f00");
-		httpServer.startup();
-
-		HashMap<String, String> params = new HashMap<>(16);
-		params.put("time", "1533118010926");
-		params.put("sign", "df7a902adaaad47d7e2d9eb5aada4677");
-		params.put("byte", new String("pub!@~#$%^&*(\"\"::;;'')_+lic skdfsdaf ?!@#!$!@$   ".getBytes()));
-
-		System.out.println();
-
-		HttpUtils.post("http://192.168.50.40:12345/api/hotfix/", JSON.toJSONString(params));
+	public static void main(String[] args) {
+		Noark.run(GameServerApplication.class, args);
 	}
+
+	@Override
+	protected String getServerName() {
+		return "game-server";
+	}
+
+	@PacketMapping(opcode = 1)
+	public void test(HelloNoark hello) {
+		System.out.println(hello.name);
+	}
+
+}
+
+class HelloNoark {
+	String name;
 }

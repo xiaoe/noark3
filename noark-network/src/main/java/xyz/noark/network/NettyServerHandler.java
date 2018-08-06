@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
@@ -27,26 +27,21 @@ import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
-import xyz.noark.core.thread.ThreadDispatcher;
 
 /**
- * Netty接到封包后的处理器.
+ * Netty链接默认功能处理器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 @Service
 @Sharable
-public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacket> {
-
-	@Autowired
-	private ThreadDispatcher threadDispatcher;
-	@Autowired(required = false)
-	private NetworkListener networkListener;
-
+public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 	/** 心跳功能，默认值为0，则不生效 */
 	@Value(NetworkConstant.HEARTBEAT)
 	protected int heartbeat = 0;
+	@Autowired(required = false)
+	private NetworkListener networkListener;
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -56,7 +51,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		logger.info("客户端断开链接，channel={}", ctx.channel());
-		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
+		Session session = SessionManager.getSession(ctx.channel().id());
 		if (session != null) {
 			try {
 				if (networkListener != null) {
@@ -81,11 +76,5 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkPacke
 		if (!(cause instanceof IOException)) {
 			logger.debug("Netty捕获异常，cause={}", cause);
 		}
-	}
-
-	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception {
-		Session session = SessionManager.getSession(ctx.channel().id().asLongText());
-		threadDispatcher.dispatchPacket(session, msg.getOpcode(), msg.getBytes());
 	}
 }
