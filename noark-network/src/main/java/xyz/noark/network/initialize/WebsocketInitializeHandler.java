@@ -15,7 +15,6 @@ package xyz.noark.network.initialize;
 
 import static xyz.noark.log.LogHelper.logger;
 
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -24,7 +23,6 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
-import xyz.noark.network.InitializeHandler;
 import xyz.noark.network.NetworkConstant;
 import xyz.noark.network.handler.WebsocketServerHandler;
 
@@ -35,7 +33,7 @@ import xyz.noark.network.handler.WebsocketServerHandler;
  * @author 小流氓(176543888@qq.com)
  */
 @Component(name = WebsocketInitializeHandler.WEBSOCKET_NAME)
-public class WebsocketInitializeHandler implements InitializeHandler {
+public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 	public static final String WEBSOCKET_NAME = "websocket";
 	/** 是否为WebSocket */
 	@Value(NetworkConstant.WEBSOCKET_PATH)
@@ -44,9 +42,8 @@ public class WebsocketInitializeHandler implements InitializeHandler {
 	private WebsocketServerHandler websocketServerHandler;
 
 	@Override
-	public void handle(ChannelHandlerContext ctx) {
+	protected void build(ChannelPipeline pipeline) {
 		logger.debug("WebSocket链接...");
-		ChannelPipeline pipeline = ctx.pipeline();
 		pipeline.addLast(new HttpServerCodec());
 		pipeline.addLast(new ChunkedWriteHandler());
 		pipeline.addLast(new HttpObjectAggregator(65535));

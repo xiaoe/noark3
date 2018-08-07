@@ -60,7 +60,7 @@ public class InitializeDecoder extends ByteToMessageDecoder {
 		initializeHandlerManager.getHandler(protocol).handle(ctx);
 
 		if (WebsocketInitializeHandler.WEBSOCKET_NAME.equals(protocol)) {
-			ctx.fireChannelRead(in.retain());
+			out.add(in.retain());
 		}
 	}
 }
