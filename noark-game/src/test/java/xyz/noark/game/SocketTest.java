@@ -13,34 +13,34 @@
  */
 package xyz.noark.game;
 
-import static xyz.noark.log.LogHelper.logger;
+import java.net.Socket;
 
-import xyz.noark.core.annotation.Controller;
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.core.annotation.controller.PacketMapping;
-import xyz.noark.core.network.Session.State;
-import xyz.noark.game.bootstrap.BaseServerBootstrap;
+import com.alibaba.fastjson.JSON;
+
+import xyz.noark.core.util.ByteArrayUtils;
 
 /**
- * 一个简单的服务器启动测试入口.
+ * SocketTest
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-@Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
-public class GameServerApplication extends BaseServerBootstrap {
+public class SocketTest {
 
-	public static void main(String[] args) {
-		Noark.run(GameServerApplication.class, args);
+	public static void main(String[] args) throws Exception {
+		Socket socket = new Socket("127.0.0.1", 52113);
+		socket.getOutputStream().write("socket".getBytes());
+		Thread.sleep(1000);
+
+		send(socket, 1, "noark");
+		Thread.sleep(10000);
 	}
 
-	@Override
-	protected String getServerName() {
-		return "game-server";
-	}
-
-	@PacketMapping(opcode = 1, state = State.CONNECTED)
-	public void test(String hello) {
-		logger.info("收到协议:{}", hello);
+	private static void send(Socket socket, int opcode, String protocal) throws Exception {
+		byte[] body = JSON.toJSONString(protocal).getBytes();
+		socket.getOutputStream().write(ByteArrayUtils.toByteArray((short) (body.length + 4)));
+		socket.getOutputStream().write(ByteArrayUtils.toByteArray(opcode));
+		socket.getOutputStream().write(body);
+		socket.getOutputStream().flush();
 	}
 }

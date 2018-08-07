@@ -13,6 +13,8 @@
  */
 package xyz.noark.network.initialize;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -32,17 +34,18 @@ import xyz.noark.network.handler.WebsocketServerHandler;
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = "websocket")
+@Component(name = WebsocketInitializeHandler.WEBSOCKET_NAME)
 public class WebsocketInitializeHandler implements InitializeHandler {
-
+	public static final String WEBSOCKET_NAME = "websocket";
 	/** 是否为WebSocket */
 	@Value(NetworkConstant.WEBSOCKET_PATH)
-	protected String websocketPath;
+	protected String websocketPath = "/game";
 	@Autowired
 	private WebsocketServerHandler websocketServerHandler;
 
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
+		logger.debug("WebSocket链接...");
 		ChannelPipeline pipeline = ctx.pipeline();
 		pipeline.addLast(new HttpServerCodec());
 		pipeline.addLast(new ChunkedWriteHandler());

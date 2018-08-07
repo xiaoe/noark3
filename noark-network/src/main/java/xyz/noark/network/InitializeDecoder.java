@@ -18,6 +18,8 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import xyz.noark.core.util.ByteBufUtils;
+import xyz.noark.network.initialize.WebsocketInitializeHandler;
 
 /**
  * 协议初始化解码器.
@@ -29,6 +31,8 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  */
 public class InitializeDecoder extends ByteToMessageDecoder {
 	private static final int MAX_LENGTH = 64;
+	/** WebSocket握手的协议前缀 */
+	private static final String WEBSOCKET_PREFIX = "GET /";
 
 	private final InitializeHandlerManager initializeHandlerManager;
 
@@ -36,7 +40,6 @@ public class InitializeDecoder extends ByteToMessageDecoder {
 		this.initializeHandlerManager = initializeHandlerManager;
 	}
 
-	/** 封包长度 + 自增位 + Opcode + 协议内容 + 校验位 */
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 		// 移除自己
@@ -47,8 +50,17 @@ public class InitializeDecoder extends ByteToMessageDecoder {
 			length = MAX_LENGTH;
 		}
 
-		byte[] content = new byte[length];
-		in.readBytes(content);
-		initializeHandlerManager.getHandler(new String(content)).handle(ctx);
+		// 标记读位置...
+		in.markReaderIndex();
+		String protocol = ByteBufUtils.readString(in, length);
+		if (protocol.startsWith(WEBSOCKET_PREFIX)) {
+			in.resetReaderIndex();
+			protocol = WebsocketInitializeHandler.WEBSOCKET_NAME;
+		}
+		initializeHandlerManager.getHandler(protocol).handle(ctx);
+
+		if (WebsocketInitializeHandler.WEBSOCKET_NAME.equals(protocol)) {
+			ctx.fireChannelRead(in.retain());
+		}
 	}
 }

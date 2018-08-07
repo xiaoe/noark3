@@ -77,4 +77,17 @@ public class ByteBufUtils {
 			return result;
 		}
 	}
+
+	/**
+	 * 从ByteBuf中读出一个指定长度的字符串.
+	 * 
+	 * @param in ByteBuf对象
+	 * @param length 字符串的长度
+	 * @return 一个指定长度的字符串
+	 */
+	public static String readString(ByteBuf in, int length) {
+		byte[] content = new byte[length];
+		in.readBytes(content);
+		return new String(content);
+	}
 }
