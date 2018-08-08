@@ -46,6 +46,28 @@ public final class ImmutablePair<L, R> extends AbstractPair<L, R> {
 		return new ImmutablePair<>(left, right);
 	}
 
+	/**
+	 * 只有左参数时自动推断出一个不可变的抽象对象.
+	 * <p>
+	 * 
+	 * @param left 左边元素
+	 * @return 一个不可变的抽象对象
+	 */
+	public static <L, R> ImmutablePair<L, R> ofLeft(final L left) {
+		return new ImmutablePair<>(left, null);
+	}
+
+	/**
+	 * 只有右参数时自动推断出一个不可变的抽象对象.
+	 * <p>
+	 * 
+	 * @param right 右边元素
+	 * @return 一个不可变的抽象对象
+	 */
+	public static <L, R> ImmutablePair<L, R> ofRight(final R right) {
+		return new ImmutablePair<>(null, right);
+	}
+
 	/** 左边元素 */
 	private final L left;
 	/** 右边元素 */
