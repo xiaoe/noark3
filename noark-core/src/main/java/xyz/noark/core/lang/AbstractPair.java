@@ -26,35 +26,8 @@ import java.util.Objects;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractPair<L, R> implements Map.Entry<L, R>, Serializable {
+public abstract class AbstractPair<L, R> implements Map.Entry<L, R>, Serializable, Pair<L, R> {
 	private static final long serialVersionUID = 7777506299219376932L;
-
-	/**
-	 * 根据参数类型自动推断出一个不可变的抽象对象.
-	 * <p>
-	 * 具体实现可参考{@link ImmutablePair#of(Object, Object)}
-	 * 
-	 * @param left 左边元素
-	 * @param right 右边元素
-	 * @return 一个不可变的抽象对象
-	 */
-	public static <L, R> AbstractPair<L, R> of(final L left, final R right) {
-		return ImmutablePair.of(left, right);
-	}
-
-	/**
-	 * 获取左边的那个元素.
-	 *
-	 * @return 左边的那个元素
-	 */
-	public abstract L getLeft();
-
-	/**
-	 * 获取右边的那个元素.
-	 *
-	 * @return 右边的那个元素
-	 */
-	public abstract R getRight();
 
 	/**
 	 * 获取键元素,就是左边那个元素.

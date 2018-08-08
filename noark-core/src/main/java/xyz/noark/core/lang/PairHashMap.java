@@ -24,7 +24,7 @@ import java.util.function.Function;
  * @author 小流氓(176543888@qq.com)
  */
 public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
-	private final HashMap<AbstractPair<L, R>, V> hashmap;
+	private final HashMap<Pair<L, R>, V> hashmap;
 
 	public PairHashMap() {
 		this.hashmap = new HashMap<>();
@@ -49,7 +49,7 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 
 	@Override
 	public V put(L left, R right, V value) {
-		return hashmap.put(AbstractPair.of(left, right), value);
+		return hashmap.put(Pair.of(left, right), value);
 	}
 
 	@Override
@@ -59,6 +59,6 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 
 	@Override
 	public V get(L left, R right) {
-		return hashmap.get(AbstractPair.of(left, right));
+		return hashmap.get(Pair.of(left, right));
 	}
 }
