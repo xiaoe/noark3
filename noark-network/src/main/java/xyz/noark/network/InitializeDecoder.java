@@ -42,9 +42,6 @@ public class InitializeDecoder extends ByteToMessageDecoder {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		// 移除自己
-		ctx.pipeline().remove(this.getClass());
-
 		int length = in.readableBytes();
 		if (length > MAX_LENGTH) {
 			length = MAX_LENGTH;
@@ -57,10 +54,11 @@ public class InitializeDecoder extends ByteToMessageDecoder {
 			in.resetReaderIndex();
 			protocol = WebsocketInitializeHandler.WEBSOCKET_NAME;
 		}
+
+		// 处理对应协议相关的解码器
 		initializeHandlerManager.getHandler(protocol).handle(ctx);
 
-		if (WebsocketInitializeHandler.WEBSOCKET_NAME.equals(protocol)) {
-			out.add(in.retain());
-		}
+		// 移除自己
+		ctx.pipeline().remove(this.getClass());
 	}
 }
