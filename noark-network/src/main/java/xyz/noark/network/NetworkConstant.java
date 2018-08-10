@@ -20,6 +20,7 @@ package xyz.noark.network;
  * @author 小流氓(176543888@qq.com)
  */
 public class NetworkConstant {
+
 	/** Netty监听端口 */
 	public static final String PORT = "network.port";
 	/** 心跳功能，默认值为0，则不生效 */
@@ -31,10 +32,21 @@ public class NetworkConstant {
 	/** 网络封包日志激活 */
 	public static final String LOG_ACTIVE = "network.log.active";
 
+	// 接收HTTP服务相关配置--------------------------------------
 	/** 向内部提供HTTP服务的端口 */
 	public static final String HTTP_PORT = "network.http.port";
 	/** 向内部提供HTTP服务的密钥 */
 	public static final String HTTP_SECRET_KEY = "network.http.secret.key";
+
+	// 接收流量统计相关配置--------------------------------------
+	/** 接收封包统计预警功能是否激活，默认：不启用 */
+	public static final String RECEIVE_ACTIVE = "network.stat.receive.active";
+	/** 每秒接收封包长度预警值，默认：65535 */
+	public static final String RECEIVE_THRESHOLD = "network.stat.receive.threshold";
+	/** 统计周期为多少秒 ，默认：5秒 */
+	public static final String RECEIVE_SECOND = "network.stat.receive.second";
+	/** 统计周期内可以出现多少次预警，默认：3次 */
+	public static final String RECEIVE_COUNT = "network.stat.receive.count";
 
 	private static final int CPU_MIN_COUNT = 4;
 	private static final int CPU_MAX_COUNT = 8;

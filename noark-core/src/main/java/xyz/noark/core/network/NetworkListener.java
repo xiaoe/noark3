@@ -66,4 +66,15 @@ public interface NetworkListener {
 	 * @param session Session对象
 	 */
 	void handleDeprecatedPacket(Session session);
+
+	/**
+	 * 处理封包统计预警功能.
+	 * 
+	 * @param session Session对象
+	 * @param second 统计周期
+	 * @param count 出现次数
+	 * @param threshold 每秒累计长度阀值
+	 * @return 如果中断执行后面逻辑返回true
+	 */
+	boolean handlePacketWarning(Session session, int second, int count, int threshold);
 }

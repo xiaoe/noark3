@@ -25,10 +25,12 @@ public abstract class AbstractSession implements Session {
 	protected State state = State.CONNECTED;
 	protected final Serializable id;
 	protected final String ip;
+	protected final PacketStatis statis;
 
 	protected AbstractSession(Serializable id, String ip) {
 		this.id = id;
 		this.ip = ip;
+		this.statis = new PacketStatis();
 	}
 
 	@Override
@@ -53,6 +55,11 @@ public abstract class AbstractSession implements Session {
 	 */
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	@Override
+	public PacketStatis getStatis() {
+		return statis;
 	}
 
 	@Override

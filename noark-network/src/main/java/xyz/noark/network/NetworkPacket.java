@@ -24,6 +24,13 @@ import xyz.noark.core.lang.ByteArray;
 public interface NetworkPacket {
 
 	/**
+	 * 获取封包长度.
+	 * 
+	 * @return 封包长度
+	 */
+	public int getLength();
+
+	/**
 	 * 封包的编号.
 	 * 
 	 * @return 编号

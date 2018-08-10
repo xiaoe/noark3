@@ -81,6 +81,13 @@ public interface Session {
 	public Serializable getPlayerId();
 
 	/**
+	 * 获取封包统计情况.
+	 * 
+	 * @return 封包统计情况
+	 */
+	public PacketStatis getStatis();
+
+	/**
 	 * Session状态.
 	 */
 	static enum State {

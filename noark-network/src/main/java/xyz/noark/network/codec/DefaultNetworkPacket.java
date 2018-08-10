@@ -69,6 +69,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 		this.opcode = opcode;
 	}
 
+	@Override
 	public int getLength() {
 		return length;
 	}
