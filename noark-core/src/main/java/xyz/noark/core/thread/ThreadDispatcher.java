@@ -147,7 +147,7 @@ public class ThreadDispatcher {
 			this.dispatchPlayerThreadHandle(new PlayerThreadCommand(playerId, pmw, args));
 			break;
 		case ModuleThreadGroup:
-			this.dispatchSystemThreadHandle(new SystemThreadCommand(pmw.getModule(), pmw, args));
+			this.dispatchSystemThreadHandle(new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
 			break;
 		default:
 			throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
@@ -162,13 +162,13 @@ public class ThreadDispatcher {
 	/** 派发给系统线程处理的逻辑. */
 	void dispatchSystemThreadHandle(SystemThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-		taskQueue.submit(new AsyncTask(taskQueue, command));
+		taskQueue.submit(new AsyncTask(taskQueue, command, command.getPlayerId()));
 	}
 
 	/** 派发给玩家线程处理的逻辑. */
 	void dispatchPlayerThreadHandle(PlayerThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-		taskQueue.submit(new AsyncTask(taskQueue, command));
+		taskQueue.submit(new AsyncTask(taskQueue, command, command.getPlayerId()));
 	}
 
 	/** 派发事件任务给线程池. */

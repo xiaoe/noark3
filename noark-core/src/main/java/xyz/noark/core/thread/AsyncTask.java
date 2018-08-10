@@ -15,6 +15,8 @@ package xyz.noark.core.thread;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.io.Serializable;
+
 /**
  * 异步任务.
  *
@@ -26,10 +28,12 @@ public class AsyncTask implements Runnable {
 	protected final long createTime = System.nanoTime();
 	protected final TaskQueue taskQueue;
 	private final ThreadCommand command;
+	private final Serializable playerId;
 
-	public AsyncTask(TaskQueue taskQueue, ThreadCommand command) {
+	public AsyncTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
 		this.taskQueue = taskQueue;
 		this.command = command;
+		this.playerId = playerId;
 	}
 
 	@Override
@@ -44,7 +48,11 @@ public class AsyncTask implements Runnable {
 			if (command.isPrintLog()) {
 				// 执行结束的时间
 				long endExecuteTime = System.nanoTime();
-				logger.info("handle {},delay={} ms,exe={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
+				if (playerId == null) {
+					logger.info("handle {},delay={} ms,exe={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
+				} else {
+					logger.info("handle {},delay={} ms,exe={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, playerId);
+				}
 			}
 
 			taskQueue.complete();// 后继逻辑...

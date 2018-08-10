@@ -24,14 +24,7 @@ import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
  * @author 小流氓(176543888@qq.com)
  */
 public class PlayerThreadCommand extends AbstractThreadCommand {
-	private final Serializable playerId;
-
 	public PlayerThreadCommand(Serializable playerId, AbstractControllerMethodWrapper method, Object... args) {
-		super(method, args);
-		this.playerId = playerId;
-	}
-
-	public Serializable getPlayerId() {
-		return playerId;
+		super(method, playerId, args);
 	}
 }

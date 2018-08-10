@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.thread.command;
 
+import java.io.Serializable;
+
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 import xyz.noark.core.thread.ThreadCommand;
 
@@ -25,10 +27,12 @@ import xyz.noark.core.thread.ThreadCommand;
 public class AbstractThreadCommand implements ThreadCommand {
 	private final AbstractControllerMethodWrapper method;
 	private final Object[] args;
+	private final Serializable playerId;
 
-	public AbstractThreadCommand(AbstractControllerMethodWrapper method, Object... args) {
+	public AbstractThreadCommand(AbstractControllerMethodWrapper method, Serializable playerId, Object... args) {
 		this.method = method;
 		this.args = args;
+		this.playerId = playerId;
 	}
 
 	@Override
@@ -44,5 +48,9 @@ public class AbstractThreadCommand implements ThreadCommand {
 	@Override
 	public boolean isPrintLog() {
 		return method.isPrintLog();
+	}
+
+	public Serializable getPlayerId() {
+		return playerId;
 	}
 }

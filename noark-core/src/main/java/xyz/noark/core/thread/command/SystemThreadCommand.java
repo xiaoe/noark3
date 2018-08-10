@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.thread.command;
 
+import java.io.Serializable;
+
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 
 /**
@@ -25,7 +27,11 @@ public class SystemThreadCommand extends AbstractThreadCommand {
 	private final String module;
 
 	public SystemThreadCommand(String module, AbstractControllerMethodWrapper method, Object... args) {
-		super(method, args);
+		this(null, module, method, args);
+	}
+
+	public SystemThreadCommand(Serializable playerId, String module, AbstractControllerMethodWrapper method, Object... args) {
+		super(method, playerId, args);
 		this.module = module;
 	}
 
