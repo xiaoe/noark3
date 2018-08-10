@@ -42,4 +42,13 @@ public class NoarkConstant {
 	 * 配置区服所需策划模板文件的路径
 	 */
 	public static final String TEMPLATE_PATH = "template.path";
+
+	/**
+	 * Banner默认图案为Noark的Logo
+	 */
+	public static final String BANNER_DEFAULT = "noark.banner";
+	/**
+	 * Banner悟空版本
+	 */
+	public static final String BANNER_WUKONG = "wukong.banner";
 }

@@ -22,6 +22,7 @@ import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.util.FileUtils;
 import xyz.noark.core.util.SystemUtils;
 import xyz.noark.game.NoarkConstant;
 import xyz.noark.log.LogManager;
@@ -74,6 +75,10 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			float interval = (System.nanoTime() - startTime) / 1000_000f;
 			logger.info("{} is running, interval={} ms", this.getServerName(), interval);
 			System.out.println(this.getServerName() + " is running, interval=" + interval + " ms");
+
+			if (this.showBanner()) {
+				FileUtils.getFileText(bannerFileName()).ifPresent(v -> printBanner(v));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("failed to starting service:{}", this.getServerName(), e);
@@ -131,4 +136,33 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 	 * 关闭逻辑.
 	 */
 	protected abstract void onStop();
+
+	/**
+	 * 显示Banner.
+	 * 
+	 * @return 如果显示返回true，否则返回false.
+	 */
+	protected boolean showBanner() {
+		return true;
+	}
+
+	/**
+	 * Banner文件名称.
+	 * <p>
+	 * 重载此方法可以替换默认的输出Banner图案
+	 * 
+	 * @return Banner文件名称
+	 */
+	protected String bannerFileName() {
+		return NoarkConstant.BANNER_DEFAULT;
+	}
+
+	/**
+	 * 打印Banner图案.
+	 * 
+	 * @param text Banner图案
+	 */
+	protected void printBanner(String text) {
+		logger.info(EnvConfigHolder.fillExpression(text));
+	}
 }
