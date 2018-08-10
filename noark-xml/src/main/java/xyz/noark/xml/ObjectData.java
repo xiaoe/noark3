@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.env.EnvConfigHolder;
 
 /**
  * 一个对象数据.
@@ -70,22 +70,7 @@ class ObjectData {
 	 */
 	public void fillExpression() {
 		for (Map.Entry<String, String> e : data.entrySet()) {
-			String value = e.getValue();
-			int startIndex = value.indexOf("${");
-			while (startIndex >= 0) {
-				int endIndex = value.indexOf("}", startIndex);
-				if (endIndex > 0) {
-					String elKey = value.substring(startIndex + 2, endIndex);
-					String elValue = data.get(elKey);
-					if (elValue == null) {
-						throw new ServerBootstrapException(value + "--> 替换参数呢?");
-					} else {
-						value = value.replace("${" + elKey + "}", elValue);
-						e.setValue(value);
-					}
-				}
-				startIndex = value.indexOf("${", startIndex);
-			}
+			e.setValue(EnvConfigHolder.fillExpression(e.getValue(), data, true));
 		}
 	}
 }

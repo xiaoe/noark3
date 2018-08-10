@@ -16,6 +16,8 @@ package xyz.noark.core.env;
 import java.util.Collections;
 import java.util.Map;
 
+import xyz.noark.core.exception.ServerBootstrapException;
+
 /**
  * 系统配置.
  *
@@ -33,5 +35,43 @@ public class EnvConfigHolder {
 
 	public static void setProperties(Map<String, String> properties) {
 		EnvConfigHolder.properties = properties;
+	}
+
+	/**
+	 * 填充EL表达式.
+	 * 
+	 * @param value 包含表达式的值
+	 * @return 替换完的值
+	 */
+	public static String fillExpression(String value) {
+		return fillExpression(value, properties, false);
+	}
+
+	/**
+	 * 填充EL表达式.
+	 * 
+	 * @param value 包含表达式的值
+	 * @param config 表达式替换配置
+	 * @param required 表达替换必需存在
+	 * @return 替换完的值
+	 */
+	public static String fillExpression(String value, Map<String, String> config, boolean required) {
+		int startIndex = value.indexOf("${");
+		while (startIndex >= 0) {
+			int endIndex = value.indexOf("}", startIndex);
+			if (endIndex > 0) {
+				String elKey = value.substring(startIndex + 2, endIndex);
+				String elValue = config.get(elKey);
+				if (elValue == null) {
+					if (required) {
+						throw new ServerBootstrapException(value + "--> 替换参数呢?");
+					}
+				} else {
+					value = value.replace("${" + elKey + "}", elValue);
+				}
+			}
+			startIndex = value.indexOf("${", startIndex + 1);
+		}
+		return value;
 	}
 }
