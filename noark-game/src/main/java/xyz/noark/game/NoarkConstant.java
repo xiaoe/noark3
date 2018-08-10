@@ -27,6 +27,11 @@ public class NoarkConstant {
 	public static final String NOARK_PROFILES_ACTIVE = "--noark.profiles.active=";
 
 	/**
+	 * Noark版本的配置，系统自动生成，不可配置.
+	 */
+	public static final String NOARK_VERSION = "noark.version";
+
+	/**
 	 * 配置区服ID的Key
 	 */
 	public static final String SERVER_ID = "server.id";

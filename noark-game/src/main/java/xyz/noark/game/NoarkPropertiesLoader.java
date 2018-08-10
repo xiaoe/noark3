@@ -64,6 +64,10 @@ class NoarkPropertiesLoader {
 		for (Map.Entry<String, String> e : result.entrySet()) {
 			e.setValue(EnvConfigHolder.fillExpression(e.getValue(), result, true));
 		}
+
+		// 系统配置
+		result.put(NoarkConstant.NOARK_VERSION, Noark.getVersion());
+
 		return result;
 	}
 
