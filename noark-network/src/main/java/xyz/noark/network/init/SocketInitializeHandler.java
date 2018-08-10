@@ -11,15 +11,18 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.initialize;
+package xyz.noark.network.init;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.network.Session;
+import xyz.noark.network.SocketSession;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.handler.SocketServerHandler;
 
@@ -49,5 +52,10 @@ public class SocketInitializeHandler extends AbstractInitializeHandler {
 		pipeline.addLast("decoder", codec.lengthDecoder());
 
 		pipeline.addLast("handler", socketServerHandler);
+	}
+
+	@Override
+	protected Session createSession(ChannelHandlerContext ctx) {
+		return new SocketSession(ctx.channel());
 	}
 }

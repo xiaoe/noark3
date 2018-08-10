@@ -3,4 +3,4 @@
  *
  * @since 3.1
  */
-package xyz.noark.network.initialize;
+package xyz.noark.network.init;

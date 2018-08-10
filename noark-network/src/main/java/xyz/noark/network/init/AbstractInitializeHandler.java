@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.initialize;
+package xyz.noark.network.init;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -20,7 +20,6 @@ import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.network.InitializeHandler;
-import xyz.noark.network.NettySession;
 
 /**
  * 抽象实现的初始化协议处理器.
@@ -38,12 +37,20 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 		this.build(ctx.pipeline());
 
 		// 只要第一个协议对了就要创建Session...
-		Session session = SessionManager.createSession(ctx.channel().id(), key -> new NettySession(ctx.channel()));
+		Session session = SessionManager.createSession(ctx.channel().id(), key -> createSession(ctx));
 
 		if (networkListener != null) {
 			networkListener.channelActive(session);
 		}
 	}
+
+	/**
+	 * 创建Session.
+	 * 
+	 * @param ctx 链接上下文
+	 * @return Session对象
+	 */
+	protected abstract Session createSession(ChannelHandlerContext ctx);
 
 	/**
 	 * 判定具体协议后再重装ChannelPipeline对象.

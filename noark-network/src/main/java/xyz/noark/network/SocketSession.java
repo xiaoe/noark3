@@ -18,9 +18,7 @@ import static xyz.noark.log.LogHelper.logger;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import xyz.noark.core.network.AbstractSession;
 import xyz.noark.core.network.PacketCodecHolder;
 
@@ -30,14 +28,12 @@ import xyz.noark.core.network.PacketCodecHolder;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class NettySession extends AbstractSession {
-	private final Channel channel;
+public class SocketSession extends AbstractSession {
+	protected final Channel channel;
 	private String uid;
 	private Serializable playerId;
-	/** 是否为websocket链接. */
-	private boolean websocket = false;
 
-	public NettySession(Channel channel) {
+	public SocketSession(Channel channel) {
 		super(channel.id(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 		this.channel = channel;
 	}
@@ -77,10 +73,6 @@ public class NettySession extends AbstractSession {
 		this.playerId = playerId;
 	}
 
-	public void setWebsocket(boolean websocket) {
-		this.websocket = websocket;
-	}
-
 	@Override
 	public void send(Integer opcode, Object protocal) {
 		this.send(PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal));
@@ -100,10 +92,15 @@ public class NettySession extends AbstractSession {
 			return;
 		}
 
-		if (websocket) {
-			channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(packet)), channel.voidPromise());
-		} else {
-			channel.writeAndFlush(packet, channel.voidPromise());
-		}
+		this.writeAndFlush(packet);
+	}
+
+	/**
+	 * 发送封包逻辑.
+	 * 
+	 * @param packet 封包逻辑
+	 */
+	protected void writeAndFlush(byte[] packet) {
+		channel.writeAndFlush(packet, channel.voidPromise());
 	}
 }

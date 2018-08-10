@@ -11,29 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.initialize;
+package xyz.noark.network.init;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import xyz.noark.core.annotation.Component;
 import xyz.noark.network.InitializeHandler;
 
 /**
- * 非法请求.
- * 
+ * Flash所需要的策略文件.
+ *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class IllegalRequestHandler implements InitializeHandler {
-	private final String request;
+@Component(name = "<policy-file-request/>\0")
+public class PolicyFileHandler implements InitializeHandler {
 
-	public IllegalRequestHandler(String request) {
-		this.request = request;
-	}
+	private final static byte[] POLICY = "<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\"/></cross-domain-policy>\0".getBytes();
 
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
-		logger.warn("非法暗号：{}, IP={}", request, ctx.channel().remoteAddress());
-		ctx.close();
+		ctx.writeAndFlush(POLICY).addListener(ChannelFutureListener.CLOSE);
+		logger.warn("无法访问843端口,从主端口获取安全策略文件 ip={}", ctx.channel().remoteAddress());
 	}
 }

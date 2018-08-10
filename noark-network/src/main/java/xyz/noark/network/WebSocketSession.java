@@ -11,29 +11,26 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.initialize;
+package xyz.noark.network;
 
-import static xyz.noark.log.LogHelper.logger;
-
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import xyz.noark.core.annotation.Component;
-import xyz.noark.network.InitializeHandler;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 
 /**
- * Flash所需要的策略文件.
+ * WebSocket的Session.
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = "<policy-file-request/>\0")
-public class PolicyFileHandler implements InitializeHandler {
+public class WebSocketSession extends SocketSession {
 
-	private final static byte[] POLICY = "<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\"/></cross-domain-policy>\0".getBytes();
+	public WebSocketSession(Channel channel) {
+		super(channel);
+	}
 
 	@Override
-	public void handle(ChannelHandlerContext ctx) {
-		ctx.writeAndFlush(POLICY).addListener(ChannelFutureListener.CLOSE);
-		logger.warn("无法访问843端口,从主端口获取安全策略文件 ip={}", ctx.channel().remoteAddress());
+	protected void writeAndFlush(byte[] packet) {
+		channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(packet)), channel.voidPromise());
 	}
 }

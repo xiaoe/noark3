@@ -28,7 +28,7 @@ subprojects {
 	}
 
 	group = 'xyz.noark'  
-	version = '3.1.9.Final'
+	version = '3.1.11.Final'
 	
 	sourceCompatibility = 1.8  
 	targetCompatibility = 1.8  

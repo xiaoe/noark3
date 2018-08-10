@@ -11,10 +11,11 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.initialize;
+package xyz.noark.network.init;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -23,7 +24,9 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
+import xyz.noark.core.network.Session;
 import xyz.noark.network.NetworkConstant;
+import xyz.noark.network.WebSocketSession;
 import xyz.noark.network.handler.WebsocketServerHandler;
 
 /**
@@ -49,5 +52,10 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 		pipeline.addLast(new HttpObjectAggregator(65535));
 		pipeline.addLast(new WebSocketServerProtocolHandler(websocketPath));
 		pipeline.addLast(websocketServerHandler);
+	}
+
+	@Override
+	protected Session createSession(ChannelHandlerContext ctx) {
+		return new WebSocketSession(ctx.channel());
 	}
 }

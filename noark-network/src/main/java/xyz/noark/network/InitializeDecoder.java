@@ -19,7 +19,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import xyz.noark.core.util.ByteBufUtils;
-import xyz.noark.network.initialize.WebsocketInitializeHandler;
+import xyz.noark.network.init.WebsocketInitializeHandler;
 
 /**
  * 协议初始化解码器.
