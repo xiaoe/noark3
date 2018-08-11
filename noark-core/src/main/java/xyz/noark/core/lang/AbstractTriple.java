@@ -26,42 +26,8 @@ import java.util.Objects;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractTriple<L, M, R> implements Serializable {
+public abstract class AbstractTriple<L, M, R> implements Serializable, Triple<L, M, R> {
 	private static final long serialVersionUID = 5742943780888927005L;
-
-	/**
-	 * 根据参数类型自动推断出一个不可变的抽象对象.
-	 * <p>
-	 * 具体实现可参考{@link ImmutableTriple#of(Object, Object, Object)}
-	 * 
-	 * @param left 左边元素
-	 * @param right 右边元素
-	 * @return 一个不可变的抽象对象
-	 */
-	public static <L, M, R> AbstractTriple<L, M, R> of(final L left, final M middle, final R right) {
-		return ImmutableTriple.of(left, middle, right);
-	}
-
-	/**
-	 * 获取左边的那个元素.
-	 *
-	 * @return 左边的那个元素
-	 */
-	public abstract L getLeft();
-
-	/**
-	 * 获取中间的那个元素.
-	 *
-	 * @return 中间的那个元素
-	 */
-	public abstract M getMiddle();
-
-	/**
-	 * 获取右边的那个元素.
-	 *
-	 * @return 右边的那个元素
-	 */
-	public abstract R getRight();
 
 	@Override
 	public boolean equals(final Object obj) {

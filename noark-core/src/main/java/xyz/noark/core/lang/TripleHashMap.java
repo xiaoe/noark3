@@ -24,7 +24,7 @@ import java.util.function.Function;
  * @author 小流氓(176543888@qq.com)
  */
 public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
-	private final HashMap<AbstractTriple<L, M, R>, V> hashmap;
+	private final HashMap<Triple<L, M, R>, V> hashmap;
 
 	public TripleHashMap() {
 		this.hashmap = new HashMap<>();
@@ -54,11 +54,11 @@ public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
 
 	@Override
 	public V put(L left, M middle, R right, V value) {
-		return hashmap.put(AbstractTriple.of(left, middle, right), value);
+		return hashmap.put(Triple.of(left, middle, right), value);
 	}
 
 	@Override
 	public V get(L left, M middle, R right) {
-		return hashmap.get(AbstractTriple.of(left, middle, right));
+		return hashmap.get(Triple.of(left, middle, right));
 	}
 }
