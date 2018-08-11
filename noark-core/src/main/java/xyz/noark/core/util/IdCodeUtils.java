@@ -21,11 +21,11 @@ package xyz.noark.core.util;
  */
 public class IdCodeUtils {
 	/** 去除字符O，I,数字0,1 */
-	private final static char[] CHARS = { //
-			'2', '3', '4', '5', '6', '7', '8', '9', //
-			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', //
-			'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', //
-			'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', //
+	private final static char[] CHARS = { 
+			'2', '3', '4', '5', '6', '7', '8', '9', 
+			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
+			'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 
+			'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
 	};
 	private static final int CODE_CHARS_LENGTH = CHARS.length;
 	private static final int[] NUMS = new int['Z' + 1];

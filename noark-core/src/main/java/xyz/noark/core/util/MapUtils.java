@@ -31,7 +31,7 @@ public class MapUtils {
 	 * @return HashMap对象
 	 */
 	public static <K, V> HashMap<K, V> of(K key, V value) {
-		HashMap<K, V> result = new HashMap<>();
+		HashMap<K, V> result = new HashMap<>(1, 1);
 		result.put(key, value);
 		return result;
 	}
