@@ -126,6 +126,11 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 				returnValue = handler.invoke(args);
 			}
 
+			// 如果返回值就是这个接口那就直接返回吧...
+			if (returnValue instanceof HttpResult) {
+				return (HttpResult) returnValue;
+			}
+
 			HttpResult result = new HttpResult(HttpErrorCode.OK);
 			result.setData(returnValue);
 			return result;
