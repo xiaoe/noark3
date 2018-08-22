@@ -32,9 +32,9 @@ import xyz.noark.network.handler.SocketServerHandler;
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = "socket")
+@Component(name = SocketInitializeHandler.SOCKET_NAME)
 public class SocketInitializeHandler extends AbstractInitializeHandler {
-
+	public static final String SOCKET_NAME = "________socket_________";
 	@Autowired
 	private SocketServerHandler socketServerHandler;
 

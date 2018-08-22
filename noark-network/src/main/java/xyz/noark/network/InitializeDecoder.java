@@ -30,7 +30,8 @@ import xyz.noark.network.init.WebsocketInitializeHandler;
  * @author 小流氓(176543888@qq.com)
  */
 public class InitializeDecoder extends ByteToMessageDecoder {
-	private static final int MAX_LENGTH = 64;
+	/** 默认暗号长度为23，为什么是23呢？你来问我啊，不问我就当你是知道的 */
+	private static final int MAX_LENGTH = 23;
 	/** WebSocket握手的协议前缀 */
 	private static final String WEBSOCKET_PREFIX = "GET /";
 

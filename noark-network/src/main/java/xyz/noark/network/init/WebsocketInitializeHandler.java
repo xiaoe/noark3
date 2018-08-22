@@ -37,7 +37,7 @@ import xyz.noark.network.handler.WebsocketServerHandler;
  */
 @Component(name = WebsocketInitializeHandler.WEBSOCKET_NAME)
 public class WebsocketInitializeHandler extends AbstractInitializeHandler {
-	public static final String WEBSOCKET_NAME = "websocket";
+	public static final String WEBSOCKET_NAME = "_______websocket_______";
 	/** 是否为WebSocket */
 	@Value(NetworkConstant.WEBSOCKET_PATH)
 	protected String websocketPath = "/game";
