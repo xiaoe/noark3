@@ -28,6 +28,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.Future;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
@@ -133,7 +134,17 @@ public class NettyServer implements TcpServer {
 
 	@Override
 	public void shutdown() {
-		bossGroup.shutdownGracefully();
-		workGroup.shutdownGracefully();
+		Future<?> boosFuture = bossGroup.shutdownGracefully();
+		Future<?> workFuture = workGroup.shutdownGracefully();
+		try {
+			if (boosFuture.await(NetworkConstant.SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
+				logger.info("NettyBoss关闭成功.");
+			}
+			if (workFuture.await(NetworkConstant.SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
+				logger.info("NettyWork关闭成功.");
+			}
+		} catch (InterruptedException ie) {
+			logger.error("关闭网络时发生异常.", ie);
+		}
 	}
 }

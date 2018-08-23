@@ -48,6 +48,11 @@ public class NetworkConstant {
 	/** 统计周期内可以出现多少次预警，默认：3次 */
 	public static final String RECEIVE_COUNT = "network.stat.receive.count";
 
+	/**
+	 * 停止服务时存储数据最大等待时间，单位：分钟
+	 */
+	public static final int SHUTDOWN_MAX_TIME = 1;
+
 	private static final int CPU_MIN_COUNT = 4;
 	private static final int CPU_MAX_COUNT = 8;
 	public static final int DEFAULT_EVENT_LOOP_THREADS;
