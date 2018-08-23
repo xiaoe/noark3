@@ -19,6 +19,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
+import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
@@ -60,26 +61,32 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 	protected void dispatchPacket(ChannelHandlerContext ctx, NetworkPacket packet) {
 		Session session = SessionManager.getSession(ctx.channel().id());
 
-		// 开启了数据统计功能.
-		if (receiveActive) {
-			long second = System.currentTimeMillis() / 1000;
-			// 当前秒内累计接受到的封包长度
-			long packetLength = session.getStatis().record(second, packet.getLength());
-			if (packetLength >= receiveThreshold) {
-				// 当前秒已预警次数
-				int warnCount = session.getStatis().warning(second, receiveSecond);
-				if (warnCount >= receiveCount) {
-					logger.warn("网络封包统计预警：在 {} 秒内累计 {} 次超出 {} 预警值", receiveSecond, warnCount, receiveThreshold);
+		try (ByteArray array = packet.getBytes()) {
+			// 开启了数据统计功能.
+			if (receiveActive) {
+				this.statPacket(session, packet);
+			}
 
-					if (networkListener != null) {
-						if (networkListener.handlePacketWarning(session, receiveSecond, warnCount, receiveThreshold)) {
-							return;
-						}
+			threadDispatcher.dispatchPacket(session, packet.getOpcode(), packet.getBytes());
+		}
+	}
+
+	private void statPacket(Session session, NetworkPacket packet) {
+		long second = System.currentTimeMillis() / 1000;
+		// 当前秒内累计接受到的封包长度
+		long packetLength = session.getStatis().record(second, packet.getLength());
+		if (packetLength >= receiveThreshold) {
+			// 当前秒已预警次数
+			int warnCount = session.getStatis().warning(second, receiveSecond);
+			if (warnCount >= receiveCount) {
+				logger.warn("网络封包统计预警：在 {} 秒内累计 {} 次超出 {} 预警值", receiveSecond, warnCount, receiveThreshold);
+
+				if (networkListener != null) {
+					if (networkListener.handlePacketWarning(session, receiveSecond, warnCount, receiveThreshold)) {
+						return;
 					}
 				}
 			}
 		}
-
-		threadDispatcher.dispatchPacket(session, packet.getOpcode(), packet.getBytes());
 	}
 }

@@ -35,8 +35,12 @@ public class ByteBufWrapper implements ByteArray {
 		if (array == null) {
 			array = new byte[byteBuf.readableBytes()];
 			byteBuf.readBytes(array);
-			byteBuf.release();// 拿出一个带引用的ByteBuf，这里--
 		}
 		return array;
+	}
+
+	@Override
+	public void close() {
+		byteBuf.release();// 拿出一个带引用的ByteBuf，这里--
 	}
 }

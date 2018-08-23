@@ -21,11 +21,17 @@ package xyz.noark.core.lang;
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public interface ByteArray {
+public interface ByteArray extends AutoCloseable {
 	/**
 	 * 返回字节数组内容.
 	 * 
 	 * @return 字节数组
 	 */
 	byte[] array();
+
+	/**
+	 * 用于Try方式的关闭资源或回收功能.
+	 */
+	@Override
+	void close();
 }
