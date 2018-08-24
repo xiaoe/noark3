@@ -51,6 +51,14 @@ public interface Session {
 	public void send(Integer opcode, Object protocal);
 
 	/**
+	 * 发送完成后关闭当前链接.
+	 * 
+	 * @param opcode 协议编号
+	 * @param protocal 协议对象
+	 */
+	public void sendAndClose(Integer opcode, Object protocal);
+
+	/**
 	 * 发送一个网络封包.
 	 * <p>
 	 * 封包是已处理过的加密压缩等功能后的包

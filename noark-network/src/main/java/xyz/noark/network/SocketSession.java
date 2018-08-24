@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import xyz.noark.core.network.AbstractSession;
 import xyz.noark.core.network.PacketCodecHolder;
 
@@ -102,5 +103,10 @@ public class SocketSession extends AbstractSession {
 	 */
 	protected void writeAndFlush(byte[] packet) {
 		channel.writeAndFlush(packet, channel.voidPromise());
+	}
+
+	@Override
+	public void sendAndClose(Integer opcode, Object protocal) {
+		channel.writeAndFlush(PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal)).addListener(ChannelFutureListener.CLOSE);
 	}
 }
