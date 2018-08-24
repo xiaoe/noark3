@@ -45,9 +45,15 @@ abstract class AbstractMessage implements Message {
 		this.threadName = thread.getName();
 
 		if (LogConfigurator.DEFAULT_LEVEL == Level.DEBUG) {
-			StackTraceElement stackTraceElement = thread.getStackTrace()[7];
-			fileName = stackTraceElement.getFileName();
-			lineNumber = stackTraceElement.getLineNumber();
+			StackTraceElement[] elements = thread.getStackTrace();
+			for (int i = 7; i < elements.length; i++) {
+				StackTraceElement stackTraceElement = elements[i];
+				fileName = stackTraceElement.getFileName();
+				lineNumber = stackTraceElement.getLineNumber();
+				if (!fileName.endsWith("Loger.java")) {
+					break;
+				}
+			}
 		}
 	}
 
