@@ -13,7 +13,9 @@
  */
 package xyz.noark.core.util;
 
+import java.io.File;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.Optional;
 
 /**
@@ -23,6 +25,8 @@ import java.util.Optional;
  * @author 小流氓(176543888@qq.com)
  */
 public class FileUtils {
+	/** 可读大小的单位 */
+	private static final String[] UNITS = new String[] { "B", "KB", "MB", "GB", "TB", "EB" };
 
 	/**
 	 * 加载类路径下指定名称文件中的文本.
@@ -37,5 +41,29 @@ public class FileUtils {
 			return Optional.of(new String(bytes));
 		} catch (Exception e) {}
 		return Optional.empty();
+	}
+
+	/**
+	 * 可读的文件大小
+	 * 
+	 * @param file 文件
+	 * @return 大小
+	 */
+	public static String readableFileSize(File file) {
+		return readableFileSize(file.length());
+	}
+
+	/**
+	 * 可读的文件大小<br>
+	 * 
+	 * @param size Long类型大小
+	 * @return 大小
+	 */
+	public static String readableFileSize(long size) {
+		if (size <= 0) {
+			return "0";
+		}
+		int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+		return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + UNITS[digitGroups];
 	}
 }
