@@ -60,6 +60,7 @@ public class IdGenerator {
 	 * 持久化：区服编号（16位）+ 计次（18位）+ 自旋因子（25位）+ 类型（1位） <br>
 	 * 
 	 * @return 唯一ID
+	 * @throws IdMaxSequenceException 如果最大自旋因子用完了就会抛出此异常，调用者必需计次加一重新来过
 	 */
 	public long generateId() throws IdMaxSequenceException {
 		return sid << 44 | times << 26 | nextSequence() << 1 | 1;

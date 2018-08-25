@@ -17,7 +17,6 @@ import xyz.noark.game.bootstrap.ServerBootstrap;
 
 /**
  * Noark框架启动类.
- * <p>
  * 
  * <pre>
  * Noark.run(DemoApplication.class, args);
@@ -34,6 +33,7 @@ public final class Noark {
 	 * Return the full version string of the present Noark codebase.
 	 * 
 	 * @see Package#getImplementationVersion()
+	 * @return 返回Noark的版本号
 	 */
 	public static String getVersion() {
 		return Noark.class.getPackage().getImplementationVersion();
