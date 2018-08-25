@@ -66,6 +66,7 @@ public class Csv {
 	/**
 	 * 根据指定类文件加载CSV格式的模板.
 	 * 
+	 * @param <T> 要转化对象的类型
 	 * @param templatePath 模板文件路径
 	 * @param klass 模板类文件
 	 * @return 模板类对象的集合
