@@ -15,6 +15,8 @@ package xyz.noark.core.network;
 
 import java.io.Serializable;
 
+import xyz.noark.core.lang.ByteArray;
+
 /**
  * Session.
  *
@@ -65,7 +67,7 @@ public interface Session {
 	 * 
 	 * @param packet 封包内容
 	 */
-	public void send(byte[] packet);
+	public void send(ByteArray packet);
 
 	/**
 	 * 获取当前链接状态.

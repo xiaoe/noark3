@@ -34,4 +34,11 @@ public interface ByteArray extends AutoCloseable {
 	 */
 	@Override
 	void close();
+
+	/**
+	 * 返回字节数组长度.
+	 * 
+	 * @return 数组长度
+	 */
+	int length();
 }

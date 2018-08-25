@@ -16,6 +16,7 @@ package xyz.noark.network.codec.json;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import xyz.noark.core.lang.ByteArray;
 
 /**
  * 这个主要用来添加包长的.
@@ -23,11 +24,11 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SimpleJsonLengthEncoder extends MessageToByteEncoder<byte[]> {
+public class SimpleJsonLengthEncoder extends MessageToByteEncoder<ByteArray> {
 
 	@Override
-	protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) throws Exception {
-		out.writeShort(msg.length);
-		out.writeBytes(msg);
+	protected void encode(ChannelHandlerContext ctx, ByteArray msg, ByteBuf out) throws Exception {
+		out.writeShort(msg.length());
+		out.writeBytes(msg.array());
 	}
 }

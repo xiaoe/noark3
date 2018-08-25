@@ -20,6 +20,7 @@ import java.net.InetSocketAddress;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
+import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.AbstractSession;
 import xyz.noark.core.network.PacketCodecHolder;
 
@@ -76,11 +77,11 @@ public class SocketSession extends AbstractSession {
 
 	@Override
 	public void send(Integer opcode, Object protocal) {
-		this.send(PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal));
+		this.send(buildPacket(opcode, protocal));
 	}
 
 	@Override
-	public void send(byte[] packet) {
+	public void send(ByteArray packet) {
 		// 链接已关闭了...
 		if (!channel.isActive()) {
 			logger.warn("send packet fail isActive=false. channel={}, playerId={}", channel, playerId);
@@ -101,12 +102,23 @@ public class SocketSession extends AbstractSession {
 	 * 
 	 * @param packet 封包逻辑
 	 */
-	protected void writeAndFlush(byte[] packet) {
+	protected void writeAndFlush(ByteArray packet) {
 		channel.writeAndFlush(packet, channel.voidPromise());
 	}
 
 	@Override
 	public void sendAndClose(Integer opcode, Object protocal) {
-		channel.writeAndFlush(PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal)).addListener(ChannelFutureListener.CLOSE);
+		channel.writeAndFlush(buildPacket(opcode, protocal)).addListener(ChannelFutureListener.CLOSE);
+	}
+
+	/**
+	 * 构建发送的封包对象.
+	 * 
+	 * @param opcode 协议编号
+	 * @param protocal 协议内容
+	 * @return 封包对象
+	 */
+	protected ByteArray buildPacket(Integer opcode, Object protocal) {
+		return PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
 	}
 }

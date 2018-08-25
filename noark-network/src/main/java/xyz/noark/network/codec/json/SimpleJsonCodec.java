@@ -16,9 +16,9 @@ package xyz.noark.network.codec.json;
 import com.alibaba.fastjson.JSON;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import xyz.noark.core.lang.ByteArray;
-import xyz.noark.core.util.ByteArrayUtils;
 import xyz.noark.network.NetworkPacket;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
@@ -38,13 +38,15 @@ public class SimpleJsonCodec extends AbstractPacketCodec {
 	}
 
 	@Override
-	public byte[] encodePacket(Integer opcode, Object protocal) {
-		byte[] bytes = JSON.toJSONBytes(protocal);
-		byte[] data2 = ByteArrayUtils.toByteArray(opcode);
-		byte[] data3 = new byte[bytes.length + data2.length];
-		System.arraycopy(data2, 0, data3, 0, data2.length);
-		System.arraycopy(bytes, 0, data3, data2.length, bytes.length);
-		return data3;
+	public ByteArray encodePacket(Integer opcode, Object protocal) {
+		final byte[] bytes = JSON.toJSONBytes(protocal);
+
+		ByteBuf byteBuf = Unpooled.buffer(bytes.length + 4);
+		// 写入Opcode
+		byteBuf.writeInt(opcode);
+		// 写入协议内容
+		byteBuf.writeBytes(bytes);
+		return new ByteBufWrapper(byteBuf);
 	}
 
 	@Override

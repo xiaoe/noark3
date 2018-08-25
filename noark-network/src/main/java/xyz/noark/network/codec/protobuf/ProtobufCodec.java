@@ -13,15 +13,21 @@
  */
 package xyz.noark.network.codec.protobuf;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.CodedOutputStream;
+import com.google.protobuf.MessageLite;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
+import xyz.noark.core.exception.DataException;
+import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.util.ByteBufUtils;
 import xyz.noark.core.util.MethodUtils;
 import xyz.noark.core.util.ProtobufUtils;
 import xyz.noark.network.NetworkPacket;
@@ -46,13 +52,28 @@ public class ProtobufCodec extends AbstractPacketCodec {
 	}
 
 	@Override
-	public byte[] encodePacket(Integer opcode, Object protocal) {
-		byte[] bytes = ((GeneratedMessage) protocal).toByteArray();
-		byte[] data2 = ProtobufUtils.encodeInt32(opcode);
-		byte[] data3 = new byte[bytes.length + data2.length];
-		System.arraycopy(data2, 0, data3, 0, data2.length);
-		System.arraycopy(bytes, 0, data3, data2.length, bytes.length);
-		return data3;
+	public ByteArray encodePacket(Integer opcode, Object protocal) {
+		MessageLite message = null;
+		if (protocal instanceof MessageLite) {
+			message = (MessageLite) protocal;
+		} else if (protocal instanceof MessageLite.Builder) {
+			message = ((MessageLite.Builder) protocal).build();
+		} else {
+			throw new UnrealizedException("illegal data type：" + protocal.getClass());
+		}
+
+		try {
+			final int protocalLength = message.getSerializedSize();
+			final int opcodeLength = ProtobufUtils.computeRawVarint32Size(opcode);
+			ByteBuf byteBuf = Unpooled.buffer(protocalLength + opcodeLength);
+			// 写入Opcode
+			ByteBufUtils.writeRawVarint32(byteBuf, opcode);
+			// 写入协议内容
+			message.writeTo(CodedOutputStream.newInstance(byteBuf.array(), opcodeLength, byteBuf.capacity()));
+			return new ByteBufWrapper(byteBuf);
+		} catch (IOException e) {
+			throw new DataException("数据异常", e);
+		}
 	}
 
 	@Override

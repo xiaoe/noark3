@@ -15,7 +15,9 @@ package xyz.noark.network;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import xyz.noark.core.lang.ByteArray;
 
 /**
  * WebSocket的Session.
@@ -30,7 +32,16 @@ public class WebSocketSession extends SocketSession {
 	}
 
 	@Override
-	protected void writeAndFlush(byte[] packet) {
-		channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(packet)), channel.voidPromise());
+	protected void writeAndFlush(ByteArray packet) {
+		channel.writeAndFlush(buildFrame(packet), channel.voidPromise());
+	}
+
+	@Override
+	public void sendAndClose(Integer opcode, Object protocal) {
+		channel.writeAndFlush(buildFrame(buildPacket(opcode, protocal))).addListener(ChannelFutureListener.CLOSE);
+	}
+
+	private BinaryWebSocketFrame buildFrame(ByteArray packet) {
+		return new BinaryWebSocketFrame(Unpooled.wrappedBuffer(packet.array()));
 	}
 }

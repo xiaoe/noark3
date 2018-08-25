@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
+import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.util.StringUtils;
 
 /**
@@ -51,7 +52,7 @@ public class SessionManager {
 	 * @param playerIds 接受人的ID列表
 	 */
 	public static void send(Integer opcode, Object protocal, Serializable... playerIds) {
-		byte[] packet = PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
+		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
 		// 全服发送
 		if (playerIds.length == 0) {
 			PLAYER_ID_2_SESSION.forEach((k, v) -> v.send(packet));

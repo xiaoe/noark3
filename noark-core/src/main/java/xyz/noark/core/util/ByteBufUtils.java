@@ -90,4 +90,16 @@ public class ByteBufUtils {
 		in.readBytes(content);
 		return new String(content);
 	}
+
+	/**
+	 * 从ByteBuf中读出所以可读内容
+	 * 
+	 * @param in ByteBuf对象
+	 * @return 可读内容
+	 */
+	public static byte[] readBytes(ByteBuf in) {
+		byte[] content = new byte[in.readableBytes()];
+		in.readBytes(content);
+		return content;
+	}
 }

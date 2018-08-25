@@ -59,9 +59,9 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 	 * @param packet 网络封包
 	 */
 	protected void dispatchPacket(ChannelHandlerContext ctx, NetworkPacket packet) {
-		Session session = SessionManager.getSession(ctx.channel().id());
-
 		try (ByteArray array = packet.getBytes()) {
+			Session session = SessionManager.getSession(ctx.channel().id());
+
 			// 开启了数据统计功能.
 			if (receiveActive) {
 				this.statPacket(session, packet);

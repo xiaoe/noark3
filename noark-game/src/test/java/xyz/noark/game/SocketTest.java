@@ -29,7 +29,7 @@ public class SocketTest {
 
 	public static void main(String[] args) throws Exception {
 		Socket socket = new Socket("127.0.0.1", 52113);
-		socket.getOutputStream().write("socket".getBytes());
+		socket.getOutputStream().write("________socket_________".getBytes());
 		Thread.sleep(1000);
 
 		send(socket, 1, "noark");
