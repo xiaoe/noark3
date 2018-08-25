@@ -27,7 +27,7 @@ import xyz.noark.network.codec.AbstractLengthDecoder;
  * <pre>
  * BEFORE DECODE (306 bytes)                     AFTER DECODE (306 bytes)
  * +--------+------------+---------------+      +--------+------------+---------------+
- * | length |   opcode   |   Json Data   |----->| length |   opcode   |   Json Data   |
+ * | length |   opcode   |   Json Data   |-----&gt;| length |   opcode   |   Json Data   |
  * | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |      | 0xFFFF | 0xFFFFFFFF |  (300 bytes)  |
  * +--------+------------+---------------+      +--------+------------+---------------+
  * </pre>

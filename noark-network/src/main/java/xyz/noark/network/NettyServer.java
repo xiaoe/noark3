@@ -95,7 +95,6 @@ public class NettyServer implements TcpServer {
 	 * 构建ChannelPipeline通道.
 	 * 
 	 * @param pipeline ChannelPipeline通道
-	 * @param context ChannelContext上下文
 	 */
 	protected void buildChannelPipeline(ChannelPipeline pipeline) {
 		// 配置了心跳功能，则启用心跳机制.
