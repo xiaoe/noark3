@@ -116,6 +116,9 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 
 	/**
 	 * 判定一个表是否存在.
+	 * 
+	 * @param tableName 表名
+	 * @return 如果存在返回true,否则返回false
 	 */
 	protected boolean exists(final String tableName) {
 		return this.execute(new StatementCallback<Boolean>() {

@@ -26,6 +26,7 @@ public interface SqlExpert {
 	/**
 	 * 获取创建表的SQL语句.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
@@ -34,6 +35,7 @@ public interface SqlExpert {
 	/**
 	 * 获取插入的SQL语句.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
@@ -42,6 +44,7 @@ public interface SqlExpert {
 	/**
 	 * 获取更新的SQL语句.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
@@ -50,6 +53,7 @@ public interface SqlExpert {
 	/**
 	 * 以玩家ID的方式去查询SQL语句.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
@@ -58,6 +62,7 @@ public interface SqlExpert {
 	/**
 	 * 获取删除的SQL语句.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
@@ -66,6 +71,7 @@ public interface SqlExpert {
 	/**
 	 * 获取查询的SQL语句.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
@@ -74,6 +80,7 @@ public interface SqlExpert {
 	/**
 	 * 获取查询全部的SQL语句.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
@@ -82,6 +89,7 @@ public interface SqlExpert {
 	/**
 	 * 生成带值的一条语句
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param entity 实体类
 	 * @return SQL语句
@@ -91,6 +99,7 @@ public interface SqlExpert {
 	/**
 	 * 生成带值的一条语句
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param entity 实体类
 	 * @return SQL语句
@@ -100,6 +109,7 @@ public interface SqlExpert {
 	/**
 	 * 生成带值的一条语句
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param entity 实体类
 	 * @return SQL语句
@@ -109,6 +119,7 @@ public interface SqlExpert {
 	/**
 	 * 生成添加表字段的SQL
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param fm 属性映射对象
 	 * @return SQL语句
@@ -118,6 +129,7 @@ public interface SqlExpert {
 	/**
 	 * 生成带值的一条语句
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param fm 属性映射对象
 	 * @return SQL语句

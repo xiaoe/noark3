@@ -72,7 +72,6 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
 	 * 保存一个新增对象到缓存.
 	 * 
 	 * @param entity 新增对象.
-	 * @exception DataException 当缓存已存在此对象时会抛出此异常。
 	 */
 	public void cacheInsert(T entity) {
 		dataCache.insert(entity);

@@ -29,6 +29,7 @@ public interface AsyncWriteService {
 	/**
 	 * 插入一个实体对象.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param entity 实体对象
 	 */
@@ -37,6 +38,7 @@ public interface AsyncWriteService {
 	/**
 	 * 删除一个实体对象.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param entity 实体对象
 	 */
@@ -45,6 +47,7 @@ public interface AsyncWriteService {
 	/**
 	 * 删除一批实体对象.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param result 实体对象列表
 	 */
@@ -53,6 +56,7 @@ public interface AsyncWriteService {
 	/**
 	 * 更新一个实体对象.
 	 * 
+	 * @param <T> 实体对象类型
 	 * @param em 实体映射对象
 	 * @param entity 实体对象
 	 */

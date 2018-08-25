@@ -40,8 +40,8 @@ public class MultiCacheRepository<T, K extends Serializable> extends AbstractCac
 
 	/**
 	 * 从缓存中删除指定Id的对象.
-	 * <p>
 	 * 
+	 * @param playerId 玩家Id
 	 * @param entityId 缓存对象的Id
 	 */
 	public void cacheDelete(Serializable playerId, K entityId) {

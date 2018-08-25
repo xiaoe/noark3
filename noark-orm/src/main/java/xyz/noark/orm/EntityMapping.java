@@ -130,6 +130,9 @@ public class EntityMapping<T> {
 	 * 构造一个回写数据的唯一Key.
 	 * <p>
 	 * 类的全名+主键值
+	 * 
+	 * @param entity 实体对象
+	 * @return 拼接后的唯一Key
 	 */
 	public String getPrimaryKey(Object entity) {
 		return new StringBuilder(64).append(klass.getName()).append(':').append(this.getPrimaryIdValue(entity)).toString();
