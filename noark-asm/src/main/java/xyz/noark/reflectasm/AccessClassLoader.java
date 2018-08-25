@@ -93,6 +93,7 @@ class AccessClassLoader extends ClassLoader {
 		super(parent);
 	}
 
+	@Override
 	protected synchronized java.lang.Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		// These classes come from the classloader that loaded
 		// AccessClassLoader.
