@@ -24,7 +24,6 @@ package xyz.noark.core.ioc;
 public interface Ioc {
 	/**
 	 * 从容器中获取一个对象。
-	 * <p>
 	 * <ul>
 	 * <li>如果定义了注解中name()属性，采用其值为注入名
 	 * <li>否则采用类型 simpleName 的首字母小写形式作为注入名

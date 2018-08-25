@@ -29,6 +29,7 @@ public class DateUtils {
 	 *
 	 * @param date1 第一个日期
 	 * @param date2 第二个日期
+	 * @return 如果是同一天返回true,否则返回false
 	 */
 	public static boolean isSameDay(final Date date1, final Date date2) {
 		final Calendar cal1 = Calendar.getInstance();

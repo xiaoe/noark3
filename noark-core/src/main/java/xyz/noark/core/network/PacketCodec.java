@@ -30,6 +30,7 @@ public interface PacketCodec {
 	 * <p>
 	 * 这里其实就是封包打开后的内容转协议
 	 * 
+	 * @param <T> 类型
 	 * @param bytes 字节数组
 	 * @param klass 协议类
 	 * @return 协议对象

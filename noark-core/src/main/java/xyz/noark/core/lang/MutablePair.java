@@ -24,8 +24,9 @@ public final class MutablePair<L, R> extends AbstractPair<L, R> {
 
 	/**
 	 * 根据参数类型自动推断出一个不可变的抽象对象.
-	 * <p>
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @param right 右边元素
 	 * @return 一个不可变的抽象对象
@@ -72,7 +73,7 @@ public final class MutablePair<L, R> extends AbstractPair<L, R> {
 	/**
 	 * 设置右边的值
 	 * 
-	 * @param left 右边的值
+	 * @param right 右边的值
 	 */
 	public void setRight(R right) {
 		this.right = right;

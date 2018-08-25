@@ -1,4 +1,4 @@
 /**
- * 异常类库.
+ * 常规异常类的申明
  */
 package xyz.noark.core.exception;

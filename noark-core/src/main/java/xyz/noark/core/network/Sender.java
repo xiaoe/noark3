@@ -60,7 +60,7 @@ public final class Sender {
 	 * 
 	 * @param playerIds 指定的一群玩家ID
 	 * @param opcode 封包操作码
-	 * @param packet 封包对象
+	 * @param protocal 封包对象
 	 */
 	public static void relayPacket(Serializable[] playerIds, Integer opcode, Object protocal) {
 		if (ArrayUtils.isNotEmpty(playerIds)) {
@@ -74,7 +74,7 @@ public final class Sender {
 	 * 
 	 * @param playerId 指定玩家的ID
 	 * @param opcode 协议编号
-	 * @param packet 协议对象
+	 * @param protocal 协议对象
 	 */
 	public static void innerRelayPacket(Serializable playerId, Integer opcode, Object protocal) {
 		threadDispatcher.dispatchInnerPacket(playerId, opcode, protocal);

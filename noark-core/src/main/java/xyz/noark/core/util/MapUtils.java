@@ -26,6 +26,8 @@ public class MapUtils {
 	/**
 	 * 使用Key与Value直接构建一个HashMap.
 	 * 
+	 * @param <K> 键的类型
+	 * @param <V> 值的类型
 	 * @param key 键
 	 * @param value 值
 	 * @return HashMap对象

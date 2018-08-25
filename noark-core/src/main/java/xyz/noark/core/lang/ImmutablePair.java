@@ -27,6 +27,8 @@ public final class ImmutablePair<L, R> extends AbstractPair<L, R> {
 	/**
 	 * 返回一个双null组成的抽象对象.
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @return 一个双null组成的抽象对象.
 	 */
 	@SuppressWarnings("unchecked")
@@ -36,8 +38,9 @@ public final class ImmutablePair<L, R> extends AbstractPair<L, R> {
 
 	/**
 	 * 根据参数类型自动推断出一个不可变的抽象对象.
-	 * <p>
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @param right 右边元素
 	 * @return 一个不可变的抽象对象
@@ -48,8 +51,9 @@ public final class ImmutablePair<L, R> extends AbstractPair<L, R> {
 
 	/**
 	 * 只有左参数时自动推断出一个不可变的抽象对象.
-	 * <p>
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @return 一个不可变的抽象对象
 	 */
@@ -59,8 +63,9 @@ public final class ImmutablePair<L, R> extends AbstractPair<L, R> {
 
 	/**
 	 * 只有右参数时自动推断出一个不可变的抽象对象.
-	 * <p>
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param right 右边元素
 	 * @return 一个不可变的抽象对象
 	 */

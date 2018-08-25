@@ -1,6 +1,4 @@
 /**
- * 字符串模板转化为智能对象
- *
- * @since 3.0
+ * 字符串模板转化为对象
  */
 package xyz.noark.core.converter;

@@ -226,12 +226,11 @@ public class StringUtils {
 	 * 将一个字符串由驼峰式命名变成分割符分隔单词
 	 * 
 	 * <pre>
-	 *  lowerWord("helloWorld", '_') => "hello_world"
+	 *  lowerWord("helloWorld", '_') =&gt; "hello_world"
 	 * </pre>
 	 * 
 	 * @param cs 字符串
 	 * @param c 分隔符
-	 * 
 	 * @return 转换后字符串
 	 */
 	public static String lowerWord(CharSequence cs, char c) {

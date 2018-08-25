@@ -29,6 +29,8 @@ public interface Pair<L, R> {
 	 * <p>
 	 * 具体实现可参考{@link ImmutablePair#of(Object, Object)}
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @param right 右边元素
 	 * @return 一个不可变的抽象对象
@@ -42,6 +44,8 @@ public interface Pair<L, R> {
 	 * <p>
 	 * 具体实现可参考{@link ImmutablePair#ofLeft(Object)}
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @return 一个不可变的抽象对象
 	 */
@@ -54,6 +58,8 @@ public interface Pair<L, R> {
 	 * <p>
 	 * 具体实现可参考{@link ImmutablePair#ofRight(Object)}
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param right 右边元素
 	 * @return 一个不可变的抽象对象
 	 */

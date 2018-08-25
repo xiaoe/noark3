@@ -15,7 +15,10 @@ package xyz.noark.core.lang;
 
 /**
  * 一个可变改变三个元素组成的抽象对象实现.
- *
+ * 
+ * @param <L> 左边元素的类型
+ * @param <M> 中间元素的类型
+ * @param <R> 右边元素的类型
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
@@ -24,8 +27,10 @@ public final class MutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
 
 	/**
 	 * 根据参数类型自动推断出一个不可变的抽象对象.
-	 * <p>
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <M> 中间元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @param middle 中间元素
 	 * @param right 右边元素
@@ -91,7 +96,7 @@ public final class MutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
 	/**
 	 * 设置右边的值
 	 * 
-	 * @param left 右边的值
+	 * @param right 右边的值
 	 */
 	public void setRight(R right) {
 		this.right = right;

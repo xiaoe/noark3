@@ -103,6 +103,7 @@ public class NoarkIoc implements Ioc {
 	/**
 	 * 查找所有实现类.
 	 * 
+	 * @param <T> 要查找的类型
 	 * @param klass 接口
 	 * @return 实现类集合
 	 */

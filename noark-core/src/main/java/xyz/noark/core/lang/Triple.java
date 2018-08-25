@@ -30,6 +30,9 @@ public interface Triple<L, M, R> {
 	 * <p>
 	 * 具体实现可参考{@link ImmutableTriple#of(Object, Object, Object)}
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <M> 中间元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @param middle 中间元素
 	 * @param right 右边元素

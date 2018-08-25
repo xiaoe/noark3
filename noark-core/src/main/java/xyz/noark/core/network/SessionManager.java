@@ -98,7 +98,10 @@ public class SessionManager {
 	}
 
 	/**
-	 * 将角色ID和Session绑定.
+	 * 将玩家ID和Session对象绑定.
+	 * 
+	 * @param playerId 玩家ID
+	 * @param session Session对象
 	 */
 	public static void bindPlayerIdAndSession(Serializable playerId, Session session) {
 		PLAYER_ID_2_SESSION.put(playerId, session);

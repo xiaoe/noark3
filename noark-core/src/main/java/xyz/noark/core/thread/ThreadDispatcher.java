@@ -115,8 +115,8 @@ public class ThreadDispatcher {
 	 * 派发内部指令.
 	 * 
 	 * @param playerId 玩家ID
-	 * @param pmw 协议处理方法
-	 * @param args 处理方法参数
+	 * @param opcode 协议编号
+	 * @param protocal 协议内容
 	 */
 	public void dispatchInnerPacket(Serializable playerId, Integer opcode, Object protocal) {
 		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
@@ -171,7 +171,12 @@ public class ThreadDispatcher {
 		taskQueue.submit(new AsyncTask(taskQueue, command, command.getPlayerId()));
 	}
 
-	/** 派发事件任务给线程池. */
+	/**
+	 * 派发事件任务给线程池.
+	 * 
+	 * @param handler 事件处理方法
+	 * @param event 事件对象
+	 */
 	public void dispatchEvent(EventMethodWrapper handler, Event event) {
 		switch (handler.threadGroup()) {
 		case PlayerThreadGroup: {

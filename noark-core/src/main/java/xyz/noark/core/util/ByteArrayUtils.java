@@ -28,7 +28,7 @@ public class ByteArrayUtils {
 	/**
 	 * 一个short类型的数字转化为2位byte数组
 	 * 
-	 * @param num short类型的数字
+	 * @param a short类型的数字
 	 * @return byte数组
 	 */
 	public static byte[] toByteArray(short a) {

@@ -1,6 +1,4 @@
 /**
- * 细节描述
- *
- * @since 3.0
+ * IOC模块相关定义描述类.
  */
 package xyz.noark.core.ioc.definition;

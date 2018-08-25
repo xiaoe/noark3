@@ -135,6 +135,10 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
 	/**
 	 * 分析方法上的注解.
+	 * 
+	 * @param annotationType 注解类型
+	 * @param annotation 注解对象
+	 * @param method 方法体
 	 */
 	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
 		customMethods.computeIfAbsent(annotationType, key -> new ArrayList<>(64)).add(new SimpleMethodDefinition(methodAccess, method));

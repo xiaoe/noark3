@@ -27,6 +27,9 @@ public class ImmutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
 	/**
 	 * 返回一个三null组成的抽象对象.
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <M> 中间元素的类型
+	 * @param <R> 右边元素的类型
 	 * @return 一个三null组成的抽象对象.
 	 */
 	@SuppressWarnings("unchecked")
@@ -36,8 +39,10 @@ public class ImmutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
 
 	/**
 	 * 根据参数类型自动推断出一个不可变的抽象对象.
-	 * <p>
 	 * 
+	 * @param <L> 左边元素的类型
+	 * @param <M> 中间元素的类型
+	 * @param <R> 右边元素的类型
 	 * @param left 左边元素
 	 * @param middle 中间元素
 	 * @param right 右边元素

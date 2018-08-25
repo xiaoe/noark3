@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.exception;
 
+import xyz.noark.core.annotation.orm.Entity;
+
 /**
  * 非法实体类异常.
  * <p>
