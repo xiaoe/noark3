@@ -24,6 +24,7 @@ import xyz.noark.core.converter.impl.IntListConverter;
 import xyz.noark.core.converter.impl.IntegerConverter;
 import xyz.noark.core.converter.impl.LongConverter;
 import xyz.noark.core.converter.impl.StringConverter;
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.ClassUtils;
 
 /**
@@ -68,7 +69,7 @@ public class ConvertManager {
 	public void regist(Class<?> klass, TemplateConverter templateConverter) {
 		Object object = ClassUtils.newInstance(klass);
 		if (!(object instanceof Converter<?>)) {
-			throw new RuntimeException("非法的转化器." + klass.getName());
+			throw new ServerBootstrapException("非法的转化器." + klass.getName());
 		}
 		this.putConvert((Converter<?>) object, templateConverter);
 	}

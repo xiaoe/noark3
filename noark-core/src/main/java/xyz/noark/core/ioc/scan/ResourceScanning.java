@@ -23,6 +23,8 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import xyz.noark.core.exception.ServerBootstrapException;
+
 /**
  * Class类扫描器.
  *
@@ -86,7 +88,7 @@ public class ResourceScanning {
 				}
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("扫描过程中出异常啦", e);
+			throw new ServerBootstrapException("扫描过程中出异常啦", e);
 		}
 	}
 

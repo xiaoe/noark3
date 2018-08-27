@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import xyz.noark.core.exception.ServerBootstrapException;
+
 /**
  * 属性工具类.
  *
@@ -47,7 +49,7 @@ public class FieldUtils {
 		try {
 			field.set(target, value);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(target.getClass() + " 的 " + field.getName() + " 属性无法注入.", e);
+			throw new ServerBootstrapException(target.getClass() + " 的 " + field.getName() + " 属性无法注入.", e);
 		}
 	}
 

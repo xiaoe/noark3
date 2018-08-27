@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 
 /**
@@ -40,7 +41,7 @@ public class PacketMethodManager {
 	public void resetPacketHandler(PacketMethodWrapper handler) {
 		// 如果没有完成初始化判定一下 会不会有重复的Opcode
 		if (handlers.containsKey(handler.getOpcode())) {
-			throw new RuntimeException("重复定义的 Opcode：" + handler.getOpcode());
+			throw new ServerBootstrapException("重复定义的 Opcode：" + handler.getOpcode());
 		}
 		handlers.put(handler.getOpcode(), handler);
 	}

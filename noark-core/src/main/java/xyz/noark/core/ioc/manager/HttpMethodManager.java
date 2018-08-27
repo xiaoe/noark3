@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.manager;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 
 /**
@@ -36,7 +37,7 @@ public class HttpMethodManager {
 
 	public void resetHttpHandler(HttpMethodWrapper handler) {
 		if (handlers.containsKey(handler.getUri())) {
-			throw new RuntimeException("重复定义的URI：" + handler.getUri());
+			throw new ServerBootstrapException("重复定义的URI：" + handler.getUri());
 		}
 		handlers.put(handler.getUri(), handler);
 	}

@@ -13,6 +13,7 @@
  */
 package xyz.noark.orm.write.impl;
 
+import xyz.noark.core.exception.DataException;
 import xyz.noark.orm.EntityMapping;
 
 /**
@@ -42,7 +43,7 @@ public class EntityOperate<T> {
 
 	public void insert(T insertEntity) {
 		if (delete) {
-			throw new RuntimeException("illeagle [insert] after [delete]," + insertEntity.getClass().getName());
+			throw new DataException("illeagle [insert] after [delete]," + insertEntity.getClass().getName());
 		}
 
 		this.insert = true;
@@ -78,7 +79,8 @@ public class EntityOperate<T> {
 
 	public boolean isInsert() {
 		if (delete) {
-			return false;}
+			return false;
+		}
 		return insert;
 	}
 
