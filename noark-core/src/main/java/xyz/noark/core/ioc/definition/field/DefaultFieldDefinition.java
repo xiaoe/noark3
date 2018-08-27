@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.definition.field;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.FieldDefinition;
 import xyz.noark.core.ioc.IocMaking;
 import xyz.noark.core.util.FieldUtils;
@@ -61,8 +62,8 @@ public class DefaultFieldDefinition implements FieldDefinition {
 	 */
 	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
 		Optional<Object> result = making.findAllImpl(klass).stream().map(b -> b.getSingle()).findFirst();
-		if (!result.isPresent() && required) {
-			throw new RuntimeException("注入属性未找到实现,类:" + klass.getName());
+		if (required) {
+			return result.orElseThrow(() -> new ServerBootstrapException("Class:" + field.getDeclaringClass().getName() + ">>Field:" + field.getName() + " cannot autowired"));
 		}
 		return result.orElse(null);
 	}
