@@ -15,10 +15,9 @@ package xyz.noark.game.monitor.impl;
 
 import static xyz.noark.log.LogHelper.logger;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
+import xyz.noark.core.util.FileUtils;
 import xyz.noark.game.monitor.AbstractMonitorService;
 
 /**
@@ -28,20 +27,8 @@ import xyz.noark.game.monitor.AbstractMonitorService;
  * @author 小流氓(176543888@qq.com)
  */
 public class MemoryMonitorService extends AbstractMonitorService {
-	private final Field maxMemory;
-	private final Field reserverdMemory;
 
-	public MemoryMonitorService() {
-		try {
-			Class<?> c = Class.forName("java.nio.Bits");
-			maxMemory = c.getDeclaredField("maxMemory");
-			maxMemory.setAccessible(true);
-			reserverdMemory = c.getDeclaredField("reservedMemory");
-			reserverdMemory.setAccessible(true);
-		} catch (Exception e) {
-			throw new RuntimeException();
-		}
-	}
+	public MemoryMonitorService() {}
 
 	@Override
 	protected long getInitialDelay() {
@@ -61,10 +48,14 @@ public class MemoryMonitorService extends AbstractMonitorService {
 	@Override
 	protected void exe() throws Exception {
 		Runtime runtime = Runtime.getRuntime();
-		Long maxMemoryValue = (Long) maxMemory.get(null);
-		final AtomicLong reserverdMemoryValue = (AtomicLong) reserverdMemory.get(null);
-		final long totalMemory = runtime.totalMemory();
-		final long freeMemory = runtime.freeMemory();
-		logger.info("服务器堆内存总共 {} M,占用堆内存 {} M,直接内存总共 {} M,占用直接内存 {} M", new Object[] { totalMemory / (1024 * 1024), (totalMemory - freeMemory) / (1024 * 1024), maxMemoryValue / (1024 * 1024), reserverdMemoryValue.get() / (1024 * 1024) });
+		// 最大可用内存
+		long maxMemory = runtime.maxMemory();
+		// 已分配内存
+		long totalMemory = runtime.totalMemory();
+		// 已分配内存中的剩余空间
+		long useMemory = totalMemory - runtime.freeMemory();
+		// 最大可用内存
+		long usableMemory = maxMemory - useMemory;
+		logger.info("最大堆内存={}, 已分配={}, 已使用={}, 还可用={}", FileUtils.readableFileSize(maxMemory), FileUtils.readableFileSize(totalMemory), FileUtils.readableFileSize(useMemory), FileUtils.readableFileSize(usableMemory));
 	}
 }
