@@ -79,7 +79,7 @@ public class Redis {
 	/**
 	 * 删除给定的一个或多个key.
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(N)， N 为被删除的 key 的数量。<br>
 	 * 删除单个字符串类型的 key ，时间复杂度为O(1)。<br>
 	 * 删除单个列表、集合、有序集合或哈希表类型的 key ，时间复杂度为O(M)， M 为以上数据结构内的元素数量。
@@ -106,7 +106,7 @@ public class Redis {
 	 * 序列化的值不包括任何生存时间信息。
 	 * <p>
 	 * 
-	 * 可用版本： >= 2.6.0<br>
+	 * 可用版本： &gt;= 2.6.0<br>
 	 * 时间复杂度：<br>
 	 * 查找给定键的复杂度为O(1)，对键进行序列化的复杂度为
 	 * O(N*M)，其中N是构成key的Redis对象的数量，而M则是这些对象的平均大小。<br>
@@ -129,7 +129,7 @@ public class Redis {
 	 * <p>
 	 * 更多信息可以参考{@link #dump(String)}命令。
 	 * <p>
-	 * 可用版本： >= 2.6.0<br>
+	 * 可用版本： &gt;= 2.6.0<br>
 	 * 时间复杂度：<br>
 	 * 查找给定键的复杂度为 O(1)，对键进行反序列化的复杂度为
 	 * O(N*M)，其中N是构成key的Redis对象的数量，而M则是这些对象的平均大小。<br>
@@ -150,10 +150,10 @@ public class Redis {
 	/**
 	 * 判定指定的键是否存在。
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
-	 * @param keys 指定的键
+	 * @param key 指定的键
 	 * @return 存在返回true,否则返回false.
 	 */
 	public boolean exists(final String key) {
@@ -168,7 +168,7 @@ public class Redis {
 	 * 更新生存时间<br>
 	 * 可以对一个已经带有生存时间的 key 执行 EXPIRE 命令，新指定的生存时间会取代旧的生存时间。
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键
@@ -185,7 +185,7 @@ public class Redis {
 	 * EXPIREAT 的作用和 {@link Redis#expire(String, int)} 类似，都用于为key设置生存时间。<br>
 	 * 不同在于EXPIREAT命令接受的时间参数是UNIX时间戳(unix timestamp)。
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键
@@ -213,7 +213,7 @@ public class Redis {
 	 * 
 	 * <b>注意：没事不要瞎用这个方法，会死人的</b>
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(N)， N 为数据库中 key 的数量。
 	 * 
 	 * @param pattern 给定模式
@@ -233,7 +233,7 @@ public class Redis {
 	 * 如果 key 不存在，那么 key 的值会先被初始化为 0 ，然后再执行 DECR 操作。<br>
 	 * 如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误。<br>
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键key
@@ -251,7 +251,7 @@ public class Redis {
 	 * 如果 key 不存在，那么 key 的值会先被初始化为 0 ，然后再执行 DECRBY 操作。<br>
 	 * 如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误。
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键key
@@ -270,7 +270,7 @@ public class Redis {
 	 * 如果key不存在那么返回特殊值null<br>
 	 * 假如key储存的值不是字符串类型，返回一个错误，因为 GET只能用于处理字符串值。
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键Key
@@ -288,7 +288,7 @@ public class Redis {
 	 * 如果 key 不存在，那么 key 的值会先被初始化为 0 ，然后再执行 INCR 操作。<br>
 	 * 如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误。<br>
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键Key
@@ -306,11 +306,11 @@ public class Redis {
 	 * 如果 key 不存在，那么 key 的值会先被初始化为 0 ，然后再执行 INCRBY 命令<br>
 	 * 如果值包含错误的类型，或字符串类型的值不能表示为数字，那么返回一个错误。<br>
 	 * 
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
-	 * @param key
-	 * @param increment 要
+	 * @param key 指定Key
+	 * @param increment 要增加的值
 	 * @return 加上increment之后，key的值
 	 */
 	public long incrBy(final String key, long increment) {
@@ -324,7 +324,7 @@ public class Redis {
 	 * <p>
 	 * 如果给定的 key里面，有某个 key不存在，那么这个 key返回特殊值null。因此，该命令永不失败。<br>
 	 * 
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度: O(N) , N 为给定 key 的数量。
 	 * 
 	 * @param keys 指定键Key
@@ -343,7 +343,7 @@ public class Redis {
 	 * 如果这不是你所希望的效果，请考虑使用 MSETNX命令它只会在所有给定 key都不存在的情况下进行设置操作。 <br>
 	 * MSET是一个原子性(atomic)操作，所有给定 key都会在同一时间内被设置
 	 * <p>
-	 * 可用版本： >= 1.0.1<br>
+	 * 可用版本： &gt;= 1.0.1<br>
 	 * 时间复杂度： O(N)， N 为要设置的 key 数量。
 	 * <p>
 	 * 总是返回 OK (因为 MSET 不可能失败)
@@ -363,7 +363,7 @@ public class Redis {
 	 * MSETNX 是原子性的，因此它可以用作设置多个不同 key表示不同字段(field)的唯一性逻辑对象(unique logic
 	 * object)，所有字段要么全被设置，要么全不被设置。<br>
 	 * <p>
-	 * 可用版本： >= 1.0.1<br>
+	 * 可用版本： &gt;= 1.0.1<br>
 	 * 时间复杂度： O(N)， N为要设置的 key的数量。<br>
 	 * 
 	 * @param keysvalues key-value对
@@ -381,7 +381,7 @@ public class Redis {
 	 * 如果key已经持有其他值， SET就覆写旧值，无视类型。<br>
 	 * 对于某个原本带有生存时间（TTL）的键来说， 当 SET 命令成功在这个键上执行时， 这个键原有的 TTL 将被清除。
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键Key
@@ -397,7 +397,7 @@ public class Redis {
 	/**
 	 * 为指定键Key设计指定值Value.
 	 * <p>
-	 * 可用版本： >= 1.0.0<br>
+	 * 可用版本： &gt;= 1.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键Key
@@ -414,7 +414,7 @@ public class Redis {
 	/**
 	 * 为指定键Key设计指定值Value.
 	 * <p>
-	 * 可用版本： >= 2.6.12<br>
+	 * 可用版本： &gt;= 2.6.12<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键Key
@@ -434,7 +434,7 @@ public class Redis {
 	/**
 	 * 为指定键Key设计指定值Value.
 	 * <p>
-	 * 可用版本： >= 2.6.12<br>
+	 * 可用版本： &gt;= 2.6.12<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定键Key
@@ -456,7 +456,7 @@ public class Redis {
 	/**
 	 * 删除指定Key的哈希表中的一个或多个键，不存在的键将被忽略
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度: O(N)， N 为要删除的键的数量。<br>
 	 * 
 	 * @param key 指定Key的哈希表
@@ -472,7 +472,7 @@ public class Redis {
 	/**
 	 * 判定指定Key的哈希表中是否存在指定键
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定Key的哈希表
@@ -488,7 +488,7 @@ public class Redis {
 	/**
 	 * 获取指定Key的哈希表中指定键所对应的值。
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(1)
 	 * 
 	 * @param key 指定Key的哈希表
@@ -504,7 +504,7 @@ public class Redis {
 	/**
 	 * 获取指定Key的哈希表中所有的键和值。
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N)， N 为哈希表的大小。
 	 * 
 	 * @param key 指定Key的哈希表
@@ -519,7 +519,7 @@ public class Redis {
 	/**
 	 * 增加指定Key的哈希表中指定键的数值.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(1)
 	 * <p>
 	 * 增量也可以为负数，相当于对给定域进行减法操作。<br>
@@ -542,7 +542,7 @@ public class Redis {
 	/**
 	 * 获取指定Key的哈希表中所有键.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N)， N 为哈希表的大小。
 	 * 
 	 * @param key 指定Key的哈希表
@@ -571,7 +571,7 @@ public class Redis {
 	/**
 	 * 获取指定Key的哈希表中指定键所对应值的列表.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N)， N 为给定键的数量。
 	 * <p>
 	 * <b>注意：</b><br>
@@ -595,7 +595,7 @@ public class Redis {
 	/**
 	 * 同时将多个field-value(键-值)对设置到指定Key的哈希表中。
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N)， N 为 field-value 对的数量。
 	 * <p>
 	 * 此命令会覆盖哈希表中已存在的键<br>
@@ -613,7 +613,7 @@ public class Redis {
 	/**
 	 * 将指定Key的哈希表中键field的值设置为value.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(1)
 	 * <p>
 	 * 如果key不存在，一个新的哈希表被创建并进行HSET操作。<br>
@@ -633,7 +633,7 @@ public class Redis {
 	/**
 	 * 将指定Key的哈希表中键field的值设置为value，当且仅当键field不存在。
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(1)
 	 * <p>
 	 * 若域 field 已经存在，该操作无效。<br>
@@ -653,7 +653,7 @@ public class Redis {
 	/**
 	 * 获取指定Key的哈希表中所有值的集合。
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N)， N 为哈希表的大小。
 	 * 
 	 * @param key 指定Key的哈希表
@@ -675,7 +675,7 @@ public class Redis {
 	 * score 值可以是整数值或双精度浮点数。<br>
 	 * 如果key不存在，则创建一个空的有序集并执行ZADD操作。
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度: O(M*log(N))，N是有序集的基数，M为成功添加的新成员的数量。
 	 * 
 	 * @param key 指定键Key
@@ -698,7 +698,7 @@ public class Redis {
 	 * score 值可以是整数值或双精度浮点数。<br>
 	 * 如果key不存在，则创建一个空的有序集并执行ZADD操作。
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度: O(M*log(N))，N是有序集的基数，M为成功添加的新成员的数量。
 	 * 
 	 * @param key 指定键Key
@@ -714,7 +714,7 @@ public class Redis {
 	/**
 	 * 获取指定Key的有序集里成员数量.
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度: O(1)
 	 * 
 	 * @param key 指定有序集Key
@@ -729,7 +729,7 @@ public class Redis {
 	/**
 	 * 统计指定Key的有序集中，score值在min和max之间(默认包括score值等于min或max)的成员的数量.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度: O(log(N)+M)，N为有序集的基数，M为值在min和max之间的元素的数量。
 	 * 
 	 * @param key 指定有序集Key
@@ -746,15 +746,15 @@ public class Redis {
 	/**
 	 * 统计指定Key的有序集中，score值在min和max之间(默认包括score值等于min或max)的成员的数量.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度: O(log(N)+M)，N为有序集的基数，M为值在min和max之间的元素的数量。
 	 * <p>
 	 * 区别于上面的分值，这里的参数为String<br>
 	 * 
 	 * <pre>
 	 * 1. -inf 和 +inf<br>
-	 * 2. 返回所有符合条件 1 < score <= 5 的成员, zcount test (1 5<br>
-	 * 3. 则返回所有符合条件 5 < score < 10 的成员, zcount test (5 (10
+	 * 2. 返回所有符合条件 1 &lt; score &lt;= 5 的成员, zcount test (1 5<br>
+	 * 3. 则返回所有符合条件 5 &lt; score &lt; 10 的成员, zcount test (5 (10
 	 * </pre>
 	 * 
 	 * @param key 指定有序集Key
@@ -778,7 +778,7 @@ public class Redis {
 	 * 3. 当 key 不是有序集类型时，返回一个错误。<br>
 	 * 4. score 值可以是整数值或双精度浮点数。
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度: O(log(N))
 	 * 
 	 * @param key 有序集key
@@ -802,7 +802,7 @@ public class Redis {
 	 * 下标参数 start 和 stop 都以 0 为底，也就是说，以 0 表示有序集第一个成员，以 1 表示有序集第二个成员，以此类推。<br>
 	 * 你也可以使用负数下标，以 -1 表示最后一个成员， -2 表示倒数第二个成员，以此类推。
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度: O(log(N)+M)， N 为有序集的基数，而 M 为结果集的基数。
 	 * 
 	 * @param key 有序集key
@@ -839,7 +839,7 @@ public class Redis {
 	 * 排名以 0 为底，也就是说， score 值最小的成员排名为 0<br>
 	 * 使用 ZREVRANK 命令可以获得成员按 score 值递减(从大到小)排列的排名
 	 * 
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度: O(log(N))
 	 * 
 	 * @param key 有序集key
@@ -855,7 +855,7 @@ public class Redis {
 	/**
 	 * 移除有序集key中的一个或多个成员，不存在的成员将被忽略
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度: O(M*log(N))，N为有序集的基数，M为被成功移除的成员的数量。
 	 * 
 	 * @param key 有序集key
@@ -875,7 +875,7 @@ public class Redis {
 	 * 排名以 0 为底，也就是说， score 值最大的成员排名为 0 。<br>
 	 * 使用 ZRANK 命令可以获得成员按 score 值递增(从小到大)排列的排名。
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度: O(log(N))
 	 * 
 	 * @param key 有序集key
@@ -893,7 +893,7 @@ public class Redis {
 	 * <p>
 	 * 如果 member元素不是有序集 key的成员，或 key不存在，返回 null 。
 	 * <p>
-	 * 可用版本： >= 1.2.0<br>
+	 * 可用版本： &gt;= 1.2.0<br>
 	 * 时间复杂度: O(1)
 	 * 
 	 * @param key 有序集key
@@ -915,7 +915,7 @@ public class Redis {
 	 * 每个模式以*作为匹配符，比如it*匹配所有以it开头的频道(it.news、it.blog、it.tweets等等)，<br>
 	 * news.* 匹配所有以 news.开头的频道(news.it、news.global.today等等)，诸如此类。
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N)， N是订阅的模式的数量。
 	 * 
 	 * @param jedisPubSub 订阅处理接口
@@ -930,7 +930,7 @@ public class Redis {
 	/**
 	 * 将信息message发送到指定的频道channel.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N+M)，其中N是频道channel的订阅者数量，而M则是使用模式订阅(subscribed patterns)的客户端的数量
 	 * 
 	 * @param channel 频道
@@ -945,7 +945,7 @@ public class Redis {
 	/**
 	 * 订阅给定的一个或多个频道的信息.
 	 * <p>
-	 * 可用版本： >= 2.0.0<br>
+	 * 可用版本： &gt;= 2.0.0<br>
 	 * 时间复杂度： O(N)，其中 N 是订阅的频道的数量
 	 * 
 	 * @param jedisPubSub 订阅处理接口
@@ -964,7 +964,7 @@ public class Redis {
 	 * <p>
 	 * 脚本具备原子性
 	 * <p>
-	 * 可用版本： >= 2.6.0<br>
+	 * 可用版本： &gt;= 2.6.0<br>
 	 * 
 	 * @param script 脚本
 	 * @return 脚本返回值
@@ -984,7 +984,6 @@ public class Redis {
 
 	/**
 	 * 获取Jedis访问对象.
-	 * <p>
 	 * 
 	 * <pre>
 	 * try (Jedis jedis = redis.getJedis()) {
