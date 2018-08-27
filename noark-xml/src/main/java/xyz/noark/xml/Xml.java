@@ -43,8 +43,9 @@ public class Xml {
 	/**
 	 * 根据指定类文件加载XML格式的配置.
 	 * <p>
-	 * Load文件-->SAX解析-->修补EL表达式-->填充对象.
+	 * Load文件--&gt;SAX解析--&gt;修补EL表达式--&gt;填充对象.
 	 * 
+	 * @param <T> 目标类型
 	 * @param klass 配置类.
 	 * @return 返回配置类对象就算文件不存在也不会返回空.
 	 */
@@ -68,8 +69,9 @@ public class Xml {
 	/**
 	 * 根据指定类文件加载XML格式的配置.
 	 * <p>
-	 * Load文件-->SAX解析-->修补EL表达式-->填充对象.
+	 * Load文件--&gt;SAX解析--&gt;修补EL表达式--&gt;填充对象.
 	 * 
+	 * @param <T> 目标类型
 	 * @param klass 配置类.
 	 * @param path 配置文件路径
 	 * @return 返回配置类对象就算文件不存在也不会返回空.
@@ -89,6 +91,7 @@ public class Xml {
 	/**
 	 * 根据指定类文件加载XML格式的模板.
 	 * 
+	 * @param <T> 目标类型
 	 * @param templatePath 模板文件路径
 	 * @param klass 模板类文件
 	 * @return 模板类对象的集合
