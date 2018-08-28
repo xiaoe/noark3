@@ -102,6 +102,12 @@ public interface Session {
 	 */
 	static enum State {
 		/**
+		 * 随便什么状态都可以访问.
+		 * <p>
+		 * 状态比较特殊，比如心跳
+		 */
+		ALL,
+		/**
 		 * 客户端刚刚链接上来的状态.
 		 * <p>
 		 * 未登录才可以调用的方法
