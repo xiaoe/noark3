@@ -11,43 +11,37 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.lang;
+package xyz.noark.core.network;
+
+import xyz.noark.core.lang.ByteArray;
 
 /**
- * 一个不可变的字节数组实现.
+ * 封包加密接口.
  *
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class ImmutableByteArray implements ByteArray {
-	private final byte[] array;
+public interface PacketEncrypt {
 
-	public ImmutableByteArray(byte[] array) {
-		this.array = array;
-	}
+	/**
+	 * 当前Session是否加密.
+	 * 
+	 * @return 如果封包需要加密则返回true,否则返回false
+	 */
+	public boolean isEncrypt();
 
-	@Override
-	public byte[] array() {
-		return array;
-	}
+	/**
+	 * 返回随机生成的公钥
+	 * 
+	 * @return 随机生成的公钥
+	 */
+	public String getPublicKey();
 
-	@Override
-	public void close() {
-		// 当前数组内容不可变，所以不需要处理什么...
-	}
-
-	@Override
-	public int length() {
-		return array == null ? 0 : array.length;
-	}
-
-	@Override
-	public byte getByte(int index) {
-		return array[index];
-	}
-
-	@Override
-	public void setByte(int index, byte value) {
-		array[index] = value;
-	}
+	/**
+	 * 解码逻辑.
+	 * 
+	 * @param data 加密数据
+	 * @param incode 此包自增编号
+	 */
+	public void decode(ByteArray data, int incode);
 }

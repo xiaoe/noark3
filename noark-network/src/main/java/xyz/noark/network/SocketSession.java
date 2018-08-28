@@ -23,6 +23,7 @@ import io.netty.channel.ChannelFutureListener;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.AbstractSession;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.network.PacketEncrypt;
 
 /**
  * 基于Netty的Channel实现的Session.
@@ -34,10 +35,12 @@ public class SocketSession extends AbstractSession {
 	protected final Channel channel;
 	private String uid;
 	private Serializable playerId;
+	protected PacketEncrypt packetEncrypt;
 
-	public SocketSession(Channel channel) {
+	public SocketSession(Channel channel, boolean encrypt) {
 		super(channel.id(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 		this.channel = channel;
+		this.packetEncrypt = new DefaultPacketEncrypt(encrypt);
 	}
 
 	@Override
@@ -120,5 +123,21 @@ public class SocketSession extends AbstractSession {
 	 */
 	protected ByteArray buildPacket(Integer opcode, Object protocal) {
 		return PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
+	}
+
+	/**
+	 * 设计封包密码方案.
+	 * <p>
+	 * 当不喜欢默认的方案可以自己实现此接口重置加密方案
+	 * 
+	 * @param packetEncrypt 封包密码方案
+	 */
+	public void setPacketEncrypt(PacketEncrypt packetEncrypt) {
+		this.packetEncrypt = packetEncrypt;
+	}
+
+	@Override
+	public PacketEncrypt getPacketEncrypt() {
+		return packetEncrypt;
 	}
 }

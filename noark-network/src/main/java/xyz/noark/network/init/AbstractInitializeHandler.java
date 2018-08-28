@@ -16,10 +16,12 @@ package xyz.noark.network.init;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.network.InitializeHandler;
+import xyz.noark.network.NetworkConstant;
 
 /**
  * 抽象实现的初始化协议处理器.
@@ -31,13 +33,16 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 
 	@Autowired(required = false)
 	private NetworkListener networkListener;
+	/** 网络加密，默认不加密 */
+	@Value(NetworkConstant.ENCRYPT)
+	private boolean encrypt = false;
 
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
 		this.build(ctx.pipeline());
 
 		// 只要第一个协议对了就要创建Session...
-		Session session = SessionManager.createSession(ctx.channel().id(), key -> createSession(ctx));
+		Session session = SessionManager.createSession(ctx.channel().id(), key -> createSession(ctx, encrypt));
 
 		if (networkListener != null) {
 			networkListener.channelActive(session);
@@ -48,9 +53,10 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 	 * 创建Session.
 	 * 
 	 * @param ctx 链接上下文
+	 * @param encrypt 是否加密
 	 * @return Session对象
 	 */
-	protected abstract Session createSession(ChannelHandlerContext ctx);
+	protected abstract Session createSession(ChannelHandlerContext ctx, boolean encrypt);
 
 	/**
 	 * 判定具体协议后再重装ChannelPipeline对象.

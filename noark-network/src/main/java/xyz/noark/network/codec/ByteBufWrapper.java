@@ -50,4 +50,14 @@ public class ByteBufWrapper implements ByteArray {
 	public int length() {
 		return array == null ? byteBuf.readableBytes() : array.length;
 	}
+
+	@Override
+	public byte getByte(int index) {
+		return byteBuf.getByte(index);
+	}
+
+	@Override
+	public void setByte(int index, byte value) {
+		byteBuf.setByte(index, value);
+	}
 }

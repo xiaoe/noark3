@@ -98,6 +98,13 @@ public interface Session {
 	public PacketStatis getStatis();
 
 	/**
+	 * 获取封包加密接口.
+	 * 
+	 * @return 封包加密接口
+	 */
+	public PacketEncrypt getPacketEncrypt();
+
+	/**
 	 * Session状态.
 	 */
 	static enum State {

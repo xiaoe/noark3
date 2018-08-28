@@ -11,43 +11,28 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.lang;
+package xyz.noark.network;
+
+import org.junit.Test;
 
 /**
- * 一个不可变的字节数组实现.
+ * XOR测试
  *
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class ImmutableByteArray implements ByteArray {
-	private final byte[] array;
+public class XorTest {
 
-	public ImmutableByteArray(byte[] array) {
-		this.array = array;
+	@Test
+	public void test() {
+		byte b = ~-123;
+		System.out.println(Integer.toBinaryString(b));
+		System.out.println(~b);
+		byte x = (byte)((b << 4) | (b >> 4));
+		System.out.println(x);
+		System.out.println(Integer.toBinaryString(x));
+		
+		//  buffer[i] = ;
 	}
-
-	@Override
-	public byte[] array() {
-		return array;
-	}
-
-	@Override
-	public void close() {
-		// 当前数组内容不可变，所以不需要处理什么...
-	}
-
-	@Override
-	public int length() {
-		return array == null ? 0 : array.length;
-	}
-
-	@Override
-	public byte getByte(int index) {
-		return array[index];
-	}
-
-	@Override
-	public void setByte(int index, byte value) {
-		array[index] = value;
-	}
+	
 }

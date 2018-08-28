@@ -11,43 +11,33 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.lang;
+package xyz.noark.network;
+
+import java.util.Arrays;
+
+import org.junit.Test;
+
+import xyz.noark.core.lang.ImmutableByteArray;
 
 /**
- * 一个不可变的字节数组实现.
+ * 加密方案测试.
  *
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class ImmutableByteArray implements ByteArray {
-	private final byte[] array;
+public class DefaultPacketEncryptTest {
 
-	public ImmutableByteArray(byte[] array) {
-		this.array = array;
-	}
+	@Test
+	public void test() {
+		DefaultPacketEncrypt encrypt = new DefaultPacketEncrypt(true);
+		System.out.println(encrypt.isEncrypt());
+		System.out.println(encrypt.getPublicKey());
 
-	@Override
-	public byte[] array() {
-		return array;
-	}
+		ImmutableByteArray array = new ImmutableByteArray(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+		encrypt.decode(array, 1);
+		System.out.println(Arrays.toString(array.array()));
 
-	@Override
-	public void close() {
-		// 当前数组内容不可变，所以不需要处理什么...
-	}
-
-	@Override
-	public int length() {
-		return array == null ? 0 : array.length;
-	}
-
-	@Override
-	public byte getByte(int index) {
-		return array[index];
-	}
-
-	@Override
-	public void setByte(int index, byte value) {
-		array[index] = value;
+		encrypt.decode(array, 1);
+		System.out.println(Arrays.toString(array.array()));
 	}
 }

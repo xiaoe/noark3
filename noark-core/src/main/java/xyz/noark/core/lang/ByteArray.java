@@ -41,4 +41,20 @@ public interface ByteArray extends AutoCloseable {
 	 * @return 数组长度
 	 */
 	int length();
+
+	/**
+	 * 获取指定位置的字节.
+	 * 
+	 * @param index 指定位置
+	 * @return 指定位置的字节
+	 */
+	byte getByte(int index);
+
+	/**
+	 * 设置指定位置的字节内容
+	 * 
+	 * @param index 指定位置
+	 * @param value 字节内容
+	 */
+	void setByte(int index, byte value);
 }

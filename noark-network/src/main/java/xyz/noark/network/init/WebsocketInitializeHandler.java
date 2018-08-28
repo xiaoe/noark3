@@ -55,7 +55,7 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 	}
 
 	@Override
-	protected Session createSession(ChannelHandlerContext ctx) {
-		return new WebSocketSession(ctx.channel());
+	protected Session createSession(ChannelHandlerContext ctx, boolean encrypt) {
+		return new WebSocketSession(ctx.channel(), encrypt);
 	}
 }

@@ -55,7 +55,7 @@ public class SocketInitializeHandler extends AbstractInitializeHandler {
 	}
 
 	@Override
-	protected Session createSession(ChannelHandlerContext ctx) {
-		return new SocketSession(ctx.channel());
+	protected Session createSession(ChannelHandlerContext ctx, boolean encrypt) {
+		return new SocketSession(ctx.channel(), encrypt);
 	}
 }
