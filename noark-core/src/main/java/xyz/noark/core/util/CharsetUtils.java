@@ -11,28 +11,27 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.converter.impl;
+package xyz.noark.core.util;
 
-import xyz.noark.core.annotation.TemplateConverter;
-import xyz.noark.core.converter.AbstractConverter;
-import xyz.noark.core.util.StringUtils;
+import java.nio.charset.Charset;
 
 /**
- * 字节数组转化器.
+ * 字符集工具类
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-@TemplateConverter(byte[].class)
-public class ByteArrayConverter extends AbstractConverter<byte[]> {
-
-	@Override
-	public byte[] convert(String value) throws Exception {
-		return StringUtils.utf8Bytes(value);
-	}
-
-	@Override
-	public String buildErrorMsg() {
-		return "不能转化为字节数组";
-	}
+public class CharsetUtils {
+	/** ISO-8859-1 */
+	public static final String ISO_8859_1 = "ISO-8859-1";
+	/** UTF-8 */
+	public static final String UTF_8 = "UTF-8";
+	/** GBK */
+	public static final String GBK = "GBK";
+	/** ISO-8859-1 */
+	public static final Charset CHARSET_ISO_8859_1 = Charset.forName(ISO_8859_1);
+	/** UTF-8 */
+	public static final Charset CHARSET_UTF_8 = Charset.forName(UTF_8);
+	/** GBK */
+	public static final Charset CHARSET_GBK = Charset.forName(GBK);
 }

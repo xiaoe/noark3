@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.util;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -338,5 +339,43 @@ public class StringUtils {
 		}
 		result.append(suffix);
 		return result.toString();
+	}
+
+	/**
+	 * 编码字符串，编码为UTF-8
+	 * 
+	 * @param str 字符串
+	 * @return 编码后的字节数组
+	 */
+	public static byte[] utf8Bytes(CharSequence str) {
+		return bytes(str, CharsetUtils.CHARSET_UTF_8);
+	}
+
+	/**
+	 * 编码字符串<br>
+	 * 使用系统默认编码
+	 * 
+	 * @param str 字符串
+	 * @return 编码后的字节码
+	 */
+	public static byte[] bytes(CharSequence str) {
+		return bytes(str, null);
+	}
+
+	/**
+	 * 编码字符串
+	 * 
+	 * @param str 字符串
+	 * @param charset 字符集，如果此字段为空，则编码的结果取决于平台
+	 * @return 编码后的字节数组
+	 */
+	public static byte[] bytes(CharSequence str, Charset charset) {
+		if (str == null) {
+			return ByteArrayUtils.EMPTY_BYTE_ARRAY;
+		}
+		if (null == charset) {
+			return str.toString().getBytes();
+		}
+		return str.toString().getBytes(charset);
 	}
 }
