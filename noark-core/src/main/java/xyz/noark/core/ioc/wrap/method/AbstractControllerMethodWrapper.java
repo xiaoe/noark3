@@ -28,10 +28,12 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
 	protected final Controller controller;
 	protected boolean printLog = false;
 	protected final String module;
+	private final String logCode;
 
-	public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Controller controller, Order order) {
+	public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Controller controller, Order order, String logCode) {
 		super(methodAccess, single, methodIndex, order);
 		this.controller = controller;
+		this.logCode = logCode;
 		this.module = single.getClass().getSimpleName();
 	}
 
@@ -56,5 +58,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
 	 * 
 	 * @return Code信息
 	 */
-	public abstract String logCode();
+	public String logCode() {
+		return logCode;
+	}
 }

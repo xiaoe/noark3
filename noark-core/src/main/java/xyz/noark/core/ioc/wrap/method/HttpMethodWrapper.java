@@ -37,7 +37,7 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 	private boolean deprecated = false;
 
 	public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, Controller controller) {
-		super(methodAccess, single, method.getMethodIndex(), controller, method.getOrder());
+		super(methodAccess, single, method.getMethodIndex(), controller, method.getOrder(), "http(" + method.uri() + ")");
 		this.uri = method.uri();
 		this.deprecated = method.isDeprecated();
 
@@ -62,11 +62,5 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 
 	public boolean isDeprecated() {
 		return deprecated;
-	}
-
-	@Override
-	public String logCode() {
-		// TODO 所有Logcode可以提前搞定
-		return "http(" + uri + ")";
 	}
 }

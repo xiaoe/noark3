@@ -49,7 +49,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private boolean deprecated = false;
 
 	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, Controller controller) {
-		super(methodAccess, single, md.getMethodIndex(), controller, md.getOrder());
+		super(methodAccess, single, md.getMethodIndex(), controller, md.getOrder(), "protocal(opcode=" + md.getOpcode() + ")");
 		this.state = md.getState();
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();
@@ -167,10 +167,5 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 */
 	public long getCallNum() {
 		return callNum.longValue();
-	}
-
-	@Override
-	public String logCode() {
-		return "protocal(opcode=" + opcode + ")";
 	}
 }
