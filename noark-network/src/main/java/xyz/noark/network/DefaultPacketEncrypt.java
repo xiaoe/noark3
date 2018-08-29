@@ -56,11 +56,11 @@ public class DefaultPacketEncrypt implements PacketEncrypt {
 	@Override
 	public void decode(ByteArray data, int incode) {
 		int publicKeyIndex = 0;
-		int privateKeyIndex = 0;
+		int secretKeyIndex = 0;
 		// XOR
 		for (int i = 0, len = data.length(); i < len; i++) {
 			byte value = data.getByte(i);
-			value ^= secretKey[privateKeyIndex++ % secretKey.length];
+			value ^= secretKey[secretKeyIndex++ % secretKey.length];
 			value ^= publicKey[publicKeyIndex++ % publicKey.length];
 			value ^= incode << 2;
 			data.setByte(i, value);
