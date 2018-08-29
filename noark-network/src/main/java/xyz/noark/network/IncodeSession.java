@@ -11,25 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.handler;
+package xyz.noark.network;
 
-import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerContext;
-import xyz.noark.core.annotation.Service;
-import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
 
 /**
- * Socket服务器处理类.
+ * 一种带有自增校验位的Session接口.
  *
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-@Service
-@Sharable
-public class SocketServerHandler extends AbstractServerHandler<NetworkPacket> {
+public interface IncodeSession extends Session {
 
-	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket packet) {
-		this.dispatchPacket(ctx, packet);
-	}
+	/**
+	 * 获取自增校验位
+	 * 
+	 * @return 自增校验位
+	 */
+	public int getIncode();
+
+	/**
+	 * 设置自增校验位
+	 * 
+	 * @param incode 自增校验位
+	 */
+	public void setIncode(int incode);
 }

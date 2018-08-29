@@ -19,7 +19,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import xyz.noark.core.lang.ByteArray;
-import xyz.noark.network.NetworkPacket;
+import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;

@@ -24,13 +24,13 @@ package xyz.noark.core.network;
 public abstract class AbstractNetworkListener implements NetworkListener {
 
 	@Override
-	public boolean handleDuplicatePacket(Session session) {
-		return false;
+	public boolean handleDuplicatePacket(Session session, NetworkPacket packet) {
+		return true;
 	}
 
 	@Override
-	public boolean handleChecksumFail(Session session) {
-		return false;
+	public boolean handleChecksumFail(Session session, NetworkPacket packet) {
+		return true;
 	}
 
 	@Override
@@ -38,6 +38,6 @@ public abstract class AbstractNetworkListener implements NetworkListener {
 
 	@Override
 	public boolean handlePacketWarning(Session session, int second, int count, int threshold) {
-		return false;
+		return true;
 	}
 }

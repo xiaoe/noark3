@@ -14,7 +14,7 @@
 package xyz.noark.network.codec;
 
 import xyz.noark.core.lang.ByteArray;
-import xyz.noark.network.NetworkPacket;
+import xyz.noark.core.network.NetworkPacket;
 
 /**
  * 一种默认的网络封包结构.
@@ -41,7 +41,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 	}
 
 	@Override
-	public ByteArray getBytes() {
+	public ByteArray getByteArray() {
 		return bytes;
 	}
 
@@ -49,6 +49,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 		this.bytes = bytes;
 	}
 
+	@Override
 	public int getIncode() {
 		return incode;
 	}
@@ -57,6 +58,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 		this.incode = incode;
 	}
 
+	@Override
 	public int getChecksum() {
 		return checksum;
 	}

@@ -11,36 +11,37 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.network.filter;
 
-import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
+import xyz.noark.network.IncodeSession;
 
 /**
- * 一个网络封包.
+ * 封包检测过滤器.
+ * <p>
+ * 主要检测自增校验位与Checksum
  *
- * @since 3.0
+ * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public interface NetworkPacket {
+public interface PacketCheckFilter {
 
 	/**
-	 * 获取封包长度.
+	 * 检测自增校验位具体实现逻辑
 	 * 
-	 * @return 封包长度
+	 * @param session Session对象
+	 * @param packet 网络封包
+	 * @return 如果继续执行后继逻辑则返回true,否则返回false
 	 */
-	public int getLength();
+	public boolean checkIncode(IncodeSession session, NetworkPacket packet);
 
 	/**
-	 * 封包的编号.
+	 * 检测Checksum的具体实现逻辑
 	 * 
-	 * @return 编号
+	 * @param session Session对象
+	 * @param packet 网络封包
+	 * @return 如果继续执行后继逻辑则返回true,否则返回false
 	 */
-	public Integer getOpcode();
-
-	/**
-	 * 封包的内容.
-	 * 
-	 * @return 内容
-	 */
-	public ByteArray getBytes();
+	public boolean checkChecksum(Session session, NetworkPacket packet);
 }

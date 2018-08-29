@@ -31,16 +31,28 @@ import xyz.noark.core.network.PacketEncrypt;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class SocketSession extends AbstractSession {
+public class SocketSession extends AbstractSession implements IncodeSession {
 	protected final Channel channel;
 	private String uid;
 	private Serializable playerId;
 	protected PacketEncrypt packetEncrypt;
+	/** 自增校验位 */
+	protected int incode = -1;
 
 	public SocketSession(Channel channel, boolean encrypt, byte[] secretKey) {
 		super(channel.id(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 		this.channel = channel;
 		this.packetEncrypt = new DefaultPacketEncrypt(encrypt, secretKey);
+	}
+
+	@Override
+	public int getIncode() {
+		return incode;
+	}
+
+	@Override
+	public void setIncode(int incode) {
+		this.incode = incode;
 	}
 
 	@Override

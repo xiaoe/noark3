@@ -21,11 +21,13 @@ import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.NetworkListener;
+import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.network.IncodeSession;
 import xyz.noark.network.NetworkConstant;
-import xyz.noark.network.NetworkPacket;
+import xyz.noark.network.filter.PacketCheckFilter;
 
 /**
  * 抽象的服务器处理类.
@@ -38,6 +40,8 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 	private ThreadDispatcher threadDispatcher;
 	@Autowired(required = false)
 	private NetworkListener networkListener;
+	@Autowired(required = false)
+	private PacketCheckFilter packetCheckFilter;
 
 	/** 接收封包统计预警功能是否激活 */
 	@Value(NetworkConstant.RECEIVE_ACTIVE)
@@ -59,7 +63,7 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 	 * @param packet 网络封包
 	 */
 	protected void dispatchPacket(ChannelHandlerContext ctx, NetworkPacket packet) {
-		try (ByteArray array = packet.getBytes()) {
+		try (ByteArray array = packet.getByteArray()) {
 			Session session = SessionManager.getSession(ctx.channel().id());
 
 			// 开启了数据统计功能.
@@ -67,10 +71,35 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 				this.statPacket(session, packet);
 			}
 
-			threadDispatcher.dispatchPacket(session, packet.getOpcode(), packet.getBytes());
+			// 封包检测
+			if (this.checkPacket(session, packet)) {
+				threadDispatcher.dispatchPacket(session, packet.getOpcode(), packet.getByteArray());
+			}
 		}
 	}
 
+	/** 封包检测 */
+	private boolean checkPacket(Session session, NetworkPacket packet) {
+		if (packetCheckFilter != null) {
+			// 复制封包检测...
+			if (session instanceof IncodeSession && !packetCheckFilter.checkIncode((IncodeSession) session, packet)) {
+				return false;
+			}
+
+			// 篡改封包检测...
+			if (packetCheckFilter.checkChecksum(session, packet)) {
+				return false;
+			}
+		}
+
+		// 解密
+		if (session.getPacketEncrypt().isEncrypt()) {
+			session.getPacketEncrypt().decode(packet.getByteArray(), packet.getIncode());
+		}
+		return true;
+	}
+
+	/** 流量统计 */
 	private void statPacket(Session session, NetworkPacket packet) {
 		long second = System.currentTimeMillis() / 1000;
 		// 当前秒内累计接受到的封包长度

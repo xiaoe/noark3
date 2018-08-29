@@ -27,6 +27,12 @@ public class NetworkConstant {
 	public static final String ENCRYPT = "network.encrypt";
 	/** 网络加密之密钥：默认配置为无边落木萧萧下，不尽长江滚滚来 */
 	public static final String SECRET_KEY = "network.secretkey";
+
+	/** 网络安全之自增校验位检测：默认false不开启 */
+	public static final String INCODE = "network.incode";
+	/** 网络安全之checksum检测：默认false不开启 */
+	public static final String CHECKSUM = "network.checksum";
+
 	/** 心跳功能，默认值为0，则不生效 */
 	public static final String HEARTBEAT = "network.heartbeat";
 	/** Netty的Work线程数 */

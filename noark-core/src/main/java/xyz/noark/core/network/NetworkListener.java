@@ -45,17 +45,19 @@ public interface NetworkListener {
 	 * 处理复制封包的逻辑.
 	 * 
 	 * @param session Session对象
-	 * @return 如果中断执行后面逻辑返回true.
+	 * @param packet 网络封包
+	 * @return 如果继续执行后面逻辑返回true.
 	 */
-	boolean handleDuplicatePacket(Session session);
+	boolean handleDuplicatePacket(Session session, NetworkPacket packet);
 
 	/**
 	 * 处理篡改封包的逻辑.
 	 * 
 	 * @param session Session对象
-	 * @return 如果中断执行后面逻辑返回true.
+	 * @param packet 网络封包
+	 * @return 如果继续执行后面逻辑返回true.
 	 */
-	boolean handleChecksumFail(Session session);
+	boolean handleChecksumFail(Session session, NetworkPacket packet);
 
 	/**
 	 * 处理过期或维护中的封包.
@@ -74,7 +76,7 @@ public interface NetworkListener {
 	 * @param second 统计周期
 	 * @param count 出现次数
 	 * @param threshold 每秒累计长度阀值
-	 * @return 如果中断执行后面逻辑返回true
+	 * @return 如果继续执行后面逻辑返回true
 	 */
 	boolean handlePacketWarning(Session session, int second, int count, int threshold);
 }
