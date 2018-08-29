@@ -19,7 +19,7 @@ import xyz.noark.core.converter.AbstractConverter;
 /**
  * Boolean转化器.
  * <p>
- * 非0为true.
+ * 常见的标识为True的标签
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
@@ -29,11 +29,21 @@ public class BooleanConverter extends AbstractConverter<Boolean> {
 
 	@Override
 	public Boolean convert(String value) {
-		if (value.length() == 1) {
-			return !"0".equals(value) ? Boolean.TRUE : Boolean.FALSE;
+		switch (value.trim().toLowerCase()) {
+		case "1":
+		case "true":
+		case "yes":
+		case "ok":
+		case "y":
+		case "on":
+		case "是":
+		case "对":
+		case "真":
+		case "正确":
+			return Boolean.TRUE;
+		default:
+			return Boolean.FALSE;
 		}
-
-		return Boolean.valueOf(value);
 	}
 
 	@Override
