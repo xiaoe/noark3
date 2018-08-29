@@ -87,7 +87,7 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 			}
 
 			// 篡改封包检测...
-			if (packetCheckFilter.checkChecksum(session, packet)) {
+			if (!packetCheckFilter.checkChecksum(session, packet)) {
 				return false;
 			}
 		}
