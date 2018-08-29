@@ -67,7 +67,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 		this.checksum = checksum;
 	}
 
-	public void setOpcode(Integer opcode) {
+	public void setOpcode(int opcode) {
 		this.opcode = opcode;
 	}
 

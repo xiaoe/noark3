@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.MessageLite;
 
 import io.netty.buffer.ByteBuf;
@@ -27,10 +26,9 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.lang.ByteBufOutputStream;
 import xyz.noark.core.network.NetworkPacket;
-import xyz.noark.core.util.ByteBufUtils;
 import xyz.noark.core.util.MethodUtils;
-import xyz.noark.core.util.ProtobufUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;
@@ -52,7 +50,12 @@ public class ProtobufCodec extends AbstractPacketCodec {
 	}
 
 	@Override
-	public ByteArray encodePacket(Integer opcode, Object protocal) {
+	public ByteArray encodePacket(Integer opcodex, Object protocal) {
+		final int opcode = opcodex;
+		if (opcode > Short.MAX_VALUE) {
+			throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
+		}
+
 		MessageLite message = null;
 		if (protocal instanceof MessageLite) {
 			message = (MessageLite) protocal;
@@ -62,18 +65,16 @@ public class ProtobufCodec extends AbstractPacketCodec {
 			throw new UnrealizedException("illegal data type：" + protocal.getClass());
 		}
 
+		ByteBuf byteBuf = Unpooled.buffer(message.getSerializedSize() + 2);
+		// 写入Opcode
+		byteBuf.writeShortLE(opcode);
+		// 写入协议内容
 		try {
-			final int protocalLength = message.getSerializedSize();
-			final int opcodeLength = ProtobufUtils.computeRawVarint32Size(opcode);
-			ByteBuf byteBuf = Unpooled.buffer(protocalLength + opcodeLength);
-			// 写入Opcode
-			ByteBufUtils.writeRawVarint32(byteBuf, opcode);
-			// 写入协议内容
-			message.writeTo(CodedOutputStream.newInstance(byteBuf.array(), opcodeLength, byteBuf.capacity()));
-			return new ByteBufWrapper(byteBuf);
+			message.writeTo(new ByteBufOutputStream(byteBuf));
 		} catch (IOException e) {
-			throw new DataException("数据异常", e);
+			throw new DataException("PB writeTo exception", e);
 		}
+		return new ByteBufWrapper(byteBuf);
 	}
 
 	@Override
@@ -90,7 +91,9 @@ public class ProtobufCodec extends AbstractPacketCodec {
 	public NetworkPacket decodePacket(ByteBuf byteBuf) {
 		DefaultNetworkPacket packet = new DefaultNetworkPacket();
 		packet.setLength(byteBuf.readableBytes());
-		packet.setOpcode(byteBuf.readInt());
+		packet.setIncode(byteBuf.readShortLE());
+		packet.setChecksum(byteBuf.readShortLE());
+		packet.setOpcode(byteBuf.readShortLE());
 		packet.setBytes(new ByteBufWrapper(byteBuf));
 		return packet;
 	}

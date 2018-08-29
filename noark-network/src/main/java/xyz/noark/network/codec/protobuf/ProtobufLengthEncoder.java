@@ -17,10 +17,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.lang.ByteArray;
-import xyz.noark.core.util.ByteBufUtils;
 
 /**
- * 写入一个Varint128长度.
+ * 写入长度.
  *
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
@@ -29,7 +28,7 @@ public class ProtobufLengthEncoder extends MessageToByteEncoder<ByteArray> {
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, ByteArray msg, ByteBuf out) {
-		ByteBufUtils.writeRawVarint32(out, msg.length());
+		out.writeShortLE(msg.length());
 		out.writeBytes(msg.array());
 	}
 }

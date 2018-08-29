@@ -13,9 +13,12 @@
  */
 package xyz.noark.network.codec.protobuf;
 
+import java.util.List;
+
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.CorruptedFrameException;
+import io.netty.channel.ChannelHandlerContext;
 import xyz.noark.network.codec.AbstractLengthDecoder;
+import xyz.noark.network.codec.AbstractPacketCodec;
 
 /**
  * ProtobufV3解码器.
@@ -24,57 +27,24 @@ import xyz.noark.network.codec.AbstractLengthDecoder;
  * @author 小流氓(176543888@qq.com)
  */
 public class ProtobufLengthDecoder extends AbstractLengthDecoder {
+	private final static int PACKET_BYTE_LENGTH = 2;
 
-	public ProtobufLengthDecoder(ProtobufCodec protobufCodec) {
-		super(protobufCodec);
+	public ProtobufLengthDecoder(AbstractPacketCodec packetCodec) {
+		super(packetCodec);
 	}
 
 	@Override
-	protected int readLength(ByteBuf buffer) {
-		if (!buffer.isReadable()) {
-			return 0;
+	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+		// 包长不够...
+		if (in.readableBytes() < PACKET_BYTE_LENGTH) {
+			return;
 		}
-		byte tmp = buffer.readByte();
-		if (tmp >= 0) {
-			return tmp;
-		} else {
-			int result = tmp & 127;
-			if (!buffer.isReadable()) {
-				buffer.resetReaderIndex();
-				return 0;
-			}
-			if ((tmp = buffer.readByte()) >= 0) {
-				result |= tmp << 7;
-			} else {
-				result |= (tmp & 127) << 7;
-				if (!buffer.isReadable()) {
-					buffer.resetReaderIndex();
-					return 0;
-				}
-				if ((tmp = buffer.readByte()) >= 0) {
-					result |= tmp << 14;
-				} else {
-					result |= (tmp & 127) << 14;
-					if (!buffer.isReadable()) {
-						buffer.resetReaderIndex();
-						return 0;
-					}
-					if ((tmp = buffer.readByte()) >= 0) {
-						result |= tmp << 21;
-					} else {
-						result |= (tmp & 127) << 21;
-						if (!buffer.isReadable()) {
-							buffer.resetReaderIndex();
-							return 0;
-						}
-						result |= (tmp = buffer.readByte()) << 28;
-						if (tmp < 0) {
-							throw new CorruptedFrameException("malformed varint.");
-						}
-					}
-				}
-			}
-			return result;
-		}
+
+		super.decode(ctx, in, out);
+	}
+
+	@Override
+	protected int readLength(ByteBuf in) {
+		return in.readShortLE();
 	}
 }
