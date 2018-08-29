@@ -13,7 +13,14 @@
  */
 package xyz.noark.game.template;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Optional;
+
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.exception.TemplateNotFoundException;
+import xyz.noark.core.lang.PairMap;
+import xyz.noark.core.lang.TripleMap;
 
 /**
  * 模板管理器.
@@ -44,4 +51,58 @@ public abstract class AbstractTemplateManager {
 	 * 此逻辑只有在Debug模式时才会被调用
 	 */
 	public void checkValidity() {}
+
+	/**
+	 * 提供一种直接获取模板的方案.
+	 * <p>
+	 * 如果没有找到模板那就要抛出一个异常{@link TemplateNotFoundException}
+	 * 
+	 * @param <T> 模板的类型
+	 * @param <K> 集合中的Key的类型
+	 * @param klass 模板的类型
+	 * @param templates 存储模板对象的集合
+	 * @param key 模板对象所在集合中的Key
+	 * @return 如果存储指定Key的模板则返回模板对象，否则会抛出一个异常
+	 */
+	protected <T, K extends Serializable> T getTemplateOrElseThrow(Class<T> klass, Map<K, T> templates, K key) {
+		return Optional.ofNullable(templates.get(key)).orElseThrow(() -> new TemplateNotFoundException(klass, key));
+	}
+
+	/**
+	 * 提供一种直接获取模板的方案.
+	 * <p>
+	 * 如果没有找到模板那就要抛出一个异常{@link TemplateNotFoundException}
+	 * 
+	 * @param <T> 模板的类型
+	 * @param <L> 键之左边元素类型
+	 * @param <R> 键之右边元素类型
+	 * @param klass 模板的类型
+	 * @param templates 存储模板对象的集合
+	 * @param left 键之左边元素
+	 * @param right 键之右边元素
+	 * @return 如果存储指定Key的模板则返回模板对象，否则会抛出一个异常
+	 */
+	protected <T, L extends Serializable, R extends Serializable> T getTemplateOrElseThrow(Class<T> klass, PairMap<L, R, T> templates, L left, R right) {
+		return Optional.ofNullable(templates.get(left, right)).orElseThrow(() -> new TemplateNotFoundException(klass, left, right));
+	}
+
+	/**
+	 * 提供一种直接获取模板的方案.
+	 * <p>
+	 * 如果没有找到模板那就要抛出一个异常{@link TemplateNotFoundException}
+	 * 
+	 * @param <T> 模板的类型
+	 * @param <L> 键之左边元素类型
+	 * @param <M> 键之中间元素类型
+	 * @param <R> 键之右边元素类型
+	 * @param klass 模板的类型
+	 * @param templates 存储模板对象的集合
+	 * @param left 键之左边元素
+	 * @param middle 键之中间元素
+	 * @param right 键之右边元素
+	 * @return 如果存储指定Key的模板则返回模板对象，否则会抛出一个异常
+	 */
+	protected <T, L extends Serializable, M extends Serializable, R extends Serializable> T getTemplateOrElseThrow(Class<T> klass, TripleMap<L, M, R, T> templates, L left, M middle, R right) {
+		return Optional.ofNullable(templates.get(left, middle, right)).orElseThrow(() -> new TemplateNotFoundException(klass, left, middle, right));
+	}
 }
