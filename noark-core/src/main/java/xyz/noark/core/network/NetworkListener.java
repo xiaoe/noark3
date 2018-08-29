@@ -79,4 +79,13 @@ public interface NetworkListener {
 	 * @return 如果继续执行后面逻辑返回true
 	 */
 	boolean handlePacketWarning(Session session, int second, int count, int threshold);
+
+	/**
+	 * 处理异常.
+	 * <p>
+	 * 所有逻辑执行的过程中如果抛出异常就会走这里
+	 * 
+	 * @param e 异常信息
+	 */
+	void handleException(Throwable e);
 }

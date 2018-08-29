@@ -162,13 +162,13 @@ public class ThreadDispatcher {
 	/** 派发给系统线程处理的逻辑. */
 	void dispatchSystemThreadHandle(SystemThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-		taskQueue.submit(new AsyncTask(taskQueue, command, command.getPlayerId()));
+		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId()));
 	}
 
 	/** 派发给玩家线程处理的逻辑. */
 	void dispatchPlayerThreadHandle(PlayerThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-		taskQueue.submit(new AsyncTask(taskQueue, command, command.getPlayerId()));
+		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId()));
 	}
 
 	/**

@@ -17,6 +17,8 @@ import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
 
+import xyz.noark.core.network.NetworkListener;
+
 /**
  * 异步任务.
  *
@@ -29,11 +31,13 @@ public class AsyncTask implements Runnable {
 	protected final TaskQueue taskQueue;
 	private final ThreadCommand command;
 	private final Serializable playerId;
+	private final NetworkListener networkListener;
 
-	public AsyncTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
+	public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
 		this.taskQueue = taskQueue;
 		this.command = command;
 		this.playerId = playerId;
+		this.networkListener = networkListener;
 	}
 
 	@Override
@@ -42,8 +46,11 @@ public class AsyncTask implements Runnable {
 		long startExecuteTime = System.nanoTime();
 		try {
 			command.exec();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error("async task exception.{}", e);
+			if (networkListener != null) {
+				networkListener.handleException(e);
+			}
 		} finally {
 			if (command.isPrintLog()) {
 				// 执行结束的时间

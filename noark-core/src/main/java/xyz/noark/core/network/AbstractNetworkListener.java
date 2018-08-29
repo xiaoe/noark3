@@ -40,4 +40,7 @@ public abstract class AbstractNetworkListener implements NetworkListener {
 	public boolean handlePacketWarning(Session session, int second, int count, int threshold) {
 		return true;
 	}
+
+	@Override
+	public void handleException(Throwable e) {}
 }
