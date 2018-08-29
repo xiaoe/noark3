@@ -20,6 +20,7 @@ import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.InitializeHandler;
 import xyz.noark.network.NetworkConstant;
 
@@ -30,19 +31,22 @@ import xyz.noark.network.NetworkConstant;
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractInitializeHandler implements InitializeHandler {
-
+	/** 监听器扩展方案 */
 	@Autowired(required = false)
 	private NetworkListener networkListener;
 	/** 网络加密，默认不加密 */
 	@Value(NetworkConstant.ENCRYPT)
 	private boolean encrypt = false;
+	/** 网络加密之密钥：默认配置为无边落木萧萧下，不尽长江滚滚来 */
+	@Value(NetworkConstant.SECRET_KEY)
+	private byte[] secretKey = StringUtils.utf8Bytes("do{ManyLeavesFly();YangtzeRiverFlows();}while(1==1);");
 
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
 		this.build(ctx.pipeline());
 
 		// 只要第一个协议对了就要创建Session...
-		Session session = SessionManager.createSession(ctx.channel().id(), key -> createSession(ctx, encrypt));
+		Session session = SessionManager.createSession(ctx.channel().id(), key -> createSession(ctx, encrypt, secretKey));
 
 		if (networkListener != null) {
 			networkListener.channelActive(session);
@@ -54,9 +58,10 @@ public abstract class AbstractInitializeHandler implements InitializeHandler {
 	 * 
 	 * @param ctx 链接上下文
 	 * @param encrypt 是否加密
+	 * @param secretKey 密钥
 	 * @return Session对象
 	 */
-	protected abstract Session createSession(ChannelHandlerContext ctx, boolean encrypt);
+	protected abstract Session createSession(ChannelHandlerContext ctx, boolean encrypt, byte[] secretKey);
 
 	/**
 	 * 判定具体协议后再重装ChannelPipeline对象.

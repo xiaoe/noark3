@@ -13,11 +13,12 @@
  */
 package xyz.noark.network;
 
-import java.nio.charset.Charset;
 import java.util.UUID;
 
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.PacketEncrypt;
+import xyz.noark.core.util.CharsetUtils;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * Noark提供的一种加密方式.
@@ -28,18 +29,18 @@ import xyz.noark.core.network.PacketEncrypt;
  * @author 小流氓(176543888@qq.com)
  */
 public class DefaultPacketEncrypt implements PacketEncrypt {
-	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-	/** 无边落木萧萧下，不尽长江滚滚来 */
-	private static final byte[] PRIVATE_KEY = "do{ManyLeavesFly();YangtzeRiverFlows();}while(1==1);".getBytes(DEFAULT_CHARSET);
-	private final String publicKeyCache;
-	private final byte[] public_key;
-
+	/** 密钥 */
+	private final byte[] secretKey;
+	/** 公钥 */
+	private final byte[] publicKey;
+	/** 是否使用加密方案 */
 	private final boolean encrypt;
 
-	public DefaultPacketEncrypt(boolean encrypt) {
+	public DefaultPacketEncrypt(boolean encrypt, byte[] secretKey) {
 		this.encrypt = encrypt;
-		this.publicKeyCache = UUID.randomUUID().toString();
-		this.public_key = publicKeyCache.getBytes(DEFAULT_CHARSET);
+		this.secretKey = secretKey;
+		// 随机生成一个公钥
+		this.publicKey = StringUtils.utf8Bytes(encrypt ? UUID.randomUUID().toString() : StringUtils.EMPTY);
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class DefaultPacketEncrypt implements PacketEncrypt {
 
 	@Override
 	public String getPublicKey() {
-		return publicKeyCache;
+		return new String(publicKey, CharsetUtils.CHARSET_UTF_8);
 	}
 
 	@Override
@@ -59,14 +60,14 @@ public class DefaultPacketEncrypt implements PacketEncrypt {
 		// XOR
 		for (int i = 0, len = data.length(); i < len; i++) {
 			byte value = data.getByte(i);
-			value ^= PRIVATE_KEY[privateKeyIndex++ % PRIVATE_KEY.length];
-			value ^= public_key[publicKeyIndex++ % public_key.length];
+			value ^= secretKey[privateKeyIndex++ % secretKey.length];
+			value ^= publicKey[publicKeyIndex++ % publicKey.length];
 			value ^= incode << 2;
 			data.setByte(i, value);
 		}
-
 		// 备选方案
-		// 首尾交换
-		// 补码取反
+		// 首尾交换 [0]=[len-1]
+		// 补码取反 ~value
+		// 高低互换 (value << 4) | (value >> 4)
 	}
 }

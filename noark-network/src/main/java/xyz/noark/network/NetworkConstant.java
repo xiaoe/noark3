@@ -25,12 +25,16 @@ public class NetworkConstant {
 	public static final String PORT = "network.port";
 	/** 网络加密，默认不加密 */
 	public static final String ENCRYPT = "network.encrypt";
+	/** 网络加密之密钥：默认配置为无边落木萧萧下，不尽长江滚滚来 */
+	public static final String SECRET_KEY = "network.secretkey";
 	/** 心跳功能，默认值为0，则不生效 */
 	public static final String HEARTBEAT = "network.heartbeat";
 	/** Netty的Work线程数 */
 	public static final String WORK_THREADS = "network.workthreads";
+
 	/** 是否为WebSocket */
 	public static final String WEBSOCKET_PATH = "network.websocket.path";
+
 	/** 网络封包日志激活 */
 	public static final String LOG_ACTIVE = "network.log.active";
 

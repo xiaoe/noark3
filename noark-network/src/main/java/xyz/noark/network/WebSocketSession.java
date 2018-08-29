@@ -27,8 +27,8 @@ import xyz.noark.core.lang.ByteArray;
  */
 public class WebSocketSession extends SocketSession {
 
-	public WebSocketSession(Channel channel, boolean encrypt) {
-		super(channel, encrypt);
+	public WebSocketSession(Channel channel, boolean encrypt, byte[] secretKey) {
+		super(channel, encrypt, secretKey);
 	}
 
 	@Override

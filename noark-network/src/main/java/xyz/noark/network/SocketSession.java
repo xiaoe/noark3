@@ -37,10 +37,10 @@ public class SocketSession extends AbstractSession {
 	private Serializable playerId;
 	protected PacketEncrypt packetEncrypt;
 
-	public SocketSession(Channel channel, boolean encrypt) {
+	public SocketSession(Channel channel, boolean encrypt, byte[] secretKey) {
 		super(channel.id(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 		this.channel = channel;
-		this.packetEncrypt = new DefaultPacketEncrypt(encrypt);
+		this.packetEncrypt = new DefaultPacketEncrypt(encrypt, secretKey);
 	}
 
 	@Override

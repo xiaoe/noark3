@@ -29,11 +29,11 @@ public class DefaultPacketEncryptTest {
 
 	@Test
 	public void test() {
-		DefaultPacketEncrypt encrypt = new DefaultPacketEncrypt(true);
+		DefaultPacketEncrypt encrypt = new DefaultPacketEncrypt(true, "123456".getBytes());
 		System.out.println(encrypt.isEncrypt());
 		System.out.println(encrypt.getPublicKey());
 
-		ImmutableByteArray array = new ImmutableByteArray(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+		ImmutableByteArray array = new ImmutableByteArray(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 		encrypt.decode(array, 1);
 		System.out.println(Arrays.toString(array.array()));
 
