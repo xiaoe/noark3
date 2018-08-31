@@ -44,6 +44,9 @@ public class DateConverter implements Converter<Date> {
 
 	@Override
 	public Date convert(Parameter parameter, String value) throws Exception {
+		if (value == null) {
+			return null;
+		}
 		return this.convert(parameter.getAnnotation(DateTimeFormat.class), value);
 	}
 

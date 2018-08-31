@@ -24,6 +24,10 @@ package xyz.noark.core.exception;
 public class ConvertException extends RuntimeException {
 	private static final long serialVersionUID = -8117790927874317857L;
 
+	public ConvertException(String msg) {
+		super(msg);
+	}
+
 	public ConvertException(String msg, Exception e) {
 		super(msg, e);
 	}

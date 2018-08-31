@@ -114,6 +114,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		try {
 			args = this.analysisParam(handler, fhr.uri(), parameters);
 		} catch (Exception e) {
+			logger.warn("解析HTTP参数异常.{}", e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters are invalid, " + e.getMessage());
 		}
 
@@ -150,17 +151,24 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			Converter<?> converter = this.getConverter(param.getParameter());
 			String data = parameters.get(param.getName());
 
-			if (param.getRequestParam().required() || data != null) {
+			if (data == null) {
+				// 必选参数必需有值
+				if (param.getRequestParam().required()) {
+					throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + " is required.");
+				}
+				// 不是必选参数，那就使用默认值来转化
+				else {
+					try {
+						args.add(converter.convert(param.getParameter(), param.getRequestParam().defaultValue()));
+					} catch (Exception e) {
+						throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getRequestParam().defaultValue() + "-->" + converter.buildErrorMsg(), e);
+					}
+				}
+			} else {
 				try {
 					args.add(converter.convert(param.getParameter(), data));
 				} catch (Exception e) {
 					throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + "=" + data + "-->" + converter.buildErrorMsg(), e);
-				}
-			} else {
-				try {
-					args.add(converter.convert(param.getParameter(), param.getRequestParam().defaultValue()));
-				} catch (Exception e) {
-					throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getRequestParam().defaultValue() + "-->" + converter.buildErrorMsg(), e);
 				}
 			}
 		}
