@@ -44,7 +44,9 @@ class LogExecutor implements Runnable {
 				}
 			}
 
-			LOGFILE.writer(message.getDate(), text);
+			if (LogConfigurator.LOG_PATH.isActivate()) {
+				LOGFILE.writer(message.getDate(), text);
+			}
 		} catch (Exception e) {
 			// logger.error("noark logger in exception.", e);
 		}

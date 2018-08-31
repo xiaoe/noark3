@@ -64,4 +64,13 @@ class LogPath {
 		}
 		return new StringBuilder(path.length()).append(prefix).append(date.format(formatter)).append(suffix).toString();
 	}
+
+	/**
+	 * 日志存储文件功能是否激活.
+	 * 
+	 * @return 日志存储文件功能是否激活
+	 */
+	public boolean isActivate() {
+		return activate;
+	}
 }
