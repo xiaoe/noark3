@@ -2,6 +2,11 @@
  <a href="http://noark.xyz/" title="Noark">Noark</a>
 </h1>
 
+![Website](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![Website](https://img.shields.io/badge/license-%E6%B5%81%E6%B0%93%E5%8D%8F%E8%AE%AE-yellow.svg)
+![Website](https://img.shields.io/badge/JDK-1.8%2B-green.svg)
+![Website](https://img.shields.io/badge/downloads-20.18%20KB-yellowgreen.svg)
+
 #### 简介
 [Noark](http://noark.xyz/)是一个游戏服务器端框架，可快速开发出易维护、高性能、高扩展能力的游戏服务。
 
