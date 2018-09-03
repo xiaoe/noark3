@@ -17,6 +17,7 @@ import static xyz.noark.log.LogHelper.logger;
 
 import java.io.IOException;
 import java.lang.reflect.Parameter;
+import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +44,7 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
+import xyz.noark.core.util.IpUtils;
 import xyz.noark.core.util.Md5Utils;
 import xyz.noark.core.util.StringUtils;
 
@@ -73,14 +75,21 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		if (msg instanceof FullHttpRequest) {
-			HttpResult result = this.exec((FullHttpRequest) msg);
+			HttpResult result = this.exec(ctx, (FullHttpRequest) msg);
 			ByteBuf buf = Unpooled.wrappedBuffer(JSON.toJSONString(result).getBytes(DEFAULT_CHARSET));
 			FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
 			ctx.write(response).addListener(ChannelFutureListener.CLOSE);
 		}
 	}
 
-	private HttpResult exec(FullHttpRequest fhr) {
+	private HttpResult exec(ChannelHandlerContext ctx, FullHttpRequest fhr) {
+		// 局域网判定
+		final String ip = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
+		if (!IpUtils.isInnerIP(ip)) {
+			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
+		}
+
+		final long createTime = System.nanoTime();
 		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(fhr.uri());
 
 		// API不存在...
@@ -119,6 +128,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		}
 
 		// 逻辑执行...
+		final long startExecuteTime = System.nanoTime();
 		try {
 			Object returnValue = null;
 			if (args == null) {
@@ -137,6 +147,9 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			return result;
 		} catch (Exception e) {
 			return new HttpResult(HttpErrorCode.INTERNAL_ERROR, "server internal error, " + e.getMessage());
+		} finally {
+			final long endExecuteTime = System.nanoTime();
+			logger.info("handle {},delay={} ms,exe={} ms,ip={}", handler.logCode(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, ip);
 		}
 	}
 
