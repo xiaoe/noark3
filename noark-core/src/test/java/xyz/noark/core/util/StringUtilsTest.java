@@ -61,10 +61,19 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void testSplit() {
+	public void testSplit() throws Exception {
 		assertTrue(StringUtils.split("1,2,3", ",").length == 3);
 		assertTrue(StringUtils.split("1,2,3,", ",").length == 3);
 		assertTrue(StringUtils.split("1,2,3,,,", ",").length == 3);
+		assertTrue(StringUtils.split("127.0.0.1", ".").length == 4);
+		assertTrue(testSplitByJdk("127.0.0.1", "\\.").length == 4);
+
+		benchmark.doSomething("Jdk:", () -> StringUtils.split("127.0.0.1", "."));
+		benchmark.doSomething("Noark:", () -> testSplitByJdk("127.0.0.1", "\\."));
+	}
+
+	private String[] testSplitByJdk(String IP, String regex) {
+		return IP.split(regex);
 	}
 
 	@Test
