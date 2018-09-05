@@ -2,17 +2,18 @@
  <a href="http://noark.xyz/" title="Noark">Noark</a>
 </h1>
 
-![Website](https://img.shields.io/badge/build-passing-brightgreen.svg)
-![Website](https://img.shields.io/badge/license-%E6%B5%81%E6%B0%93%E5%8D%8F%E8%AE%AE-yellow.svg)
-![Website](https://img.shields.io/badge/JDK-1.8%2B-green.svg)
-![Website](https://img.shields.io/badge/downloads-3.26%20M-yellowgreen.svg)
+[![Wercker](https://img.shields.io/badge/build-passing-brightgreen.svg?style=plastic)](https://gitee.com/xiaoe/noark3)
+[![license](https://img.shields.io/hexpm/l/plug.svg?style=plastic)](http://www.apache.org/licenses/LICENSE-2.0)
+![Website](https://img.shields.io/badge/JDK-1.8%2B-green.svg?style=plastic)
+![Website](https://img.shields.io/badge/downloads-3.26%20M-yellowgreen.svg?style=plastic)
 
 官方网站 [www.noark.xyz](http://www.noark.xyz)
 
 ### 简介
-Noark是一个游戏服务器端框架，可快速开发出一个易维护、易扩展且稳定高能的游戏服务器，让开发者专注于逻辑功能的开发。<br>
-Noark也是从业多年的经验积累而产生的游戏服务器端框架，实现了协议映射，业务处理，模板加载，数据存储，异步事件，延迟任务，内部指令等功能模块，从而达到了松散耦合的效果，提高了系统的可重用性、可维护性以及可扩展性。<br>
-精心设计过的它大大简化了网络编程和多线程编程，还有很多改良版的工具类库，他就是为了解决开发中那些重复劳动而产生的框架。<br>
+Noark是一个游戏服务器端框架，可快速开发出一个易维护、易扩展且稳定高能的游戏服务器，让开发者专注于业务功能的开发<br>
+实现了配置注入，协议映射，模板加载，数据存储，异步事件，延迟任务，内部指令等功能模块<br>
+从而达到了松散耦合的效果，提高了系统的可重用性、可维护性以及可扩展性<br>
+精心设计过的它大大简化了网络编程和多线程编程，众多的工具类库就是为了解决开发中那些重复劳动而产生的框架<br>
 
 **优点：**
 
@@ -91,7 +92,8 @@ U| |\  |u.-,_| |_| | / ___ \   |  _ <  U/| . \\u  ___) |
  ||   \\,-.    \\    \\    >>  //   \\_,-,>> \\,-._// \\ 
  (_")  (_/    (__)  (__)  (__)(__)  (__)\.)   (_/(__)(__)
 ```
-源码[下载](https://gitee.com/xiaoe/noark-learning/tree/master/chapter-1)
+
+相关文档[传送门](http://blog.noark.xyz/article/2018/4/1/noark%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9E%81%E9%80%9F%E4%BD%93%E9%AA%8C/)
 
 ### 目标
 我们的目标：稳定、高性能、可扩展、易维护、提高开发效率，我们没有要取代谁，也没有要超越谁，我们只做我们自己。
