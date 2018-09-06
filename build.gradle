@@ -1,34 +1,11 @@
 subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
-    apply plugin: 'findbugs'
-    apply plugin: 'maven-publish'
-	apply plugin: 'pmd'
-
-	ext {
-	    p3c = "1.3.0"
-	}
+    apply plugin: 'maven'
+	apply plugin: 'signing'
 	
-	pmd {
-	    consoleOutput = true
-	    reportsDir = file("build/reports/pmd")
-	
-	    ruleSets = [
-	    	"java-ali-comment",
-	        "java-ali-concurrent",
-	        "java-ali-constant",
-	        "java-ali-exception",
-	        "java-ali-flowcontrol",
-	        "java-ali-naming",
-	        "java-ali-oop",
-	        "java-ali-orm",
-	        "java-ali-other",
-	        "java-ali-set"
-	    ]
-	}
-
 	group = 'xyz.noark'  
-	version = '3.1.18.Final'
+	version = '3.1.19-SNAPSHOT'
 	
 	sourceCompatibility = 1.8  
 	targetCompatibility = 1.8  
@@ -43,7 +20,6 @@ subprojects {
 
     dependencies {
 		testImplementation 'junit:junit:4.12'
-        pmd "com.alibaba.p3c:p3c-pmd:${p3c}"
     }
 
     jar {
@@ -63,35 +39,71 @@ subprojects {
     	}
     }
     
-    task sourceJar(type: Jar) {
-		from sourceSets.main.allJava
+    ext."signing.keyId"='15567893'
+	ext."signing.password"=System.getenv('SIGNING_PASSWORD')
+	ext."signing.secretKeyRingFile"=System.getenv('SIGNING_SECRETKEYRINGFILE')
+	
+	signing {
+	    sign configurations.archives
 	}
-
-	publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				from components.java
-
-				artifact sourceJar {
-					classifier "sources"
-				}
-			}
-		}
-		
-		repositories {
-        	maven {
-        		//默认发布到Maven Nexus私服的发行库
-			    def nexusUrl ="http://192.168.51.234:8081/repository/maven-releases/"
-			    //如果为快照版本发布到Maven Nexus私服的快照库
-			    if(version.endsWith("-SNAPSHOT")) {
-			         nexusUrl ="http://192.168.51.234:8081/repository/maven-snapshots/"
-			    }
-            	url nexusUrl
-            	credentials {
-	                username = "admin"
-	                password = "admin123"
+	
+	uploadArchives {
+	    repositories {
+	        mavenDeployer {
+	            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+	
+	            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+	                authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
 	            }
-			}
-    	}
+	
+	            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+	                authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
+	            }
+	            
+	            pom.project {
+	        		name 'Noark'
+	        		packaging 'jar'
+	        		description 'This is a game server framework.'
+	        		url 'https://noark.xyz'
+	
+	        		scm {
+	          			connection 'scm:git:git@gitee.com:xiaoe/noark3.git'
+	          			developerConnection 'scm:git:git@gitee.com:xiaoe/noark3.git'
+	          			url 'https://gitee.com/xiaoe/noark3/'
+	        		}
+	
+	        		licenses {
+	          			license {
+	            			name 'The Apache License, Version 2.0'
+	            			url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+	          			}
+	        		}
+	
+	        		developers {
+	          			developer {
+	            			id 'xiaoe'
+		            		name '小流氓'
+		            		email '176543888@qq.com'
+		            		url "http://blog.noark.xyz"
+	          			}
+	        		}
+	        	}
+	        }
+	    }
 	}
+	
+	task sourceJar(type: Jar) {
+		from sourceSets.main.allJava
+		classifier = 'sources'
+	}
+	
+	task javadocJar(type: Jar) {
+	    from javadoc
+	    classifier = 'javadoc'
+	}
+	
+	artifacts {
+        archives sourceJar
+        archives javadocJar
+    }
 }
