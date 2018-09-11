@@ -182,6 +182,7 @@ public abstract class AbstractCodedOutputStream implements AutoCloseable {
 	/**
 	 * 写入一个PB对象.
 	 * 
+	 * @param <T> PB对象
 	 * @param tag 计算好的Tag值
 	 * @param value PB对象.
 	 */
@@ -441,6 +442,9 @@ public abstract class AbstractCodedOutputStream implements AutoCloseable {
 	/**
 	 * Compute the number of bytes that would be needed to encode an
 	 * {@code int32} field, including tag.
+	 * 
+	 * @param value 编码值
+	 * @return 编码一个数字
 	 */
 	protected static int computeInt32SizeNoTag(final int value) {
 		if (value >= 0) {
