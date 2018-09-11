@@ -13,6 +13,8 @@
  */
 package xyz.noark.csv;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -32,6 +34,7 @@ import xyz.noark.core.exception.TplConfigurationException;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.MethodUtils;
 import xyz.noark.core.util.StringUtils;
 
 /**
@@ -75,6 +78,11 @@ public class Csv {
 		TplFile file = klass.getAnnotation(TplFile.class);
 		if (file == null) {
 			throw new TplConfigurationException("这不是CSV格式的配置文件类:" + klass.getName());
+		}
+
+		// 如果模板类存在Set方法，给一个警告提示...
+		if (MethodUtils.existSetMethod(klass)) {
+			logger.warn("模板类正常为只读模式，不应该存在Set方法噢，class={}", klass.getName());
 		}
 
 		try (CsvReader reader = new CsvReader(separator, Files.newBufferedReader(Paths.get(templatePath, file.value()), DEFAULT_CHARSET))) {
