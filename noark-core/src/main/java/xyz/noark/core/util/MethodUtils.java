@@ -79,4 +79,21 @@ public class MethodUtils {
 			throw new RuntimeException("反射调用方式时出现了异常情况...", e);
 		}
 	}
+
+	/**
+	 * 判定指定类是否存在Set方法.
+	 * 
+	 * @param klass 指定类
+	 * @return 如果存在则返回true,否则返回false.
+	 */
+	public static boolean existSetMethod(Class<?> klass) {
+		for (Class<?> target = klass; target != Object.class; target = target.getSuperclass()) {
+			for (Method method : target.getDeclaredMethods()) {
+				if (method.getName().startsWith("set")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
