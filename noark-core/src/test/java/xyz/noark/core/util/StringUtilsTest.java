@@ -72,8 +72,8 @@ public class StringUtilsTest {
 		benchmark.doSomething("Noark:", () -> testSplitByJdk("127.0.0.1", "\\."));
 	}
 
-	private String[] testSplitByJdk(String IP, String regex) {
-		return IP.split(regex);
+	private String[] testSplitByJdk(String ip, String regex) {
+		return ip.split(regex);
 	}
 
 	@Test

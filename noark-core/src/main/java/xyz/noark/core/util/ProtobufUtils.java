@@ -20,6 +20,16 @@ package xyz.noark.core.util;
  * @author 小流氓(176543888@qq.com)
  */
 public class ProtobufUtils {
+	private static final int MAX_VALUE = 0XFFFFFFFF;
+	/** 一个字节真实长度,7位 */
+	private static final int ONE_BYTE_LENGTH = 7;
+	/** 2个字节真实长度,14位 */
+	private static final int TWO_BYTE_LENGTH = ONE_BYTE_LENGTH * 2;
+	/** 3个字节真实长度,21位 */
+	private static final int THREE_BYTE_LENGTH = ONE_BYTE_LENGTH * 3;
+	/** 4个字节真实长度,28位 */
+	private static final int FOUR_BYTE_LENGTH = ONE_BYTE_LENGTH * 4;
+
 	/**
 	 * Computes size of protobuf varint32 after encoding.
 	 * 
@@ -27,16 +37,16 @@ public class ProtobufUtils {
 	 * @return size of value encoded as protobuf varint32.
 	 */
 	public static int computeRawVarint32Size(final int value) {
-		if ((value & (0xffffffff << 7)) == 0) {
+		if ((value & (MAX_VALUE << ONE_BYTE_LENGTH)) == 0) {
 			return 1;
 		}
-		if ((value & (0xffffffff << 14)) == 0) {
+		if ((value & (MAX_VALUE << TWO_BYTE_LENGTH)) == 0) {
 			return 2;
 		}
-		if ((value & (0xffffffff << 21)) == 0) {
+		if ((value & (MAX_VALUE << THREE_BYTE_LENGTH)) == 0) {
 			return 3;
 		}
-		if ((value & (0xffffffff << 28)) == 0) {
+		if ((value & (MAX_VALUE << FOUR_BYTE_LENGTH)) == 0) {
 			return 4;
 		}
 		return 5;
