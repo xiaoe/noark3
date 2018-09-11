@@ -334,7 +334,13 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		return sb.toString();
 	}
 
-	// 添加字段名字，如果是关键字则要添加反点号...
+	/**
+	 * 添加字段名字，如果是关键字则要添加反点号...
+	 * 
+	 * @param sb StringBuilder对象
+	 * @param name 字段名称
+	 * @return 修正关键字的名称
+	 */
 	private StringBuilder append(StringBuilder sb, String name) {
 		if (MysqlKeyword.isKeyword(name)) {
 			return sb.append("`").append(name).append("`");
