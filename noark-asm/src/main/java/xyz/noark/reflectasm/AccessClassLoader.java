@@ -32,58 +32,58 @@ class AccessClassLoader extends ClassLoader {
 	// user classpath, etc).
 	// The key is the parent class loader and the value is the
 	// AccessClassLoader, both are weak-referenced in the hash table.
-	static private final WeakHashMap<ClassLoader, WeakReference<AccessClassLoader>> accessClassLoaders = new WeakHashMap<>();
+	static private final WeakHashMap<ClassLoader, WeakReference<AccessClassLoader>> ACCESS_CLASS_LOADERS = new WeakHashMap<>();
 
 	// Fast-path for classes loaded in the same ClassLoader as this class.
-	static private final ClassLoader selfContextParentClassLoader = getParentClassLoader(AccessClassLoader.class);
-	static private volatile AccessClassLoader selfContextAccessClassLoader = new AccessClassLoader(selfContextParentClassLoader);
+	static private final ClassLoader SELF_CONTEXT_PARENT_CLASS_LOADER = getParentClassLoader(AccessClassLoader.class);
+	static private volatile AccessClassLoader SELF_CONTEXT_ACCESS_CLASS_LOADER = new AccessClassLoader(SELF_CONTEXT_PARENT_CLASS_LOADER);
 
 	static AccessClassLoader get(Class<?> type) {
 		ClassLoader parent = getParentClassLoader(type);
 		// 1. fast-path:
-		if (selfContextParentClassLoader.equals(parent)) {
-			if (selfContextAccessClassLoader == null) {
-				synchronized (accessClassLoaders) { // DCL with volatile
-													// semantics
-					if (selfContextAccessClassLoader == null) {
-						selfContextAccessClassLoader = new AccessClassLoader(selfContextParentClassLoader);
+		if (SELF_CONTEXT_PARENT_CLASS_LOADER.equals(parent)) {
+			if (SELF_CONTEXT_ACCESS_CLASS_LOADER == null) {
+				synchronized (ACCESS_CLASS_LOADERS) { // DCL with volatile
+														// semantics
+					if (SELF_CONTEXT_ACCESS_CLASS_LOADER == null) {
+						SELF_CONTEXT_ACCESS_CLASS_LOADER = new AccessClassLoader(SELF_CONTEXT_PARENT_CLASS_LOADER);
 					}
 				}
 			}
-			return selfContextAccessClassLoader;
+			return SELF_CONTEXT_ACCESS_CLASS_LOADER;
 		}
 		// 2. normal search:
-		synchronized (accessClassLoaders) {
-			WeakReference<AccessClassLoader> ref = accessClassLoaders.get(parent);
+		synchronized (ACCESS_CLASS_LOADERS) {
+			WeakReference<AccessClassLoader> ref = ACCESS_CLASS_LOADERS.get(parent);
 			if (ref != null) {
 				AccessClassLoader accessClassLoader = ref.get();
 				if (accessClassLoader != null) {
 					return accessClassLoader;
 				} else {
-					accessClassLoaders.remove(parent);
+					ACCESS_CLASS_LOADERS.remove(parent);
 				}
 			}
 			AccessClassLoader accessClassLoader = new AccessClassLoader(parent);
-			accessClassLoaders.put(parent, new WeakReference<AccessClassLoader>(accessClassLoader));
+			ACCESS_CLASS_LOADERS.put(parent, new WeakReference<AccessClassLoader>(accessClassLoader));
 			return accessClassLoader;
 		}
 	}
 
 	public static void remove(ClassLoader parent) {
 		// 1. fast-path:
-		if (selfContextParentClassLoader.equals(parent)) {
-			selfContextAccessClassLoader = null;
+		if (SELF_CONTEXT_PARENT_CLASS_LOADER.equals(parent)) {
+			SELF_CONTEXT_ACCESS_CLASS_LOADER = null;
 		} else {
 			// 2. normal search:
-			synchronized (accessClassLoaders) {
-				accessClassLoaders.remove(parent);
+			synchronized (ACCESS_CLASS_LOADERS) {
+				ACCESS_CLASS_LOADERS.remove(parent);
 			}
 		}
 	}
 
 	public static int activeAccessClassLoaders() {
-		int sz = accessClassLoaders.size();
-		if (selfContextAccessClassLoader != null) {
+		int sz = ACCESS_CLASS_LOADERS.size();
+		if (SELF_CONTEXT_ACCESS_CLASS_LOADER != null) {
 			sz++;
 		}
 		return sz;
