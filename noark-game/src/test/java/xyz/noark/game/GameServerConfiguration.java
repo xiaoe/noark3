@@ -57,7 +57,8 @@ public class GameServerConfiguration {
 		MysqlDataAccessor accessor = new MysqlDataAccessor(dataSource);
 		accessor.setStatementExecutableSqlLogEnable(true);
 		accessor.setStatementParameterSetLogEnable(true);
-		accessor.setSlowQuerySqlMillis(1000);// 执行时间超过1秒的都要记录下.
+		// 执行时间超过1秒的都要记录下.
+		accessor.setSlowQuerySqlMillis(1000);
 		return accessor;
 	}
 

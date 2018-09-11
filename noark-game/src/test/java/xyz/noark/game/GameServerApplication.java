@@ -20,7 +20,6 @@ import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
-import xyz.noark.game.bootstrap.BaseServerBootstrap;
 
 /**
  * 一个简单的服务器启动测试入口.
@@ -29,15 +28,10 @@ import xyz.noark.game.bootstrap.BaseServerBootstrap;
  * @author 小流氓(176543888@qq.com)
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
-public class GameServerApplication extends BaseServerBootstrap {
+public class GameServerApplication {
 
 	public static void main(String[] args) {
-		Noark.run(GameServerApplication.class, args);
-	}
-
-	@Override
-	protected String getServerName() {
-		return "game-server";
+		Noark.run(GameServerBootstrap.class, args);
 	}
 
 	@PacketMapping(opcode = 1, state = State.CONNECTED)
