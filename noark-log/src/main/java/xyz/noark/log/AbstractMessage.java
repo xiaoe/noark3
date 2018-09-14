@@ -50,7 +50,7 @@ abstract class AbstractMessage implements Message {
 				StackTraceElement stackTraceElement = elements[i];
 				fileName = stackTraceElement.getFileName();
 				lineNumber = stackTraceElement.getLineNumber();
-				if (!fileName.endsWith("Loger.java")) {
+				if (fileName != null && !fileName.endsWith("Loger.java")) {
 					break;
 				}
 			}
