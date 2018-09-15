@@ -3,7 +3,7 @@ script: gradle clean jar
 jdk:
   - oraclejdk8
 before_script:
-  - chmod a+x gradlew
+  - chmod +x gradle/wrapper/gradle-wrapper.jar
 branches:
   only:
     - master
