@@ -44,7 +44,7 @@ subprojects {
 	ext."signing.secretKeyRingFile"=System.getenv('SIGNING_SECRETKEYRINGFILE')
 	
 	signing {
-	    sign configurations.archives
+	    //sign configurations.archives
 	}
 	
 	uploadArchives {
