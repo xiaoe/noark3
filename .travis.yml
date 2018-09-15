@@ -1,9 +1,10 @@
+sudo: false
 language: java
 script: gradle clean jar
 jdk:
   - oraclejdk8
 before_script:
-  - chmod +x gradle/wrapper/gradle-wrapper.jar
+  - chmod +x gradlew
 branches:
   only:
     - master
