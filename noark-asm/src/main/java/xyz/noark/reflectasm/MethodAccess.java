@@ -54,6 +54,12 @@ public abstract class MethodAccess {
 
 	/**
 	 * Invokes the method with the specified name and the specified param types.
+	 * 
+	 * @param object 宿主对象
+	 * @param methodName 方法名称
+	 * @param paramTypes 参数类型
+	 * @param args 参数列表
+	 * @return 执行方法的返回值
 	 */
 	public Object invoke(Object object, String methodName, Class<?>[] paramTypes, Object... args) {
 		return invoke(object, getIndex(methodName, paramTypes), args);
@@ -62,12 +68,22 @@ public abstract class MethodAccess {
 	/**
 	 * Invokes the first method with the specified name and the specified number
 	 * of arguments.
+	 * 
+	 * @param object 宿主对象
+	 * @param methodName 方法名称
+	 * @param args 参数列表
+	 * @return 执行方法的返回值
 	 */
 	public Object invoke(Object object, String methodName, Object... args) {
 		return invoke(object, getIndex(methodName, args == null ? 0 : args.length), args);
 	}
 
-	/** Returns the index of the first method with the specified name. */
+	/**
+	 * Returns the index of the first method with the specified name.
+	 * 
+	 * @param methodName 方法名称
+	 * @return 当前方法所对应的索引
+	 */
 	public int getIndex(String methodName) {
 		for (int i = 0, n = methodNames.length; i < n; i++) {
 			if (methodNames[i].equals(methodName)) {
@@ -80,6 +96,10 @@ public abstract class MethodAccess {
 	/**
 	 * Returns the index of the first method with the specified name and param
 	 * types.
+	 * 
+	 * @param methodName 方法名称
+	 * @param paramTypes 参数类型
+	 * @return 当前方法所对应的索引
 	 */
 	public int getIndex(String methodName, Class<?>... paramTypes) {
 		for (int i = 0, n = methodNames.length; i < n; i++) {
@@ -93,6 +113,10 @@ public abstract class MethodAccess {
 	/**
 	 * Returns the index of the first method with the specified name and the
 	 * specified number of arguments.
+	 * 
+	 * @param methodName 方法名称
+	 * @param paramsCount 参数个数
+	 * @return 当前方法所对应的索引
 	 */
 	public int getIndex(String methodName, int paramsCount) {
 		for (int i = 0, n = methodNames.length; i < n; i++) {

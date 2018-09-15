@@ -34,6 +34,8 @@ public class DataModular implements Modular {
 	public static final String DATA_SAVE_INERVAL = "data.save.inerval";
 	/** 服务器数据缓存间隔，单位：秒，默认值：1小时 */
 	public static final String DATA_OFFLINE_INERVAL = "data.offline.inerval";
+	/** 数据存储默认开启下划线命名方式检测 */
+	public static boolean CheckUnderScoreCase = true;
 
 	/** 定时存档间隔 */
 	@Value(DataModular.DATA_SAVE_INERVAL)

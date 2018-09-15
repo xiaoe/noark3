@@ -29,6 +29,7 @@ import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.lang.ByteBufOutputStream;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.util.MethodUtils;
+import xyz.noark.core.util.UnsignedUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;
@@ -91,9 +92,9 @@ public class ProtobufCodec extends AbstractPacketCodec {
 	public NetworkPacket decodePacket(ByteBuf byteBuf) {
 		DefaultNetworkPacket packet = new DefaultNetworkPacket();
 		packet.setLength(byteBuf.readableBytes());
-		packet.setIncode(byteBuf.readShortLE());
-		packet.setChecksum(byteBuf.readShortLE());
-		packet.setOpcode(byteBuf.readShortLE());
+		packet.setIncode(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
+		packet.setChecksum(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
+		packet.setOpcode(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
 		packet.setBytes(new ByteBufWrapper(byteBuf));
 		return packet;
 	}

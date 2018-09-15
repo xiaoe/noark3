@@ -11,33 +11,39 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.id;
+package xyz.noark.game.domain;
 
-import org.junit.Test;
+import java.util.Date;
 
-import xyz.noark.core.util.IdCodeUtils;
+import javax.annotation.PostConstruct;
+
+import xyz.noark.core.annotation.Repository;
+import xyz.noark.orm.repository.OrmRepository;
 
 /**
- * ID生成器测试.
+ * 道具实体访问类.
  *
- * @since 3.1
+ * @since 3.2
  * @author 小流氓(176543888@qq.com)
  */
-public class IdGeneratorTest {
+@Repository
+public class ItemRepository extends OrmRepository<Item, Integer> {
 
-	@Test
-	public void test() throws IdMaxSequenceException {
-		IdGenerator id = new IdGenerator(50000, 65535);
-		try {
-			System.out.println(IdCodeUtils.toCode(id.generateId()));
-		} catch (IdMaxSequenceException e) {
-			e.printStackTrace();
+	@PostConstruct
+	public void test() {
+		Item item = this.load(1);
+		if (item == null) {
+			item = new Item();
+			item.setId(1);
+			item.setRead(true);
+			item.setCreateTime(new Date());
+			item.setModifyTime(item.getCreateTime());
+			this.insert(item);
 		}
-		System.out.println(Long.MAX_VALUE);
 
-		long idx = id.generateId();
-		System.out.println(idx);
-		System.out.println(IdCodeUtils.toCode(idx));
-		System.out.println(IdCodeUtils.toLong(IdCodeUtils.toCode(idx)));
+		item.setRead(false);
+		this.update(item);
+
+		this.delete(item);
 	}
 }

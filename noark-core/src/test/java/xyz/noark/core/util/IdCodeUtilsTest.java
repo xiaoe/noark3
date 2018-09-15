@@ -25,6 +25,7 @@ import xyz.noark.benchmark.Benchmark;
  */
 public class IdCodeUtilsTest {
 	private final static Benchmark BENCHMARK = new Benchmark(1000_0000);
+	private static final int MAX = 10000;
 
 	@Test
 	public void test() throws Exception {
@@ -33,7 +34,7 @@ public class IdCodeUtilsTest {
 
 	@Test
 	public void test3() throws Exception {
-		for (int i = 32 * 32 - 5; i <= 10000; i++) {
+		for (int i = 0; i <= MAX; i++) {
 			System.out.println(i + "\t" + IdCodeUtils.toCode(i) + "\t" + IdCodeUtils.toLong(IdCodeUtils.toCode(i)));
 		}
 	}

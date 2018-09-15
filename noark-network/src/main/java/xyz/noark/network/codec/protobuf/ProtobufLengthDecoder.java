@@ -17,6 +17,7 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import xyz.noark.core.util.UnsignedUtils;
 import xyz.noark.network.codec.AbstractLengthDecoder;
 import xyz.noark.network.codec.AbstractPacketCodec;
 
@@ -45,6 +46,6 @@ public class ProtobufLengthDecoder extends AbstractLengthDecoder {
 
 	@Override
 	protected int readLength(ByteBuf in) {
-		return in.readShortLE();
+		return UnsignedUtils.toUnsigned(in.readShortLE());
 	}
 }

@@ -16,12 +16,17 @@ package xyz.noark.game.bootstrap;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import xyz.noark.core.ModularManager;
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.thread.NamedThreadFactory;
 import xyz.noark.core.util.FileUtils;
 import xyz.noark.core.util.SystemUtils;
 import xyz.noark.game.NoarkConstant;
@@ -90,15 +95,16 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 		PacketCodecHolder.setPacketCodec(getPacketCodec());
 
 		// 如果开启动了Debug模式且为Window那就要添加一个回车停服功能
-		if (SystemUtils.IS_OS_WINDOWS && Boolean.valueOf(EnvConfigHolder.getProperties().getOrDefault(NoarkConstant.SERVER_DEBUG, "false"))) {
-			new Thread(() -> {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(1), new NamedThreadFactory("安全停服：测试启用"));
+			singleThreadPool.execute(() -> {
 				try {
 					System.in.read();
 				} catch (IOException e) {
 					logger.error("{}", e);
 				}
 				System.exit(0);
-			}, "安全停服：测试启用").start();
+			});
 		}
 	}
 

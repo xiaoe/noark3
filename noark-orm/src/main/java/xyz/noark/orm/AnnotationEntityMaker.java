@@ -13,6 +13,8 @@
  */
 package xyz.noark.orm;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -75,7 +77,7 @@ public class AnnotationEntityMaker {
 
 		ArrayList<FieldMapping> fieldInfo = new ArrayList<>(fields.length);
 		for (Field field : fields) {
-			FieldMapping fm = makeFieldMapping(field, em.getMethodAccess());
+			FieldMapping fm = makeFieldMapping(klass, field, em.getMethodAccess());
 			if (fm.isPrimaryId()) {
 				em.setPrimaryId(fm);
 			}
@@ -88,13 +90,18 @@ public class AnnotationEntityMaker {
 		return em;
 	}
 
-	private FieldMapping makeFieldMapping(Field field, MethodAccess methodAccess) {
+	private FieldMapping makeFieldMapping(Class<?> klass, Field field, MethodAccess methodAccess) {
 		FieldMapping fm = new FieldMapping(field, methodAccess);
 		// 需要解析的解析，有些不要用动的还放注解里面
 		if (fm.getColumn() == null || StringUtils.isEmpty(fm.getColumn().name())) {
 			fm.setColumnName(StringUtils.lowerWord(field.getName(), '_'));
 		} else {
 			fm.setColumnName(fm.getColumn().name());
+		}
+
+		// 检测下划线命名方式
+		if (DataModular.CheckUnderScoreCase && !fm.getColumnName().equals(fm.getColumnName().toLowerCase())) {
+			logger.warn("数据库字段应该使用下划线命名方式,请检查{}类中的{}属性({})", klass.getName(), field.getName(), fm.getColumnName());
 		}
 
 		guessEntityFieldColumnType(fm);
@@ -106,7 +113,7 @@ public class AnnotationEntityMaker {
 	 * 
 	 * @param fm 映射字段
 	 */
-	public static void guessEntityFieldColumnType(FieldMapping fm) {
+	public void guessEntityFieldColumnType(FieldMapping fm) {
 		Type type = fm.getField().getGenericType();
 		// 明确标识为时间类型的属性
 		if (type == Date.class) {

@@ -39,9 +39,6 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 			// 主键的 @Id，应该加入唯一性约束
 			if (fm.isPrimaryId()) {
 				sb.append(" UNIQUE NOT NULL");
-				// if (fm.isAutoIncrement()) {
-				// sb.append(" AUTO_INCREMENT");
-				// }
 			}
 			// 普通字段
 			else {
@@ -137,11 +134,12 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		// [INTO] tbl_name [(col_name,...)]
 		// VALUES (expression,...),(...),...
 		StringBuilder sb = new StringBuilder(128);
-		sb.append("INSERT INTO ").append(em.getTableName()).append(" (");
+		sb.append("INSERT INTO ");
+		this.append(sb, em.getTableName()).append(" (");
 
 		int count = 0;
 		for (FieldMapping fm : em.getFieldMapping()) {
-			sb.append(fm.getColumnName()).append(',');
+			this.append(sb, fm.getColumnName()).append(',');
 			count++;
 		}
 		sb.setCharAt(sb.length() - 1, ')');
@@ -158,8 +156,9 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	public <T> String genDeleteSql(EntityMapping<T> sem) {
 		// delete from item where id=?
 		StringBuilder sb = new StringBuilder(128);
-		sb.append("DELETE FROM ").append(sem.getTableName());
-		sb.append(" WHERE ").append(sem.getPrimaryId().getColumnName()).append("=?");
+		sb.append("DELETE FROM ");
+		this.append(sb, sem.getTableName()).append(" WHERE ");
+		this.append(sb, sem.getPrimaryId().getColumnName()).append("=?");
 		return sb.toString();
 	}
 
@@ -169,12 +168,13 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		sb.append("UPDATE ").append(em.getTableName()).append(" SET ");
 		for (FieldMapping fm : em.getFieldMapping()) {
 			if (!fm.isPrimaryId()) {
-				sb.append(fm.getColumnName()).append("=?,");
+				this.append(sb, fm.getColumnName()).append("=?,");
 			}
 		}
 		sb.setCharAt(sb.length() - 1, ' ');
 
-		sb.append("WHERE ").append(em.getPrimaryId().getColumnName()).append("=?");
+		sb.append("WHERE ");
+		this.append(sb, em.getPrimaryId().getColumnName()).append("=?");
 		return sb.toString();
 	}
 
@@ -184,12 +184,14 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		StringBuilder sb = new StringBuilder(128);
 		sb.append("SELECT ");
 		for (FieldMapping fm : em.getFieldMapping()) {
-			sb.append(fm.getColumnName()).append(',');
+			this.append(sb, fm.getColumnName()).append(',');
 		}
 		sb.setCharAt(sb.length() - 1, ' ');
-		sb.append("FROM ").append(em.getTableName());
+		sb.append("FROM ");
+		this.append(sb, em.getTableName());
 		if (em.getPlayerId() != null) {
-			sb.append(" WHERE ").append(em.getPlayerId().getColumnName()).append("=?");
+			sb.append(" WHERE ");
+			this.append(sb, em.getPlayerId().getColumnName()).append("=?");
 		}
 		return sb.toString();
 	}
@@ -200,11 +202,13 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		StringBuilder sb = new StringBuilder(128);
 		sb.append("SELECT ");
 		for (FieldMapping fm : sem.getFieldMapping()) {
-			sb.append(fm.getColumnName()).append(',');
+			this.append(sb, fm.getColumnName()).append(',');
 		}
 		sb.setCharAt(sb.length() - 1, ' ');
-		sb.append("FROM ").append(sem.getTableName());
-		sb.append(" WHERE ").append(sem.getPrimaryId().getColumnName()).append("=?");
+		sb.append("FROM ");
+		this.append(sb, sem.getTableName());
+		sb.append(" WHERE ");
+		this.append(sb, sem.getPrimaryId().getColumnName()).append("=?");
 		return sb.toString();
 	}
 
@@ -213,11 +217,11 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		StringBuilder sb = new StringBuilder(128);
 		sb.append("SELECT ");
 		for (FieldMapping fm : sem.getFieldMapping()) {
-			sb.append(fm.getColumnName()).append(',');
+			this.append(sb, fm.getColumnName()).append(',');
 		}
 		sb.setCharAt(sb.length() - 1, ' ');
-		sb.append("FROM ").append(sem.getTableName());
-		return sb.toString();
+		sb.append("FROM ");
+		return this.append(sb, sem.getTableName()).toString();
 	}
 
 	private <T> void handleSingleQuotationMarks(StringBuilder sb, EntityMapping<T> em, FieldMapping fm, T entity) {
@@ -239,9 +243,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	@Override
 	public <T> String genInsertSql(EntityMapping<T> em, T entity) {
 		StringBuilder sb = new StringBuilder(256);
-		sb.append("INSERT DELAYED INTO ").append(em.getTableName()).append(" (");
+		sb.append("INSERT DELAYED INTO ");
+		this.append(sb, em.getTableName()).append(" (");
 		for (FieldMapping fm : em.getFieldMapping()) {
-			sb.append(fm.getColumnName()).append(',');
+			this.append(sb, fm.getColumnName()).append(',');
 		}
 		sb.setCharAt(sb.length() - 1, ')');
 
@@ -260,14 +265,15 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		sb.append("UPDATE ").append(em.getTableName()).append(" SET ");
 		for (FieldMapping fm : em.getFieldMapping()) {
 			if (!fm.isPrimaryId()) {
-				sb.append(fm.getColumnName()).append("=");
+				this.append(sb, fm.getColumnName()).append("=");
 				this.handleSingleQuotationMarks(sb, em, fm, entity);
 				sb.append(",");
 			}
 		}
 		sb.setCharAt(sb.length() - 1, ' ');
 
-		sb.append("WHERE ").append(em.getPrimaryId().getColumnName()).append("=");
+		sb.append("WHERE ");
+		this.append(sb, em.getPrimaryId().getColumnName()).append("=");
 		this.handleSingleQuotationMarks(sb, em, em.getPrimaryId(), entity);
 		return sb.toString();
 	}
@@ -275,8 +281,9 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	@Override
 	public <T> String genDeleteSql(EntityMapping<T> em, T entity) {
 		StringBuilder sb = new StringBuilder(128);
-		sb.append("DELETE FROM ").append(em.getTableName());
-		sb.append(" WHERE ").append(em.getPrimaryId().getColumnName()).append("=");
+		sb.append("DELETE FROM ");
+		this.append(sb, em.getTableName()).append(" WHERE ");
+		this.append(sb, em.getPrimaryId().getColumnName()).append("=");
 		this.handleSingleQuotationMarks(sb, em, em.getPrimaryId(), entity);
 		return sb.toString();
 	}
@@ -321,7 +328,24 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	@Override
 	public <T> String genUpdateDefaultValueSql(EntityMapping<T> em, FieldMapping fm) {
 		StringBuilder sb = new StringBuilder(64);
-		sb.append("UPDATE ").append(em.getTableName()).append(" SET ").append(fm.getColumnName()).append("='").append(fm.getDefaultValue()).append("'");
+		sb.append("UPDATE ");
+		this.append(sb, em.getTableName()).append(" SET ");
+		this.append(sb, fm.getColumnName()).append("='").append(fm.getDefaultValue()).append("'");
 		return sb.toString();
+	}
+
+	/**
+	 * 添加字段名字，如果是关键字则要添加反点号...
+	 * 
+	 * @param sb StringBuilder对象
+	 * @param name 字段名称
+	 * @return 修正关键字的名称
+	 */
+	private StringBuilder append(StringBuilder sb, String name) {
+		if (MysqlKeyword.isKeyword(name)) {
+			return sb.append("`").append(name).append("`");
+		} else {
+			return sb.append(name);
+		}
 	}
 }

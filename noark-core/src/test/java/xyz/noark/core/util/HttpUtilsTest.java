@@ -22,17 +22,18 @@ import org.junit.Test;
  * @author 小流氓(176543888@qq.com)
  */
 public class HttpUtilsTest {
+	private static final int MAX = 5;
 
 	@Test
 	public void testSendGet() {
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < MAX; i++) {
 			HttpUtils.get("http://www.baidu.com");
 		}
 	}
 
 	@Test
 	public void testSendPost() {
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < MAX; i++) {
 			HttpUtils.post("http://www.baidu.com", "params");
 		}
 	}
