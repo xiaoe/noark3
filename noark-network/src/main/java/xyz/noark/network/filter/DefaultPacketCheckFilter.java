@@ -26,7 +26,7 @@ public class DefaultPacketCheckFilter extends AbstractPacketCheckFilter {
 
 	@Override
 	protected boolean checkPacketIncode(IncodeSession session, NetworkPacket packet) {
-		boolean result = packet.getIncode() > session.getIncode() || session.getIncode() == Short.MAX_VALUE;
+		boolean result = packet.getIncode() > session.getIncode() || session.getIncode() == 0xFFFF;
 		if (result) {
 			session.setIncode(packet.getIncode());
 		}
