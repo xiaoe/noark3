@@ -1,15 +1,16 @@
-sudo: false
 language: java
 script: gradle clean jar
 jdk:
   - oraclejdk8
-before_script:
+  
+sudo: required
+
+before_install:
   - chmod +x gradlew
+  - export TZ=Asia/Shanghai
 branches:
   only:
     - master
     - 3.2
 notifications:
   email: false
-before_install:
-  - export TZ=Asia/Shanghai
