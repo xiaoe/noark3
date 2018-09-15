@@ -2,6 +2,8 @@ language: java
 script: gradle clean jar
 jdk:
   - oraclejdk8
+before_script:
+  - chmod a+x gradlew
 branches:
   only:
     - master
