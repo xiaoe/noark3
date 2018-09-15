@@ -2,10 +2,10 @@
  <a href="http://noark.xyz/" title="Noark">Noark</a>
 </h1>
 
-[![Wercker](https://img.shields.io/badge/build-passing-brightgreen.svg?style=plastic)](https://gitee.com/xiaoe/noark3)
-[![license](https://img.shields.io/hexpm/l/plug.svg?style=plastic)](http://www.apache.org/licenses/LICENSE-2.0)
-![Website](https://img.shields.io/badge/JDK-1.8%2B-green.svg?style=plastic)
-![Website](https://img.shields.io/badge/downloads-3.26%20M-yellowgreen.svg?style=plastic)
+[![Build Status](https://travis-ci.org/xiaoe/noark3.svg?branch=master)](https://gitee.com/xiaoe/noark3)
+[![JDK](https://img.shields.io/badge/JDK-1.8%2B-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+[![maven](https://maven-badges.herokuapp.com/maven-central/xyz.noark/noark-game/badge.svg)](https://search.maven.org/artifact/xyz.noark/noark-game/3.1.18.Final/jar)
+[![license](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 官方网站 [www.noark.xyz](http://www.noark.xyz)
 
