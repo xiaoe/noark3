@@ -37,23 +37,11 @@ public class DefaultPacketCheckFilter extends AbstractPacketCheckFilter {
 	protected boolean checkPacketChecksum(NetworkPacket packet) {
 		final byte[] data = packet.getByteArray().array();
 
-		byte high = 0, low = 0;
+		// 一种简单的计算方案....
+		int sum = 0;
 		for (int i = 0, len = data.length; i < len; i++) {
-			final byte value = data[i];
-			if ((value & 1) != 1) {
-				if ((i & 1) != 1) {
-					high += value;
-				} else {
-					low += value;
-				}
-			} else {
-				if ((i & 1) != 1) {
-					high ^= value;
-				} else {
-					low ^= value;
-				}
-			}
+			sum += (data[i] & 0xFF);
 		}
-		return ((high << 8) | low) == packet.getChecksum();
+		return sum == packet.getChecksum();
 	}
 }
