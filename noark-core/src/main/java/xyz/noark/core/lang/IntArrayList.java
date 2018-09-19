@@ -14,7 +14,6 @@
 package xyz.noark.core.lang;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.concurrent.ThreadLocalRandom;
@@ -76,47 +75,21 @@ public class IntArrayList implements IntList, RandomAccess {
 		return elementData[ThreadLocalRandom.current().nextInt(0, size)];
 	}
 
-	/**
-	 * Returns the number of elements in this list.
-	 *
-	 * @return the number of elements in this list
-	 */
 	@Override
 	public int size() {
 		return size;
 	}
 
-	/**
-	 * Returns <tt>true</tt> if this list contains no elements.
-	 *
-	 * @return <tt>true</tt> if this list contains no elements
-	 */
 	@Override
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	/**
-	 * Returns <tt>true</tt> if this list contains the specified element. More
-	 * formally, returns <tt>true</tt> if and only if this list contains at
-	 * least one element <tt>e</tt> such that
-	 * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
-	 *
-	 * @param o element whose presence in this list is to be tested
-	 * @return <tt>true</tt> if this list contains the specified element
-	 */
 	@Override
 	public boolean contains(int o) {
 		return indexOf(o) >= 0;
 	}
 
-	/**
-	 * Returns the index of the first occurrence of the specified element in
-	 * this list, or -1 if this list does not contain the element. More
-	 * formally, returns the lowest index <tt>i</tt> such that
-	 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
-	 * or -1 if there is no such index.
-	 */
 	@Override
 	public int indexOf(int o) {
 		for (int i = 0; i < size; i++) {
@@ -127,16 +100,7 @@ public class IntArrayList implements IntList, RandomAccess {
 		return -1;
 	}
 
-	/**
-	 * 返回此列表中最后出现的指定元素的索引.
-	 * <p>
-	 * 如果列表不包含此元素，则返回 -1。<br>
-	 * 更确切地讲，返回满足 (get(i)==x) 的最高索引 i；<br>
-	 * 如果没有这样的索引，则返回 -1。
-	 * 
-	 * @param x 要搜索的元素
-	 * @return 列表中最后出现的指定元素的索引；如果列表不包含此元素，则返回 -1
-	 */
+	@Override
 	public int lastIndexOf(int x) {
 		for (int i = size - 1; i >= 0; i--) {
 			if (x == elementData[i]) {
@@ -146,37 +110,17 @@ public class IntArrayList implements IntList, RandomAccess {
 		return -1;
 	}
 
-	/**
-	 * 返回按适当顺序包含列表中的所有元素的数组（从第一个元素到最后一个元素）。
-	 * <p>
-	 * 由于此列表不维护对返回数组的任何引用，因而它将是“安全的”。（换句话说，即使数组支持此列表，此方法也必须分配一个新数组）。<br>
-	 * 因此， 调用者可以随意修改返回的数组。
-	 * 
-	 * @return 按适当顺序包含该列表中所有元素的数组
-	 */
 	@Override
 	public int[] toArray() {
 		return Arrays.copyOf(elementData, size);
 	}
 
-	/**
-	 * Returns the element at the specified position in this list.
-	 *
-	 * @param index index of the element to return
-	 * @return the element at the specified position in this list
-	 * @throws IndexOutOfBoundsException {@inheritDoc}
-	 */
+	@Override
 	public int get(int index) {
 		rangeCheck(index);
 		return elementData[index];
 	}
 
-	/**
-	 * Appends the specified element to the end of this list.
-	 *
-	 * @param e element to be appended to this list
-	 * @return <tt>true</tt> (as specified by {@link Collection#add})
-	 */
 	@Override
 	public boolean add(int e) {
 		ensureCapacityInternal(size + 1);
@@ -184,19 +128,6 @@ public class IntArrayList implements IntList, RandomAccess {
 		return true;
 	}
 
-	/**
-	 * Removes the first occurrence of the specified element from this list, if
-	 * it is present. If the list does not contain the element, it is unchanged.
-	 * More formally, removes the element with the lowest index <tt>i</tt> such
-	 * that
-	 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>
-	 * (if such an element exists). Returns <tt>true</tt> if this list contained
-	 * the specified element (or equivalently, if this list changed as a result
-	 * of the call).
-	 *
-	 * @param o element to be removed from this list, if present
-	 * @return <tt>true</tt> if this list contained the specified element
-	 */
 	@Override
 	public boolean remove(int o) {
 		for (int index = 0; index < size; index++) {
@@ -220,10 +151,6 @@ public class IntArrayList implements IntList, RandomAccess {
 		elementData[--size] = 0;
 	}
 
-	/**
-	 * Removes all of the elements from this list. The list will be empty after
-	 * this call returns.
-	 */
 	@Override
 	public void clear() {
 		size = 0;

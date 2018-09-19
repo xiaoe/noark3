@@ -71,7 +71,27 @@ public interface IntList {
 	 * @param o 指定数值
 	 * @return 所在位置
 	 */
-	public int indexOf(int o);
+	int indexOf(int o);
+
+	/**
+	 * 返回此列表中最后出现的指定元素的索引.
+	 * <p>
+	 * 如果列表不包含此元素，则返回 -1。<br>
+	 * 更确切地讲，返回满足 (get(i)==x) 的最高索引 i；<br>
+	 * 如果没有这样的索引，则返回 -1。
+	 * 
+	 * @param x 要搜索的元素
+	 * @return 列表中最后出现的指定元素的索引；如果列表不包含此元素，则返回 -1
+	 */
+	int lastIndexOf(int x);
+
+	/**
+	 * 获取指定下标的数值.
+	 * 
+	 * @param index 下标
+	 * @return 指定下标的数值
+	 */
+	int get(int index);
 
 	// Modification Operations
 
