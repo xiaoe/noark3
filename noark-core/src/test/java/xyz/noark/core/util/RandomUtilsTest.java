@@ -21,8 +21,6 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import xyz.noark.core.util.RandomUtils;
-
 /**
  * 随机工具类测试.
  *
@@ -47,5 +45,43 @@ public class RandomUtilsTest {
 
 		list.add(1);
 		assertTrue(RandomUtils.randomList(list) == 1);
+	}
+
+	@Test
+	public void testRandomByWeight() {
+		List<TestData> data = new ArrayList<>();
+		TestData e = new TestData();
+		e.setId(1);
+		e.setWeight(RandomUtils.nextInt(100));
+		data.add(e);
+
+		TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
+		assertTrue(random.getId() == e.getId());
+	}
+
+	static class TestData {
+		private int id;
+		private int weight;
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		public int getWeight() {
+			return weight;
+		}
+
+		public void setWeight(int weight) {
+			this.weight = weight;
+		}
+
+		@Override
+		public String toString() {
+			return "TestData [id=" + id + ", weight=" + weight + "]";
+		}
 	}
 }

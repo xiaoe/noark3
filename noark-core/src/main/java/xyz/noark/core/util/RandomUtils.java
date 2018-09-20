@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.ToIntFunction;
 
 /**
  * 随机数相关操作工具类.
@@ -140,7 +141,7 @@ public class RandomUtils {
 	 * V为权重，机率为V/(sum(All))
 	 * 
 	 * @param <K> 要随机的元素类型，也是Map的Key
-	 * @param data 随便集合
+	 * @param data 随机集合
 	 * @return 按权重随机返回集合中的一个元素.
 	 */
 	public static <K> K randomByWeight(Map<K, Integer> data) {
@@ -150,6 +151,28 @@ public class RandomUtils {
 			step += e.getValue().intValue();
 			if (step > random) {
 				return e.getKey();
+			}
+		}
+		throw new RuntimeException("randomByWeight的实现有Bug：" + random);
+	}
+
+	/**
+	 * 在指定集合中按权重随机出一个元素.
+	 * <p>
+	 * 权重，机率为V/(sum(All))
+	 * 
+	 * @param <T> 要随机的元素类型
+	 * @param data 随机集合
+	 * @param weightFunction 元素中权重方法
+	 * @return 按权重随机返回集合中的一个元素
+	 */
+	public static <T> T randomByWeight(List<T> data, ToIntFunction<? super T> weightFunction) {
+		final int random = nextInt(data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b));
+		int step = 0;
+		for (T e : data) {
+			step += weightFunction.applyAsInt(e);
+			if (step > random) {
+				return e;
 			}
 		}
 		throw new RuntimeException("randomByWeight的实现有Bug：" + random);
