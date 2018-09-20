@@ -56,8 +56,9 @@ subprojects {
 	                authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
 	            }
 	
-	            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-	                authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
+				//快照版本还是内网速度快，稳定再发布正式版本给大家使用
+	            snapshotRepository(url: "http://192.168.51.234:8081/repository/maven-snapshots/") {
+	                authentication(userName: 'admin', password: 'admin123')
 	            }
 	            
 	            pom.project {
