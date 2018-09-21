@@ -1,0 +1,661 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+		<title>Noark-程序猿的终极神器</title>
+		
+		<!--[if lte IE 9]>
+		<script type="text/javascript">
+			location.href = 'unsupport-browser.html';
+		</script>
+		<![endif]-->
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="Java,服务器,小流氓,游戏,页游,手游" />
+		<meta name="description" content="Noark的目标：稳定、高性能、可扩展、提高开发效率" />
+	
+		<link rel="stylesheet" href="css/animate.css">
+		<link rel="stylesheet" href="css/icomoon.css">
+		<link rel="stylesheet" href="css/themify-icons.css">
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/magnific-popup.css">
+		<link rel="stylesheet" href="css/owl.carousel.min.css">
+		<link rel="stylesheet" href="css/owl.theme.default.min.css">
+		<link rel="stylesheet" href="css/flexslider.css">
+		<link rel="stylesheet" href="css/style.css">
+	
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!--[if lt IE 9]>
+			<script src="js/respond.min.js"></script>
+		<![endif]-->
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	</head>
+	<body>
+		<div class="gtco-loader"></div>
+		<div id="page">
+			<!-- 头部导航 -->
+			<nav class="gtco-nav" role="navigation">
+				<div class="gtco-container">
+					<div class="row">
+						<div class="col-sm-2 col-xs-12">
+							<div id="gtco-logo"><a href="http://noark.xyz">Noark<em>3</em></a></div>
+						</div>
+						<div class="col-xs-10 text-right menu-1 main-nav">
+							<ul>
+								<li class="active"><a href="#" data-nav-section="home">首页</a></li>
+								<li><a href="#" data-nav-section="services">简介</a></li>
+								<li><a href="#" data-nav-section="portfolio">案例</a></li>
+								<li><a href="#" data-nav-section="blog">文档</a></li>
+								<li><a href="#" data-nav-section="contact">联系我们</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</nav>
+
+			<div id="gtco-hero" class="js-fullheight"  data-section="home">
+				<div class="flexslider js-fullheight">
+					<ul class="slides">
+					   	<li style="background-image: url(images/img_bg_2.jpg);">
+					   		<div class="overlay"></div>
+					   		<div class="container">
+					   			<div class="col-md-10 col-md-offset-1 text-center js-fullheight slider-text">
+					   				<div class="slider-text-inner">
+					   					<h2>稳定、高性能、可扩展</h2>
+					   					<p><a target="_blank" href="http://blog.noark.xyz/article/2018/4/1/noark%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9E%81%E9%80%9F%E4%BD%93%E9%AA%8C/" class="btn btn-primary btn-lg">快速开始</a></p>
+					   				</div>
+					   			</div>
+					   		</div>
+					   	</li>
+						<!--
+					   	<li style="background-image: url(images/img_bg_3.jpg);">
+					   		<div class="overlay"></div>
+					   		<div class="container">
+					   			<div class="col-md-10 col-md-offset-1 text-center js-fullheight slider-text">
+					   				<div class="slider-text-inner">
+					   					<h2>Noark源码</h2>
+					   					<p><a target="_blank" href="https://gitee.com/xiaoe/noark3" class="btn btn-primary btn-lg">点星关注</a></p>
+					   				</div>
+					   			</div>
+					   		</div>
+					   	</li>
+						-->
+				  	</ul>
+			  	</div>
+			</div>
+			
+			<div class="gtco-section-overflow">
+			<!-- 快速入门 -->
+			<div class="gtco-section" id="gtco-services" data-section="services">
+				<div class="gtco-container">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="gtco-heading">
+								<h2 class="gtco-left">简介</h2>
+								Noark是一个游戏服务器端框架，可快速开发出一个易维护、易扩展且稳定高能的游戏服务器，让开发者专注于业务功能的开发。
+								实现了配置注入，协议映射，模板加载，数据存储，异步事件，延迟任务，内部指令等功能模块。
+								从而达到了松散耦合的效果，提高了系统的可重用性、可维护性以及可扩展性。
+								精心设计过的它大大简化了网络编程和多线程编程，众多的工具类库就是为了解决开发中那些重复劳动而产生的框架
+							</div>
+						</div>
+						<div class="col-md-6">
+							<script src='https://gitee.com/xiaoe/noark3/widget_preview'></script>
+							<style>
+							.pro_name a{color: #4183c4;}
+							.osc_git_title{background-color: #fff;}
+							.osc_git_box{background-color: #fff;}
+							.osc_git_box{border-color: #E3E9ED;}
+							.osc_git_info{color: #666;}
+							.osc_git_main a{color: #9B9B9B;}
+							</style>
+							<p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+						<div class="row">
+
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-cloud-download"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>自述</h3>
+										<p>Noark是一个游戏服务器端框架，可快速开发出易维护、高性能、高扩展能力的游戏服务</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-monitor"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>简洁</h3>
+										<p>基于JDK1.8而设计，精心设计过的它大大简化了网络编程和多线程编程，从而提高开发效率</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-toggle"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>性能</h3>
+										<p>采用串行化设计理念，三大模块，两种线程池，有序队列，相关数据也不会面临被并发修改的风险</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-layout"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>监控</h3>
+										<p>服务器是否健康运行？各模块是否正常运作？外挂是否猖獗？漏洞是否修复？快来试试Noark2，天生反外挂、反私服</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 animate-box" data-animate-effect="fadeIn">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-pencil"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>存储</h3>
+										<p>一种类似而不似JPA的实现，也可以理解为JPA的变种，但他具备缓存读，定时写的功能.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-cog"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>热修复</h3>
+										<p>并非传说中的热更新，但可以在不停机的情况修复线上80%的逻辑Bug，是不是很神奇呢!</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-layers"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>安全</h3>
+										<p>可定制协议格式以及加密和压缩等算法，建议使用Noark2所提供的协议实现，因为Noark2底层已对非法数据做出判定和过滤，从而保障了服务器外部输入的安全和稳定.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon">
+										<i class="icon-search"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>目标</h3>
+										<p>稳定、高性能、可扩展、提高开发效率<br>我们没有要取代谁，也没有要超越谁，我们只做我们自己。</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="gtco-section" id="gtco-portfolio" data-section="portfolio">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+						<h2>案例</h2>
+						<p>以下游戏与本架构无关，只是我只玩过这些游戏，而且还有这些图片而已...</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<a href="images/jzwl.jpg" class="gtco-card-item image-popup" title="决战武林">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/jzwl.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="images/ztj.jpg" class="gtco-card-item image-popup" title="择天记">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/ztj.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="images/qmws.jpg" class="gtco-card-item image-popup" title="全民无双">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/qmws.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+
+					<div class="col-md-4">
+						<a href="images/dntg.jpg" class="gtco-card-item image-popup" title="大闹天宫">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/dntg.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="images/bf.jpg" class="gtco-card-item image-popup" title="暴风王座">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/bf.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="images/zshh.jpg" class="gtco-card-item image-popup" title="诸神黄昏">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/zshh.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+
+					<div class="col-md-4">
+						<a href="images/hjgd.jpg" class="gtco-card-item image-popup" title="黄金国度">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/hjgd.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="images/qnmsl.jpg" class="gtco-card-item image-popup" title="抢你没商量">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/qnmsl.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="images/haha.jpg" class="gtco-card-item image-popup" title="猜猜看">
+							<figure>
+								<div class="overlay"><i class="ti-plus"></i></div>
+								<img src="images/haha.jpg" alt="Image" class="img-responsive">
+							</figure>
+						</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="gtco-section" id="gtco-faq" data-section="faq">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+						<h2>常见问题(FAQ)</h2>
+						<p>这里仅仅是为了页面样式而保留的几个常见问题，如果其他问题请联系我本人解答.</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+
+						<div class="gtco-accordion">
+							<div class="gtco-accordion-heading">
+								<div class="icon"><i class="icon-cross"></i></div>
+								<h3>为什么不能下载?</h3>
+							</div>
+							<div class="gtco-accordion-content">
+								<div class="inner">
+									<p>前面我也提到了，目前没未开源啊，所以Maven仓库里的是找不到的，你也不用找了，这次仅仅是为了做个界面样式而已.</p>
+								</div>
+							</div>
+						</div>
+						<div class="gtco-accordion">
+							<div class="gtco-accordion-heading">
+								<div class="icon"><i class="icon-cross"></i></div>
+								<h3>反私服，您是如何做到的?</h3>
+							</div>
+							<div class="gtco-accordion-content">
+								<div class="inner">
+									<p>这个不能说，不可说，您只需知道有这个功能就成了，为什么呢？好比儿量的智能跑鞋吹牛逼说他可以防拐卖，难道拐卖人口的坏人就不知道广告吗？不会把鞋先丢掉吗？</p>
+								</div>
+							</div>
+						</div>
+						<div class="gtco-accordion">
+							<div class="gtco-accordion-heading">
+								<div class="icon"><i class="icon-cross"></i></div>
+								<h3>Protobuf协议你们支持吗?</h3>
+							</div>
+							<div class="gtco-accordion-content">
+								<div class="inner">
+									<p>当然支持啦，我们不仅仅支持PB，还有Amf3、MsgPack、自定义都是OK的，基本PB还有我们自己的改良版本，不在像官方那样生成一个很复杂的类.</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-md-6">
+
+						<div class="gtco-accordion">
+							<div class="gtco-accordion-heading">
+								<div class="icon"><i class="icon-cross"></i></div>
+								<h3>数据存储是怎样工作的呢?</h3>
+							</div>
+							<div class="gtco-accordion-content">
+								<div class="inner">
+									<p>数据层整体风格就像JPA的使用，读数据策略有三种，启服，登录，调用，回写有同步写入和异步定时写入</p>
+								</div>
+							</div>
+						</div>
+						<div class="gtco-accordion">
+							<div class="gtco-accordion-heading">
+								<div class="icon"><i class="icon-cross"></i></div>
+								<h3>策划配置数据的工具用什么?</h3>
+							</div>
+							<div class="gtco-accordion-content">
+								<div class="inner">
+									<p>策划最爱Excel嘛，然后配置导表工具智能生成CSV，程序载入只需要一行代码.</p>
+								</div>
+							</div>
+						</div>
+						<div class="gtco-accordion">
+							<div class="gtco-accordion-heading">
+								<div class="icon"><i class="icon-cross"></i></div>
+								<h3>小流氓帅吗?</h3>
+							</div>
+							<div class="gtco-accordion-content">
+								<div class="inner">
+									<p>这还用问吗？真是无知，我就是那个流氓...</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="gtco-blog" data-section="blog">
+		<div class="gtco-container">
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+					<h2>文档</h2>
+					<p>目前最新版本为V2.5.8.Final</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<a href="#" class="gtco-card-item has-text">
+						<figure>
+							<div class="overlay"><i class="ti-plus"></i></div>
+							<img src="images/1.png" alt="Image" class="img-responsive">
+						</figure>
+						<div class="gtco-text text-left">
+							<h2>深入Noark之IOC容器</h2>
+							<p>Noark的IOC功能与Spring的IOC有何不同，为什么要重新发明轮子...</p>
+							<p class="gtco-category">2017-06-01 00:18:58</p>
+						</div>
+					</a>
+				</div>
+
+				<div class="col-md-4">
+					<a href="#" class="gtco-card-item has-text">
+						<figure>
+							<div class="overlay"><i class="ti-plus"></i></div>
+							<img src="images/1.png" alt="Image" class="img-responsive">
+						</figure>
+						<div class="gtco-text text-left">
+							<h2>模板类的使用</h2>
+							<p>如果加载策划模板数据呢？在这里我们只需要一行代码就可以搞定.</p>
+							<p class="gtco-category">2017-06-01 02:23:17</p>
+						</div>
+					</a>
+				</div>
+				<div class="clearfix visible-sm-block"></div>
+				<div class="col-md-4">
+					<a href="#" class="gtco-card-item has-text">
+						<figure>
+							<div class="overlay"><i class="ti-plus"></i></div>
+							<img src="images/1.png" alt="Image" class="img-responsive">
+						</figure>
+						<div class="gtco-text text-left">
+							<h2>Noark帮我们做了什么？</h2>
+							<p>帮你做参数解析，帮你封装了线程调度等等，反正帮你做了很多你要写好多代码的事...</p>
+							<p class="gtco-category">2017-06-01 02:23:17</p>
+						</div>
+					</a>
+				</div>
+				<div class="clearfix visible-lg-block visible-md-block"></div>
+
+				<div class="col-md-4">
+					<a href="#" class="gtco-card-item has-text">
+						<figure>
+							<div class="overlay"><i class="ti-plus"></i></div>
+							<img src="images/1.png" alt="Image" class="img-responsive">
+						</figure>
+						<div class="gtco-text text-left">
+							<h2>如何配置一个数据源</h2>
+							<p>编码配置文件，直接注入，创建 POJO，编码访问类，太他妈的简单了.</p>
+							<p class="gtco-category">2017-06-01 02:23:17</p>
+						</div>
+					</a>
+				</div>
+				<div class="clearfix visible-sm-block"></div>
+
+				<div class="col-md-4">
+					<a href="#" class="gtco-card-item has-text">
+						<figure>
+							<div class="overlay"><i class="ti-plus"></i></div>
+							<img src="images/1.png" alt="Image" class="img-responsive">
+						</figure>
+						<div class="gtco-text text-left">
+							<h2>对象的生命周期</h2>
+							<p>需要了解IOC功能实现原理，才能明白为什么能做到热修复..</p>
+							<p class="gtco-category">2017-06-01 02:23:17</p>
+						</div>
+					</a>
+				</div>
+
+				<div class="col-md-4">
+					<a href="#" class="gtco-card-item has-text">
+						<figure>
+							<div class="overlay"><i class="ti-plus"></i></div>
+							<img src="images/1.png" alt="Image" class="img-responsive">
+						</figure>
+						<div class="gtco-text text-left">
+							<h2>工具类的使用</h2>
+							<p>Noark2提供了大类的工具类库，命令以Utils结尾，如果StringUtils，RandomUtils等...</p>
+							<p class="gtco-category">2017-06-08 17:43:57</p>
+						</div>
+					</a>
+				</div>
+				<div class="clearfix visible-lg-block visible-md-block"></div>
+				<div class="clearfix visible-sm-block"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="gtco-section-overflow">
+		<div id="gtco-counter" class="gtco-section">
+			<div class="gtco-container">
+
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+						<h2>相关数据</h2>
+						<p>数据是假的，不要太认真，只是为了界面样式随便写的.</p>
+					</div>
+				</div>
+
+				<div class="row">
+					
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-download"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="184535" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">下载</span>
+
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-face-smile"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="42002" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">点赞</span>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-briefcase"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="4002" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">项目</span>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-time"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="25415" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">安全</span>
+
+						</div>
+					</div>
+						
+				</div>
+			</div>
+		</div>
+
+		<div id="gtco-products" data-section="products">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+						<h2>最新版本</h2>
+						<p>V2.5.8.Final，代号-变形金刚</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="owl-carousel owl-carousel-carousel">
+						<div class="item">
+							<img src="images/1.png" alt="111">
+						</div>
+						<div class="item">
+							<img src="images/1.png" alt="111">
+						</div>
+						<div class="item">
+							<img src="images/1.png" alt="111">
+						</div>
+						<div class="item">
+							<img src="images/1.png" alt="111">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="gtco-subscribe">
+		<div class="gtco-container">
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+					<h2>关注我们</h2>
+					<p>如果您对我们比较感兴趣，可以注意我的博客或微信公众号</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<form class="form-inline">
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<label for="email" class="sr-only">Email</label>
+								<input type="email" class="form-control" id="email" placeholder="您的邮箱">
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<label for="name" class="sr-only">昵称</label>
+								<input type="text" class="form-control" id="name" placeholder="您的昵称">
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<button type="submit" class="btn btn-danger btn-block">注册</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="gtco-contact" data-section="contact" class="gtco-cover gtco-cover-xs" style="background-image:url(images/img_bg_2.jpg);">
+		<div class="overlay"></div>
+		<div class="gtco-container">
+			<div class="row text-center">
+				<div class="display-t">
+					<div class="display-tc">
+						<div class="col-md-12">
+							<h3>如果您有什么建议或意见，可以使用Email告诉我 <a href="mailto:176543888@qq.com">176543888@qq.com</a></h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer id="gtco-footer" role="contentinfo">
+		<div class="gtco-container">
+			
+			<div class="row copyright">
+				<div class="col-md-12">
+					<p class="pull-left">
+						<small class="block">&copy; 2017 小流氓 All Rights Reserved.</small>
+						<small class="block"><a href="http://blog.noark.xyz/" target="_blank" title="博客">小流氓的博客</a> - 三生三世程序猿 - <a href="http://www.miitbeian.gov.cn/" target="_blank">沪ICP备17033841号</a></small>
+					</p>
+					<p class="pull-right">
+						<ul class="gtco-social-icons pull-right">
+							<li><a target="_blank" href="https://twitter.com/noark_2"><i class="icon-twitter"></i></a></li>
+							<li><a target="_blank" href="https://www.facebook.com/profile.php?id=100022666503122"><i class="icon-facebook"></i></a></li>
+							<li><a target="_blank" href="http://www.linkedin.com/in/noark2"><i class="icon-linkedin"></i></a></li>
+							<li><a target="_blank" href="https://github.com/xiaoe"><i class="icon-github"></i></a></li>
+						</ul>
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</div>
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+	</div>
+	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery.easing.1.3.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.waypoints.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/jquery.countTo.js"></script>
+	<script src="js/jquery.flexslider-min.js"></script>
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/magnific-popup-options.js"></script>
+	<script src="js/main.js"></script>
+	</body>
+</html>
