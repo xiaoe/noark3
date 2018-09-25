@@ -31,11 +31,12 @@ public class DfaScannerTest {
 
 	@Before
 	public void setUp() {
-		this.scanner = new DfaScanner(Arrays.asList("淘宝", "taobao", "出售", "出售元宝", "日"));
+		this.scanner = new DfaScanner(Arrays.asList("淘宝", "taobao", "出售", "出售元宝", "日", "64"));
 	}
 
 	@Test
 	public void testContains() {
+		assertTrue(scanner.contains("淘64宝64交64易"));
 		assertTrue(scanner.contains("淘宝交易"));
 		assertTrue(scanner.contains("taobao交易"));
 		assertTrue(scanner.contains("TaoBao交易"));
@@ -47,6 +48,7 @@ public class DfaScannerTest {
 
 	@Test
 	public void testReplace() {
+		assertTrue(scanner.replace("64淘44交64易94宝66").equals("**淘44交**易94宝66"));
 		assertTrue(scanner.replace("日淘交易宝").equals("*淘交易宝"));
 		assertTrue(scanner.replace("淘交易宝").equals("淘交易宝"));
 		assertTrue(scanner.replace("淘宝交易").equals("**交易"));
@@ -56,6 +58,7 @@ public class DfaScannerTest {
 
 	@Test
 	public void testFind() {
+		assertTrue(scanner.find("淘交64易宝").isPresent());
 		assertTrue(!scanner.find("淘交易宝").isPresent());
 		scanner.find("淘宝交易").ifPresent(v -> assertTrue("淘宝".equals(v)));
 		scanner.find("taobao交易").ifPresent(v -> assertTrue("taobao".equals(v)));
@@ -65,9 +68,10 @@ public class DfaScannerTest {
 
 	@Test
 	public void testFindAll() {
+		assertTrue(!scanner.findAll("64淘交易宝").isEmpty());
 		assertTrue(!scanner.findAll("日淘交易宝").isEmpty());
-		assertTrue(scanner.findAll("taobao交易").size() == 1);
-		assertTrue(scanner.findAll("交易TaoBao交易ｔａｏｂａｏ").size() == 2);
+		assertTrue(scanner.findAll("出vs售taobao交易").size() == 2);
+		assertTrue(scanner.findAll("交a易TaoBao交易ｔａｏｂａｏ").size() == 2);
 		assertTrue(scanner.findAll("交易TaoooBao交易ｔａｏｂａｏ").size() == 2);
 		assertTrue(scanner.findAll("taobao交易,出售元宝").size() == 2);
 	}

@@ -58,13 +58,13 @@ public class DfaScanner {
 	 * 构建一个敏感词扫描器.
 	 * 
 	 * <pre>
-	 * 默认的分隔停顿符：`~!1@2#3$4%5^6&amp;7*8(9)0_-+={[}]|\\:;\&quot;'&lt;,&gt;.?/！￥%……｛｝【】
+	 * 默认的分隔停顿符：`~!1@2#3$4%5^6&amp;7*8(9)0_-+={[}]|\\:;\&quot;'&lt;,&gt;.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz
 	 * </pre>
 	 * 
 	 * @param sensitivewords 敏感词库
 	 */
 	public DfaScanner(List<String> sensitivewords) {
-		this(" `~!1@2#3$4%5^6&7*8(9)0_-+={[}]|\\:;\"'<,>.?/！￥%……｛｝【】", sensitivewords);
+		this(" `~!1@2#3$4%5^6&7*8(9)0_-+={[}]|\\:;\"'<,>.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz", sensitivewords);
 	}
 
 	/**
@@ -203,22 +203,24 @@ public class DfaScanner {
 			}
 			// 当前检查字符的备份
 			int backups = cur;
+			DfaNode backupsNode = node;
 			for (int k = i + 1; k < length; k++) {
 				int temp = charConvert(array[k]);
-				// 重复过滤
-				if (temp == backups) {
-					continue;
-				}
-				// 停顿符
-				if (separatesSymbols.contains(temp)) {
-					continue;
-				}
 				// 查找子节点
-				node = node.querySub(temp);
+				node = backupsNode.querySub(temp);
 				if (node == null) {
+					// 重复过滤
+					if (temp == backups) {
+						continue;
+					}
+					// 停顿符
+					if (separatesSymbols.contains(temp)) {
+						continue;
+					}
 					break;
 				}
 
+				backupsNode = node;
 				backups = temp;
 				markIndex = k;
 
