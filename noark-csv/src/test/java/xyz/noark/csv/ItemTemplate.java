@@ -75,6 +75,11 @@ public class ItemTemplate {
 	@TplAttr(name = "UseTimes")
 	private int useTimes;
 
+	/** 这里只是测试，随便抓两个配置来充一下 */
+	@TplAttr(name = "Name")
+	@TplAttr(name = "UseLevel")
+	private Reward rewards;
+
 	public String getId() {
 		return id;
 	}
@@ -125,6 +130,10 @@ public class ItemTemplate {
 
 	public int getUseTimes() {
 		return useTimes;
+	}
+
+	public Reward getRewards() {
+		return rewards;
 	}
 
 	@Override

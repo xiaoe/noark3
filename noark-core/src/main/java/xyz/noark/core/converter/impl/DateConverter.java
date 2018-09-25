@@ -18,10 +18,12 @@ import java.lang.reflect.Parameter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import xyz.noark.core.annotation.DateTimeFormat;
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.Converter;
+import xyz.noark.core.exception.ConvertException;
 
 /**
  * Date类型的转化器.
@@ -52,5 +54,10 @@ public class DateConverter implements Converter<Date> {
 
 	private Date convert(DateTimeFormat foramt, String value) throws ParseException {
 		return new SimpleDateFormat(foramt == null ? "yyyy-MM-dd HH:mm:ss" : foramt.pattern()).parse(value);
+	}
+
+	@Override
+	public Date convert(Field field, Map<String, String> data) throws Exception {
+		throw new ConvertException("DateConverter无法转化Map类型的配置...");
 	}
 }

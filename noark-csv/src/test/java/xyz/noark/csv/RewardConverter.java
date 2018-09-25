@@ -11,43 +11,45 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.converter;
+package xyz.noark.csv;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 
+import xyz.noark.core.annotation.TemplateConverter;
+import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.UnrealizedException;
 
 /**
- * 抽象实现的转化器.
+ * 奖励转化器.
  *
- * @since 3.0
+ * @since 3.2
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractConverter<T> implements Converter<T> {
+@TemplateConverter(Reward.class)
+public class RewardConverter implements Converter<Reward> {
 
 	@Override
-	public T convert(Field field, String value) throws Exception {
-		return convert(value);
-	}
-
-	@Override
-	public T convert(Parameter parameter, String value) throws Exception {
-		return convert(value);
-	}
-
-	@Override
-	public T convert(Field field, Map<String, String> data) {
+	public Reward convert(Field field, String value) throws Exception {
 		throw new UnrealizedException("AbstractConverter未实现Map类型的配置...");
 	}
 
-	/**
-	 * 将一个字符串转化成目标对象.
-	 * 
-	 * @param value 字符串
-	 * @return 目标对象
-	 * @throws Exception 转化字符串时可能出现不可知异常情况
-	 */
-	protected abstract T convert(String value) throws Exception;
+	@Override
+	public Reward convert(Parameter parameter, String value) throws Exception {
+		throw new UnrealizedException("AbstractConverter未实现Map类型的配置...");
+	}
+
+	@Override
+	public Reward convert(Field field, Map<String, String> data) throws Exception {
+		Reward reward = new Reward();
+		reward.setCode(data.get("Name"));
+		reward.setNum(Integer.parseInt(data.getOrDefault("UseLevel", "0")));
+		return reward;
+	}
+
+	@Override
+	public String buildErrorMsg() {
+		return "test...";
+	}
 }

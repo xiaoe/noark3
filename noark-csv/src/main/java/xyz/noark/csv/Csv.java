@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,34 +102,70 @@ public class Csv {
 		T result = ClassUtils.newInstance(klass);
 		/** 使用工具获取，父类的属性也要判定 */
 		for (Field field : FieldUtils.getAllField(klass)) {
-			TplAttr attr = field.getAnnotation(TplAttr.class);
-			if (attr == null || StringUtils.isEmpty(attr.name())) {
+			TplAttr[] array = field.getAnnotationsByType(TplAttr.class);
+			if (array == null || array.length == 0) {
 				continue;
 			}
 
-			Integer index = titles.get(attr.name());
-			if (index == null) {
-				if (attr.required()) {
-					throw new TplAttrRequiredException(klass, field, attr);
+			// 只有一个配置
+			if (array.length == 1) {
+				TplAttr attr = array[0];
+
+				Integer index = titles.get(attr.name());
+				if (index == null) {
+					if (attr.required()) {
+						throw new TplAttrRequiredException(klass, field, attr);
+					}
+					continue;
 				}
-				continue;
-			}
 
-			// 竟然有的数量不到最后
-			if (index > values.length - 1) {
-				continue;
-			}
+				// 竟然有的数量不到最后
+				if (index > values.length - 1) {
+					continue;
+				}
 
-			String value = values[index];
-			if (StringUtils.isEmpty(value)) {
-				continue;
-			}
+				String value = values[index];
+				if (StringUtils.isEmpty(value)) {
+					continue;
+				}
 
-			Converter<?> converter = this.getConverter(field);
-			try {
-				FieldUtils.writeField(result, field, converter.convert(field, value));
-			} catch (Exception e) {
-				throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
+				Converter<?> converter = this.getConverter(field);
+				try {
+					FieldUtils.writeField(result, field, converter.convert(field, value));
+				} catch (Exception e) {
+					throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
+				}
+			}
+			// 多个配置
+			else {
+				Map<String, String> data = new HashMap<>(array.length + 1);
+				for (TplAttr attr : array) {
+					Integer index = titles.get(attr.name());
+					if (index == null) {
+						if (attr.required()) {
+							throw new TplAttrRequiredException(klass, field, attr);
+						}
+						continue;
+					}
+
+					// 竟然有的数量不到最后
+					if (index > values.length - 1) {
+						continue;
+					}
+
+					String value = values[index];
+					if (StringUtils.isEmpty(value)) {
+						continue;
+					}
+
+					data.put(attr.name(), value);
+				}
+				Converter<?> converter = this.getConverter(field);
+				try {
+					FieldUtils.writeField(result, field, converter.convert(field, data));
+				} catch (Exception e) {
+					throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + data + "-->" + converter.buildErrorMsg(), e);
+				}
 			}
 		}
 

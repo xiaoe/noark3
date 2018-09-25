@@ -21,6 +21,8 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import xyz.noark.core.converter.ConvertManager;
+
 /**
  * CSV测试.
  *
@@ -34,6 +36,7 @@ public class CsvTest {
 
 	@Test
 	public void test() {
+		ConvertManager.getInstance().regist(RewardConverter.class);
 		Csv csv = new Csv('	');
 		File file = new File("src/test/resources/");
 		List<ItemTemplate> ts = csv.loadAll(file.getAbsolutePath(), ItemTemplate.class);

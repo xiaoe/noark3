@@ -15,6 +15,7 @@ package xyz.noark.core.converter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
+import java.util.Map;
 
 /**
  * 转化接口.
@@ -43,6 +44,16 @@ public interface Converter<T> {
 	 * @throws Exception 转化字符串时可能出现不可知异常情况
 	 */
 	public T convert(Parameter parameter, String value) throws Exception;
+
+	/**
+	 * 将一组字符串转化为目标对象
+	 * 
+	 * @param field 类的属性
+	 * @param data 一组字符串
+	 * @return 目标对象
+	 * @throws Exception 转化字符串时可能出现不可知异常情况
+	 */
+	public T convert(Field field, Map<String, String> data) throws Exception;
 
 	/**
 	 * 构建错误提示.

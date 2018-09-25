@@ -79,7 +79,7 @@ public class ConvertManager {
 	 * 
 	 * @param klass 转化类
 	 */
-	private void regist(Class<? extends Converter<?>> klass) {
+	public void regist(Class<? extends Converter<?>> klass) {
 		this.putConvert(ClassUtils.newInstance(klass), klass.getAnnotation(TemplateConverter.class));
 	}
 
