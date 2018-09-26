@@ -59,6 +59,58 @@ public class DateUtils {
 	}
 
 	/**
+	 * 判断两个日期时间是否是同周
+	 *
+	 * @param date1 第一个日期
+	 * @param date2 第二个日期
+	 * @return 如果是同周返回true,否则返回false
+	 */
+	public static boolean isSameWeek(final Date date1, final Date date2) {
+		final Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(date1);
+		final Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(date2);
+		return isSameWeek(cal1, cal2);
+	}
+
+	/**
+	 * 判定两个日期是否为同周
+	 * 
+	 * @param cal1 第一个日期
+	 * @param cal2 第二个日期
+	 * @return 如果是同周返回true,否则返回false
+	 */
+	public static boolean isSameWeek(Calendar cal1, Calendar cal2) {
+		return cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR);
+	}
+
+	/**
+	 * 判断两个日期时间是否是同年同月份
+	 *
+	 * @param date1 第一个日期
+	 * @param date2 第二个日期
+	 * @return 如果是同一个月份返回true,否则返回false
+	 */
+	public static boolean isSameMonth(final Date date1, final Date date2) {
+		final Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(date1);
+		final Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(date2);
+		return isSameMonth(cal1, cal2);
+	}
+
+	/**
+	 * 判定两个日期是否为同年同月份
+	 * 
+	 * @param cal1 第一个日期
+	 * @param cal2 第二个日期
+	 * @return 如果是同一个月份返回true,否则返回false
+	 */
+	public static boolean isSameMonth(Calendar cal1, Calendar cal2) {
+		return cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
+	}
+
+	/**
 	 * Adds a number of years to a date returning a new object. The original
 	 * {@code Date} is unchanged.
 	 *
