@@ -22,6 +22,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -47,7 +49,7 @@ import xyz.noark.network.log.NettyLoggerFactory;
 public class NettyServer implements TcpServer {
 
 	/** Boss线程就用一个线程 */
-	private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+	private final EventLoopGroup bossGroup;
 	/** Work线程:CPU<=4的话CPU*2,CPU<=8的话CPU+4, 其他直接使用12 */
 	private final EventLoopGroup workGroup;
 	private final ServerBootstrap bootstrap;
@@ -75,7 +77,16 @@ public class NettyServer implements TcpServer {
 
 	public NettyServer() {
 		bootstrap = new ServerBootstrap();
-		this.workGroup = new NioEventLoopGroup(workthreads == 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workthreads);
+
+		final int nThreads = workthreads == 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workthreads;
+		if (Epoll.isAvailable()) {
+			this.bossGroup = new EpollEventLoopGroup(1);
+			this.workGroup = new EpollEventLoopGroup(nThreads);
+		} else {
+			this.bossGroup = new NioEventLoopGroup(1);
+			this.workGroup = new NioEventLoopGroup(nThreads);
+		}
+
 		bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
 
 		// http://www.jianshu.com/p/0bff7c020af2
