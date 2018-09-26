@@ -25,6 +25,12 @@ import org.junit.Test;
  */
 public class MethodUtilsTest {
 
+	private int test2;
+
+	public int getTest2() {
+		return test2;
+	}
+
 	public void setXX(int x) {}
 
 	@Test

@@ -54,6 +54,37 @@ public class FieldUtils {
 	}
 
 	/**
+	 * 强制给一个指定名称的属性写入值.
+	 * <p>
+	 * 这个基本是留言给脚本调用的，方便修改一些配置错误而生的方法(自动找父类的属性)
+	 * 
+	 * @param target 目标对象
+	 * @param fieldName 要写入的属性名称
+	 * @param value 要写入的值
+	 */
+	public static void writeField(final Object target, final String fieldName, final Object value) {
+		FieldUtils.writeField(target, FieldUtils.getField(target.getClass(), fieldName), value);
+	}
+
+	/**
+	 * 获取指定名称的属性.
+	 * 
+	 * @param klass 指定类
+	 * @param fieldName 指定名称
+	 * @return 指定名称的属性
+	 */
+	public static Field getField(final Class<?> klass, String fieldName) {
+		for (Class<?> target = klass; target != Object.class; target = target.getSuperclass()) {
+			for (Field field : target.getDeclaredFields()) {
+				if (field.getName().equals(fieldName)) {
+					return field;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * 获取指定类的所有属性，包含父类的属性.
 	 * 
 	 * @param klass 指定类
@@ -118,7 +149,7 @@ public class FieldUtils {
 	 * @param annotations 标识属性的注解
 	 * @return 返回此类所有属性.
 	 */
-	public static Field[] scanAllField(final Class<?> klass, List<Class<?>> annotations) {
+	public static Field[] scanAllField(final Class<?> klass, List<Class<? extends Annotation>> annotations) {
 		// 为了返回是有序的添加过程，这里使用LinkedHashMap
 		Map<String, Field> fieldMap = new LinkedHashMap<String, Field>();
 		scanField(klass, fieldMap, annotations);
@@ -132,7 +163,7 @@ public class FieldUtils {
 	 * @param fieldMap 所有属性集合
 	 * @param annotations 标识属性的注解
 	 */
-	private static void scanField(final Class<?> klass, Map<String, Field> fieldMap, List<Class<?>> annotations) {
+	private static void scanField(final Class<?> klass, Map<String, Field> fieldMap, List<Class<? extends Annotation>> annotations) {
 		Class<?> superClass = klass.getSuperclass();
 		if (!Object.class.equals(superClass)) {
 			scanField(superClass, fieldMap, annotations);

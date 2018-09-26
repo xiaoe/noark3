@@ -15,6 +15,7 @@ package xyz.noark.orm;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -43,7 +44,7 @@ import xyz.noark.reflectasm.MethodAccess;
  */
 public class AnnotationEntityMaker {
 
-	private static final List<Class<?>> ANNOTATIONS = new ArrayList<>();
+	private static final List<Class<? extends Annotation>> ANNOTATIONS = new ArrayList<>();
 	static {
 		ANNOTATIONS.add(Column.class);
 		ANNOTATIONS.add(Id.class);
