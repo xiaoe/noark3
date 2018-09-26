@@ -65,6 +65,31 @@ public class RandomUtils {
 	}
 
 	/**
+	 * 返回一个0到指定区间的随机数字.
+	 * <p>
+	 * 0 &lt;= random &lt; bound
+	 *
+	 * @param bound 最大值（不包含）
+	 * @return 返回一个0到指定区间的随机数字
+	 */
+	public static long nextLong(long bound) {
+		return ThreadLocalRandom.current().nextLong(bound);
+	}
+
+	/**
+	 * 返回一个指定区间的随机数字.
+	 * <p>
+	 * origin &lt;= random &lt; bound
+	 *
+	 * @param origin 最小值（包含）
+	 * @param bound 最大值（不包含）
+	 * @return 返回一个指定区间的随机数字
+	 */
+	public static long nextLong(int origin, int bound) {
+		return ThreadLocalRandom.current().nextLong(origin, bound);
+	}
+
+	/**
 	 * 判定一次随机事件是否成功.
 	 * 
 	 * <pre>
@@ -77,6 +102,21 @@ public class RandomUtils {
 	 */
 	public static boolean isSuccess(float rate) {
 		return ThreadLocalRandom.current().nextFloat() < rate;
+	}
+
+	/**
+	 * 判定一次随机事件是否成功.
+	 * 
+	 * <pre>
+	 * 如果rate&gt;=1,则百分百返回true.<br>
+	 * 如果rate&lt;=0,则百分百返回false.
+	 * </pre>
+	 * 
+	 * @param rate 成功率
+	 * @return 如果成功返回true,否则返回false.
+	 */
+	public static boolean isSuccess(double rate) {
+		return ThreadLocalRandom.current().nextDouble() < rate;
 	}
 
 	/**
