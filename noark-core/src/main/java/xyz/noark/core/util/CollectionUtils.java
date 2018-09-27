@@ -53,6 +53,9 @@ public class CollectionUtils {
 	 * <p>
 	 * 常用于模板分组缓存备用
 	 * 
+	 * @param <L> 属性一的类型
+	 * @param <R> 属性二的类型
+	 * @param <V> 集合元素的类型
 	 * @param collection 指定集合
 	 * @param leftMapper 属性一
 	 * @param rightMapper 属性二
