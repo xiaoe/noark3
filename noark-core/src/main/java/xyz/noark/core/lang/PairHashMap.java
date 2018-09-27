@@ -61,4 +61,9 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 	public V get(L left, R right) {
 		return hashmap.get(Pair.of(left, right));
 	}
+
+	@Override
+	public String toString() {
+		return "PairHashMap [data=" + hashmap + "]";
+	}
 }

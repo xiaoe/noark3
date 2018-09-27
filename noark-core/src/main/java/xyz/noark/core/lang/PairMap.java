@@ -13,6 +13,9 @@
  */
 package xyz.noark.core.lang;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+
 /**
  * 两个元素当键的Map.
  *
@@ -46,4 +49,25 @@ public interface PairMap<L, R, V> {
 	 * @return 对应的值，可能会为空.
 	 */
 	public V get(final L left, final R right);
+
+	/**
+	 * 根据两个元素的键来取出来对应的值，如果不存在则调用创建方法.
+	 * 
+	 * @param left 键之左边元素
+	 * @param right 键之右边元素
+	 * @param createSupplier 创建方法
+	 * @return 对应的值
+	 */
+	default V computeIfAbsent(final L left, final R right, Supplier<? extends V> createSupplier) {
+		Objects.requireNonNull(createSupplier);
+		V v;
+		if ((v = get(left, right)) == null) {
+			V newValue;
+			if ((newValue = createSupplier.get()) != null) {
+				put(left, right, newValue);
+				return newValue;
+			}
+		}
+		return v;
+	}
 }
