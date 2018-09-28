@@ -15,6 +15,7 @@ package xyz.noark.core.util;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class AssertUtils {
 	 * 
 	 * @throws ServerBootstrapException 如果指定集合中有超出限制的元素则会抛出此异常
 	 */
-	public static <T> void assertStringMaxLength(List<T> list, Function<T, String> stringFunc, int maxLength, String tips) {
+	public static <T> void assertStringMaxLength(Collection<T> list, Function<T, String> stringFunc, int maxLength, String tips) {
 		List<T> result = list.stream().filter(v -> stringFunc.apply(v).length() > maxLength).collect(Collectors.toList());
 		if (!result.isEmpty()) {
 			result.forEach(v -> logger.warn(tips, stringFunc.apply(v), maxLength));
