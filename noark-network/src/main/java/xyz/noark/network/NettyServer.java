@@ -15,6 +15,7 @@ package xyz.noark.network;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.net.BindException;
 import java.util.concurrent.TimeUnit;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -24,6 +25,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -47,12 +49,11 @@ import xyz.noark.network.log.NettyLoggerFactory;
  */
 @Component(name = "NettyServer")
 public class NettyServer implements TcpServer {
-
+	private final ServerBootstrap bootstrap;
 	/** Boss线程就用一个线程 */
 	private final EventLoopGroup bossGroup;
 	/** Work线程:CPU<=4的话CPU*2,CPU<=8的话CPU+4, 其他直接使用12 */
 	private final EventLoopGroup workGroup;
-	private final ServerBootstrap bootstrap;
 
 	/** Netty监听端口 */
 	@Value(NetworkConstant.PORT)
@@ -76,18 +77,18 @@ public class NettyServer implements TcpServer {
 	protected NettyServerHandler nettyServerHandler;
 
 	public NettyServer() {
-		bootstrap = new ServerBootstrap();
+		this.bootstrap = new ServerBootstrap();
 
 		final int nThreads = workthreads == 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workthreads;
 		if (Epoll.isAvailable()) {
 			this.bossGroup = new EpollEventLoopGroup(1);
 			this.workGroup = new EpollEventLoopGroup(nThreads);
+			bootstrap.group(bossGroup, workGroup).channel(EpollServerSocketChannel.class);
 		} else {
 			this.bossGroup = new NioEventLoopGroup(1);
 			this.workGroup = new NioEventLoopGroup(nThreads);
+			bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
 		}
-
-		bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
 
 		// http://www.jianshu.com/p/0bff7c020af2
 		bootstrap.option(ChannelOption.SO_REUSEADDR, true);
@@ -138,7 +139,11 @@ public class NettyServer implements TcpServer {
 			bootstrap.bind(port).sync();
 			logger.info("game tcp server start is success.");
 		} catch (Exception e) {
-			throw new ServerBootstrapException("目标端口已被占用 port=" + port, e);
+			// 竟然不能直接捕获此异常，有点想不明白...
+			if (e instanceof BindException) {
+				throw new ServerBootstrapException("目标端口已被占用 port=" + port, e);
+			}
+			throw new ServerBootstrapException("未知异常", e);
 		}
 	}
 
