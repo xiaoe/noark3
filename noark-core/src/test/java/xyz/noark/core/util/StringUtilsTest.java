@@ -87,7 +87,7 @@ public class StringUtilsTest {
 	@Test
 	public void test() throws Exception {
 		String[] strings = new String[] { "aaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbbbbbbbbbbb" };
-		benchmark.doSomething("join:", () -> StringUtils.join(",", "{", "}", strings));
+		benchmark.doSomething("join:", () -> StringUtils.build(",", "{", "}", strings));
 		benchmark.doSomething("join1:", () -> join1(",", "{", "}", strings));
 		benchmark.doSomething("join2:", () -> join2(",", "{", "}", strings));
 	}

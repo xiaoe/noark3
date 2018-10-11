@@ -31,11 +31,12 @@ import xyz.noark.core.lang.PairMap;
  * @author 小流氓(176543888@qq.com)
  */
 public class CollectionUtilsTest {
+	private static final int MAX = 20;
 	List<Pet> list = new ArrayList<>();
 
 	@Before
 	public void setUp() throws Exception {
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < MAX; i++) {
 			Pet data = new Pet();
 			data.id = 1;
 			data.level = (i < 10) ? 1 : 2;

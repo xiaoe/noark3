@@ -335,7 +335,7 @@ public class StringUtils {
 	 * @param strings 需要拼接的字串
 	 * @return 拼接后的字符串
 	 */
-	public static String join(String delimiter, String prefix, String suffix, String... strings) {
+	public static String build(String delimiter, String prefix, String suffix, String... strings) {
 		int len = prefix.length() + suffix.length() + (strings.length - 1) * delimiter.length();
 		for (String str : strings) {
 			len += str.length();
