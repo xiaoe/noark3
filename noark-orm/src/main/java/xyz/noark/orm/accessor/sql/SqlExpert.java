@@ -127,6 +127,16 @@ public interface SqlExpert {
 	<T> String genAddTableColumnSql(EntityMapping<T> em, FieldMapping fm);
 
 	/**
+	 * 生成更新表字段的SQL
+	 * 
+	 * @param <T> 实体对象类型
+	 * @param em 实体映射对象
+	 * @param fm 属性映射对象
+	 * @return SQL语句
+	 */
+	<T> String genUpdateTableColumnSql(EntityMapping<T> em, FieldMapping fm);
+
+	/**
 	 * 生成带值的一条语句
 	 * 
 	 * @param <T> 实体对象类型

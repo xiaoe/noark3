@@ -21,11 +21,16 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import xyz.noark.core.exception.DataAccessException;
 import xyz.noark.core.exception.DataException;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
@@ -150,58 +155,47 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	}
 
 	private synchronized <T> void checkEntityTable(final EntityMapping<T> em) {
-		final String sql = "SELECT * FROM " + em.getTableName() + " LIMIT 1";
 		this.execute(new StatementCallback<Void>() {
 			@Override
 			public Void doInStatement(Statement stmt) throws SQLException {
-				try (ResultSet rs = stmt.executeQuery(sql)) {
+				try (ResultSet rs = stmt.executeQuery(StringUtils.join("SELECT * FROM ", em.getTableName(), " LIMIT 0"))) {
 					ResultSetMetaData rsmd = rs.getMetaData();
-					int columnCount = rsmd.getColumnCount();
-
-					// 当表字段比属性多时...
-					if (columnCount > em.getFieldMapping().size()) {
-						for (int i = 1; i <= columnCount; i++) {
-							String columnName = rsmd.getColumnName(i);
-							boolean exit = false;
-							for (FieldMapping fm : em.getFieldMapping()) {
-								if (fm.getColumnName().equals(columnName)) {
-									exit = true;
-									break;
-								} else if (fm.getColumnName().equalsIgnoreCase(columnName)) {
-									exit = true;
-									String entity = em.getEntityClass().getName();
-									String field = fm.getField().getName();
-									logger.warn("字段名大小写不匹配,建议修正! table={},column={},entity={},field={}", em.getTableName(), columnName, entity, field);
-									break;
-								}
-							}
-							if (!exit) {
-								throw new DataException("表结构字段比实体类属性多. 表[" + em.getTableName() + "]中的属性：" + columnName);
-							}
-						}
+					// 缓存为Map的方式
+					final int len = rsmd.getColumnCount();
+					Map<String, Integer> caches = new HashMap<>(len);
+					for (int i = 1; i <= len; i++) {
+						caches.put(rsmd.getColumnName(i), i);
 					}
 
 					// 循环字段检查，如果属性比字段多，就自动补上...
 					for (FieldMapping fm : em.getFieldMapping()) {
-						boolean exit = false;
-						for (int i = 1; i <= columnCount; i++) {
-							String columnName = rsmd.getColumnName(i);
-							if (fm.getColumnName().equals(columnName)) {
-								exit = true;
-								break;
-							} else if (fm.getColumnName().equalsIgnoreCase(columnName)) {
-								exit = true;
-								String entity = em.getEntityClass().getName();
-								String field = fm.getField().getName();
-								logger.warn("字段名不匹配,建议修正! table={},column={},entity={},field={}", em.getTableName(), columnName, entity, field);
-								break;
+						// 字段如果有大写字母，则警告提示输出
+						if (!fm.getColumnName().equals(fm.getColumnName().toLowerCase())) {
+							logger.warn("字段名称中有大写字母,建议修正为下划线命名方式! entity={},field={},columnName={}", em.getEntityClass().getName(), fm.getField().getName(), fm.getColumnName());
+						}
+
+						Integer index = caches.remove(fm.getColumnName());
+						// 字段不存在，修补字段
+						if (index == null) {
+							autoUpdateTable(em, fm, false);
+							tryRepairTextDefaultValue(em, fm);
+							continue;
+						}
+
+						// 字符串类型的字段，要修正长度的(只能变长，不能变短)
+						if (rsmd.getColumnType(index) == Types.VARCHAR) {
+							final int length = rsmd.getColumnDisplaySize(index);
+							if (fm.getWidth() > length) {
+								autoUpdateTable(em, fm, true);
+							} else if (fm.getWidth() < length) {
+								logger.warn("表中字段长度大于配置长度，建议手动修正! entity={},field={},length={}", em.getEntityClass().getName(), fm.getField().getName(), fm.getWidth());
 							}
 						}
-						if (!exit) {
-							// 修补属性
-							autoUpdateTable(em, fm);
-							tryRepairTextDefaultValue(em, fm);
-						}
+					}
+
+					// 还有剩的，那表结构比字段属性多了...
+					if (!caches.isEmpty()) {
+						throw new DataException("表结构字段比实体类属性多. 表[" + em.getTableName() + "]中的属性：" + Arrays.toString(caches.keySet().toArray()));
 					}
 				}
 				return null;
@@ -226,8 +220,8 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	}
 
 	/** 自动修补表结构 */
-	private <T> void autoUpdateTable(final EntityMapping<T> em, final FieldMapping fm) {
-		final String sql = expert.genAddTableColumnSql(em, fm);
+	private <T> void autoUpdateTable(final EntityMapping<T> em, final FieldMapping fm, boolean update) {
+		final String sql = update ? expert.genUpdateTableColumnSql(em, fm) : expert.genAddTableColumnSql(em, fm);
 		logger.info("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);
 		this.execute(new StatementCallback<Void>() {
 			@Override

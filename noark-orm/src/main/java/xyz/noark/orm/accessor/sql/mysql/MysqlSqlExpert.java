@@ -290,10 +290,17 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 
 	@Override
 	public <T> String genAddTableColumnSql(EntityMapping<T> em, FieldMapping fm) {
-		// alter table `user_movement_log` Add column GatewayId int not null
-		// default 0 AFTER `Regionid` (在哪个字段后面添加)
+		return genAddOrUpdateTableColumnSql(em, fm, false);
+	}
+
+	@Override
+	public <T> String genUpdateTableColumnSql(EntityMapping<T> em, FieldMapping fm) {
+		return genAddOrUpdateTableColumnSql(em, fm, true);
+	}
+
+	private <T> String genAddOrUpdateTableColumnSql(EntityMapping<T> em, FieldMapping fm, boolean update) {
 		StringBuilder sb = new StringBuilder(128);
-		sb.append("ALTER TABLE `").append(em.getTableName()).append("` ADD COLUMN `").append(fm.getColumnName());
+		sb.append("ALTER TABLE `").append(em.getTableName()).append("` ").append(update ? "MODIFY" : "ADD").append(" COLUMN `").append(fm.getColumnName());
 		sb.append("` ").append(evalFieldType(fm));
 		if (fm.isNotNull()) {
 			sb.append(" NOT NULL");

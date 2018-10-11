@@ -34,8 +34,19 @@ public class Item {
 	@Column(name = "id")
 	private int id;
 
-	@Column(name = "template_id")
+	@Column(name = "template_id", length = 17)
 	private int templateId;
+
+	@Column(name = "attr", length = 128, defaultValue = "{}")
+	private String attr;
+
+	public String getAttr() {
+		return attr;
+	}
+
+	public void setAttr(String attr) {
+		this.attr = attr;
+	}
 
 	@Column(name = "read")
 	private boolean read;
