@@ -13,8 +13,6 @@
  */
 package xyz.noark.game.template.json;
 
-import static xyz.noark.log.LogHelper.logger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,7 +23,6 @@ import com.alibaba.fastjson.JSON;
 import xyz.noark.core.annotation.tpl.TplFile;
 import xyz.noark.core.exception.TplConfigurationException;
 import xyz.noark.core.util.CharsetUtils;
-import xyz.noark.core.util.MethodUtils;
 import xyz.noark.game.template.AbstractTemplateLoader;
 
 /**
@@ -47,16 +44,35 @@ public class JsonTemplateLoader extends AbstractTemplateLoader {
 			throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
 		}
 
-		// 如果模板类存在Set方法，给一个警告提示...
-		if (MethodUtils.existSetMethod(klass)) {
-			logger.warn("模板类正常为只读模式，不应该存在Set方法噢，class={}", klass.getName());
-		}
-
 		try {
 			byte[] bytes = Files.readAllBytes(Paths.get(templatePath, file.value()));
 			return JSON.parseArray(new String(bytes, CharsetUtils.CHARSET_UTF_8), klass);
 		} catch (IOException e) {
-			throw new TplConfigurationException("CSV格式的配置文件类:" + klass.getName(), e);
+			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
+		}
+	}
+
+	/**
+	 * 加载模板数据.
+	 * 
+	 * <pre>
+	 * ItemTemplate template = templateLoader.load(ItemTemplate.class);<br>
+	 * </pre>
+	 * 
+	 * @param <T> 加载模板类类型
+	 * @param klass 模板类.
+	 * @return 模板数据
+	 */
+	public <T> T load(Class<T> klass) {
+		TplFile file = klass.getAnnotation(TplFile.class);
+		if (file == null) {
+			throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
+		}
+
+		try {
+			return JSON.parseObject(Files.readAllBytes(Paths.get(templatePath, file.value())), klass);
+		} catch (IOException e) {
+			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
 		}
 	}
 }
