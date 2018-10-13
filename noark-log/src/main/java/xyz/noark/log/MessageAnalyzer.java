@@ -135,8 +135,11 @@ class MessageAnalyzer {
 	}
 
 	private void append(StringBuilder sb, Object object) {
+		if (object == null) {
+			sb.append(object);
+		}
 		// 异常类型的输出...
-		if (object instanceof Throwable) {
+		else if (object instanceof Throwable) {
 			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
 				((Throwable) object).printStackTrace(pw);
 				sb.append("\n").append(sw.toString());

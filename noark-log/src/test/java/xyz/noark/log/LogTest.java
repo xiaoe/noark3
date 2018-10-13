@@ -37,7 +37,7 @@ public class LogTest {
 	@Before
 	public void setUp() throws Exception {
 		HashMap<String, String> config = new HashMap<>(16, 1);
-		config.put("log.console", "false");
+		config.put("log.console", "true");
 		LogManager.init(config);
 	}
 
@@ -50,7 +50,7 @@ public class LogTest {
 	public void test() {
 		logger.debug("haha{}", 123, "abc");
 		logger.info("haha");
-		logger.warn("123123123");
+		logger.warn("123123123, {},{}", 1, null);
 		logger.error("123123123", new RuntimeException("123"));
 	}
 
