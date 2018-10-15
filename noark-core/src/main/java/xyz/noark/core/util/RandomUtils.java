@@ -217,4 +217,35 @@ public class RandomUtils {
 		}
 		throw new RuntimeException("randomByWeight的实现有Bug：" + random);
 	}
+
+	/**
+	 * 在指定集合中按权重随机出指定数量个元素.
+	 * <p>
+	 * 权重，机率为V/(sum(All))
+	 * 
+	 * @param <T> 要随机的元素类型
+	 * @param data 随机集合
+	 * @param weightFunction 元素中权重方法
+	 * @param num 指定数量
+	 * @return 按权重随机返回集合中的指定数量个元素
+	 */
+	public static <T> List<T> randomByWeight(List<T> data, ToIntFunction<? super T> weightFunction, int num) {
+		if (num <= 0) {
+			return Collections.emptyList();
+		}
+		final int sum = data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b);
+
+		List<T> result = new ArrayList<>(num);
+		for (int i = 1; i <= num; i++) {
+			final int random = nextInt(sum);
+			int step = 0;
+			for (T e : data) {
+				step += weightFunction.applyAsInt(e);
+				if (step > random) {
+					result.add(e);
+				}
+			}
+		}
+		return result;
+	}
 }

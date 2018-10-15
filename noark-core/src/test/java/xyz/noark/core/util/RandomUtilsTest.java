@@ -59,6 +59,18 @@ public class RandomUtilsTest {
 		assertTrue(random.getId() == e.getId());
 	}
 
+	@Test
+	public void testRandomByWeight2() {
+		List<TestData> data = new ArrayList<>();
+		TestData e = new TestData();
+		e.setId(1);
+		e.setWeight(RandomUtils.nextInt(100));
+		data.add(e);
+
+		List<TestData> random = RandomUtils.randomByWeight(data, TestData::getWeight, 2);
+		assertTrue(random.size() == 2);
+	}
+
 	static class TestData {
 		private int id;
 		private int weight;
