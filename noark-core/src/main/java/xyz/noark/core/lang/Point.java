@@ -20,12 +20,10 @@ package xyz.noark.core.lang;
  * @author 小流氓(176543888@qq.com)
  */
 public class Point {
-	private int x;
-	private int y;
+	private final int x;
+	private final int y;
 
-	public Point() {}
-
-	public Point(int x, int y) {
+	private Point(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -40,30 +38,12 @@ public class Point {
 	}
 
 	/**
-	 * 设计X坐标
-	 * 
-	 * @param x X坐标
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
 	 * 获取Y坐标
 	 * 
 	 * @return Y坐标
 	 */
 	public int getY() {
 		return y;
-	}
-
-	/**
-	 * 设计Y坐标
-	 * 
-	 * @param y Y坐标
-	 */
-	public void setY(int y) {
-		this.y = y;
 	}
 
 	@Override
@@ -107,5 +87,10 @@ public class Point {
 	 */
 	public static Point valueOf(int x, int y) {
 		return new Point(x, y);
+	}
+
+	@Override
+	public String toString() {
+		return "Point [x=" + x + ", y=" + y + "]";
 	}
 }
