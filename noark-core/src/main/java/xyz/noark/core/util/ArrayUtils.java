@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.util;
 
+import java.util.Arrays;
+
 /**
  * 数组相关操作工具类.
  *
@@ -56,5 +58,21 @@ public class ArrayUtils {
 
 	public static boolean isNotEmpty(final Object[] array) {
 		return !isEmpty(array);
+	}
+
+	public static int[] toIntArray(String[] array) {
+		return Arrays.stream(array).mapToInt(s -> Integer.parseInt(s)).toArray();
+	}
+
+	public static int[] toIntArray(Integer[] array) {
+		return Arrays.stream(array).mapToInt(Integer::intValue).toArray();
+	}
+
+	public static long[] toLongArray(String[] array) {
+		return Arrays.stream(array).mapToLong(s -> Long.parseLong(s)).toArray();
+	}
+
+	public static long[] toLongArray(Long[] array) {
+		return Arrays.stream(array).mapToLong(Long::longValue).toArray();
 	}
 }
