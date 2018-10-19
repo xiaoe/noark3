@@ -13,7 +13,9 @@
  */
 package xyz.noark.core.converter.impl;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Map;
 
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.AbstractConverter;
@@ -39,6 +41,14 @@ public class IntListConverter extends AbstractConverter<IntList> {
 		IntList result = new IntArrayList(array.length);
 		Arrays.stream(array).forEach(v -> result.add(Integer.parseInt(v)));
 		return result;
+	}
+
+	@Override
+	public IntList convert(Field field, Map<String, String> data) {
+		if (data.isEmpty()) {
+			return new IntArrayList();
+		}
+		return new IntArrayList(data.values().stream().mapToInt(Integer::parseInt).toArray());
 	}
 
 	@Override

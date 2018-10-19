@@ -60,6 +60,16 @@ public class IntArrayList implements IntList, RandomAccess {
 	}
 
 	/**
+	 * 直接传入一个数组进行初始化.
+	 * 
+	 * @param array 一个数组
+	 */
+	public IntArrayList(int[] array) {
+		this.elementData = array;
+		this.size = elementData.length;
+	}
+
+	/**
 	 * 将此IntArrayList实例的容量调整为列表的当前大小。
 	 * <p>
 	 * 应用程序可以使用此操作来最小化 IntArrayList实例的存储量。
