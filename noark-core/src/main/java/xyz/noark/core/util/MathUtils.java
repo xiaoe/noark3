@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.util;
 
+import xyz.noark.core.lang.Point;
+
 /**
  * 数学计算相关的工具类库.
  *
@@ -91,5 +93,52 @@ public class MathUtils {
 		} catch (ArithmeticException e) {
 			return Long.MAX_VALUE;
 		}
+	}
+
+	/**
+	 * 计算两点(x1,y1)到(x2,y2)的距离.
+	 * <p>
+	 * Math.sqrt(|x1-x2|² + |y1-y2|²)
+	 * 
+	 * @param x1 坐标X1
+	 * @param y1 坐标Y1
+	 * @param x2 坐标X2
+	 * @param y2 坐标Y2
+	 * @return 两点的距离
+	 */
+	public double distance(int x1, int y1, int x2, int y2) {
+		final double x = Math.abs(x1 - x2);
+		final double y = Math.abs(y1 - y2);
+		return Math.sqrt(x * x + y * y);
+	}
+
+	/**
+	 * 计算两点(x1,y1)到(x2,y2)的距离.
+	 * <p>
+	 * Math.sqrt(|x1-x2|² + |y1-y2|²)
+	 * 
+	 * @param x1 坐标X1
+	 * @param y1 坐标Y1
+	 * @param x2 坐标X2
+	 * @param y2 坐标Y2
+	 * @return 两点的距离
+	 */
+	public double distance(double x1, double y1, double x2, double y2) {
+		final double x = Math.abs(x1 - x2);
+		final double y = Math.abs(y1 - y2);
+		return Math.sqrt(x * x + y * y);
+	}
+
+	/**
+	 * 计算两点P1(x1,y1)到P2(x2,y2)的距离.
+	 * <p>
+	 * Math.sqrt(|x1-x2|² + |y1-y2|²)
+	 * 
+	 * @param p1 坐标1
+	 * @param p2 坐标2
+	 * @return 两点的距离
+	 */
+	public double distance(Point p1, Point p2) {
+		return distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 }
