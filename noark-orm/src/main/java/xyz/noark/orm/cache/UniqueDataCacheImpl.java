@@ -71,7 +71,11 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	public void insert(T entity) {
 		final K entityId = this.getPrimaryIdValue(entity);
 
-		DataWrapper<T> wrapper = caches.get(entityId);
+		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
+		if (wrapper == null) {
+			wrapper = new DataWrapper<>(null);
+			this.caches.put(entityId, wrapper);
+		}
 		if (wrapper.getEntity() == null) {
 			wrapper.setEntity(entity);
 		} else {
@@ -83,8 +87,8 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	public void delete(T entity) {
 		final K entityId = this.getPrimaryIdValue(entity);
 
-		DataWrapper<T> wrapper = caches.get(entityId);
-		if (wrapper.getEntity() == null) {
+		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
+		if (wrapper == null || wrapper.getEntity() == null) {
 			throw new DataException("删除了一个不存在的Key:" + entityId);
 		} else {
 			wrapper.setEntity(null);
@@ -102,8 +106,8 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	public void update(T entity) {
 		final K entityId = this.getPrimaryIdValue(entity);
 
-		DataWrapper<T> wrapper = caches.get(entityId);
-		if (wrapper.getEntity() == null) {
+		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
+		if (wrapper == null || wrapper.getEntity() == null) {
 			throw new DataException("修改了一个不存在的Key:" + entityId);
 		} else {
 			wrapper.setEntity(entity);
@@ -112,7 +116,17 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 
 	@Override
 	public T load(K entityId) {
-		return caches.get(entityId).getEntity();
+		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
+		return wrapper == null ? null : wrapper.getEntity();
+	}
+
+	private DataWrapper<T> getDataWrapper(K entityId) {
+		// 如果是启服就载入的，就没有必要再去访问DB了...
+		if (entityMapping.getFeatchType() == FeatchType.START) {
+			return caches.getIfPresent(entityId);
+		}
+
+		return caches.get(entityId);
 	}
 
 	@Override
