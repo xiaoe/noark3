@@ -63,6 +63,8 @@ public class NoarkIoc implements Ioc {
 
 		// 完成分析Bean的功能用途
 		this.finishBeanAnalysis(loader);
+
+		IocHolder.setIoc(this);
 	}
 
 	/**
