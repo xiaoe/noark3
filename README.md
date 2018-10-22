@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/xiaoe/noark3.svg?branch=master)](https://gitee.com/xiaoe/noark3)
 [![JDK](https://img.shields.io/badge/JDK-1.8%2B-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
-[![maven](https://maven-badges.herokuapp.com/maven-central/xyz.noark/noark-game/badge.svg)](https://search.maven.org/artifact/xyz.noark/noark-game/3.1.18.Final/jar)
+[![maven](https://maven-badges.herokuapp.com/maven-central/xyz.noark/noark-game/badge.svg)](https://search.maven.org/search?q=g:xyz.noark)
 [![license](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 官方网站 [www.noark.xyz](http://www.noark.xyz)
