@@ -106,7 +106,7 @@ public class MathUtils {
 	 * @param y2 坐标Y2
 	 * @return 两点的距离
 	 */
-	public double distance(int x1, int y1, int x2, int y2) {
+	public static double distance(int x1, int y1, int x2, int y2) {
 		final double x = Math.abs(x1 - x2);
 		final double y = Math.abs(y1 - y2);
 		return Math.sqrt(x * x + y * y);
@@ -123,7 +123,7 @@ public class MathUtils {
 	 * @param y2 坐标Y2
 	 * @return 两点的距离
 	 */
-	public double distance(double x1, double y1, double x2, double y2) {
+	public static double distance(double x1, double y1, double x2, double y2) {
 		final double x = Math.abs(x1 - x2);
 		final double y = Math.abs(y1 - y2);
 		return Math.sqrt(x * x + y * y);
@@ -138,7 +138,7 @@ public class MathUtils {
 	 * @param p2 坐标2
 	 * @return 两点的距离
 	 */
-	public double distance(Point p1, Point p2) {
+	public static double distance(Point p1, Point p2) {
 		return distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 }

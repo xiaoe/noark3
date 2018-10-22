@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import xyz.noark.core.lang.Point;
+
 /**
  * 数学计算相关测试
  *
@@ -47,5 +49,12 @@ public class MathUtilsTest {
 	public void testMultiplyExactLongLong() {
 		assertTrue(MathUtils.multiplyExact(2L, 2L) == 4);
 		assertTrue(MathUtils.multiplyExact(2L, Long.MAX_VALUE) == Long.MAX_VALUE);
+	}
+
+	@Test
+	public void testDistance() {
+		assertTrue(MathUtils.distance(0, 0, 3, 4) == 5.0D);
+		assertTrue(MathUtils.distance(0.0D, 0.0D, 3.0D, 4.0D) == 5.0D);
+		assertTrue(MathUtils.distance(Point.valueOf(0, 0), Point.valueOf(3, 4)) == 5.0D);
 	}
 }
