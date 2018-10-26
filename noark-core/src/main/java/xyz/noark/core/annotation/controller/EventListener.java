@@ -34,10 +34,14 @@ public @interface EventListener {
 
 	/**
 	 * 监听的事件源类型.
+	 * <p>
+	 * 处理方法可以是此事件源的父类或接口，此参数优先级高于参数<br>
+	 * 如果没有配置，默认使用事件参数的类型作为事件源类型判定<br>
+	 * 如果事件处理方法参数为空，此处申明就是很有必需的
 	 * 
 	 * @return 事件对象的Class类型
 	 */
-	Class<? extends Event> value();
+	Class<? extends Event> value() default Event.class;
 
 	/**
 	 * 是否异步执行

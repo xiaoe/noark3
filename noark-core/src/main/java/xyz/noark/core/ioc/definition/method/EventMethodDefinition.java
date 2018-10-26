@@ -17,6 +17,9 @@ import java.lang.reflect.Method;
 
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.event.Event;
+import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
+import xyz.noark.core.util.ArrayUtils;
 import xyz.noark.reflectasm.MethodAccess;
 
 /**
@@ -27,14 +30,32 @@ import xyz.noark.reflectasm.MethodAccess;
  */
 public class EventMethodDefinition extends SimpleMethodDefinition {
 	private final EventListener eventListener;
+	private final Class<? extends Event> eventClass;
 
-	public EventMethodDefinition(MethodAccess methodAccess, Method method, EventListener eventListener) {
+	@SuppressWarnings("unchecked")
+	public EventMethodDefinition(MethodAccess methodAccess, Method method, EventListener eventListener, ControllerBeanDefinition beanDefinition) {
 		super(methodAccess, method);
 		this.eventListener = eventListener;
+
+		Class<? extends Event> eventClass = eventListener.value();
+		if (eventClass == Event.class) {
+			final String className = beanDefinition.getBeanClass().getName();
+			Class<?>[] array = method.getParameterTypes();
+			if (ArrayUtils.isEmpty(array)) {
+				throw new ServerBootstrapException("事件监听处理方法，没有申请事件类型，也没有事件参数 class=" + className + ", method=" + method.getName());
+			} else if (array.length > 1) {
+				throw new ServerBootstrapException("事件监听处理方法，有且只能有一个参数 class=" + className + ", method=" + method.getName());
+			} else if (!Event.class.isAssignableFrom(array[0])) {
+				throw new ServerBootstrapException("事件监听处理方法，参数类型必需实现Event接口 class=" + className + ", method=" + method.getName());
+			} else {
+				eventClass = (Class<? extends Event>) array[0];
+			}
+		}
+		this.eventClass = eventClass;
 	}
 
 	public Class<? extends Event> getEventClass() {
-		return eventListener.value();
+		return eventClass;
 	}
 
 	public boolean isAsync() {

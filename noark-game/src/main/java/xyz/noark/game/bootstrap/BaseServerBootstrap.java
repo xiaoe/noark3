@@ -84,16 +84,24 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	@Override
 	protected void onStop() {
 		// 停止对外网络
-		nettyServer.shutdown();
+		if (nettyServer != null) {
+			nettyServer.shutdown();
+		}
 		// 停止HTTP服务
-		httpModular.ifPresent(v -> v.destroy());
+		if (httpModular != null) {
+			httpModular.ifPresent(v -> v.destroy());
+		}
 		// 停止延迟任务调度
-		eventModular.ifPresent(v -> v.destroy());
-
+		if (eventModular != null) {
+			eventModular.ifPresent(v -> v.destroy());
+		}
 		// 等待所有任务处理完
-		threadModular.ifPresent(v -> v.destroy());
-
+		if (threadModular != null) {
+			threadModular.ifPresent(v -> v.destroy());
+		}
 		// 保存数据
-		dataModular.ifPresent(v -> v.destroy());
+		if (dataModular != null) {
+			dataModular.ifPresent(v -> v.destroy());
+		}
 	}
 }

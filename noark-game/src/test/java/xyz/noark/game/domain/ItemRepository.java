@@ -17,7 +17,10 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Repository;
+import xyz.noark.game.LoginEvent;
+import xyz.noark.game.event.EventManager;
 import xyz.noark.orm.repository.UniqueCacheRepository;
 
 /**
@@ -29,6 +32,9 @@ import xyz.noark.orm.repository.UniqueCacheRepository;
 @Repository
 public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 
+	@Autowired
+	private EventManager eventManager;
+
 	@PostConstruct
 	public void test() {
 		Item item = this.cacheGet(1);
@@ -38,12 +44,14 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 			item.setRead(true);
 			item.setCreateTime(new Date());
 			item.setModifyTime(item.getCreateTime());
-			this.insert(item);
+			this.cacheInsert(item);
 		}
 
 		item.setRead(false);
 		this.cacheUpdate(item);
 
 		this.cacheDelete(item);
+
+		eventManager.publish(new LoginEvent());
 	}
 }

@@ -132,7 +132,9 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			logger.error("failed to stopping service:{}", this.getServerName(), e);
 		} finally {
 			// IOC容器销毁
-			ioc.destroy();
+			if (ioc != null) {
+				ioc.destroy();
+			}
 			// 日志框架Shutdown
 			LogManager.shutdown();
 		}

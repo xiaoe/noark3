@@ -16,6 +16,7 @@ package xyz.noark.game;
 import static xyz.noark.log.LogHelper.logger;
 
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Session;
@@ -38,5 +39,10 @@ public class GameServerApplication {
 	public void test(Session session, String hello) {
 		logger.info("收到协议:{}", hello);
 		session.send(1, "11111111111111111");
+	}
+
+	@EventListener(LoginEvent.class)
+	public void handleEvent() {
+		logger.info("处理事件........");
 	}
 }
