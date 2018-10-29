@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -137,7 +137,7 @@ public class Csv {
 			}
 			// 多个配置
 			else {
-				Map<String, String> data = new HashMap<>(array.length + 1);
+				Map<String, String> data = new LinkedHashMap<>(array.length + 1);
 				for (TplAttr attr : array) {
 					Integer index = titles.get(attr.name());
 					if (index == null) {
