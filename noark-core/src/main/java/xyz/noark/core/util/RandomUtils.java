@@ -185,7 +185,12 @@ public class RandomUtils {
 	 * @return 按权重随机返回集合中的一个元素.
 	 */
 	public static <K> K randomByWeight(Map<K, Integer> data) {
-		final int random = nextInt(data.values().stream().reduce(0, (a, b) -> a + b));
+		final int sum = data.values().stream().reduce(0, (a, b) -> a + b);
+		if (sum <= 0) {
+			return randomList(new ArrayList<>(data.keySet()));
+		}
+
+		final int random = nextInt(sum);
 		int step = 0;
 		for (Map.Entry<K, Integer> e : data.entrySet()) {
 			step += e.getValue().intValue();
@@ -207,7 +212,12 @@ public class RandomUtils {
 	 * @return 按权重随机返回集合中的一个元素
 	 */
 	public static <T> T randomByWeight(List<T> data, ToIntFunction<? super T> weightFunction) {
-		final int random = nextInt(data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b));
+		final int sum = data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b);
+		if (sum <= 0) {
+			return randomList(data);
+		}
+
+		final int random = nextInt(sum);
 		int step = 0;
 		for (T e : data) {
 			step += weightFunction.applyAsInt(e);
@@ -233,7 +243,11 @@ public class RandomUtils {
 		if (num <= 0) {
 			return Collections.emptyList();
 		}
+
 		final int sum = data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b);
+		if (sum <= 0) {
+			return randomList(data, num);
+		}
 
 		List<T> result = new ArrayList<>(num);
 		for (int i = 1; i <= num; i++) {
