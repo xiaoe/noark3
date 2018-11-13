@@ -24,6 +24,7 @@ import java.util.Properties;
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.StringUtils;
+import xyz.noark.game.crypto.StringEncryptor;
 
 /**
  * 属性文件加载器.
@@ -58,6 +59,12 @@ class NoarkPropertiesLoader {
 		// 没有配置的情况，要加载那个Test配置
 		else {
 			loadPorperties(loader, TEST_PROPERTIES, result);
+		}
+
+		// 密文解密
+		final StringEncryptor encryptor = new StringEncryptor(result);
+		for (Map.Entry<String, String> e : result.entrySet()) {
+			e.setValue(encryptor.decrypt(e.getValue()));
 		}
 
 		// 表达式引用...

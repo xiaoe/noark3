@@ -32,6 +32,11 @@ public class NoarkConstant {
 	public static final String NOARK_VERSION = "noark.version";
 
 	/**
+	 * 加密公钥，用于配置文件时自定义RSA
+	 */
+	public static final String CRYPTO_RSA_PUBLICKEY = "crypto.rsa.publickey";
+
+	/**
 	 * 配置区服ID的Key
 	 */
 	public static final String SERVER_ID = "server.id";
