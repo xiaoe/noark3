@@ -36,8 +36,8 @@ public class GameServerApplication {
 	}
 
 	@PacketMapping(opcode = 1, state = State.CONNECTED)
-	public void test(Session session, String hello) {
-		logger.info("收到协议:{}", hello);
+	public void test(Session session, byte[] hello) {
+		logger.info("收到协议:{}", new String(hello));
 		session.send(1, "11111111111111111");
 	}
 

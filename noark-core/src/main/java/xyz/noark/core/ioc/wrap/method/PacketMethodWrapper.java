@@ -24,6 +24,7 @@ import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.ioc.wrap.param.ByteArrayParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PacketParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
 import xyz.noark.core.ioc.wrap.param.SessionParamWrapper;
@@ -69,6 +70,10 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 		// 玩家ID
 		else if (parameter.isAnnotationPresent(PlayerId.class)) {
 			this.parameters.add(new PlayerIdParamWrapper());
+		}
+		// byte[]
+		else if (parameter.getType().equals(byte[].class)) {
+			this.parameters.add(new ByteArrayParamWrapper());
 		}
 		// 无法识别的只能依靠Session内置解码器来转化了.
 		else {

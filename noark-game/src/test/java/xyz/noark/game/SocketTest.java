@@ -28,7 +28,7 @@ import xyz.noark.core.util.ByteArrayUtils;
 public class SocketTest {
 
 	public static void main(String[] args) throws Exception {
-		Socket socket = new Socket("127.0.0.1", 52113);
+		Socket socket = new Socket("127.0.0.1", 12354);
 		socket.getOutputStream().write("________socket_________".getBytes());
 		Thread.sleep(1000);
 
