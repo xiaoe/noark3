@@ -257,6 +257,7 @@ public class RandomUtils {
 				step += weightFunction.applyAsInt(e);
 				if (step > random) {
 					result.add(e);
+					break;
 				}
 			}
 		}
