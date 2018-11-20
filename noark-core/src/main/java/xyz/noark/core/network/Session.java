@@ -23,7 +23,7 @@ import xyz.noark.core.lang.ByteArray;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface Session {
+public interface Session extends SessionAttrMap {
 
 	/**
 	 * 获取Session的ID.
