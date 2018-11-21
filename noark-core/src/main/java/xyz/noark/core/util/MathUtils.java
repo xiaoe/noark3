@@ -153,7 +153,7 @@ public class MathUtils {
 	 * @param y2 坐标Y2
 	 * @return 如果两坐标相邻返回true,否则返回false
 	 */
-	public boolean adjacent(int x1, int y1, int x2, int y2) {
+	public static boolean adjacent(int x1, int y1, int x2, int y2) {
 		return Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1;
 	}
 
@@ -166,7 +166,7 @@ public class MathUtils {
 	 * @param p2 坐标2
 	 * @return 如果两坐标相邻返回true,否则返回false
 	 */
-	public boolean adjacent(Point p1, Point p2) {
+	public static boolean adjacent(Point p1, Point p2) {
 		return adjacent(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 }
