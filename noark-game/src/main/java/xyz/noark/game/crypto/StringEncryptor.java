@@ -54,8 +54,8 @@ public class StringEncryptor {
 		return ciphertext;
 	}
 
-	// 加密明文密码（私钥加密，公钥解密）...
 	public static void main(String[] args) throws Exception {
+		// 加密明文密码（私钥加密，公钥解密）...
 		System.out.println("rsa publickey=" + DEFAULT_RSA_PUBLICKEY);
 		System.out.println("rsa privatekey=" + DEFAULT_RSA_PRIVATEKEY);
 		System.out.println();
