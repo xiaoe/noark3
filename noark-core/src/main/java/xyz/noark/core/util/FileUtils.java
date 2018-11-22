@@ -14,6 +14,7 @@
 package xyz.noark.core.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Optional;
@@ -66,4 +67,30 @@ public class FileUtils {
 		int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
 		return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + UNITS[digitGroups];
 	}
+
+	/**
+	 * 创建指定文件,目录不存在则自动创建
+	 * <p>
+	 * 如果目标文件不存在并且创建成功，则为true；如果目标文件存在，则为false
+	 * 
+	 * @param file 文件对象
+	 * @return 如果目标文件不存在并且创建成功，则为true；如果目标文件存在，则为false
+	 * @throws IOException IO异常
+	 */
+	public static boolean createNewFile(File file) throws IOException {
+		// 目标文件存在，直接返回false.
+		if (file.exists()) {
+			return false;
+		}
+
+		// 如果目录不存在则创建此父目录
+		final File parentDir = file.getParentFile();
+		if (parentDir != null && !parentDir.exists()) {
+			parentDir.mkdirs();
+		}
+
+		// 目录有了，直接调用JDK的创建新文件命令
+		return file.createNewFile();
+	}
+
 }
