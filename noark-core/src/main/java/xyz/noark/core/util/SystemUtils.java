@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.util;
 
+import java.lang.management.ManagementFactory;
+
 /**
  * 系统相关工具类.
  *
@@ -64,5 +66,23 @@ public class SystemUtils {
 			return false;
 		}
 		return osName.toLowerCase().startsWith(osNamePrefix);
+	}
+
+	/**
+	 * 获取当前进程的PID.
+	 * 
+	 * @return 当前进程的PID
+	 */
+	public static long getPid() {
+		return Long.parseLong(getPidStr());
+	}
+
+	/**
+	 * 获取当前进程的PID字符串.
+	 * 
+	 * @return 当前进程的PID字符串
+	 */
+	public static String getPidStr() {
+		return ManagementFactory.getRuntimeMXBean().getName().split("@", 2)[0];
 	}
 }
