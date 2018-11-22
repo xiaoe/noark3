@@ -13,6 +13,7 @@
  */
 package xyz.noark.network.filter;
 
+import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.network.IncodeSession;
 
@@ -35,12 +36,12 @@ public class DefaultPacketCheckFilter extends AbstractPacketCheckFilter {
 
 	@Override
 	protected boolean checkPacketChecksum(NetworkPacket packet) {
-		final byte[] data = packet.getByteArray().array();
+		final ByteArray data = packet.getByteArray();
 
 		// 一种简单的计算方案....
 		int sum = 0;
-		for (int i = 0, len = data.length; i < len; i++) {
-			sum += (data[i] & 0xFF);
+		for (int i = 0, len = data.length(); i < len; i++) {
+			sum += (data.getByte(i) & 0xFF);
 		}
 		return sum == packet.getChecksum();
 	}

@@ -15,6 +15,8 @@ package xyz.noark.network.handler;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.io.IOException;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.annotation.Autowired;
@@ -116,6 +118,13 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 					}
 				}
 			}
+		}
+	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		if (!(cause instanceof IOException)) {
+			logger.debug("Netty捕获异常，cause={}", cause);
 		}
 	}
 }
