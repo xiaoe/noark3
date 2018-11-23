@@ -29,6 +29,10 @@ import java.util.function.ToIntFunction;
  * @author 小流氓(176543888@qq.com)
  */
 public class RandomUtils {
+	/** 百分比之分母 */
+	private static final double PERCENTAGE = 100.0d;
+	/** 千分比之分母 */
+	private static final double PERMILLAGE = 1000.0d;
 
 	/**
 	 * 返回一个随机Boolean值.
@@ -117,6 +121,38 @@ public class RandomUtils {
 	 */
 	public static boolean isSuccess(double rate) {
 		return ThreadLocalRandom.current().nextDouble() < rate;
+	}
+
+	/**
+	 * 判定一次百分比的随机事件是否成功.
+	 * <p>
+	 * 参数自动转化为百分比单位，就是除100
+	 * 
+	 * <pre>
+	 * RandomUtils.isSuccessByPercentage(rate) = RandomUtils.isSuccess(rate / 100D)
+	 * </pre>
+	 * 
+	 * @param rate 成功率/100D
+	 * @return 如果成功返回true,否则返回false.
+	 */
+	public static boolean isSuccessByPercentage(int rate) {
+		return RandomUtils.isSuccess(rate / PERCENTAGE);
+	}
+
+	/**
+	 * 判定一次千分比的随机事件是否成功.
+	 * <p>
+	 * 参数自动转化为千分比单位，就是除1000
+	 * 
+	 * <pre>
+	 * RandomUtils.isSuccessByPermillage(rate) = RandomUtils.isSuccess(rate / 1000D)
+	 * </pre>
+	 * 
+	 * @param rate 成功率/1000D
+	 * @return 如果成功返回true,否则返回false.
+	 */
+	public static boolean isSuccessByPermillage(int rate) {
+		return RandomUtils.isSuccess(rate / PERMILLAGE);
 	}
 
 	/**
