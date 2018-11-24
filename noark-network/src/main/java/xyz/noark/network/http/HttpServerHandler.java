@@ -113,8 +113,8 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters not json.");
 		}
 
-		// 签名失败...
-		if (!checkSign(parameters.getOrDefault(TIME, StringUtils.EMPTY), parameters.get(SIGN))) {
+		// 验证签名，如果未配置密钥，将忽略对签名的验证...
+		if (secretKey != null && !checkSign(parameters.getOrDefault(TIME, StringUtils.EMPTY), parameters.get(SIGN))) {
 			return new HttpResult(HttpErrorCode.SIGN_FAILED, "client request's sign failed.");
 		}
 
