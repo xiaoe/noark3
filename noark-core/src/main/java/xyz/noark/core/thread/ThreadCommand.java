@@ -22,8 +22,10 @@ package xyz.noark.core.thread;
 public interface ThreadCommand {
 	/**
 	 * 执行这个指令.
+	 * 
+	 * @return 返回值
 	 */
-	void exec();
+	Object exec();
 
 	/**
 	 * 简单编码.

@@ -75,7 +75,7 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 
 			// 封包检测
 			if (this.checkPacket(session, packet)) {
-				threadDispatcher.dispatchPacket(session, packet.getOpcode(), packet.getByteArray());
+				threadDispatcher.dispatchPacket(session, packet);
 			}
 		}
 	}

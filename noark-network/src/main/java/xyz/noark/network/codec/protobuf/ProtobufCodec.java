@@ -28,6 +28,7 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.lang.ByteBufOutputStream;
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.NetworkProtocal;
 import xyz.noark.core.util.MethodUtils;
 import xyz.noark.core.util.UnsignedUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
@@ -51,19 +52,19 @@ public class ProtobufCodec extends AbstractPacketCodec {
 	}
 
 	@Override
-	public ByteArray encodePacket(Integer opcodex, Object protocal) {
-		final int opcode = opcodex;
+	public ByteArray encodePacket(NetworkProtocal networkProtocal) {
+		final int opcode = networkProtocal.getOpcode();
 		if (opcode > Short.MAX_VALUE) {
 			throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
 		}
 
 		MessageLite message = null;
-		if (protocal instanceof MessageLite) {
-			message = (MessageLite) protocal;
-		} else if (protocal instanceof MessageLite.Builder) {
-			message = ((MessageLite.Builder) protocal).build();
+		if (networkProtocal.getProtocal() instanceof MessageLite) {
+			message = (MessageLite) networkProtocal.getProtocal();
+		} else if (networkProtocal.getProtocal() instanceof MessageLite.Builder) {
+			message = ((MessageLite.Builder) networkProtocal.getProtocal()).build();
 		} else {
-			throw new UnrealizedException("illegal data type：" + protocal.getClass());
+			throw new UnrealizedException("illegal data type：" + networkProtocal.getProtocal().getClass());
 		}
 
 		ByteBuf byteBuf = Unpooled.buffer(message.getSerializedSize() + 2);

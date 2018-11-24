@@ -24,6 +24,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.AbstractSession;
+import xyz.noark.core.network.NetworkProtocal;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.PacketEncrypt;
 import xyz.noark.core.network.SessionAttr;
@@ -120,6 +121,11 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 		this.writeAndFlush(packet);
 	}
 
+	@Override
+	public void send(NetworkProtocal networkProtocal) {
+		this.send(PacketCodecHolder.getPacketCodec().encodePacket(networkProtocal));
+	}
+
 	/**
 	 * 发送封包逻辑.
 	 * 
@@ -142,7 +148,7 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	 * @return 封包对象
 	 */
 	protected ByteArray buildPacket(Integer opcode, Object protocal) {
-		return PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
+		return PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocal(opcode, protocal));
 	}
 
 	/**

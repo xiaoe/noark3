@@ -20,6 +20,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.NetworkProtocal;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;
@@ -38,12 +39,12 @@ public class SimpleJsonCodec extends AbstractPacketCodec {
 	}
 
 	@Override
-	public ByteArray encodePacket(Integer opcode, Object protocal) {
-		final byte[] bytes = JSON.toJSONBytes(protocal);
+	public ByteArray encodePacket(NetworkProtocal networkProtocal) {
+		final byte[] bytes = JSON.toJSONBytes(networkProtocal.getProtocal());
 
 		ByteBuf byteBuf = Unpooled.buffer(bytes.length + 4);
 		// 写入Opcode
-		byteBuf.writeInt(opcode);
+		byteBuf.writeInt(networkProtocal.getOpcode());
 		// 写入协议内容
 		byteBuf.writeBytes(bytes);
 		return new ByteBufWrapper(byteBuf);

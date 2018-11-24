@@ -52,7 +52,7 @@ public class SessionManager {
 	 * @param playerIds 接受人的ID列表
 	 */
 	public static void send(Integer opcode, Object protocal, Serializable... playerIds) {
-		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
+		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocal(opcode, protocal));
 		// 全服发送
 		if (playerIds.length == 0) {
 			PLAYER_ID_2_SESSION.forEach((k, v) -> v.send(packet));

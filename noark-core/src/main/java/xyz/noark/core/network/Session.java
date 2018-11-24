@@ -70,6 +70,13 @@ public interface Session extends SessionAttrMap {
 	public void send(ByteArray packet);
 
 	/**
+	 * 发送一个网络协议
+	 * 
+	 * @param networkProtocal 网络协议
+	 */
+	public void send(NetworkProtocal networkProtocal);
+
+	/**
 	 * 获取当前链接状态.
 	 * 
 	 * @return 链接状态

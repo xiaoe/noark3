@@ -36,8 +36,8 @@ public class AbstractThreadCommand implements ThreadCommand {
 	}
 
 	@Override
-	public void exec() {
-		method.invoke(args);
+	public Object exec() {
+		return method.invoke(args);
 	}
 
 	@Override

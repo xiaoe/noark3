@@ -18,6 +18,8 @@ import static xyz.noark.log.LogHelper.logger;
 import java.io.Serializable;
 
 import xyz.noark.core.network.NetworkListener;
+import xyz.noark.core.network.ResultHelper;
+import xyz.noark.core.network.Session;
 
 /**
  * 异步任务.
@@ -33,10 +35,16 @@ public class AsyncTask implements Runnable {
 	private final Serializable playerId;
 	private final NetworkListener networkListener;
 
-	public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
+	/** 用于响应请求时 */
+	private final int reqId;
+	private final Session session;
+
+	public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId, int reqId, Session session) {
 		this.taskQueue = taskQueue;
 		this.command = command;
 		this.playerId = playerId;
+		this.reqId = reqId;
+		this.session = session;
 		this.networkListener = networkListener;
 	}
 
@@ -45,24 +53,34 @@ public class AsyncTask implements Runnable {
 		// 开始执行的时间
 		long startExecuteTime = System.nanoTime();
 		try {
-			command.exec();
+			// 开始处理协议，并发送结果
+			ResultHelper.trySendResult(session, reqId, command.exec());
 		} catch (Throwable e) {
-			logger.error("async task exception.{}", e);
+			logger.error("handle {} exception.{}", command.code(), e);
 			if (networkListener != null) {
 				networkListener.handleException(e);
 			}
 		} finally {
-			if (command.isPrintLog()) {
-				// 执行结束的时间
-				long endExecuteTime = System.nanoTime();
-				if (playerId == null) {
-					logger.info("handle {},delay={} ms,exe={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
-				} else {
-					logger.info("handle {},delay={} ms,exe={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, playerId);
-				}
-			}
-
 			taskQueue.complete();// 后继逻辑...
+			// 执行之后
+			this.execCommandAfter(startExecuteTime);
+		}
+	}
+
+	/**
+	 * 执行之后做一个逻辑.
+	 * 
+	 * @param startExecuteTime 开始执行时间
+	 */
+	private void execCommandAfter(long startExecuteTime) {
+		if (command.isPrintLog()) {
+			// 执行结束的时间
+			long endExecuteTime = System.nanoTime();
+			if (playerId == null) {
+				logger.info("handle {},delay={} ms,exe={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
+			} else {
+				logger.info("handle {},delay={} ms,exe={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, playerId);
+			}
 		}
 	}
 }
