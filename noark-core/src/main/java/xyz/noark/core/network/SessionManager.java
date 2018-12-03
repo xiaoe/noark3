@@ -128,6 +128,36 @@ public class SessionManager {
 	}
 
 	/**
+	 * 根据玩家ID来获取Session对象.
+	 * 
+	 * @param playerId 玩家ID
+	 * @return Session对象
+	 */
+	public static Optional<Session> loadSessionByPlayerId(Serializable playerId) {
+		return Optional.ofNullable(getSessionByPlayerId(playerId));
+	}
+
+	/**
+	 * 根据玩家UID来获取Session对象.
+	 * 
+	 * @param uid 玩家UID
+	 * @return Session对象
+	 */
+	public static Session getSessionByUid(Serializable uid) {
+		return UID_2_SESSION.get(uid);
+	}
+
+	/**
+	 * 根据玩家UID来获取Session对象.
+	 * 
+	 * @param uid 玩家UID
+	 * @return Session对象
+	 */
+	public static Optional<Session> loadSessionByUid(Serializable uid) {
+		return Optional.ofNullable(getSessionByUid(uid));
+	}
+
+	/**
 	 * 获取所有在线玩家Session集合.
 	 * 
 	 * @return Session集合
