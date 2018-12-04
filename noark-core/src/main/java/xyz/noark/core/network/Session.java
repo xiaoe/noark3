@@ -98,6 +98,11 @@ public interface Session extends SessionAttrMap {
 	public Serializable getPlayerId();
 
 	/**
+	 * 清除账号和角色ID，用于顶号后解绑
+	 */
+	public void clearUidAndPlayerId();
+
+	/**
 	 * 获取封包统计情况.
 	 * 
 	 * @return 封包统计情况

@@ -172,4 +172,11 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	public <T> SessionAttr<T> attr(SessionAttrKey<T> key) {
 		return (SessionAttr<T>) attrs.computeIfAbsent(key, k -> new SessionAttr<>());
 	}
+
+	@Override
+	public void clearUidAndPlayerId() {
+		this.uid = null;
+		this.playerId = null;
+		this.state = State.CONNECTED;
+	}
 }
