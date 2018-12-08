@@ -17,6 +17,7 @@ import static xyz.noark.log.LogHelper.logger;
 
 import java.io.IOException;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.annotation.Autowired;
@@ -27,6 +28,7 @@ import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.IncodeSession;
 import xyz.noark.network.NetworkConstant;
 import xyz.noark.network.filter.PacketCheckFilter;
@@ -40,8 +42,6 @@ import xyz.noark.network.filter.PacketCheckFilter;
 public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandler<T> {
 	@Autowired
 	private ThreadDispatcher threadDispatcher;
-	@Autowired(required = false)
-	private NetworkListener networkListener;
 	@Autowired(required = false)
 	private PacketCheckFilter packetCheckFilter;
 
@@ -57,6 +57,38 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 	/** 统计周期内可以出现多少次预警 */
 	@Value(NetworkConstant.RECEIVE_COUNT)
 	private int receiveCount = 3;
+
+	/** 监听器扩展方案 */
+	@Autowired(required = false)
+	protected NetworkListener networkListener;
+	/** 网络加密，默认不加密 */
+	@Value(NetworkConstant.ENCRYPT)
+	protected boolean encrypt = false;
+	/** 网络加密之密钥：默认配置为无边落木萧萧下，不尽长江滚滚来 */
+	@Value(NetworkConstant.SECRET_KEY)
+	protected byte[] secretKey = StringUtils.utf8Bytes("do{ManyLeavesFly();YangtzeRiverFlows();}while(1==1);");
+
+	/**
+	 * 处理链接通道激活逻辑
+	 * 
+	 * @param channel 链接通道
+	 */
+	public void channelActive(Channel channel) {
+		// 只要第一个协议对了就要创建Session...
+		Session session = SessionManager.createSession(channel.id(), key -> createSession(channel));
+		logger.debug("创建Session={}", session.getId());
+		if (networkListener != null) {
+			networkListener.channelActive(session);
+		}
+	}
+
+	/**
+	 * 创建Session.
+	 * 
+	 * @param channel 链接
+	 * @return Session对象
+	 */
+	protected abstract Session createSession(Channel channel);
 
 	/**
 	 * 处理好网络封包后派发逻辑.
