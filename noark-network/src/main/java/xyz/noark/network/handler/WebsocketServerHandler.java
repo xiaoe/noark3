@@ -63,6 +63,7 @@ public class WebsocketServerHandler extends AbstractServerHandler<WebSocketFrame
 
 	@Override
 	protected Session createSession(Channel channel) {
-		return new WebSocketSession(channel, encrypt, secretKey);
+		// WebSocket强制不加密，走H5的标准加密，没有必要两次
+		return new WebSocketSession(channel, false, secretKey);
 	}
 }
