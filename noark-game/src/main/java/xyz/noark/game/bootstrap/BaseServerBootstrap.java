@@ -41,12 +41,10 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	@Override
 	protected void onStart() {
 		// 0、线程模型
-		threadModular = modularManager.getModular(Modular.THREAD_MODULAR);
-		threadModular.ifPresent(v -> v.init());
+		this.initThreadModular();
 
 		// 1、DB检测与缓存初始化
-		dataModular = modularManager.getModular(Modular.DATA_MODULAR);
-		dataModular.ifPresent(v -> initDataModular(v));
+		this.initDataModular();
 
 		// 2、重载所有策划模板数据.
 		ioc.get(ReloadManager.class).reload(true);
@@ -62,6 +60,14 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 
 		// 6、对外网络...
 		this.initNetworkModular();
+	}
+
+	/**
+	 * 初始化网络模块
+	 */
+	protected void initNetworkModular() {
+		nettyServer = ioc.get(NettyServer.class);
+		nettyServer.startup();
 	}
 
 	/**
@@ -81,19 +87,20 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	}
 
 	/**
-	 * 初始化网络模块
+	 * 初始化数据模块
 	 */
-	protected void initNetworkModular() {
-		nettyServer = ioc.get(NettyServer.class);
-		nettyServer.startup();
+	protected void initDataModular() {
+		dataModular = modularManager.getModular(Modular.DATA_MODULAR);
+		dataModular.ifPresent(v -> v.init());
+		ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);
 	}
 
 	/**
-	 * 初始化数据模块
+	 * 初始化线程模块
 	 */
-	protected void initDataModular(Modular modular) {
-		modular.init();
-		ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);
+	protected void initThreadModular() {
+		threadModular = modularManager.getModular(Modular.THREAD_MODULAR);
+		threadModular.ifPresent(v -> v.init());
 	}
 
 	@Override
