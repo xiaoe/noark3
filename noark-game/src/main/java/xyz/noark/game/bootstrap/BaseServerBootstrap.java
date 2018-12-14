@@ -55,22 +55,42 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 		ioc.invokeCustomAnnotationMethod(PostConstruct.class);
 
 		// 4、延迟事件动起来.
-		eventModular = modularManager.getModular(Modular.EVENT_MODULAR);
-		eventModular.ifPresent(v -> v.init());
+		this.initEventModular();
 
-		// HTTP服务
-		httpModular = modularManager.getModular(Modular.HTTP_MODULAR);
-		httpModular.ifPresent(v -> v.init());
+		// 5、HTTP服务
+		this.initHttpModular();
 
-		// 对外网络...
+		// 6、对外网络...
 		this.initNetworkModular();
 	}
 
+	/**
+	 * 初始化HTTP服务模块
+	 */
+	protected void initHttpModular() {
+		httpModular = modularManager.getModular(Modular.HTTP_MODULAR);
+		httpModular.ifPresent(v -> v.init());
+	}
+
+	/**
+	 * 初始化事件模块
+	 */
+	protected void initEventModular() {
+		eventModular = modularManager.getModular(Modular.EVENT_MODULAR);
+		eventModular.ifPresent(v -> v.init());
+	}
+
+	/**
+	 * 初始化网络模块
+	 */
 	protected void initNetworkModular() {
 		nettyServer = ioc.get(NettyServer.class);
 		nettyServer.startup();
 	}
 
+	/**
+	 * 初始化数据模块
+	 */
 	protected void initDataModular(Modular modular) {
 		modular.init();
 		ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);

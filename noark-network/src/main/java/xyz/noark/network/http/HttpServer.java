@@ -45,7 +45,7 @@ public class HttpServer implements TcpServer {
 	private final EventLoopGroup workerGroup = new NioEventLoopGroup(4, new NamedThreadFactory("http"));
 
 	@Value(NetworkConstant.HTTP_PORT)
-	private int port = 8080;
+	private int port = 0;
 	@Value(NetworkConstant.HTTP_SECRET_KEY)
 	private String secretKey = null;
 
@@ -69,8 +69,12 @@ public class HttpServer implements TcpServer {
 
 	@Override
 	public void startup() {
-		logger.info("game http server start on {}", port);
+		if (port <= 0) {
+			logger.debug("game http server not opened.");
+			return;
+		}
 
+		logger.info("game http server start on {}", port);
 		ServerBootstrap bootstrap = new ServerBootstrap();
 		// Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝。默认值，Windows为200，其他为128。
 		bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
