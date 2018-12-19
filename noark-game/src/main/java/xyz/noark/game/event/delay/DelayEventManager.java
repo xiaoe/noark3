@@ -20,6 +20,7 @@ import java.util.List;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
+import xyz.noark.core.exception.HackerException;
 import xyz.noark.core.ioc.manager.EventMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
@@ -77,6 +78,10 @@ public class DelayEventManager implements EventManager {
 
 	@Override
 	public void publish(DelayEvent event) {
+		// 未配置这个结束时间，会死人的....
+		if (event.getEndTime() == null) {
+			throw new HackerException("未配置延迟事件的结束时间. class=" + event.getClass().getName());
+		}
 		handler.addDelayEvent(event);
 	}
 
