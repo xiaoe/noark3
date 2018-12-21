@@ -20,7 +20,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
+import xyz.noark.core.annotation.tpl.TplAttr;
+import xyz.noark.core.converter.ConvertManager;
+import xyz.noark.core.converter.Converter;
+import xyz.noark.core.exception.ConvertException;
 import xyz.noark.core.exception.ServerBootstrapException;
 
 /**
@@ -183,6 +188,43 @@ public class FieldUtils {
 				if (annotations.contains(a.annotationType())) {
 					fieldMap.put(f.getName(), f);
 					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 为常量类注入静态属性.
+	 * <p>
+	 * 常用于静态参数配置，比如全局配置表
+	 * 
+	 * @param <T> 常量类
+	 * @param templates 配置集合
+	 * @param target 目标类
+	 * @param fun 配置值对应的那个方法
+	 */
+	public static <T> void injectionStaticField(Map<String, T> templates, Class<?> target, Function<T, String> fun) {
+		for (Field field : target.getFields()) {
+			TplAttr attr = field.getAnnotation(TplAttr.class);
+			if (attr != null) {
+				if (!Modifier.isStatic(field.getModifiers())) {
+					throw new ServerBootstrapException(target.getClass() + " 的 " + field.getName() + " 不是静态属性，无法注入.");
+				}
+				// 获取配置，准备注入
+				T template = templates.get(attr.name());
+				if (template == null) {
+					if (attr.required()) {
+						throw new ServerBootstrapException(target.getClass() + " 的 " + field.getName() + " 为必选参数.");
+					}
+				}
+				// 有需求，也有配置，那就准备注入
+				else {
+					Converter<?> converter = ConvertManager.getInstance().getConverter(field.getType());
+					try {
+						FieldUtils.writeField(null, field, converter.convert(field, fun.apply(template)));
+					} catch (Exception e) {
+						throw new ConvertException(target.getName() + " >> " + field.getName() + " >> " + fun.apply(template) + "-->" + converter.buildErrorMsg(), e);
+					}
 				}
 			}
 		}
