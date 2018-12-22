@@ -15,6 +15,7 @@ package xyz.noark.core.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 时间相关操作工具类.
@@ -231,5 +232,28 @@ public class DateUtils {
 		c.setTime(date);
 		c.add(calendarField, amount);
 		return c.getTime();
+	}
+
+	/**
+	 * 将Date对象转化为秒数.
+	 * <p>
+	 * 为了代码里不要到处出现<code>{@link Date#getTime()} / 1000</code>的情况
+	 * 
+	 * @param date Date日期
+	 * @return 返回这个日期所对应的秒数
+	 */
+	public static long toSeconds(Date date) {
+		return TimeUnit.MILLISECONDS.toSeconds(date.getTime());
+	}
+
+	/**
+	 * 计算两个Date对象之间相差多少秒.
+	 * 
+	 * @param date1 时间一
+	 * @param date2 时间二
+	 * @return 秒数差，如果时间2大于时间1，有可能会是负值噢.
+	 */
+	public static long diffSeconds(Date date1, Date date2) {
+		return toSeconds(date1) - toSeconds(date2);
 	}
 }
