@@ -20,13 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.protobuf.MessageLite;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.lang.ByteArray;
-import xyz.noark.core.lang.ByteBufOutputStream;
+import xyz.noark.core.lang.ByteArrayOutputStream;
+import xyz.noark.core.lang.ImmutableByteArray;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.NetworkProtocal;
 import xyz.noark.core.util.MethodUtils;
@@ -67,16 +67,18 @@ public class ProtobufCodec extends AbstractPacketCodec {
 			throw new UnrealizedException("illegal data type：" + networkProtocal.getProtocal().getClass());
 		}
 
-		ByteBuf byteBuf = Unpooled.buffer(message.getSerializedSize() + 2);
-		// 写入Opcode
-		byteBuf.writeShortLE(opcode);
-		// 写入协议内容
-		try {
-			message.writeTo(new ByteBufOutputStream(byteBuf));
-		} catch (IOException e) {
-			throw new DataException("PB writeTo exception", e);
+		ImmutableByteArray byteArray = new ImmutableByteArray(message.getSerializedSize() + 2);
+		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(byteArray)) {
+			// 写入Opcode
+			byteArrayOutputStream.writeShortLE(opcode);
+			// 写入协议内容
+			try {
+				message.writeTo(byteArrayOutputStream);
+			} catch (IOException e) {
+				throw new DataException("PB writeTo exception", e);
+			}
+			return byteArray;
 		}
-		return new ByteBufWrapper(byteBuf);
 	}
 
 	@Override

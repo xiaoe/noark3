@@ -22,6 +22,10 @@ package xyz.noark.core.lang;
 public class ImmutableByteArray implements ByteArray {
 	private final byte[] array;
 
+	public ImmutableByteArray(int length) {
+		this.array = new byte[length];
+	}
+
 	public ImmutableByteArray(byte[] array) {
 		this.array = array;
 	}
