@@ -21,8 +21,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.network.PacketCodecHolder;
-import xyz.noark.core.network.Session;
-import xyz.noark.network.SocketSession;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.handler.SocketServerHandler;
 
@@ -39,8 +37,10 @@ public class SocketInitializeHandler extends AbstractInitializeHandler {
 	private SocketServerHandler socketServerHandler;
 
 	@Override
-	protected void build(ChannelPipeline pipeline) {
+	public void handle(ChannelHandlerContext ctx) {
 		logger.debug("Socket链接...");
+		ChannelPipeline pipeline = ctx.pipeline();
+
 		final AbstractPacketCodec codec = (AbstractPacketCodec) PacketCodecHolder.getPacketCodec();
 		// Socket有封包长度编码器,但也可能会为空，有时候长度都直接编码进群发了也是一种提升...
 		final MessageToByteEncoder<?> lengthEncoder = codec.lengthEncoder();
@@ -52,10 +52,8 @@ public class SocketInitializeHandler extends AbstractInitializeHandler {
 		pipeline.addLast("decoder", codec.lengthDecoder());
 
 		pipeline.addLast("handler", socketServerHandler);
-	}
 
-	@Override
-	protected Session createSession(ChannelHandlerContext ctx, boolean encrypt, byte[] secretKey) {
-		return new SocketSession(ctx.channel(), encrypt, secretKey);
+		// Socket是在接到喑号后进行初始化的...
+		socketServerHandler.channelActive(ctx.channel());
 	}
 }

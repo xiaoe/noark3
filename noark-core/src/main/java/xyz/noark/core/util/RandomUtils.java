@@ -29,6 +29,10 @@ import java.util.function.ToIntFunction;
  * @author 小流氓(176543888@qq.com)
  */
 public class RandomUtils {
+	/** 百分比之分母 */
+	private static final double PERCENTAGE = 100.0d;
+	/** 千分比之分母 */
+	private static final double PERMILLAGE = 1000.0d;
 
 	/**
 	 * 返回一个随机Boolean值.
@@ -120,6 +124,38 @@ public class RandomUtils {
 	}
 
 	/**
+	 * 判定一次百分比的随机事件是否成功.
+	 * <p>
+	 * 参数自动转化为百分比单位，就是除100
+	 * 
+	 * <pre>
+	 * RandomUtils.isSuccessByPercentage(rate) = RandomUtils.isSuccess(rate / 100D)
+	 * </pre>
+	 * 
+	 * @param rate 成功率/100D
+	 * @return 如果成功返回true,否则返回false.
+	 */
+	public static boolean isSuccessByPercentage(int rate) {
+		return RandomUtils.isSuccess(rate / PERCENTAGE);
+	}
+
+	/**
+	 * 判定一次千分比的随机事件是否成功.
+	 * <p>
+	 * 参数自动转化为千分比单位，就是除1000
+	 * 
+	 * <pre>
+	 * RandomUtils.isSuccessByPermillage(rate) = RandomUtils.isSuccess(rate / 1000D)
+	 * </pre>
+	 * 
+	 * @param rate 成功率/1000D
+	 * @return 如果成功返回true,否则返回false.
+	 */
+	public static boolean isSuccessByPermillage(int rate) {
+		return RandomUtils.isSuccess(rate / PERMILLAGE);
+	}
+
+	/**
 	 * 在指定集合中随机出一个元素.
 	 * <p>
 	 * 所以元素无权重的随机.
@@ -185,7 +221,12 @@ public class RandomUtils {
 	 * @return 按权重随机返回集合中的一个元素.
 	 */
 	public static <K> K randomByWeight(Map<K, Integer> data) {
-		final int random = nextInt(data.values().stream().reduce(0, (a, b) -> a + b));
+		final int sum = data.values().stream().reduce(0, (a, b) -> a + b);
+		if (sum <= 0) {
+			return randomList(new ArrayList<>(data.keySet()));
+		}
+
+		final int random = nextInt(sum);
 		int step = 0;
 		for (Map.Entry<K, Integer> e : data.entrySet()) {
 			step += e.getValue().intValue();
@@ -207,7 +248,12 @@ public class RandomUtils {
 	 * @return 按权重随机返回集合中的一个元素
 	 */
 	public static <T> T randomByWeight(List<T> data, ToIntFunction<? super T> weightFunction) {
-		final int random = nextInt(data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b));
+		final int sum = data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b);
+		if (sum <= 0) {
+			return randomList(data);
+		}
+
+		final int random = nextInt(sum);
 		int step = 0;
 		for (T e : data) {
 			step += weightFunction.applyAsInt(e);
@@ -233,7 +279,11 @@ public class RandomUtils {
 		if (num <= 0) {
 			return Collections.emptyList();
 		}
+
 		final int sum = data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b);
+		if (sum <= 0) {
+			return randomList(data, num);
+		}
 
 		List<T> result = new ArrayList<>(num);
 		for (int i = 1; i <= num; i++) {
@@ -243,6 +293,7 @@ public class RandomUtils {
 				step += weightFunction.applyAsInt(e);
 				if (step > random) {
 					result.add(e);
+					break;
 				}
 			}
 		}

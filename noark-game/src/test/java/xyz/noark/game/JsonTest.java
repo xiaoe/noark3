@@ -13,36 +13,56 @@
  */
 package xyz.noark.game;
 
-import static xyz.noark.log.LogHelper.logger;
-
-import xyz.noark.core.annotation.Controller;
-import xyz.noark.core.annotation.controller.EventListener;
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.core.annotation.controller.PacketMapping;
-import xyz.noark.core.network.Session;
-import xyz.noark.core.network.Session.State;
+import com.alibaba.fastjson.JSON;
 
 /**
- * 一个简单的服务器启动测试入口.
+ * 一个Json格式的解析测试.
  *
- * @since 3.0
+ * @since 3.2
  * @author 小流氓(176543888@qq.com)
  */
-@Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
-public class GameServerApplication {
+public class JsonTest {
 
 	public static void main(String[] args) {
-		Noark.run(GameServerBootstrap.class, args);
+		String text = "{\"x\":279.7000427246094,\"y\":0.0,\"z\":374.60009765625}";
+		Point3D point = JSON.parseObject(text, Point3D.class);
+		System.out.println(point);
+
+		System.out.println((float) Double.parseDouble("374.60009765625"));
 	}
 
-	@PacketMapping(opcode = 1, state = State.CONNECTED)
-	public void test(Session session, byte[] hello) {
-		logger.info("收到协议:{}", new String(hello));
-		session.send(1, "11111111111111111");
-	}
+	public static class Point3D {
+		private float x;
+		private float y;
+		private float z;
 
-	@EventListener(LoginEvent.class)
-	public void handleEvent() {
-		logger.info("处理事件........");
+		public float getX() {
+			return x;
+		}
+
+		public void setX(float x) {
+			this.x = x;
+		}
+
+		public float getY() {
+			return y;
+		}
+
+		public void setY(float y) {
+			this.y = y;
+		}
+
+		public float getZ() {
+			return z;
+		}
+
+		public void setZ(float z) {
+			this.z = z;
+		}
+
+		@Override
+		public String toString() {
+			return "Point3D [x=" + x + ", y=" + y + ", z=" + z + "]";
+		}
 	}
 }

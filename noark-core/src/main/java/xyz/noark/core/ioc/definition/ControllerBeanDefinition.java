@@ -57,7 +57,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		}
 		// 事件监听
 		else if (annotationType == EventListener.class) {
-			emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation)));
+			emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation), this));
 		}
 		// HTTP服务
 		else if (annotationType == HttpHandler.class) {

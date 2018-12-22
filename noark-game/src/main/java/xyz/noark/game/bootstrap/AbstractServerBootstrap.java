@@ -15,6 +15,8 @@ package xyz.noark.game.bootstrap;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,11 +25,13 @@ import java.util.concurrent.TimeUnit;
 
 import xyz.noark.core.ModularManager;
 import xyz.noark.core.env.EnvConfigHolder;
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.thread.NamedThreadFactory;
 import xyz.noark.core.util.FileUtils;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.core.util.SystemUtils;
 import xyz.noark.game.NoarkConstant;
 import xyz.noark.log.LogManager;
@@ -49,6 +53,8 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 	/** IOC容器 */
 	protected NoarkIoc ioc;
 	protected ModularManager modularManager;
+	/** PID文件名称 */
+	private String pidFileName;
 
 	/** 启动服务时，添加一个停机守护线程，用于清理异常情况. */
 	public AbstractServerBootstrap() {
@@ -106,6 +112,38 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 				System.exit(0);
 			});
 		}
+
+		// 写入PID文件....
+		this.pidFileName = EnvConfigHolder.getProperties().get(NoarkConstant.PID_FILE);
+		this.createPidFile();
+	}
+
+	/**
+	 * 尝试写入PID到文件
+	 */
+	protected void createPidFile() {
+		if (StringUtils.isNotEmpty(pidFileName)) {
+			try {
+				File pidFile = new File(pidFileName);
+				if (FileUtils.createNewFile(pidFile)) {
+					logger.debug("PID文件创建成功.");
+				}
+				// PID文件已存在...
+				else {
+					final String fileName = pidFileName;
+					this.pidFileName = null;//
+					throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + fileName);
+				}
+
+				// 写入PID
+				try (FileWriter fileWriter = new FileWriter(pidFile, false)) {
+					fileWriter.write(SystemUtils.getPidStr());
+					fileWriter.flush();
+				}
+			} catch (IOException e) {
+				throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFileName, e);
+			}
+		}
 	}
 
 	/**
@@ -132,9 +170,26 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 			logger.error("failed to stopping service:{}", this.getServerName(), e);
 		} finally {
 			// IOC容器销毁
-			ioc.destroy();
+			if (ioc != null) {
+				ioc.destroy();
+			}
 			// 日志框架Shutdown
 			LogManager.shutdown();
+
+			// 删除PID文件
+			this.deletePidFile();
+		}
+	}
+
+	/**
+	 * 停服时尝试删除PID文件
+	 */
+	protected void deletePidFile() {
+		if (StringUtils.isNotEmpty(pidFileName)) {
+			File pidFile = new File(pidFileName);
+			if (pidFile.exists()) {
+				pidFile.delete();
+			}
 		}
 	}
 

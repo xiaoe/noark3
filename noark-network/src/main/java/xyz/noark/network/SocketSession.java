@@ -17,13 +17,18 @@ import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.AbstractSession;
+import xyz.noark.core.network.NetworkProtocal;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.PacketEncrypt;
+import xyz.noark.core.network.SessionAttr;
+import xyz.noark.core.network.SessionAttrKey;
 
 /**
  * 基于Netty的Channel实现的Session.
@@ -33,15 +38,19 @@ import xyz.noark.core.network.PacketEncrypt;
  */
 public class SocketSession extends AbstractSession implements IncodeSession {
 	protected final Channel channel;
+	/** Session中存储的属性值 */
+	protected final Map<SessionAttrKey<?>, SessionAttr<?>> attrs;
 	private String uid;
 	private Serializable playerId;
 	protected PacketEncrypt packetEncrypt;
+
 	/** 自增校验位 */
 	protected int incode = -1;
 
 	public SocketSession(Channel channel, boolean encrypt, byte[] secretKey) {
 		super(channel.id(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
 		this.channel = channel;
+		this.attrs = new ConcurrentHashMap<>();
 		this.packetEncrypt = new DefaultPacketEncrypt(encrypt, secretKey);
 	}
 
@@ -112,6 +121,11 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 		this.writeAndFlush(packet);
 	}
 
+	@Override
+	public void send(NetworkProtocal networkProtocal) {
+		this.send(PacketCodecHolder.getPacketCodec().encodePacket(networkProtocal));
+	}
+
 	/**
 	 * 发送封包逻辑.
 	 * 
@@ -134,7 +148,7 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	 * @return 封包对象
 	 */
 	protected ByteArray buildPacket(Integer opcode, Object protocal) {
-		return PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
+		return PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocal(opcode, protocal));
 	}
 
 	/**
@@ -151,5 +165,18 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	@Override
 	public PacketEncrypt getPacketEncrypt() {
 		return packetEncrypt;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> SessionAttr<T> attr(SessionAttrKey<T> key) {
+		return (SessionAttr<T>) attrs.computeIfAbsent(key, k -> new SessionAttr<>());
+	}
+
+	@Override
+	public void clearUidAndPlayerId() {
+		this.uid = null;
+		this.playerId = null;
+		this.state = State.CONNECTED;
 	}
 }

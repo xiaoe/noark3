@@ -20,14 +20,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.protobuf.MessageLite;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.lang.ByteArray;
-import xyz.noark.core.lang.ByteBufOutputStream;
+import xyz.noark.core.lang.ByteArrayOutputStream;
+import xyz.noark.core.lang.ImmutableByteArray;
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.NetworkProtocal;
 import xyz.noark.core.util.MethodUtils;
 import xyz.noark.core.util.UnsignedUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
@@ -51,31 +52,33 @@ public class ProtobufCodec extends AbstractPacketCodec {
 	}
 
 	@Override
-	public ByteArray encodePacket(Integer opcodex, Object protocal) {
-		final int opcode = opcodex;
+	public ByteArray encodePacket(NetworkProtocal networkProtocal) {
+		final int opcode = networkProtocal.getOpcode();
 		if (opcode > Short.MAX_VALUE) {
 			throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
 		}
 
 		MessageLite message = null;
-		if (protocal instanceof MessageLite) {
-			message = (MessageLite) protocal;
-		} else if (protocal instanceof MessageLite.Builder) {
-			message = ((MessageLite.Builder) protocal).build();
+		if (networkProtocal.getProtocal() instanceof MessageLite) {
+			message = (MessageLite) networkProtocal.getProtocal();
+		} else if (networkProtocal.getProtocal() instanceof MessageLite.Builder) {
+			message = ((MessageLite.Builder) networkProtocal.getProtocal()).build();
 		} else {
-			throw new UnrealizedException("illegal data type：" + protocal.getClass());
+			throw new UnrealizedException("illegal data type：" + networkProtocal.getProtocal().getClass());
 		}
 
-		ByteBuf byteBuf = Unpooled.buffer(message.getSerializedSize() + 2);
-		// 写入Opcode
-		byteBuf.writeShortLE(opcode);
-		// 写入协议内容
-		try {
-			message.writeTo(new ByteBufOutputStream(byteBuf));
-		} catch (IOException e) {
-			throw new DataException("PB writeTo exception", e);
+		ImmutableByteArray byteArray = new ImmutableByteArray(message.getSerializedSize() + 2);
+		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(byteArray)) {
+			// 写入Opcode
+			byteArrayOutputStream.writeShortLE(opcode);
+			// 写入协议内容
+			try {
+				message.writeTo(byteArrayOutputStream);
+			} catch (IOException e) {
+				throw new DataException("PB writeTo exception", e);
+			}
+			return byteArray;
 		}
-		return new ByteBufWrapper(byteBuf);
 	}
 
 	@Override

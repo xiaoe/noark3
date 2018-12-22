@@ -13,37 +13,21 @@
  */
 package xyz.noark.core.network;
 
-import xyz.noark.core.lang.ByteArray;
-
 /**
- * 封包的编解码.
- * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
- * 
- * @since 3.0
+ * Session存储属性的Map接口.
+ *
+ * @since 3.2.2
  * @author 小流氓(176543888@qq.com)
  */
-public interface PacketCodec {
-
+public interface SessionAttrMap {
 	/**
-	 * 解码为协议对象.
+	 * 获取指定{@link SessionAttrKey}的一个{@link SessionAttr}.
 	 * <p>
-	 * 这里其实就是封包打开后的内容转协议
+	 * 这个返回值决不为null，但可能{@link SessionAttr}中所包含的值为空
 	 * 
-	 * @param <T> 类型
-	 * @param bytes 字节数组
-	 * @param klass 协议类
-	 * @return 协议对象
+	 * @param <T> 属性值的类型
+	 * @param key 属性Key
+	 * @return 返回指定Key对应的值
 	 */
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass);
-
-	/**
-	 * 这步是协议转化封包.
-	 * <p>
-	 * 这里没有独立出来协议先转封包内容，直接一步到位了.
-	 * 
-	 * @param protocal 网络协议
-	 * @return 封包字节数组
-	 */
-	public ByteArray encodePacket(NetworkProtocal protocal);
+	<T> SessionAttr<T> attr(SessionAttrKey<T> key);
 }

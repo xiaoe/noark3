@@ -52,7 +52,7 @@ public class SessionManager {
 	 * @param playerIds 接受人的ID列表
 	 */
 	public static void send(Integer opcode, Object protocal, Serializable... playerIds) {
-		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(opcode, protocal);
+		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocal(opcode, protocal));
 		// 全服发送
 		if (playerIds.length == 0) {
 			PLAYER_ID_2_SESSION.forEach((k, v) -> v.send(packet));
@@ -125,6 +125,36 @@ public class SessionManager {
 	 */
 	public static Session getSessionByPlayerId(Serializable playerId) {
 		return PLAYER_ID_2_SESSION.get(playerId);
+	}
+
+	/**
+	 * 根据玩家ID来获取Session对象.
+	 * 
+	 * @param playerId 玩家ID
+	 * @return Session对象
+	 */
+	public static Optional<Session> loadSessionByPlayerId(Serializable playerId) {
+		return Optional.ofNullable(getSessionByPlayerId(playerId));
+	}
+
+	/**
+	 * 根据玩家UID来获取Session对象.
+	 * 
+	 * @param uid 玩家UID
+	 * @return Session对象
+	 */
+	public static Session getSessionByUid(Serializable uid) {
+		return UID_2_SESSION.get(uid);
+	}
+
+	/**
+	 * 根据玩家UID来获取Session对象.
+	 * 
+	 * @param uid 玩家UID
+	 * @return Session对象
+	 */
+	public static Optional<Session> loadSessionByUid(Serializable uid) {
+		return Optional.ofNullable(getSessionByUid(uid));
 	}
 
 	/**

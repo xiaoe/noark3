@@ -13,13 +13,19 @@
  */
 package xyz.noark.network.handler;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import javax.annotation.PostConstruct;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.network.Session;
+import xyz.noark.network.WebSocketSession;
 import xyz.noark.network.codec.AbstractPacketCodec;
 
 /**
@@ -43,5 +49,21 @@ public class WebsocketServerHandler extends AbstractServerHandler<WebSocketFrame
 	protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame wsf) throws Exception {
 		// 整个封包解出来就跟Socket一样处理了...
 		this.dispatchPacket(ctx, codec.decodePacket(wsf.content().retain()));
+	}
+
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		super.userEventTriggered(ctx, evt);
+		// 握手成功完成，并将频道升级到websockets。
+		if (evt instanceof HandshakeComplete) {
+			logger.info("WebSocket链接成功....");
+			this.channelActive(ctx.channel());
+		}
+	}
+
+	@Override
+	protected Session createSession(Channel channel) {
+		// WebSocket强制不加密，走H5的标准加密，没有必要两次
+		return new WebSocketSession(channel, false, secretKey);
 	}
 }

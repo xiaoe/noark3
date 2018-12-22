@@ -13,37 +13,37 @@
  */
 package xyz.noark.core.network;
 
-import xyz.noark.core.lang.ByteArray;
-
 /**
- * 封包的编解码.
+ * 网络协议.
  * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
+ * 就是一个协议编号和一个协议对象
  * 
- * @since 3.0
+ * @since 3.2.2
  * @author 小流氓(176543888@qq.com)
  */
-public interface PacketCodec {
+public class NetworkProtocal {
+	private final Integer opcode;
+	private final Object protocal;
+	private int reqId;
 
-	/**
-	 * 解码为协议对象.
-	 * <p>
-	 * 这里其实就是封包打开后的内容转协议
-	 * 
-	 * @param <T> 类型
-	 * @param bytes 字节数组
-	 * @param klass 协议类
-	 * @return 协议对象
-	 */
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass);
+	public NetworkProtocal(Integer opcode, Object protocal) {
+		this.opcode = opcode;
+		this.protocal = protocal;
+	}
 
-	/**
-	 * 这步是协议转化封包.
-	 * <p>
-	 * 这里没有独立出来协议先转封包内容，直接一步到位了.
-	 * 
-	 * @param protocal 网络协议
-	 * @return 封包字节数组
-	 */
-	public ByteArray encodePacket(NetworkProtocal protocal);
+	void setReqId(int reqId) {
+		this.reqId = reqId;
+	}
+
+	public int getReqId() {
+		return reqId;
+	}
+
+	public Integer getOpcode() {
+		return opcode;
+	}
+
+	public Object getProtocal() {
+		return protocal;
+	}
 }

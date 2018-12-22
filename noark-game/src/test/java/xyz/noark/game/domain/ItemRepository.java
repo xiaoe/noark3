@@ -17,8 +17,11 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Repository;
-import xyz.noark.orm.repository.OrmRepository;
+import xyz.noark.game.LoginEvent;
+import xyz.noark.game.event.EventManager;
+import xyz.noark.orm.repository.UniqueCacheRepository;
 
 /**
  * 道具实体访问类.
@@ -27,23 +30,28 @@ import xyz.noark.orm.repository.OrmRepository;
  * @author 小流氓(176543888@qq.com)
  */
 @Repository
-public class ItemRepository extends OrmRepository<Item, Integer> {
+public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
+
+	@Autowired
+	private EventManager eventManager;
 
 	@PostConstruct
 	public void test() {
-		Item item = this.load(1);
+		Item item = this.cacheGet(1);
 		if (item == null) {
 			item = new Item();
 			item.setId(1);
 			item.setRead(true);
 			item.setCreateTime(new Date());
 			item.setModifyTime(item.getCreateTime());
-			this.insert(item);
+			this.cacheInsert(item);
 		}
 
 		item.setRead(false);
-		this.update(item);
+		this.cacheUpdate(item);
 
-		this.delete(item);
+		this.cacheDelete(item);
+
+		eventManager.publish(new LoginEvent());
 	}
 }

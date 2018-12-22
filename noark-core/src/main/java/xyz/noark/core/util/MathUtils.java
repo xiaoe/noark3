@@ -106,7 +106,7 @@ public class MathUtils {
 	 * @param y2 坐标Y2
 	 * @return 两点的距离
 	 */
-	public double distance(int x1, int y1, int x2, int y2) {
+	public static double distance(int x1, int y1, int x2, int y2) {
 		final double x = Math.abs(x1 - x2);
 		final double y = Math.abs(y1 - y2);
 		return Math.sqrt(x * x + y * y);
@@ -123,7 +123,7 @@ public class MathUtils {
 	 * @param y2 坐标Y2
 	 * @return 两点的距离
 	 */
-	public double distance(double x1, double y1, double x2, double y2) {
+	public static double distance(double x1, double y1, double x2, double y2) {
 		final double x = Math.abs(x1 - x2);
 		final double y = Math.abs(y1 - y2);
 		return Math.sqrt(x * x + y * y);
@@ -138,7 +138,35 @@ public class MathUtils {
 	 * @param p2 坐标2
 	 * @return 两点的距离
 	 */
-	public double distance(Point p1, Point p2) {
+	public static double distance(Point p1, Point p2) {
 		return distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+	}
+
+	/**
+	 * 判定两点(x1,y1)和(x2,y2)是否相邻.
+	 * <p>
+	 * 可用于两个AOI是否相邻判定
+	 * 
+	 * @param x1 坐标X1
+	 * @param y1 坐标Y1
+	 * @param x2 坐标X2
+	 * @param y2 坐标Y2
+	 * @return 如果两坐标相邻返回true,否则返回false
+	 */
+	public static boolean adjacent(int x1, int y1, int x2, int y2) {
+		return Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1;
+	}
+
+	/**
+	 * 判定两点P1(x1,y1)和P2(x2,y2)是否相邻.
+	 * <p>
+	 * 可用于两个AOI是否相邻判定
+	 * 
+	 * @param p1 坐标1
+	 * @param p2 坐标2
+	 * @return 如果两坐标相邻返回true,否则返回false
+	 */
+	public static boolean adjacent(Point p1, Point p2) {
+		return adjacent(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 }

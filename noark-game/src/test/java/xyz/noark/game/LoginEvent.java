@@ -11,39 +11,16 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.network;
+package xyz.noark.game;
 
-import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.event.Event;
 
 /**
- * 封包的编解码.
- * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
- * 
- * @since 3.0
+ * 随意的一个事件源.
+ *
+ * @since 3.2
  * @author 小流氓(176543888@qq.com)
  */
-public interface PacketCodec {
-
-	/**
-	 * 解码为协议对象.
-	 * <p>
-	 * 这里其实就是封包打开后的内容转协议
-	 * 
-	 * @param <T> 类型
-	 * @param bytes 字节数组
-	 * @param klass 协议类
-	 * @return 协议对象
-	 */
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass);
-
-	/**
-	 * 这步是协议转化封包.
-	 * <p>
-	 * 这里没有独立出来协议先转封包内容，直接一步到位了.
-	 * 
-	 * @param protocal 网络协议
-	 * @return 封包字节数组
-	 */
-	public ByteArray encodePacket(NetworkProtocal protocal);
+public class LoginEvent implements Event {
+	// 没有任何功能，只是用于测试
 }

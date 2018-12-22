@@ -17,6 +17,7 @@ import java.util.Date;
 
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Entity;
+import xyz.noark.core.annotation.orm.Entity.FeatchType;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.annotation.orm.Table;
 
@@ -26,7 +27,7 @@ import xyz.noark.core.annotation.orm.Table;
  * @since 3.2
  * @author 小流氓(176543888@qq.com)
  */
-@Entity
+@Entity(fetch = FeatchType.START)
 @Table(name = "item")
 public class Item {
 

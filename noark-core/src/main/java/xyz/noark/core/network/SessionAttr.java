@@ -13,37 +13,41 @@
  */
 package xyz.noark.core.network;
 
-import xyz.noark.core.lang.ByteArray;
-
 /**
- * 封包的编解码.
- * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
- * 
- * @since 3.0
+ * Session属性值存储对象.
+ *
+ * @since 3.2.2
  * @author 小流氓(176543888@qq.com)
  */
-public interface PacketCodec {
+public class SessionAttr<T> {
+	/** 缓存的对象 */
+	private T data;
 
 	/**
-	 * 解码为协议对象.
-	 * <p>
-	 * 这里其实就是封包打开后的内容转协议
+	 * 获取属性中缓存的对象值
 	 * 
-	 * @param <T> 类型
-	 * @param bytes 字节数组
-	 * @param klass 协议类
-	 * @return 协议对象
+	 * @return 属性中缓存的对象值
 	 */
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass);
+	public T get() {
+		return data;
+	}
 
 	/**
-	 * 这步是协议转化封包.
-	 * <p>
-	 * 这里没有独立出来协议先转封包内容，直接一步到位了.
+	 * 获取属性中缓存的对象值，如果不存在则返回默认值
 	 * 
-	 * @param protocal 网络协议
-	 * @return 封包字节数组
+	 * @param defaultValue 默认值
+	 * @return 获取属性中缓存的对象值，如果不存在则返回默认值
 	 */
-	public ByteArray encodePacket(NetworkProtocal protocal);
+	public T getOrDefault(T defaultValue) {
+		return data == null ? defaultValue : data;
+	}
+
+	/**
+	 * 设计属性中缓存的对象值
+	 * 
+	 * @param data 对象值
+	 */
+	public void set(T data) {
+		this.data = data;
+	}
 }

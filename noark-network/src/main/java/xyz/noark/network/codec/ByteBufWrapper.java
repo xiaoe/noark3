@@ -53,11 +53,15 @@ public class ByteBufWrapper implements ByteArray {
 
 	@Override
 	public byte getByte(int index) {
-		return byteBuf.getByte(index);
+		return array == null ? byteBuf.getByte(index) : array[index];
 	}
 
 	@Override
 	public void setByte(int index, byte value) {
-		byteBuf.setByte(index, value);
+		if (array == null) {
+			byteBuf.setByte(index, value);
+		} else {
+			array[index] = value;
+		}
 	}
 }

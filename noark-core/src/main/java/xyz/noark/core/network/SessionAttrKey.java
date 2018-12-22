@@ -11,46 +11,36 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.thread.command;
+package xyz.noark.core.network;
 
-import java.io.Serializable;
-
-import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
-import xyz.noark.core.thread.ThreadCommand;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 抽象的线程处理指令.
+ * Session属性Key.
  *
- * @since 3.0
+ * @since 3.2.2
  * @author 小流氓(176543888@qq.com)
  */
-public class AbstractThreadCommand implements ThreadCommand {
-	private final AbstractControllerMethodWrapper method;
-	private final Object[] args;
-	private final Serializable playerId;
+public final class SessionAttrKey<T> {
+	private final String name;
+	private static final Map<String, SessionAttrKey<?>> KEYS = new ConcurrentHashMap<>();
 
-	public AbstractThreadCommand(AbstractControllerMethodWrapper method, Serializable playerId, Object... args) {
-		this.method = method;
-		this.args = args;
-		this.playerId = playerId;
+	@SuppressWarnings("unchecked")
+	public static <T> SessionAttrKey<T> valueOf(final String name) {
+		return (SessionAttrKey<T>) KEYS.computeIfAbsent(name, key -> new SessionAttrKey<>(name));
+	}
+
+	private SessionAttrKey(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	@Override
-	public Object exec() {
-		return method.invoke(args);
-	}
-
-	@Override
-	public String code() {
-		return method.logCode();
-	}
-
-	@Override
-	public boolean isPrintLog() {
-		return method.isPrintLog();
-	}
-
-	public Serializable getPlayerId() {
-		return playerId;
+	public String toString() {
+		return "SessionAttrKey [name=" + name + "]";
 	}
 }

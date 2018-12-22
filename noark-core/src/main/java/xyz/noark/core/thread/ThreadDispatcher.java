@@ -29,9 +29,10 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
-import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.NetworkListener;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.thread.command.PlayerThreadCommand;
 import xyz.noark.core.thread.command.SystemThreadCommand;
@@ -73,19 +74,18 @@ public class ThreadDispatcher {
 	 * 派发游戏封包.
 	 * 
 	 * @param session Session对象
-	 * @param opcode 协议编号
-	 * @param bytes 字节数组流
+	 * @param packet 网络封包
 	 */
-	public void dispatchPacket(Session session, Integer opcode, ByteArray bytes) {
-		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
+	public void dispatchPacket(Session session, NetworkPacket packet) {
+		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(packet.getOpcode());
 		if (pmw == null) {
-			logger.warn("undefined protocol, opcode={}", opcode);
+			logger.warn("undefined protocol, opcode={}", packet.getOpcode());
 			return;
 		}
 
 		// 是否已废弃使用.
 		if (pmw.isDeprecated()) {
-			logger.warn("deprecated protocol. opcode={}, playerId={}", opcode, session.getPlayerId());
+			logger.warn("deprecated protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
 			if (networkListener != null) {
 				networkListener.handleDeprecatedPacket(session);
 			}
@@ -94,13 +94,13 @@ public class ThreadDispatcher {
 
 		// 客户端发来的封包，是不可以调用内部处理器的.
 		if (pmw.isInner()) {
-			logger.warn(" ^0^ inner protocol. opcode={}, playerId={}", opcode, session.getPlayerId());
+			logger.warn(" ^0^ inner protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
 			return;
 		}
 
 		// 权限
 		if (Session.State.ALL != pmw.getState() && pmw.getState() != session.getState()) {
-			logger.warn(" ^0^ session state error. opcode={}, playerId={}", opcode, session.getPlayerId());
+			logger.warn(" ^0^ session state error. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
 			return;
 		}
 
@@ -108,7 +108,7 @@ public class ThreadDispatcher {
 		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
-		this.dispatchPacket(session.getPlayerId(), pmw, pmw.analysisParam(session, bytes));
+		this.dispatchPacket(session, session.getPlayerId(), packet.getIncode(), pmw, pmw.analysisParam(session, packet.getByteArray()));
 	}
 
 	/**
@@ -135,19 +135,19 @@ public class ThreadDispatcher {
 		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
-		this.dispatchPacket(playerId, pmw, pmw.analysisParam(playerId, protocal));
+		this.dispatchPacket(null, playerId, 0, pmw, pmw.analysisParam(playerId, protocal));
 	}
 
-	private void dispatchPacket(Serializable playerId, PacketMethodWrapper pmw, Object... args) {
+	private void dispatchPacket(Session session, Serializable playerId, int reqId, PacketMethodWrapper pmw, Object... args) {
 		switch (pmw.threadGroup()) {
 		case NettyThreadGroup:
-			this.dispatchNettyThreadHandle(pmw, args);
+			this.dispatchNettyThreadHandle(session, reqId, pmw, args);
 			break;
 		case PlayerThreadGroup:
-			this.dispatchPlayerThreadHandle(new PlayerThreadCommand(playerId, pmw, args));
+			this.dispatchPlayerThreadHandle(session, reqId, new PlayerThreadCommand(playerId, pmw, args));
 			break;
 		case ModuleThreadGroup:
-			this.dispatchSystemThreadHandle(new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
+			this.dispatchSystemThreadHandle(session, reqId, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
 			break;
 		default:
 			throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
@@ -155,20 +155,20 @@ public class ThreadDispatcher {
 	}
 
 	/** 派发给Netty线程处理的逻辑. */
-	private void dispatchNettyThreadHandle(PacketMethodWrapper protocal, Object... args) {
-		protocal.invoke(args);
+	void dispatchNettyThreadHandle(Session session, int reqId, PacketMethodWrapper protocal, Object... args) {
+		ResultHelper.trySendResult(session, reqId, protocal.invoke(args));
 	}
 
 	/** 派发给系统线程处理的逻辑. */
-	void dispatchSystemThreadHandle(SystemThreadCommand command) {
+	void dispatchSystemThreadHandle(Session session, int reqId, SystemThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId()));
+		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), reqId, session));
 	}
 
 	/** 派发给玩家线程处理的逻辑. */
-	void dispatchPlayerThreadHandle(PlayerThreadCommand command) {
+	void dispatchPlayerThreadHandle(Session session, int reqId, PlayerThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId()));
+		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), reqId, session));
 	}
 
 	/**
@@ -182,14 +182,14 @@ public class ThreadDispatcher {
 		case PlayerThreadGroup: {
 			if (event instanceof PlayerEvent) {
 				PlayerEvent e = (PlayerEvent) event;
-				this.dispatchPlayerThreadHandle(new PlayerThreadCommand(e.getPlayerId(), handler, e));
+				this.dispatchPlayerThreadHandle(null, 0, new PlayerThreadCommand(e.getPlayerId(), handler, e));
 			} else {
 				throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
 			}
 			break;
 		}
 		case ModuleThreadGroup:
-			this.dispatchSystemThreadHandle(new SystemThreadCommand(handler.getModule(), handler, event));
+			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler, event));
 			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());

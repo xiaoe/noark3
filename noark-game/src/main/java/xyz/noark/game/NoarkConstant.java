@@ -32,6 +32,18 @@ public class NoarkConstant {
 	public static final String NOARK_VERSION = "noark.version";
 
 	/**
+	 * 加密公钥，用于配置文件时自定义RSA
+	 */
+	public static final String CRYPTO_RSA_PUBLICKEY = "crypto.rsa.publickey";
+
+	/**
+	 * 当前游戏进程PID文件位置。
+	 * <p>
+	 * pid.file=/data/server01/game.pid
+	 */
+	public static final String PID_FILE = "pid.file";
+
+	/**
 	 * 配置区服ID的Key
 	 */
 	public static final String SERVER_ID = "server.id";

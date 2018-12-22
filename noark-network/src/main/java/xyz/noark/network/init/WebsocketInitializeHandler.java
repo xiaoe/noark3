@@ -24,9 +24,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
-import xyz.noark.core.network.Session;
 import xyz.noark.network.NetworkConstant;
-import xyz.noark.network.WebSocketSession;
 import xyz.noark.network.handler.WebsocketServerHandler;
 
 /**
@@ -45,17 +43,13 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 	private WebsocketServerHandler websocketServerHandler;
 
 	@Override
-	protected void build(ChannelPipeline pipeline) {
+	public void handle(ChannelHandlerContext ctx) {
 		logger.debug("WebSocket链接...");
+		ChannelPipeline pipeline = ctx.pipeline();
 		pipeline.addLast(new HttpServerCodec());
 		pipeline.addLast(new ChunkedWriteHandler());
 		pipeline.addLast(new HttpObjectAggregator(65535));
 		pipeline.addLast(new WebSocketServerProtocolHandler(websocketPath));
 		pipeline.addLast(websocketServerHandler);
-	}
-
-	@Override
-	protected Session createSession(ChannelHandlerContext ctx, boolean encrypt, byte[] secretKey) {
-		return new WebSocketSession(ctx.channel(), encrypt, secretKey);
 	}
 }

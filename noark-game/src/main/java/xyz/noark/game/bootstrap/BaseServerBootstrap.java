@@ -41,12 +41,10 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	@Override
 	protected void onStart() {
 		// 0、线程模型
-		threadModular = modularManager.getModular(Modular.THREAD_MODULAR);
-		threadModular.ifPresent(v -> v.init());
+		this.initThreadModular();
 
 		// 1、DB检测与缓存初始化
-		dataModular = modularManager.getModular(Modular.DATA_MODULAR);
-		dataModular.ifPresent(v -> initDataModular(v));
+		this.initDataModular();
 
 		// 2、重载所有策划模板数据.
 		ioc.get(ReloadManager.class).reload(true);
@@ -55,25 +53,54 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 		ioc.invokeCustomAnnotationMethod(PostConstruct.class);
 
 		// 4、延迟事件动起来.
-		eventModular = modularManager.getModular(Modular.EVENT_MODULAR);
-		eventModular.ifPresent(v -> v.init());
+		this.initEventModular();
 
-		// HTTP服务
-		httpModular = modularManager.getModular(Modular.HTTP_MODULAR);
-		httpModular.ifPresent(v -> v.init());
+		// 5、HTTP服务
+		this.initHttpModular();
 
-		// 对外网络...
+		// 6、对外网络...
 		this.initNetworkModular();
 	}
 
+	/**
+	 * 初始化网络模块
+	 */
 	protected void initNetworkModular() {
 		nettyServer = ioc.get(NettyServer.class);
 		nettyServer.startup();
 	}
 
-	protected void initDataModular(Modular modular) {
-		modular.init();
+	/**
+	 * 初始化HTTP服务模块
+	 */
+	protected void initHttpModular() {
+		httpModular = modularManager.getModular(Modular.HTTP_MODULAR);
+		httpModular.ifPresent(v -> v.init());
+	}
+
+	/**
+	 * 初始化事件模块
+	 */
+	protected void initEventModular() {
+		eventModular = modularManager.getModular(Modular.EVENT_MODULAR);
+		eventModular.ifPresent(v -> v.init());
+	}
+
+	/**
+	 * 初始化数据模块
+	 */
+	protected void initDataModular() {
+		dataModular = modularManager.getModular(Modular.DATA_MODULAR);
+		dataModular.ifPresent(v -> v.init());
 		ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);
+	}
+
+	/**
+	 * 初始化线程模块
+	 */
+	protected void initThreadModular() {
+		threadModular = modularManager.getModular(Modular.THREAD_MODULAR);
+		threadModular.ifPresent(v -> v.init());
 	}
 
 	@Override
@@ -84,16 +111,24 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 	@Override
 	protected void onStop() {
 		// 停止对外网络
-		nettyServer.shutdown();
+		if (nettyServer != null) {
+			nettyServer.shutdown();
+		}
 		// 停止HTTP服务
-		httpModular.ifPresent(v -> v.destroy());
+		if (httpModular != null) {
+			httpModular.ifPresent(v -> v.destroy());
+		}
 		// 停止延迟任务调度
-		eventModular.ifPresent(v -> v.destroy());
-
+		if (eventModular != null) {
+			eventModular.ifPresent(v -> v.destroy());
+		}
 		// 等待所有任务处理完
-		threadModular.ifPresent(v -> v.destroy());
-
+		if (threadModular != null) {
+			threadModular.ifPresent(v -> v.destroy());
+		}
 		// 保存数据
-		dataModular.ifPresent(v -> v.destroy());
+		if (dataModular != null) {
+			dataModular.ifPresent(v -> v.destroy());
+		}
 	}
 }

@@ -13,10 +13,13 @@
  */
 package xyz.noark.network.handler;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
+import xyz.noark.network.SocketSession;
 
 /**
  * Socket服务器处理类.
@@ -31,5 +34,10 @@ public class SocketServerHandler extends AbstractServerHandler<NetworkPacket> {
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket packet) {
 		this.dispatchPacket(ctx, packet);
+	}
+
+	@Override
+	protected Session createSession(Channel channel) {
+		return new SocketSession(channel, encrypt, secretKey);
 	}
 }

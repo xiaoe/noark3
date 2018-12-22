@@ -11,39 +11,31 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.network;
-
-import xyz.noark.core.lang.ByteArray;
+package xyz.noark.core.ioc;
 
 /**
- * 封包的编解码.
- * <p>
- * 封包是最外面的那个，协议是内部那个具体对象.
- * 
- * @since 3.0
+ * IOC容器持有类.
+ *
+ * @since 3.2.1
  * @author 小流氓(176543888@qq.com)
  */
-public interface PacketCodec {
+public class IocHolder {
+	private static Ioc ioc;
+
+	private IocHolder() {}
 
 	/**
-	 * 解码为协议对象.
+	 * 获取IOC容器.
 	 * <p>
-	 * 这里其实就是封包打开后的内容转协议
+	 * 常规用不上这个方法，可以方便脚本获取一些服务
 	 * 
-	 * @param <T> 类型
-	 * @param bytes 字节数组
-	 * @param klass 协议类
-	 * @return 协议对象
+	 * @return IOC容器
 	 */
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass);
+	public static Ioc getIoc() {
+		return ioc;
+	}
 
-	/**
-	 * 这步是协议转化封包.
-	 * <p>
-	 * 这里没有独立出来协议先转封包内容，直接一步到位了.
-	 * 
-	 * @param protocal 网络协议
-	 * @return 封包字节数组
-	 */
-	public ByteArray encodePacket(NetworkProtocal protocal);
+	static void setIoc(Ioc ioc) {
+		IocHolder.ioc = ioc;
+	}
 }

@@ -23,7 +23,7 @@ import xyz.noark.core.lang.ByteArray;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public interface Session {
+public interface Session extends SessionAttrMap {
 
 	/**
 	 * 获取Session的ID.
@@ -70,6 +70,13 @@ public interface Session {
 	public void send(ByteArray packet);
 
 	/**
+	 * 发送一个网络协议
+	 * 
+	 * @param networkProtocal 网络协议
+	 */
+	public void send(NetworkProtocal networkProtocal);
+
+	/**
 	 * 获取当前链接状态.
 	 * 
 	 * @return 链接状态
@@ -89,6 +96,11 @@ public interface Session {
 	 * @return 玩家ID
 	 */
 	public Serializable getPlayerId();
+
+	/**
+	 * 清除账号和角色ID，用于顶号后解绑
+	 */
+	public void clearUidAndPlayerId();
 
 	/**
 	 * 获取封包统计情况.

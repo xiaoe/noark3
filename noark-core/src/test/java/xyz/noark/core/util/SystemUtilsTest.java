@@ -17,8 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import xyz.noark.core.util.SystemUtils;
-
 /**
  * 系统相关工具类测试.
  *
@@ -30,5 +28,6 @@ public class SystemUtilsTest {
 	@Test
 	public void test() {
 		assertTrue(SystemUtils.IS_OS_WINDOWS);
+		assertTrue(SystemUtils.getPid() > 0);
 	}
 }

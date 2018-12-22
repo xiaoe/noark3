@@ -31,8 +31,8 @@ class NoarkInitializer {
 	/**
 	 * 初始化Noark.
 	 * 
-	 * @param klass
-	 * @param args
+	 * @param klass 启动引导类
+	 * @param args Main方法的启动参数
 	 */
 	public void init(Class<? extends ServerBootstrap> klass, String... args) {
 		// 载入配置文件...
@@ -41,7 +41,7 @@ class NoarkInitializer {
 		// 初始化日志系统
 		LogManager.init(EnvConfigHolder.getProperties());
 
-		// 初始化IOC容器.
+		// 初始化启动引导程序，参考ServerBootstrap的具体实现
 		ClassUtils.newInstance(klass).start();
 	}
 
