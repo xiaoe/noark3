@@ -24,6 +24,12 @@ import java.util.concurrent.TimeUnit;
  * @author 小流氓(176543888@qq.com)
  */
 public class DateUtils {
+	/** 每秒有1000毫秒 */
+	public static final int MILLISECOND_PER_SECOND = 1000;
+	/** 每分钟有60秒 */
+	public static final int SECOND_PER_MINUTE = 60;
+	/** 每小时有60分钟 */
+	public static final int MINUTE_PER_HOUR = 60;
 
 	/**
 	 * 判断两个日期时间是否是同一天 。
@@ -255,5 +261,33 @@ public class DateUtils {
 	 */
 	public static long diffSeconds(Date date1, Date date2) {
 		return toSeconds(date1) - toSeconds(date2);
+	}
+
+	/**
+	 * 将一个秒数格式化为一个时间格式 HH:mm:ss
+	 * <p>
+	 * 游戏中规则显示，用于格式参数等格式秒数
+	 * 
+	 * @param seconds 一个毫秒数
+	 * @return 时间格式 HH:mm:ss
+	 */
+	public static String formatTime(long seconds) {
+		if (seconds <= 0) {
+			return "00:00:00";
+		}
+		// 秒数
+		int second = (int) (seconds % SECOND_PER_MINUTE);
+		seconds = seconds / SECOND_PER_MINUTE;
+		// 分钟
+		int minute = (int) (seconds % MINUTE_PER_HOUR);
+		seconds = seconds / MINUTE_PER_HOUR;
+		// 最后剩的都是小时
+		long hour = seconds;
+
+		StringBuilder sb = new StringBuilder(StringUtils.asciiSizeInBytes(hour) + 6);
+		sb.append(hour < 10 ? "0" : "").append(hour).append(":");
+		sb.append(minute < 10 ? "0" : "").append(minute).append(":");
+		sb.append(second < 10 ? "0" : "").append(second);
+		return sb.toString();
 	}
 }
