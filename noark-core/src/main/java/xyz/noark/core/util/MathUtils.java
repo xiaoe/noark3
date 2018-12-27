@@ -169,4 +169,44 @@ public class MathUtils {
 	public static boolean adjacent(Point p1, Point p2) {
 		return adjacent(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
+
+	/**
+	 * 向下取整，并返回int值.
+	 * 
+	 * @param a 一个带有小数的数值
+	 * @return 返回向下取整后的int值
+	 */
+	public static int floorInt(double a) {
+		return (int) Math.floor(a);
+	}
+
+	/**
+	 * 向下取整，并返回long值.
+	 * 
+	 * @param a 一个带有小数的数值
+	 * @return 返回向下取整后的long值
+	 */
+	public static long floorLong(double a) {
+		return (long) Math.floor(a);
+	}
+
+	/**
+	 * 向上取整，并返回int值.
+	 * 
+	 * @param a 一个带有小数的数值
+	 * @return 返回向上取整后的int值
+	 */
+	public static int ceilInt(double a) {
+		return (int) Math.ceil(a);
+	}
+
+	/**
+	 * 向上取整，并返回long值.
+	 * 
+	 * @param a 一个带有小数的数值
+	 * @return 返回向上取整后的long值
+	 */
+	public static long ceilLong(double a) {
+		return (long) Math.ceil(a);
+	}
 }
