@@ -13,6 +13,9 @@
  */
 package xyz.noark.core.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import xyz.noark.core.lang.Point;
 
 /**
@@ -208,5 +211,61 @@ public class MathUtils {
 	 */
 	public static long ceilLong(double a) {
 		return (long) Math.ceil(a);
+	}
+
+	/**
+	 * 格式化小数位数的方法.
+	 * <p>
+	 * 采用了{@link BigDecimal#setScale(int, RoundingMode)}方式来保留小数位数<br>
+	 * 默认舍入方式为4舍5入, 参考{@link RoundingMode#HALF_UP}
+	 * 
+	 * @param value 原始值
+	 * @param newScale 保留小数位数
+	 * @return 返回要被保留指定小数位数的值.
+	 */
+	public static float formatScale(float value, int newScale) {
+		return formatScale(value, newScale, RoundingMode.HALF_UP);
+	}
+
+	/**
+	 * 格式化小数位数的方法.
+	 * <p>
+	 * 采用了{@link BigDecimal#setScale(int, RoundingMode)}方式来保留小数位数
+	 * 
+	 * @param value 原始值
+	 * @param newScale 保留小数位数
+	 * @param mode 被保留位数后舍入方式，参考{@link RoundingMode}
+	 * @return 返回要被保留指定小数位数的值.
+	 */
+	public static float formatScale(float value, int newScale, RoundingMode mode) {
+		return new BigDecimal(value).setScale(newScale, mode).floatValue();
+	}
+
+	/**
+	 * 格式化小数位数的方法.
+	 * <p>
+	 * 采用了{@link BigDecimal#setScale(int, RoundingMode)}方式来保留小数位数<br>
+	 * 默认舍入方式为4舍5入, 参考{@link RoundingMode#HALF_UP}
+	 * 
+	 * @param value 原始值
+	 * @param newScale 保留小数位数
+	 * @return 返回要被保留指定小数位数的值.
+	 */
+	public static double formatScale(double value, int newScale) {
+		return formatScale(value, newScale, RoundingMode.HALF_UP);
+	}
+
+	/**
+	 * 格式化小数位数的方法.
+	 * <p>
+	 * 采用了{@link BigDecimal#setScale(int, RoundingMode)}方式来保留小数位数
+	 * 
+	 * @param value 原始值
+	 * @param newScale 保留小数位数
+	 * @param mode 被保留位数后舍入方式，参考{@link RoundingMode}
+	 * @return 返回要被保留指定小数位数的值.
+	 */
+	public static double formatScale(double value, int newScale, RoundingMode mode) {
+		return new BigDecimal(value).setScale(newScale, mode).doubleValue();
 	}
 }
