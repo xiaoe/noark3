@@ -31,7 +31,7 @@ public class NetworkProtocal {
 		this.protocal = protocal;
 	}
 
-	void setReqId(int reqId) {
+	public void setReqId(int reqId) {
 		this.reqId = reqId;
 	}
 
