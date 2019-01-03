@@ -251,19 +251,39 @@ public class DateUtils {
 	 * @return 返回这个日期所对应的秒数
 	 */
 	public static long toSeconds(Date date) {
-		return (date.getTime() + TimeZone.getDefault().getRawOffset()) / MILLISECOND_PER_SECOND;
+		return toSeconds(date.getTime());
+	}
+
+	/**
+	 * 将毫秒数转化为秒数.
+	 * <p>
+	 * 为了代码里不要到处出现<code>{@link Date#getTime()} / 1000</code>的情况<br>
+	 * 
+	 * @param milliseconds 毫秒数
+	 * @return 返回这个毫秒数所对应的秒数
+	 */
+	public static long toSeconds(long milliseconds) {
+		return milliseconds / MILLISECOND_PER_SECOND;
 	}
 
 	/**
 	 * 将Date对象转化为天数.
-	 * <p>
-	 * 已忽略了时区的影响
 	 * 
 	 * @param date Date日期
 	 * @return 返回这个日期所对应的天数
 	 */
 	public static long toDays(Date date) {
-		return (date.getTime() + TimeZone.getDefault().getRawOffset()) / (1L * MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR * HOUR_PER_DAY);
+		return toDays(date.getTime());
+	}
+
+	/**
+	 * 将毫秒数转化为天数.
+	 * 
+	 * @param milliseconds 毫秒数
+	 * @return 返回这个毫秒数所对应的天数
+	 */
+	public static long toDays(long milliseconds) {
+		return milliseconds / (1L * MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR * HOUR_PER_DAY);
 	}
 
 	/**
@@ -274,18 +294,22 @@ public class DateUtils {
 	 * @return 秒数差，如果时间2大于时间1，有可能会是负值噢.
 	 */
 	public static long diffSeconds(Date date1, Date date2) {
+		// 只是计算两个时间秒差，不需要对时区处理，要多一起多,要少一起少
 		return toSeconds(date1) - toSeconds(date2);
 	}
 
 	/**
 	 * 计算两个Date对象之间相差多少天.
+	 * <p>
+	 * 由于使用毫秒计算的方式，所以计算天数需要处理时区问题...
 	 * 
 	 * @param date1 时间一
 	 * @param date2 时间二
 	 * @return 天数差，如果时间2大于时间1，有可能会是负值噢.
 	 */
 	public static long diffDays(Date date1, Date date2) {
-		return toDays(date1) - toDays(date2);
+		final int offset = TimeZone.getDefault().getRawOffset();
+		return toDays(date1.getTime() + offset) - toDays(date2.getTime() + offset);
 	}
 
 	/**

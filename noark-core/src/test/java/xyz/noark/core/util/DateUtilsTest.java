@@ -60,13 +60,10 @@ public class DateUtilsTest {
 	public void testToSeconds() throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 		Date d1 = sdf.parse("2018-12-12 23:59:59:888");
-		assertTrue(1544659199 == DateUtils.toSeconds(d1));
-
 		Date d2 = sdf.parse("2018-12-13 00:00:00:888");
-		assertTrue(1544659200 == DateUtils.toSeconds(d2));
-
 		Date d3 = sdf.parse("2018-12-13 00:00:01:888");
-		assertTrue(1544659201 == DateUtils.toSeconds(d3));
+		assertTrue(DateUtils.toSeconds(d1) + 1 == DateUtils.toSeconds(d2));
+		assertTrue(DateUtils.toSeconds(d2) + 1 == DateUtils.toSeconds(d3));
 	}
 
 	@Test
