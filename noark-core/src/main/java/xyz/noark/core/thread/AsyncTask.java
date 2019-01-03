@@ -58,7 +58,7 @@ public class AsyncTask implements Runnable {
 		} catch (Throwable e) {
 			logger.error("handle {} exception.{}", command.code(), e);
 			if (networkListener != null) {
-				networkListener.handleException(e);
+				networkListener.handleException(session, reqId, e);
 			}
 		} finally {
 			taskQueue.complete();// 后继逻辑...
