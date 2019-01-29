@@ -72,4 +72,16 @@ public class MapUtils {
 		}
 		return v;
 	}
+
+	/**
+	 * 将第二个Map加到第一个Map上.
+	 * <p>
+	 * 如果K为对象注意要重写HashCode与Equips方法
+	 * 
+	 * @param source 存结果的Map对象.
+	 * @param value 要加的Map对象
+	 */
+	public static <K> void add(Map<K, Integer> source, Map<K, Integer> value) {
+		value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> v1 + v2));
+	}
 }
