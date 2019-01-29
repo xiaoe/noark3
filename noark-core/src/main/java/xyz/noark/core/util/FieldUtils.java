@@ -208,13 +208,13 @@ public class FieldUtils {
 			TplAttr attr = field.getAnnotation(TplAttr.class);
 			if (attr != null) {
 				if (!Modifier.isStatic(field.getModifiers())) {
-					throw new ServerBootstrapException(target.getClass() + " 的 " + field.getName() + " 不是静态属性，无法注入.");
+					throw new ServerBootstrapException(target.getName() + " 的 " + field.getName() + " 不是静态属性，无法注入.");
 				}
 				// 获取配置，准备注入
 				T template = templates.get(attr.name());
 				if (template == null) {
 					if (attr.required()) {
-						throw new ServerBootstrapException(target.getClass() + " 的 " + field.getName() + " 为必选参数.");
+						throw new ServerBootstrapException(target.getName() + " 的 " + field.getName() + " 为必选参数.");
 					}
 				}
 				// 有需求，也有配置，那就准备注入
