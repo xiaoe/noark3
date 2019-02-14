@@ -51,6 +51,7 @@ public class MapUtils {
 	 * 10=100<br>
 	 * 如此配置，如果参数为6，应该返回是30，如果参数是12，应该返回100
 	 * 
+	 * @param <V> 值的类型
 	 * @param map 配置Map
 	 * @param key 指定Key
 	 * @return 只要配置了值肯定会返回一个最近的值...
@@ -78,6 +79,7 @@ public class MapUtils {
 	 * <p>
 	 * 如果K为对象注意要重写HashCode与Equips方法
 	 * 
+	 * @param <K> 键的类型
 	 * @param source 存结果的Map对象.
 	 * @param value 要加的Map对象
 	 */
