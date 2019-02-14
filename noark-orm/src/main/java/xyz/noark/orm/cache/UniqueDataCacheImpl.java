@@ -85,14 +85,7 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 
 	@Override
 	public void delete(T entity) {
-		final K entityId = this.getPrimaryIdValue(entity);
-
-		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
-		if (wrapper == null || wrapper.getEntity() == null) {
-			throw new DataException("删除了一个不存在的Key:" + entityId);
-		} else {
-			wrapper.setEntity(null);
-		}
+		this.delete(this.getPrimaryIdValue(entity));
 	}
 
 	@Override
@@ -158,6 +151,18 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 			result.add(entity);
 		}
 		return result;
+	}
+
+	@Override
+	public T delete(K entityId) {
+		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
+		if (wrapper == null || wrapper.getEntity() == null) {
+			throw new DataException("删除了一个不存在的Key:" + entityId);
+		} else {
+			T result = wrapper.getEntity();
+			wrapper.setEntity(null);
+			return result;
+		}
 	}
 
 	@Override
