@@ -13,7 +13,9 @@
  */
 package xyz.noark.core.lang;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.concurrent.ThreadLocalRandom;
@@ -292,5 +294,14 @@ public class IntArrayList implements IntList, RandomAccess {
 		for (int i = 0; i < size; i++) {
 			action.accept(elementData[i]);
 		}
+	}
+
+	@Override
+	public List<Integer> toList() {
+		final List<Integer> result = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			result.add(Integer.valueOf(elementData[i]));
+		}
+		return result;
 	}
 }

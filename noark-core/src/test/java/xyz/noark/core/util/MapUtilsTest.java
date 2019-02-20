@@ -36,7 +36,7 @@ public class MapUtilsTest {
 
 	@Test
 	public void testGetOrMaxKey() {
-		Map<Integer, Integer> map = new HashMap<>();
+		Map<Integer, Integer> map = new HashMap<>(16);
 		map.put(1, 10);
 		map.put(2, 15);
 		map.put(3, 20);
