@@ -18,7 +18,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.ModuleController;
 import xyz.noark.core.annotation.controller.EventListener;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.HttpHandler;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.ioc.NoarkIoc;
@@ -39,14 +41,25 @@ import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
  * @author 小流氓(176543888@qq.com)
  */
 public class ControllerBeanDefinition extends DefaultBeanDefinition {
-	private final Controller controller;
+	private final ExecThreadGroup threadGroup;
+	/** 控制器隶属哪个主控制器 */
+	private final Class<?> controllerMasterClass;
 	private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
 	private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
 	private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
 
 	public ControllerBeanDefinition(Class<?> klass, Controller controller) {
+		this(klass, controller.threadGroup(), klass);
+	}
+
+	public ControllerBeanDefinition(Class<?> klass, ModuleController controller) {
+		this(klass, ExecThreadGroup.ModuleThreadGroup, controller.master());
+	}
+
+	private ControllerBeanDefinition(Class<?> klass, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
 		super(klass);
-		this.controller = controller;
+		this.threadGroup = threadGroup;
+		this.controllerMasterClass = klass;
 	}
 
 	@Override
@@ -83,18 +96,18 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	/** 分析HTTP处理入口. */
 	private void doAnalysisHttpHandler(NoarkIoc noarkIoc) {
 		final HttpMethodManager manager = HttpMethodManager.getInstance();
-		hmds.forEach(hmd -> manager.resetHttpHandler(new HttpMethodWrapper(methodAccess, single, hmd, controller)));
+		hmds.forEach(hmd -> manager.resetHttpHandler(new HttpMethodWrapper(methodAccess, single, hmd, threadGroup, controllerMasterClass)));
 	}
 
 	/** 分析事件处理入口. */
 	private void doAnalysisEventHandler(NoarkIoc ioc) {
 		final EventMethodManager manager = EventMethodManager.getInstance();
-		emds.forEach(emd -> manager.resetEventHander(new EventMethodWrapper(methodAccess, single, emd, controller)));
+		emds.forEach(emd -> manager.resetEventHander(new EventMethodWrapper(methodAccess, single, emd, threadGroup, controllerMasterClass)));
 	}
 
 	/** 分析一下封包处理方法. */
 	private void doAnalysisPacketHandler(NoarkIoc noarkIoc) {
 		final PacketMethodManager manager = PacketMethodManager.getInstance();
-		pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, controller)));
+		pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, threadGroup, controllerMasterClass)));
 	}
 }

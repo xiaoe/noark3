@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 
-import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.ByteArrayParamWrapper;
@@ -49,8 +49,8 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
 
-	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, Controller controller) {
-		super(methodAccess, single, md.getMethodIndex(), controller, md.getOrder(), "protocal(opcode=" + md.getOpcode() + ")");
+	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+		super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocal(opcode=" + md.getOpcode() + ")");
 		this.state = md.getState();
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();

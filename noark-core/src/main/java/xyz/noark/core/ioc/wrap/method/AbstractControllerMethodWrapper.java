@@ -13,7 +13,6 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
-import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.reflectasm.MethodAccess;
@@ -25,16 +24,20 @@ import xyz.noark.reflectasm.MethodAccess;
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper {
-	protected final Controller controller;
-	protected boolean printLog = false;
+	/** 执行线程组 */
+	protected final ExecThreadGroup threadGroup;
+	/** 如果是模块串型，模块唯一标识 */
 	protected final String module;
-	private final String logCode;
 
-	public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Controller controller, Order order, String logCode) {
+	/** 可执行方法的两个属性 */
+	private final String logCode;
+	protected boolean printLog = false;
+
+	public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, ExecThreadGroup threadGroup, String module, Order order, String logCode) {
 		super(methodAccess, single, methodIndex, order);
-		this.controller = controller;
+		this.module = module;
 		this.logCode = logCode;
-		this.module = single.getClass().getSimpleName();
+		this.threadGroup = threadGroup;
 	}
 
 	public boolean isPrintLog() {
@@ -46,7 +49,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
 	}
 
 	public ExecThreadGroup threadGroup() {
-		return controller.threadGroup();
+		return threadGroup;
 	}
 
 	public String getModule() {

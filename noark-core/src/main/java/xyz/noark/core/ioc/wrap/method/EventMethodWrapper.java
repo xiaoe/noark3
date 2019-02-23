@@ -13,7 +13,7 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
-import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
 import xyz.noark.reflectasm.MethodAccess;
@@ -28,8 +28,8 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper {
 	private final Class<? extends Event> eventClass;
 	private final boolean async;
 
-	public EventMethodWrapper(MethodAccess methodAccess, Object single, EventMethodDefinition emd, Controller controller) {
-		super(methodAccess, single, emd.getMethodIndex(), controller, emd.getOrder(), "event(" + emd.getEventClass().getSimpleName() + ")");
+	public EventMethodWrapper(MethodAccess methodAccess, Object single, EventMethodDefinition emd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+		super(methodAccess, single, emd.getMethodIndex(), threadGroup, controllerMasterClass.getName(), emd.getOrder(), "event(" + emd.getEventClass().getSimpleName() + ")");
 		this.eventClass = emd.getEventClass();
 		this.printLog = emd.isPrintLog();
 		this.async = emd.isAsync();
