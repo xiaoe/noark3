@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.junit.Test;
@@ -84,5 +85,12 @@ public class DateUtilsTest {
 			Date d2 = sdf.parse("2018-12-31 00:00:00:000");
 			assertTrue(DateUtils.diffDays(d1, d2) == -1);
 		}
+	}
+
+	@Test
+	public void testToSecondsByStartOfDay() throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		Date d1 = sdf.parse("2019-02-14 00:00:00:000");
+		assertTrue(DateUtils.toSeconds(d1) == DateUtils.toSecondsByStartOfDay(LocalDate.of(2019, 02, 14)));
 	}
 }

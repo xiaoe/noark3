@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.util;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -267,13 +269,23 @@ public class DateUtils {
 	}
 
 	/**
+	 * 获取指定日期那天的开始时间并转化为秒数
+	 * 
+	 * @param localDate 指定日期
+	 * @return 返回指定日期那天的开始时间并转化为秒数
+	 */
+	public static long toSecondsByStartOfDay(LocalDate localDate) {
+		return localDate.atStartOfDay(ZoneOffset.systemDefault()).toEpochSecond();
+	}
+
+	/**
 	 * 将Date对象转化为天数.
 	 * 
 	 * @param date Date日期
 	 * @return 返回这个日期所对应的天数
 	 */
 	public static long toDays(Date date) {
-		return toDays(date.getTime());
+		return toDays(date.getTime() + TimeZone.getDefault().getRawOffset());
 	}
 
 	/**
