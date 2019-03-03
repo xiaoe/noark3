@@ -13,9 +13,11 @@
  */
 package xyz.noark.core.util;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.TimeZone;
 
 /**
  * 时间相关操作工具类.
@@ -24,6 +26,14 @@ import java.util.concurrent.TimeUnit;
  * @author 小流氓(176543888@qq.com)
  */
 public class DateUtils {
+	/** 每秒有1000毫秒 */
+	public static final int MILLISECOND_PER_SECOND = 1000;
+	/** 每分钟有60秒 */
+	public static final int SECOND_PER_MINUTE = 60;
+	/** 每小时有60分钟 */
+	public static final int MINUTE_PER_HOUR = 60;
+	/** 每天有24小时 */
+	public static final int HOUR_PER_DAY = 24;
 
 	/**
 	 * 判断两个日期时间是否是同一天 。
@@ -237,13 +247,55 @@ public class DateUtils {
 	/**
 	 * 将Date对象转化为秒数.
 	 * <p>
-	 * 为了代码里不要到处出现<code>{@link Date#getTime()} / 1000</code>的情况
+	 * 为了代码里不要到处出现<code>{@link Date#getTime()} / 1000</code>的情况<br>
 	 * 
 	 * @param date Date日期
 	 * @return 返回这个日期所对应的秒数
 	 */
 	public static long toSeconds(Date date) {
-		return TimeUnit.MILLISECONDS.toSeconds(date.getTime());
+		return toSeconds(date.getTime());
+	}
+
+	/**
+	 * 将毫秒数转化为秒数.
+	 * <p>
+	 * 为了代码里不要到处出现<code>{@link Date#getTime()} / 1000</code>的情况<br>
+	 * 
+	 * @param milliseconds 毫秒数
+	 * @return 返回这个毫秒数所对应的秒数
+	 */
+	public static long toSeconds(long milliseconds) {
+		return milliseconds / MILLISECOND_PER_SECOND;
+	}
+
+	/**
+	 * 获取指定日期那天的开始时间并转化为秒数
+	 * 
+	 * @param localDate 指定日期
+	 * @return 返回指定日期那天的开始时间并转化为秒数
+	 */
+	public static long toSecondsByStartOfDay(LocalDate localDate) {
+		return localDate.atStartOfDay(ZoneOffset.systemDefault()).toEpochSecond();
+	}
+
+	/**
+	 * 将Date对象转化为天数.
+	 * 
+	 * @param date Date日期
+	 * @return 返回这个日期所对应的天数
+	 */
+	public static long toDays(Date date) {
+		return toDays(date.getTime() + TimeZone.getDefault().getRawOffset());
+	}
+
+	/**
+	 * 将毫秒数转化为天数.
+	 * 
+	 * @param milliseconds 毫秒数
+	 * @return 返回这个毫秒数所对应的天数
+	 */
+	public static long toDays(long milliseconds) {
+		return milliseconds / (1L * MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR * HOUR_PER_DAY);
 	}
 
 	/**
@@ -254,6 +306,49 @@ public class DateUtils {
 	 * @return 秒数差，如果时间2大于时间1，有可能会是负值噢.
 	 */
 	public static long diffSeconds(Date date1, Date date2) {
+		// 只是计算两个时间秒差，不需要对时区处理，要多一起多,要少一起少
 		return toSeconds(date1) - toSeconds(date2);
+	}
+
+	/**
+	 * 计算两个Date对象之间相差多少天.
+	 * <p>
+	 * 由于使用毫秒计算的方式，所以计算天数需要处理时区问题...
+	 * 
+	 * @param date1 时间一
+	 * @param date2 时间二
+	 * @return 天数差，如果时间2大于时间1，有可能会是负值噢.
+	 */
+	public static long diffDays(Date date1, Date date2) {
+		final int offset = TimeZone.getDefault().getRawOffset();
+		return toDays(date1.getTime() + offset) - toDays(date2.getTime() + offset);
+	}
+
+	/**
+	 * 将一个秒数格式化为一个时间格式 HH:mm:ss
+	 * <p>
+	 * 游戏中规则显示，用于格式参数等格式秒数
+	 * 
+	 * @param seconds 一个毫秒数
+	 * @return 时间格式 HH:mm:ss
+	 */
+	public static String formatTime(long seconds) {
+		if (seconds <= 0) {
+			return "00:00:00";
+		}
+		// 秒数
+		int second = (int) (seconds % SECOND_PER_MINUTE);
+		seconds = seconds / SECOND_PER_MINUTE;
+		// 分钟
+		int minute = (int) (seconds % MINUTE_PER_HOUR);
+		seconds = seconds / MINUTE_PER_HOUR;
+		// 最后剩的都是小时
+		long hour = seconds;
+
+		StringBuilder sb = new StringBuilder(StringUtils.asciiSizeInBytes(hour) + 6);
+		sb.append(hour < 10 ? "0" : "").append(hour).append(":");
+		sb.append(minute < 10 ? "0" : "").append(minute).append(":");
+		sb.append(second < 10 ? "0" : "").append(second);
+		return sb.toString();
 	}
 }

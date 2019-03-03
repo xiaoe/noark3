@@ -42,5 +42,5 @@ public abstract class AbstractNetworkListener implements NetworkListener {
 	}
 
 	@Override
-	public void handleException(Throwable e) {}
+	public void handleException(Session session, int reqId, Throwable e) {}
 }

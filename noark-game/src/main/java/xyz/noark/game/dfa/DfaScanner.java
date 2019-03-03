@@ -199,7 +199,7 @@ public class DfaScanner {
 			// 单字匹配
 			if (node.isLast()) {
 				mark = true;
-				markIndex = 0;
+				markIndex = i;
 			}
 			// 当前检查字符的备份
 			int backups = cur;

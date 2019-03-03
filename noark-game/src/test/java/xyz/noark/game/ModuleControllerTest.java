@@ -11,39 +11,20 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.network;
+package xyz.noark.game;
+
+import xyz.noark.core.annotation.ModuleController;
 
 /**
- * 网络协议.
- * <p>
- * 就是一个协议编号和一个协议对象
- * 
- * @since 3.2.2
+ * 模块入口测试.
+ *
+ * @since 3.2.4
  * @author 小流氓(176543888@qq.com)
  */
-public class NetworkProtocal {
-	private final Integer opcode;
-	private final Object protocal;
-	private int reqId;
+@ModuleController(master = GameServerApplication.class)
+public class ModuleControllerTest {
 
-	public NetworkProtocal(Integer opcode, Object protocal) {
-		this.opcode = opcode;
-		this.protocal = protocal;
-	}
-
-	public void setReqId(int reqId) {
-		this.reqId = reqId;
-	}
-
-	public int getReqId() {
-		return reqId;
-	}
-
-	public Integer getOpcode() {
-		return opcode;
-	}
-
-	public Object getProtocal() {
-		return protocal;
-	}
+	
+	
+	
 }

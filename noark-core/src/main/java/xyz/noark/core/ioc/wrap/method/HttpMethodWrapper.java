@@ -17,7 +17,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.RequestParam;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
@@ -36,8 +36,8 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
 
-	public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, Controller controller) {
-		super(methodAccess, single, method.getMethodIndex(), controller, method.getOrder(), "http(" + method.uri() + ")");
+	public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+		super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.uri() + ")");
 		this.uri = method.uri();
 		this.deprecated = method.isDeprecated();
 

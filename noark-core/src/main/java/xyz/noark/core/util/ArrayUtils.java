@@ -52,67 +52,190 @@ public class ArrayUtils {
 		return joinedArray;
 	}
 
+	/**
+	 * 判定Object数组是否为空(null或长度为0).
+	 * 
+	 * @param array Object数组
+	 * @return 如果为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isEmpty(final Object[] array) {
 		return array == null || array.length == 0;
 	}
 
+	/**
+	 * 判定Object数组是否不为空(null或长度为0).
+	 * 
+	 * @param array Object数组
+	 * @return 如果不为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isNotEmpty(final Object[] array) {
 		return !isEmpty(array);
 	}
 
+	/**
+	 * 判定boolean数组是否为空(null或长度为0).
+	 * 
+	 * @param array boolean数组
+	 * @return 如果为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isEmpty(final boolean[] array) {
 		return array == null || array.length == 0;
 	}
 
+	/**
+	 * 判定boolean数组是否不为空(null或长度为0).
+	 * 
+	 * @param array boolean数组
+	 * @return 如果不为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isNotEmpty(final boolean[] array) {
 		return !isEmpty(array);
 	}
 
+	/**
+	 * 判定int数组是否为空(null或长度为0).
+	 * 
+	 * @param array int数组
+	 * @return 如果为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isEmpty(final int[] array) {
 		return array == null || array.length == 0;
 	}
 
+	/**
+	 * 判定int数组是否不为空(null或长度为0).
+	 * 
+	 * @param array int数组
+	 * @return 如果不为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isNotEmpty(final int[] array) {
 		return !isEmpty(array);
 	}
 
+	/**
+	 * 判定long数组是否为空(null或长度为0).
+	 * 
+	 * @param array long数组
+	 * @return 如果为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isEmpty(final long[] array) {
 		return array == null || array.length == 0;
 	}
 
+	/**
+	 * 判定long数组是否不为空(null或长度为0).
+	 * 
+	 * @param array long数组
+	 * @return 如果不为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isNotEmpty(final long[] array) {
 		return !isEmpty(array);
 	}
 
+	/**
+	 * 判定float数组是否为空(null或长度为0).
+	 * 
+	 * @param array float数组
+	 * @return 如果为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isEmpty(final float[] array) {
 		return array == null || array.length == 0;
 	}
 
+	/**
+	 * 判定float数组是否不为空(null或长度为0).
+	 * 
+	 * @param array float数组
+	 * @return 如果不为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isNotEmpty(final float[] array) {
 		return !isEmpty(array);
 	}
 
+	/**
+	 * 判定double数组是否为空(null或长度为0).
+	 * 
+	 * @param array double数组
+	 * @return 如果为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isEmpty(final double[] array) {
 		return array == null || array.length == 0;
 	}
 
+	/**
+	 * 判定double数组是否不为空(null或长度为0).
+	 * 
+	 * @param array double数组
+	 * @return 如果不为空(null或长度为0)则返回true,否则返回false.
+	 */
 	public static boolean isNotEmpty(final double[] array) {
 		return !isEmpty(array);
 	}
 
+	/**
+	 * String数组转化为int数组
+	 * 
+	 * @param array String数组
+	 * @return int数组
+	 */
 	public static int[] toIntArray(String[] array) {
 		return Arrays.stream(array).mapToInt(s -> Integer.parseInt(s)).toArray();
 	}
 
+	/**
+	 * Integer数组转化为int数组
+	 * 
+	 * @param array Integer数组
+	 * @return int数组
+	 */
 	public static int[] toIntArray(Integer[] array) {
 		return Arrays.stream(array).mapToInt(Integer::intValue).toArray();
 	}
 
+	/**
+	 * String数组转化为long数组
+	 * 
+	 * @param array String数组
+	 * @return long数组
+	 */
 	public static long[] toLongArray(String[] array) {
 		return Arrays.stream(array).mapToLong(s -> Long.parseLong(s)).toArray();
 	}
 
+	/**
+	 * Long数组转化为long数组
+	 * 
+	 * @param array Long数组
+	 * @return long数组
+	 */
 	public static long[] toLongArray(Long[] array) {
 		return Arrays.stream(array).mapToLong(Long::longValue).toArray();
+	}
+
+	/**
+	 * 字符串组数转化为字节数组.
+	 * <p>
+	 * 默认使用10进制解析
+	 * 
+	 * @param array 字符串组数
+	 * @return 转化后的字节数组
+	 */
+	public static byte[] toByteArray(String[] array) {
+		return toByteArray(array, 10);
+	}
+
+	/**
+	 * 字符串组数转化为字节数组.
+	 * 
+	 * @param array 字符串组数
+	 * @param radix 角色字符串数组{@code array}时所用的进制
+	 * @return 转化后的字节数组
+	 */
+	public static byte[] toByteArray(String[] array, int radix) {
+		final byte[] data = new byte[array.length];
+		for (int i = 0; i < array.length; i++) {
+			data[i] = (byte) Integer.parseInt(array[i], radix);
+		}
+		return data;
 	}
 }

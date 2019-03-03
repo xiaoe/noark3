@@ -57,4 +57,12 @@ public class MathUtilsTest {
 		assertTrue(MathUtils.distance(0.0D, 0.0D, 3.0D, 4.0D) == 5.0D);
 		assertTrue(MathUtils.distance(Point.valueOf(0, 0), Point.valueOf(3, 4)) == 5.0D);
 	}
+
+	@Test
+	public void testFormatScale() {
+		assertTrue(MathUtils.formatScale(1.234F, 1) == 1.2F);
+		assertTrue(MathUtils.formatScale(1.254F, 1) == 1.3F);
+		assertTrue(MathUtils.formatScale(1.234D, 1) == 1.2D);
+		assertTrue(MathUtils.formatScale(1.264D, 1) == 1.3D);
+	}
 }

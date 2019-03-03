@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Configuration;
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.ModuleController;
 import xyz.noark.core.annotation.Repository;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.StaticComponent;
@@ -115,6 +116,10 @@ public class IocLoader {
 			else if (annotationType == Controller.class) {
 				analytical(klass, Controller.class.cast(annotation));
 			}
+			// 协议入口控制类(模块化)
+			else if (annotationType == ModuleController.class) {
+				analytical(klass, ModuleController.class.cast(annotation));
+			}
 
 			// 业务逻辑处理类
 			else if (annotationType == Service.class) {
@@ -154,6 +159,11 @@ public class IocLoader {
 
 	private void analytical(Class<?> klass, Service cast) {
 		beans.put(klass, new DefaultBeanDefinition(klass).init());
+	}
+
+	/** 协议入口控制类(模块化) */
+	private void analytical(Class<?> klass, ModuleController controller) {
+		beans.put(klass, new ControllerBeanDefinition(klass, controller).init());
 	}
 
 	private void analytical(Class<?> klass, Controller controller) {

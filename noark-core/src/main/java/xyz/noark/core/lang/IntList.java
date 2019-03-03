@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.lang;
 
+import java.util.List;
+
 /**
  * 一种可以直接存储原生int类型的有序的列表接口.
  * <p>
@@ -57,6 +59,13 @@ public interface IntList {
 	 * @return 包含此列表中所有元素的数组（按适当顺序）
 	 */
 	int[] toArray();
+
+	/**
+	 * 直接转为JDK的List.
+	 * 
+	 * @return JDK的List
+	 */
+	List<Integer> toList();
 
 	/**
 	 * 从列表中随机出一个元素.

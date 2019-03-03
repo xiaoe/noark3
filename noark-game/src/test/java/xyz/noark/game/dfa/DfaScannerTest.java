@@ -54,6 +54,7 @@ public class DfaScannerTest {
 		assertTrue(scanner.replace("淘宝交易").equals("**交易"));
 		assertTrue(scanner.replace("taobao交易").equals("******交易"));
 		assertTrue(scanner.replace("TaoBao交易ｔａｏｂａｏ").equals("******交易******"));
+		assertTrue(scanner.replace("淘交易宝日").equals("淘交易宝*"));
 	}
 
 	@Test
@@ -74,5 +75,13 @@ public class DfaScannerTest {
 		assertTrue(scanner.findAll("交a易TaoBao交易ｔａｏｂａｏ").size() == 2);
 		assertTrue(scanner.findAll("交易TaoooBao交易ｔａｏｂａｏ").size() == 2);
 		assertTrue(scanner.findAll("taobao交易,出售元宝").size() == 2);
+	}
+
+	@Test
+	public void testIssuesIR7R1() {
+		assertTrue(!scanner.findAll("今天真是个好日子").isEmpty());
+		assertTrue(!scanner.findAll("今日天真是个好子").isEmpty());
+		assertTrue(!scanner.findAll("日今天日真是个好子").isEmpty());
+		assertTrue(!scanner.findAll("今天真日是个好子日").isEmpty());
 	}
 }
