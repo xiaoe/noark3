@@ -13,18 +13,58 @@
  */
 package xyz.noark.core.exception;
 
+import java.io.Serializable;
+
 /**
- * 黑客异常.
+ * 黑客入侵异常.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 public class HackerException extends RuntimeException {
 	private static final long serialVersionUID = -8489906161322453868L;
+	private final Serializable playerId;
+	private final int code;
 
-	public HackerException() {}
-
+	/**
+	 * 构建一个Hacker异常.
+	 * 
+	 * @param message 异常内容
+	 */
 	public HackerException(String message) {
-		super(message);
+		this(null, message);
+	}
+
+	/**
+	 * 构建一个Hacker异常.
+	 * 
+	 * @param playerId 玩家ID
+	 * @param message 异常内容
+	 */
+	public HackerException(Serializable playerId, String message) {
+		this(playerId, 0, message);
+	}
+
+	/**
+	 * 构建一个Hacker异常.
+	 * <p>
+	 * 如果有需要国际化的情况，就把异常内容拆分为编号+参数方式
+	 * 
+	 * @param playerId 玩家ID
+	 * @param code 异常编号（国际化）
+	 * @param parameters 参数
+	 */
+	public HackerException(Serializable playerId, int code, String parameters) {
+		super(parameters);
+		this.playerId = playerId;
+		this.code = code;
+	}
+
+	public Serializable getPlayerId() {
+		return playerId;
+	}
+
+	public int getCode() {
+		return code;
 	}
 }
