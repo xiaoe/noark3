@@ -16,7 +16,6 @@ package xyz.noark.core.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import xyz.noark.core.lang.Point;
@@ -278,13 +277,14 @@ public class MathUtils {
 	 * 有N种资源，尝试抢其他的部分，但各种资源有一定的比例... <br>
 	 * 使用场景：SLG的城池掠夺资源计算
 	 * 
-	 * @param resources N种资源
+	 * @param <T> 资源类型
+	 * @param resources N种资源(参数选用LinkedHashMap，就是想按顺序优先扣前面的...)
 	 * @param max 掠夺的最大值
 	 * @param ratio 掠夺比例
 	 * @return 一种最优的掠夺结果
 	 */
-	public static Map<Integer, Long> plunder(LinkedHashMap<Integer, Long> resources, long max, Map<Integer, Integer> ratio) {
-		final Map<Integer, Long> result = new HashMap<>(resources.size());
+	public static <T> Map<T, Long> plunder(Map<T, Long> resources, long max, Map<T, Integer> ratio) {
+		final Map<T, Long> result = new HashMap<>(resources.size());
 		final long step = max / 100;
 		// 总计要抢的资源量
 		long total = max;
@@ -292,7 +292,7 @@ public class MathUtils {
 		while (total > 0) {
 			// 标识是否还有资源可以抢...
 			boolean flag = false;
-			for (Map.Entry<Integer, Long> e : resources.entrySet()) {
+			for (Map.Entry<T, Long> e : resources.entrySet()) {
 				if (e.getValue() <= 0) {
 					continue;
 				}
