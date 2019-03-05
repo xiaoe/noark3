@@ -15,6 +15,8 @@ package xyz.noark.core.util;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.LinkedHashMap;
+
 import org.junit.Test;
 
 import xyz.noark.core.lang.Point;
@@ -64,5 +66,25 @@ public class MathUtilsTest {
 		assertTrue(MathUtils.formatScale(1.254F, 1) == 1.3F);
 		assertTrue(MathUtils.formatScale(1.234D, 1) == 1.2D);
 		assertTrue(MathUtils.formatScale(1.264D, 1) == 1.3D);
+	}
+
+	@Test
+	public void testPlunder() {
+		LinkedHashMap<Integer, Long> resources = new LinkedHashMap<>();
+		resources.put(301, RandomUtils.nextLong(1, 88888));
+		resources.put(302, RandomUtils.nextLong(1, 88888));
+		resources.put(303, RandomUtils.nextLong(1, 88888));
+		resources.put(304, RandomUtils.nextLong(1, 88888));
+
+		LinkedHashMap<Integer, Integer> r = new LinkedHashMap<>();
+		r.put(301, 10);
+		r.put(302, 10);
+		r.put(303, 4);
+		r.put(304, 3);
+
+		long max = RandomUtils.nextLong(10000, 50000);
+		System.out.println("源：" + resources + "----->抢他个" + max);
+		System.out.println("抢：" + MathUtils.plunder(resources, max, r));
+		System.out.println();
 	}
 }

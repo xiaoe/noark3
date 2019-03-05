@@ -89,7 +89,7 @@ public class RandomUtils {
 	 * @param bound 最大值（不包含）
 	 * @return 返回一个指定区间的随机数字
 	 */
-	public static long nextLong(int origin, int bound) {
+	public static long nextLong(long origin, long bound) {
 		return ThreadLocalRandom.current().nextLong(origin, bound);
 	}
 

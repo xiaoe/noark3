@@ -11,23 +11,39 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game;
+package xyz.noark.core.lang;
 
-import xyz.noark.core.annotation.ModuleController;
-import xyz.noark.core.annotation.controller.PacketMapping;
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+
+import xyz.noark.core.util.ThreadUtils;
 
 /**
- * 模块入口测试.
+ * 超时Map测试用例.
  *
- * @since 3.2.4
+ * @since 3.2.5
  * @author 小流氓(176543888@qq.com)
  */
-@ModuleController(master = GameServerApplication.class)
-public class ModuleControllerTest {
+public class TimeoutHashMapTest {
 
-	@PacketMapping(opcode = 2)
-	public void test2() {
-		System.out.println("2222");
+	@Test
+	public void testGet() {
+		TimeoutHashMap<Integer, Object> map = new TimeoutHashMap<>(10, TimeUnit.MILLISECONDS, () -> create());
+		Integer key = 1;
+		Object result = map.get(key);
+		assertTrue(result == map.get(key));
+		ThreadUtils.sleep(5);
+		assertTrue(result == map.get(key));
+		ThreadUtils.sleep(5);
+		assertTrue(result == map.get(key));
+		ThreadUtils.sleep(5);
+		assertTrue(result == map.get(key));
 	}
 
+	public Object create() {
+		return new Object();
+	}
 }

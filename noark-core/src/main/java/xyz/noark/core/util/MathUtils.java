@@ -15,6 +15,8 @@ package xyz.noark.core.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 
 import xyz.noark.core.lang.Point;
 
@@ -267,5 +269,63 @@ public class MathUtils {
 	 */
 	public static double formatScale(double value, int newScale, RoundingMode mode) {
 		return new BigDecimal(value).setScale(newScale, mode).doubleValue();
+	}
+
+	/**
+	 * N种资源掠夺最优计算方案.
+	 * <p>
+	 * 有N种资源，尝试抢其他的部分，但各种资源有一定的比例... <br>
+	 * 使用场景：SLG的城池掠夺资源计算
+	 * 
+	 * @param <T> 资源类型
+	 * @param resources N种资源(参数选用LinkedHashMap，就是想按顺序优先扣前面的...)
+	 * @param max 掠夺的最大值
+	 * @param ratio 掠夺比例
+	 * @return 一种最优的掠夺结果
+	 */
+	public static <T> Map<T, Long> plunder(Map<T, Long> resources, long max, Map<T, Integer> ratio) {
+		final Map<T, Long> result = new HashMap<>(resources.size());
+		final long step = max / 100;
+		// 总计要抢的资源量
+		long total = max;
+
+		while (total > 0) {
+			// 标识是否还有资源可以抢...
+			boolean flag = false;
+			for (Map.Entry<T, Long> e : resources.entrySet()) {
+				if (e.getValue() <= 0) {
+					continue;
+				}
+
+				// 只要有一种资源大于0都算还有资源
+				flag = true;
+
+				// 比例+小步长随便，让抢出来的资源效果更好些...
+				long selfStep = step * ratio.getOrDefault(e.getKey(), 1) + RandomUtils.nextLong(step);
+				long temp = selfStep > total ? total : selfStep;
+
+				// 如果资源不足，就以当前有的抢光就好了...
+				if (e.getValue() < temp) {
+					temp = e.getValue();
+				}
+
+				// 最终本次抢的值
+				final long value = temp;
+				e.setValue(e.getValue() - value);
+				total -= temp;
+				result.compute(e.getKey(), (k, v) -> v == null ? value : v.longValue() + value);
+
+				// 抢满了就退出啦...
+				if (total <= 0) {
+					break;
+				}
+			}
+
+			// 没有资源可以抢时，就直接退出了...
+			if (!flag) {
+				break;
+			}
+		}
+		return result;
 	}
 }

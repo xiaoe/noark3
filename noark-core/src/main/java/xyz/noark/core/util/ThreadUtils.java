@@ -11,23 +11,28 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game;
-
-import xyz.noark.core.annotation.ModuleController;
-import xyz.noark.core.annotation.controller.PacketMapping;
+package xyz.noark.core.util;
 
 /**
- * 模块入口测试.
+ * 线程工具类.
  *
- * @since 3.2.4
+ * @since 3.2.5
  * @author 小流氓(176543888@qq.com)
  */
-@ModuleController(master = GameServerApplication.class)
-public class ModuleControllerTest {
-
-	@PacketMapping(opcode = 2)
-	public void test2() {
-		System.out.println("2222");
+public class ThreadUtils {
+	/**
+	 * 暂停执行.
+	 * <p>
+	 * 就是JDK的{@link Thread#sleep(long)}包装一下就不用管这个异常了.<br>
+	 * 这个方法只用于写一些测试用例时使用...
+	 * 
+	 * @param millis 暂停毫秒数
+	 */
+	public static void sleep(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
 }
