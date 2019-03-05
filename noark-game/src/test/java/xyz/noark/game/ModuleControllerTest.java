@@ -14,6 +14,7 @@
 package xyz.noark.game;
 
 import xyz.noark.core.annotation.ModuleController;
+import xyz.noark.core.annotation.controller.PacketMapping;
 
 /**
  * 模块入口测试.
@@ -24,7 +25,9 @@ import xyz.noark.core.annotation.ModuleController;
 @ModuleController(master = GameServerApplication.class)
 public class ModuleControllerTest {
 
-	
-	
-	
+	@PacketMapping(opcode = 2)
+	public void test2() {
+		System.out.println("2222");
+	}
+
 }

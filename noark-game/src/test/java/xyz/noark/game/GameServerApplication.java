@@ -19,6 +19,7 @@ import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
+import xyz.noark.core.network.Sender;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
 
@@ -33,6 +34,13 @@ public class GameServerApplication {
 
 	public static void main(String[] args) {
 		Noark.run(GameServerBootstrap.class, args);
+		Sender.innerRelayPacket(0, 2, new Object());
+		Sender.innerRelayPacket(0, 3, new Object());
+	}
+
+	@PacketMapping(opcode = 3)
+	public void test3() {
+		System.out.println("3333");
 	}
 
 	@PacketMapping(opcode = 1, state = State.CONNECTED)

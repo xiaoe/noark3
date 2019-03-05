@@ -59,7 +59,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	private ControllerBeanDefinition(Class<?> klass, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
 		super(klass);
 		this.threadGroup = threadGroup;
-		this.controllerMasterClass = klass;
+		this.controllerMasterClass = controllerMasterClass;
 	}
 
 	@Override
