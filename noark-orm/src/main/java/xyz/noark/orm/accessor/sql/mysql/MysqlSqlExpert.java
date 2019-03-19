@@ -53,10 +53,12 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 					switch (fm.getType()) {
 					case AsBoolean:
 					case AsInteger:
-					case AsLong:
-					case AsDouble:
-					case AsFloat:
 					case AsAtomicInteger:
+					case AsLong:
+					case AsLongAdder:
+					case AsAtomicLong:
+					case AsFloat:
+					case AsDouble:
 						sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
 						break;
 					default:
@@ -113,6 +115,8 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 
 		// 20就20吧~~~
 		case AsLong:
+		case AsLongAdder:
+		case AsAtomicLong:
 			return "BIGINT(20)";
 
 		// 有小数的就直接写上他写的参数
@@ -228,10 +232,12 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		switch (fm.getType()) {
 		case AsBoolean:
 		case AsInteger:
+		case AsAtomicInteger:
 		case AsLong:
+		case AsLongAdder:
+		case AsAtomicLong:
 		case AsFloat:
 		case AsDouble:
-		case AsAtomicInteger:
 			sb.append(em.getMethodAccess().invoke(entity, fm.getGetMethodIndex()));
 			break;
 		default:
@@ -312,10 +318,12 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 			switch (fm.getType()) {
 			case AsBoolean:
 			case AsInteger:
-			case AsLong:
-			case AsDouble:
-			case AsFloat:
 			case AsAtomicInteger:
+			case AsLong:
+			case AsLongAdder:
+			case AsAtomicLong:
+			case AsFloat:
+			case AsDouble:
 				sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
 				break;
 			default:

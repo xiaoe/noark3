@@ -14,6 +14,7 @@
 package xyz.noark.game.domain;
 
 import java.util.Date;
+import java.util.concurrent.atomic.LongAdder;
 
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Entity;
@@ -41,16 +42,11 @@ public class Item {
 	@Column(name = "attr", length = 128, defaultValue = "{}")
 	private String attr;
 
-	public String getAttr() {
-		return attr;
-	}
-
-	public void setAttr(String attr) {
-		this.attr = attr;
-	}
-
 	@Column(name = "read")
 	private boolean read;
+
+	@Column(name = "today_buy", defaultValue = "1", nullable = false, comment = "今天购买次数")
+	private LongAdder todayBuy;
 
 	@Column(name = "create_time", nullable = false, comment = "创建时间", defaultValue = "2018-07-06 05:04:03")
 	private Date createTime;
@@ -76,6 +72,22 @@ public class Item {
 
 	public boolean isRead() {
 		return read;
+	}
+
+	public String getAttr() {
+		return attr;
+	}
+
+	public LongAdder getTodayBuy() {
+		return todayBuy;
+	}
+
+	public void setTodayBuy(LongAdder todayBuy) {
+		this.todayBuy = todayBuy;
+	}
+
+	public void setAttr(String attr) {
+		this.attr = attr;
 	}
 
 	public void setRead(boolean read) {

@@ -14,6 +14,7 @@
 package xyz.noark.game.domain;
 
 import java.util.Date;
+import java.util.concurrent.atomic.LongAdder;
 
 import javax.annotation.PostConstruct;
 
@@ -41,12 +42,14 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 		if (item == null) {
 			item = new Item();
 			item.setId(1);
+			item.setTodayBuy(new LongAdder());
 			item.setRead(true);
 			item.setCreateTime(new Date());
 			item.setModifyTime(item.getCreateTime());
 			this.cacheInsert(item);
 		}
 
+		item.getTodayBuy().add(100);
 		item.setRead(false);
 		this.cacheUpdate(item);
 
