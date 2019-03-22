@@ -341,6 +341,14 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	}
 
 	@Override
+	public <T> String genDropTableColumnSql(EntityMapping<T> em, String columnName) {
+		// alter table tableName drop column xxx;
+		StringBuilder sb = new StringBuilder(128);
+		sb.append("ALTER TABLE `").append(em.getTableName()).append("` DROP COLUMN `").append(columnName).append("` ");
+		return sb.toString();
+	}
+
+	@Override
 	public <T> String genUpdateDefaultValueSql(EntityMapping<T> em, FieldMapping fm) {
 		StringBuilder sb = new StringBuilder(64);
 		sb.append("UPDATE ");
