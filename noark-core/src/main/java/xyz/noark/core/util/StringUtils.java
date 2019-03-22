@@ -14,6 +14,7 @@
 package xyz.noark.core.util;
 
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -388,5 +389,25 @@ public class StringUtils {
 			return str.toString().getBytes();
 		}
 		return str.toString().getBytes(charset);
+	}
+
+	/**
+	 * 常规的格式化一个带有占位符的字符串.
+	 * <p>
+	 * 区别于JDK的{@link MessageFormat#format(String, Object...)}，这个方法只是简单的按位填充
+	 * 
+	 * @param str 带有占位符的字符串
+	 * @param arguments 参数列表
+	 * @return 格式化以后的字符串
+	 */
+	public static String format(String str, Object... arguments) {
+		if (arguments.length == 0) {
+			return str;
+		}
+		// FIXME 这个方法基本用于日志，邮件内容拼接，可以参考日志中使用的方案做一个缓存策略
+		for (int i = 0, len = arguments.length; i < len; i++) {
+			str = str.replace(join("{", String.valueOf(i), "}"), String.valueOf(arguments[i]));
+		}
+		return str;
 	}
 }
