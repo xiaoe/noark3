@@ -20,7 +20,6 @@ import java.util.HashMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import xyz.noark.benchmark.Benchmark;
 
@@ -32,12 +31,11 @@ import xyz.noark.benchmark.Benchmark;
  */
 public class LogTest {
 	private final static org.apache.logging.log4j.Logger LOG4J2 = org.apache.logging.log4j.LogManager.getLogger(LogTest.class);
-	private final static org.slf4j.Logger LOGBACK = LoggerFactory.getLogger(LogTest.class);
 
 	@Before
 	public void setUp() throws Exception {
 		HashMap<String, String> config = new HashMap<>(16, 1);
-		config.put("log.console", "true");
+		config.put("log.console", "false");
 		LogManager.init(config);
 	}
 
@@ -60,6 +58,5 @@ public class LogTest {
 	public void testBenchmark() throws Exception {
 		benchmark.doSomething("noark log:", () -> logger.error("test={},{},{}", 123, "abc", true));
 		benchmark.doSomething("log4j2:", () -> LOG4J2.error("test={},{},{}", 123, "abc", true));
-		benchmark.doSomething("logback:", () -> LOGBACK.error("test={},{},{}", 123, "abc", true));
 	}
 }

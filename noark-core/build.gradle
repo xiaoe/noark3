@@ -4,4 +4,5 @@ dependencies {
 
 	compileOnly group: 'io.netty', name: 'netty-all', version: '4.1.25.Final'
 	testImplementation project(':noark-benchmark')
+	testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
 }
