@@ -208,7 +208,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	/** 自动修正字段 */
 	private <T> void autoAlterTableUpdateColumn(EntityMapping<T> em, FieldMapping fm) {
 		final String sql = expert.genUpdateTableColumnSql(em, fm);
-		logger.info("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);
+		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);
 		this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 	}
 
@@ -217,7 +217,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		// 修正Text字段的默认值.
 		if (fm.getWidth() >= DataConstant.COLUMN_MAX_WIDTH && fm.hasDefaultValue()) {
 			final String sql = expert.genUpdateDefaultValueSql(em, fm);
-			logger.info("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
+			logger.warn("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
 			this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 		}
 	}
@@ -225,14 +225,14 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	/** 自动增加表中不存在的字段 */
 	private <T> void autoAlterTableAddColumn(EntityMapping<T> em, FieldMapping fm) {
 		final String sql = expert.genAddTableColumnSql(em, fm);
-		logger.info("实体类[{}]对应的数据库表结构不一致，准备自动修补新增的字段，SQL如下:\n{}", em.getEntityClass(), sql);
+		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动修补新增的字段，SQL如下:\n{}", em.getEntityClass(), sql);
 		this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 	}
 
 	/** 自动删除表中不再使用的字段 */
 	private <T> void autoAlterTableDropColumn(EntityMapping<T> em, String columnName) {
 		String sql = expert.genDropTableColumnSql(em, columnName);
-		logger.info("实体类[{}]对应的数据库表结构不一致，准备自动删除多余字段，SQL如下:\n{}", em.getEntityClass(), sql);
+		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动删除多余字段，SQL如下:\n{}", em.getEntityClass(), sql);
 		this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 	}
 
