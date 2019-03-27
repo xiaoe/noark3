@@ -52,12 +52,12 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 	}
 
 	@Override
-	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+	protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
 		// 配置类中，只关心@Bean的注解方法，其他都忽略掉吧，没有什么意义...
 		if (annotationType == Bean.class) {
 			beans.add(new SimpleMethodDefinition(methodAccess, method));
 		} else {
-			super.analysisMthodByAnnotation(annotationType, annotation, method);
+			super.analysisMethodByAnnotation(annotationType, annotation, method);
 		}
 	}
 }

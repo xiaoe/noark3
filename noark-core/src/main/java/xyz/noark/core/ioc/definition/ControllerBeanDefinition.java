@@ -63,7 +63,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	}
 
 	@Override
-	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+	protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
 		// 客户端过来的协议入口.
 		if (annotationType == PacketMapping.class) {
 			pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
@@ -78,7 +78,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		}
 		// 其他的交给父类去处理
 		else {
-			super.analysisMthodByAnnotation(annotationType, annotation, method);
+			super.analysisMethodByAnnotation(annotationType, annotation, method);
 		}
 	}
 
