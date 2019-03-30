@@ -73,6 +73,26 @@ public class ArrayUtils {
 	}
 
 	/**
+	 * 判定byte数组是否为空(null或长度为0).
+	 * 
+	 * @param array byte数组
+	 * @return 如果为空(null或长度为0)则返回true,否则返回false.
+	 */
+	public static boolean isEmpty(final byte[] array) {
+		return array == null || array.length == 0;
+	}
+
+	/**
+	 * 判定byte数组是否不为空(null或长度为0).
+	 * 
+	 * @param array byte数组
+	 * @return 如果不为空(null或长度为0)则返回true,否则返回false.
+	 */
+	public static boolean isNotEmpty(final byte[] array) {
+		return !isEmpty(array);
+	}
+
+	/**
 	 * 判定boolean数组是否为空(null或长度为0).
 	 * 
 	 * @param array boolean数组
