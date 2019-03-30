@@ -15,6 +15,7 @@ package xyz.noark.core.ioc.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,5 +64,26 @@ public class EventMethodManager {
 	 */
 	public void sort() {
 		handlers.values().forEach(v -> v.sort((h1, h2) -> h1.getOrder() - h2.getOrder()));
+	}
+
+	/**
+	 * 扩展事件监听处理器.
+	 * 
+	 * @return 事件处理管理类单例
+	 */
+	public EventMethodManager listenerExtend() {
+		final Map<Class<? extends Event>, List<EventMethodWrapper>> extend = new HashMap<>();
+		// 查找一下所有父类，有监听那就要增强扩展
+		for (Class<? extends Event> klass : handlers.keySet()) {
+			for (Map.Entry<Class<? extends Event>, List<EventMethodWrapper>> e : handlers.entrySet()) {
+				// klass 是 e.getKey() 的父类
+				if (!klass.equals(e.getKey()) && e.getKey().isAssignableFrom(klass)) {
+					extend.computeIfAbsent(klass, key -> new ArrayList<>()).addAll(e.getValue());
+				}
+			}
+		}
+		// 再把上面的扩展加进去...
+		extend.forEach((k, v) -> handlers.computeIfAbsent(k, key -> new ArrayList<>()).addAll(v));
+		return INSTANCE;
 	}
 }
