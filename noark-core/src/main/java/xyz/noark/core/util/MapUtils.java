@@ -25,6 +25,26 @@ import java.util.Map;
 public class MapUtils {
 
 	/**
+	 * 检测集合是否为{@code null}或长度为0
+	 *
+	 * @param map 被检测集合
+	 * @return 如果字符为{@code null}或长度为0则返回true,否则返回false.
+	 */
+	public static boolean isEmpty(final Map<?, ?> map) {
+		return map == null || map.isEmpty();
+	}
+
+	/**
+	 * 检测集合是否不为{@code null}或长度大于0
+	 *
+	 * @param map 被检测集合
+	 * @return 如果字符不为{@code null}或长度大于0则返回true,否则返回false.
+	 */
+	public static boolean isNotEmpty(final Map<?, ?> map) {
+		return !isEmpty(map);
+	}
+
+	/**
 	 * 使用Key与Value直接构建一个HashMap.
 	 * 
 	 * @param <K> 键的类型
