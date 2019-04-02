@@ -42,11 +42,20 @@ class DelayEventThread extends Thread {
 		while (starting) {
 			try {
 				DelayEvent event = QUEUE.take();
+				// 停止事件...
 				if (event instanceof ShutdownEvent) {
 					logger.info("延迟任务调度线程停止啦...");
 					this.starting = false;
 					((ShutdownEvent) event).countDown();
-				} else {
+				}
+
+				// 延迟任务...
+				else if (event instanceof ScheduledEvent) {
+					eventManager.notifyScheduledHandler((ScheduledEvent) event);
+				}
+
+				// 延迟事件
+				else {
 					eventManager.notifyListeners(event);
 				}
 			} catch (Throwable e) {

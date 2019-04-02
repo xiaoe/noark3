@@ -18,6 +18,7 @@ import static xyz.noark.log.LogHelper.logger;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.annotation.controller.Scheduled;
 
 /**
  * 排行榜入口.
@@ -36,5 +37,15 @@ public class RankController {
 	@EventListener
 	public void handleAllianceJoinEvent(AllianceJoinEvent event) {
 		logger.info("修正玩家联盟信息 playerId={}, allianceName={}", event.getPlayerId(), event.getAllianceName());
+	}
+
+	@Scheduled(cron = "0/1 * * * * *")
+	public void testCronScheduled() {
+		logger.debug("测试CRON表达式，testCronScheduled");
+	}
+
+	@Scheduled(initialDelay = 1000, fixedRate = 2000)
+	public void testFixedScheduled() {
+		logger.debug("测试定时任务，testFixedScheduled");
 	}
 }

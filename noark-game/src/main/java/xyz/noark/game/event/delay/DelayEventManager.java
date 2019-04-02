@@ -22,7 +22,9 @@ import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.exception.HackerException;
 import xyz.noark.core.ioc.manager.EventMethodManager;
+import xyz.noark.core.ioc.manager.ScheduledMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.game.event.EventManager;
 
@@ -35,6 +37,7 @@ import xyz.noark.game.event.EventManager;
 @Service
 public class DelayEventManager implements EventManager {
 	private static final EventMethodManager MANAGER = EventMethodManager.getInstance();
+	private static final ScheduledMethodManager SCHEDULED_MANAGER = ScheduledMethodManager.getInstance();
 	private final DelayEventThread handler = new DelayEventThread(this);
 
 	@Autowired
@@ -42,6 +45,17 @@ public class DelayEventManager implements EventManager {
 
 	public void init() {
 		handler.start();
+		this.initScheduled();
+	}
+
+	// 延迟任务
+	private void initScheduled() {
+		for (ScheduledMethodWrapper sch : SCHEDULED_MANAGER.getHandlers()) {
+			ScheduledEvent event = new ScheduledEvent();
+			event.setId(sch.getId());
+			event.setEndTime(sch.nextExecutionTime());
+			this.publish(event);
+		}
 	}
 
 	public void destroy() {
@@ -74,6 +88,16 @@ public class DelayEventManager implements EventManager {
 				logger.warn("handle event exception. {}", e);
 			}
 		}
+	}
+
+	void notifyScheduledHandler(ScheduledEvent event) {
+		final ScheduledMethodWrapper method = SCHEDULED_MANAGER.getHandler(event.getId());
+		// 派发延迟任务...
+		threadDispatcher.dispatchScheduled(method);
+
+		// 修正时间，进行下一次事件发布...
+		event.setEndTime(method.nextExecutionTime());
+		this.publish(event);
 	}
 
 	@Override
