@@ -45,9 +45,9 @@ public class ScheduledMethodManager {
 	}
 
 	/**
-	 * 注册事件处理方法.
+	 * 注册延迟任务处理方法.
 	 * 
-	 * @param eventWrapper 事件处理方法包装对象
+	 * @param scheduledWrapper 延迟任务处理方法包装对象
 	 */
 	public void resetScheduledHander(ScheduledMethodWrapper scheduledWrapper) {
 		handlers.put(scheduledWrapper.getId(), scheduledWrapper);
