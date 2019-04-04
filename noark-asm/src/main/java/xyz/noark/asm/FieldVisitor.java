@@ -29,8 +29,9 @@ package xyz.noark.asm;
 
 /**
  * A visitor to visit a Java field. The methods of this class must be called in
- * the following order: ( <tt>visitAnnotation</tt> |
- * <tt>visitTypeAnnotation</tt> | <tt>visitAttribute</tt> )* <tt>visitEnd</tt>.
+ * the following order: ( {@code visitAnnotation} | {@code visitTypeAnnotation}
+ * | {@code visitAttribute} )* {@code
+ * visitEnd}.
  *
  * @author Eric Bruneton
  */
@@ -39,7 +40,7 @@ public abstract class FieldVisitor {
 	/**
 	 * The ASM API version implemented by this visitor. The value of this field
 	 * must be one of {@link Opcodes#ASM4}, {@link Opcodes#ASM5},
-	 * {@link Opcodes#ASM6} or {@link Opcodes#ASM7_EXPERIMENTAL}.
+	 * {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
 	 */
 	protected final int api;
 
@@ -54,7 +55,7 @@ public abstract class FieldVisitor {
 	 *
 	 * @param api the ASM API version implemented by this visitor. Must be one
 	 *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5},
-	 *            {@link Opcodes#ASM6} or {@link Opcodes#ASM7_EXPERIMENTAL}.
+	 *            {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
 	 */
 	public FieldVisitor(final int api) {
 		this(api, null);
@@ -65,14 +66,13 @@ public abstract class FieldVisitor {
 	 *
 	 * @param api the ASM API version implemented by this visitor. Must be one
 	 *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5},
-	 *            {@link Opcodes#ASM6} or {@link Opcodes#ASM7_EXPERIMENTAL}.
+	 *            {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
 	 * @param fieldVisitor the field visitor to which this visitor must delegate
 	 *            method calls. May be null.
 	 */
-	@SuppressWarnings("deprecation")
 	public FieldVisitor(final int api, final FieldVisitor fieldVisitor) {
-		if (api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4 && api != Opcodes.ASM7_EXPERIMENTAL) {
-			throw new IllegalArgumentException();
+		if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4) {
+			throw new IllegalArgumentException("Unsupported api " + api);
 		}
 		this.api = api;
 		this.fv = fieldVisitor;
@@ -82,8 +82,8 @@ public abstract class FieldVisitor {
 	 * Visits an annotation of the field.
 	 *
 	 * @param descriptor the class descriptor of the annotation class.
-	 * @param visible <tt>true</tt> if the annotation is visible at runtime.
-	 * @return a visitor to visit the annotation values, or <tt>null</tt> if
+	 * @param visible {@literal true} if the annotation is visible at runtime.
+	 * @return a visitor to visit the annotation values, or {@literal null} if
 	 *         this visitor is not interested in visiting this annotation.
 	 */
 	public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
@@ -101,16 +101,16 @@ public abstract class FieldVisitor {
 	 *            {@link TypeReference}.
 	 * @param typePath the path to the annotated type argument, wildcard bound,
 	 *            array element type, or static inner type within 'typeRef'. May
-	 *            be <tt>null</tt> if the annotation targets 'typeRef' as a
+	 *            be {@literal null} if the annotation targets 'typeRef' as a
 	 *            whole.
 	 * @param descriptor the class descriptor of the annotation class.
-	 * @param visible <tt>true</tt> if the annotation is visible at runtime.
-	 * @return a visitor to visit the annotation values, or <tt>null</tt> if
+	 * @param visible {@literal true} if the annotation is visible at runtime.
+	 * @return a visitor to visit the annotation values, or {@literal null} if
 	 *         this visitor is not interested in visiting this annotation.
 	 */
 	public AnnotationVisitor visitTypeAnnotation(final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
 		if (api < Opcodes.ASM5) {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("This feature requires ASM5");
 		}
 		if (fv != null) {
 			return fv.visitTypeAnnotation(typeRef, typePath, descriptor, visible);

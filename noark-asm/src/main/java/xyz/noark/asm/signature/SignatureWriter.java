@@ -67,6 +67,7 @@ public class SignatureWriter extends SignatureVisitor {
 	 * allocating new SignatureWriter instances),
 	 * </ol>
 	 *
+	 * <p>
 	 * we need a stack to properly balance these 'parentheses'. A new element is
 	 * pushed on this stack for each new visited type, and popped when the visit
 	 * of this type ends (either is visitEnd, or because visitInnerClassType is
@@ -76,7 +77,7 @@ public class SignatureWriter extends SignatureVisitor {
 
 	/** Constructs a new {@link SignatureWriter}. */
 	public SignatureWriter() {
-		super(Opcodes.ASM6);
+		super(Opcodes.ASM7);
 	}
 
 	// -----------------------------------------------------------------------------------------------

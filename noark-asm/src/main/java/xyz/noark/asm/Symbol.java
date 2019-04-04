@@ -167,7 +167,7 @@ abstract class Symbol {
 	 * {@link #CONSTANT_STRING_TAG} symbols,
 	 * <li>an internal class name for {@link #CONSTANT_CLASS_TAG},
 	 * {@link #TYPE_TAG} and {@link #UNINITIALIZED_TYPE_TAG} symbols,
-	 * <li><tt>null</tt> for the other types of symbol.
+	 * <li>{@literal null} for the other types of symbol.
 	 * </ul>
 	 */
 	final String value;
@@ -229,10 +229,11 @@ abstract class Symbol {
 	 * @param tag the symbol type. Must be one of the static tag values defined
 	 *            in this class.
 	 * @param owner The internal name of the symbol's owner class. Maybe
-	 *            <tt>null</tt>.
+	 *            {@literal null}.
 	 * @param name The name of the symbol's corresponding class field or method.
-	 *            Maybe <tt>null</tt>.
-	 * @param value The string value of this symbol. Maybe <tt>null</tt>.
+	 *            Maybe {@literal
+	 *     null}.
+	 * @param value The string value of this symbol. Maybe {@literal null}.
 	 * @param data The numeric value of this symbol.
 	 */
 	Symbol(final int index, final int tag, final String owner, final String name, final String value, final long data) {
@@ -245,6 +246,9 @@ abstract class Symbol {
 	}
 
 	/**
+	 * Returns the result {@link Type#getArgumentsAndReturnSizes} on
+	 * {@link #value}.
+	 *
 	 * @return the result {@link Type#getArgumentsAndReturnSizes} on
 	 *         {@link #value} (memoized in {@link #info} for efficiency). This
 	 *         should only be used for {@link #CONSTANT_METHODREF_TAG},

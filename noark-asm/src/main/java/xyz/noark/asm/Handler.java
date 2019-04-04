@@ -68,7 +68,7 @@ final class Handler {
 
 	/**
 	 * The internal name of the type of exceptions handled by this handler, or
-	 * <tt>null</tt> to catch any exceptions.
+	 * {@literal null} to catch any exceptions.
 	 */
 	final String catchTypeDescriptor;
 
@@ -83,7 +83,7 @@ final class Handler {
 	 * @param handlerPc the handler_pc field of this JVMS exception_table entry.
 	 * @param catchType The catch_type field of this JVMS exception_table entry.
 	 * @param catchTypeDescriptor The internal name of the type of exceptions
-	 *            handled by this handler, or <tt>null</tt> to catch any
+	 *            handled by this handler, or {@literal null} to catch any
 	 *            exceptions.
 	 */
 	Handler(final Label startPc, final Label endPc, final Label handlerPc, final int catchType, final String catchTypeDescriptor) {
@@ -111,9 +111,9 @@ final class Handler {
 	 * with the given element.
 	 *
 	 * @param firstHandler the beginning of a Handler list. May be
-	 *            <tt>null</tt>.
+	 *            {@literal null}.
 	 * @param start the start of the range to be removed.
-	 * @param end the end of the range to be removed. Maybe <tt>null</tt>.
+	 * @param end the end of the range to be removed. Maybe {@literal null}.
 	 * @return the exception handler list with the start-end range removed.
 	 */
 	static Handler removeRange(final Handler firstHandler, final Label start, final Label end) {
@@ -158,7 +158,7 @@ final class Handler {
 	 * given element.
 	 *
 	 * @param firstHandler the beginning of a Handler list. May be
-	 *            <tt>null</tt>.
+	 *            {@literal null}.
 	 * @return the number of elements of the Handler list that begins with
 	 *         'handler'.
 	 */
@@ -178,7 +178,7 @@ final class Handler {
 	 * exception_table_length field.</i>
 	 *
 	 * @param firstHandler the beginning of a Handler list. May be
-	 *            <tt>null</tt>.
+	 *            {@literal null}.
 	 * @return the size in bytes of the exception_table_length and
 	 *         exception_table structures.
 	 */
@@ -192,7 +192,7 @@ final class Handler {
 	 * exception_table_length field.</i>
 	 *
 	 * @param firstHandler the beginning of a Handler list. May be
-	 *            <tt>null</tt>.
+	 *            {@literal null}.
 	 * @param output where the exception_table_length and exception_table
 	 *            structures must be put.
 	 */

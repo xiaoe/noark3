@@ -34,7 +34,8 @@ package xyz.noark.asm;
  * @author Jason Zaugg
  */
 public final class MethodTooLargeException extends IndexOutOfBoundsException {
-	private static final long serialVersionUID = -9192073382089819492L;
+	private static final long serialVersionUID = 6807380416709738314L;
+
 	private final String className;
 	private final String methodName;
 	private final String descriptor;
@@ -56,22 +57,38 @@ public final class MethodTooLargeException extends IndexOutOfBoundsException {
 		this.codeSize = codeSize;
 	}
 
-	/** @return the internal name of the owner class. */
+	/**
+	 * Returns the internal name of the owner class.
+	 *
+	 * @return the internal name of the owner class.
+	 */
 	public String getClassName() {
 		return className;
 	}
 
-	/** @return the name of the method. */
+	/**
+	 * Returns the name of the method.
+	 *
+	 * @return the name of the method.
+	 */
 	public String getMethodName() {
 		return methodName;
 	}
 
-	/** @return the descriptor of the method. */
+	/**
+	 * Returns the descriptor of the method.
+	 *
+	 * @return the descriptor of the method.
+	 */
 	public String getDescriptor() {
 		return descriptor;
 	}
 
-	/** @return the size of the method's Code attribute, in bytes. */
+	/**
+	 * Returns the size of the method's Code attribute, in bytes.
+	 *
+	 * @return the size of the method's Code attribute, in bytes.
+	 */
 	public int getCodeSize() {
 		return codeSize;
 	}
