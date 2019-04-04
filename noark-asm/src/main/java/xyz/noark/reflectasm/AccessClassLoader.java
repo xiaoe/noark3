@@ -1,29 +1,25 @@
-/*
- * Copyright © 2015 www.noark.xyz All Rights Reserved.
- * 
- * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
- * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+/**
+ * Copyright (c) 2008, Nathan Sweet
+ *  All rights reserved.
  *
- * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
- * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
- * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
- * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *  2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ *  3. Neither the name of Esoteric Software nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
+
 package xyz.noark.reflectasm;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
+import java.util.HashSet;
 import java.util.WeakHashMap;
 
-/**
- * ClassLoader。
- *
- * @since 3.0
- * @author 小流氓(176543888@qq.com)
- */
 class AccessClassLoader extends ClassLoader {
 	// Weak-references to class loaders, to avoid perm gen memory leaks, for
 	// example in app servers/web containters if the
@@ -32,74 +28,52 @@ class AccessClassLoader extends ClassLoader {
 	// user classpath, etc).
 	// The key is the parent class loader and the value is the
 	// AccessClassLoader, both are weak-referenced in the hash table.
-	static private final WeakHashMap<ClassLoader, WeakReference<AccessClassLoader>> ACCESS_CLASS_LOADERS = new WeakHashMap<>();
+	static private final WeakHashMap<ClassLoader, WeakReference<AccessClassLoader>> accessClassLoaders = new WeakHashMap<>();
 
 	// Fast-path for classes loaded in the same ClassLoader as this class.
-	static private final ClassLoader SELF_CONTEXT_PARENT_CLASS_LOADER = getParentClassLoader(AccessClassLoader.class);
-	static private volatile AccessClassLoader SELF_CONTEXT_ACCESS_CLASS_LOADER = new AccessClassLoader(SELF_CONTEXT_PARENT_CLASS_LOADER);
+	static private final ClassLoader selfContextParentClassLoader = getParentClassLoader(AccessClassLoader.class);
+	static private volatile AccessClassLoader selfContextAccessClassLoader = new AccessClassLoader(selfContextParentClassLoader);
 
-	static AccessClassLoader get(Class<?> type) {
-		ClassLoader parent = getParentClassLoader(type);
-		// 1. fast-path:
-		if (SELF_CONTEXT_PARENT_CLASS_LOADER.equals(parent)) {
-			if (SELF_CONTEXT_ACCESS_CLASS_LOADER == null) {
-				synchronized (ACCESS_CLASS_LOADERS) { // DCL with volatile
-														// semantics
-					if (SELF_CONTEXT_ACCESS_CLASS_LOADER == null) {
-						SELF_CONTEXT_ACCESS_CLASS_LOADER = new AccessClassLoader(SELF_CONTEXT_PARENT_CLASS_LOADER);
-					}
-				}
-			}
-			return SELF_CONTEXT_ACCESS_CLASS_LOADER;
-		}
-		// 2. normal search:
-		synchronized (ACCESS_CLASS_LOADERS) {
-			WeakReference<AccessClassLoader> ref = ACCESS_CLASS_LOADERS.get(parent);
-			if (ref != null) {
-				AccessClassLoader accessClassLoader = ref.get();
-				if (accessClassLoader != null) {
-					return accessClassLoader;
-				} else {
-					ACCESS_CLASS_LOADERS.remove(parent);
-				}
-			}
-			AccessClassLoader accessClassLoader = new AccessClassLoader(parent);
-			ACCESS_CLASS_LOADERS.put(parent, new WeakReference<AccessClassLoader>(accessClassLoader));
-			return accessClassLoader;
-		}
-	}
+	static private volatile Method defineClassMethod;
 
-	public static void remove(ClassLoader parent) {
-		// 1. fast-path:
-		if (SELF_CONTEXT_PARENT_CLASS_LOADER.equals(parent)) {
-			SELF_CONTEXT_ACCESS_CLASS_LOADER = null;
-		} else {
-			// 2. normal search:
-			synchronized (ACCESS_CLASS_LOADERS) {
-				ACCESS_CLASS_LOADERS.remove(parent);
-			}
-		}
-	}
-
-	public static int activeAccessClassLoaders() {
-		int sz = ACCESS_CLASS_LOADERS.size();
-		if (SELF_CONTEXT_ACCESS_CLASS_LOADER != null) {
-			sz++;
-		}
-		return sz;
-	}
+	private final HashSet<String> localClassNames = new HashSet<>();
 
 	private AccessClassLoader(ClassLoader parent) {
 		super(parent);
 	}
 
-	@Override
-	protected synchronized java.lang.Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+	/** Returns null if the access class has not yet been defined. */
+	Class<?> loadAccessClass(String name) {
+		// No need to check the parent class loader if the access class hasn't
+		// been defined yet.
+		if (localClassNames.contains(name)) {
+			try {
+				return loadClass(name, false);
+			} catch (ClassNotFoundException ex) {
+				throw new RuntimeException(ex); // Should not happen, since we
+												// know the class has been
+												// defined.
+			}
+		}
+		return null;
+	}
+
+	Class<?> defineAccessClass(String name, byte[] bytes) throws ClassFormatError {
+		localClassNames.add(name);
+		return defineClass(name, bytes);
+	}
+
+	protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		// These classes come from the classloader that loaded
 		// AccessClassLoader.
-		if (name.equals(MethodAccess.class.getName())) {
+		if (name.equals(FieldAccess.class.getName()))
+			return FieldAccess.class;
+		if (name.equals(MethodAccess.class.getName()))
 			return MethodAccess.class;
-		}
+		if (name.equals(ConstructorAccess.class.getName()))
+			return ConstructorAccess.class;
+		if (name.equals(PublicConstructorAccess.class.getName()))
+			return PublicConstructorAccess.class;
 		// All other classes come from the classloader that loaded the type we
 		// are accessing.
 		return super.loadClass(name, resolve);
@@ -109,20 +83,101 @@ class AccessClassLoader extends ClassLoader {
 		try {
 			// Attempt to load the access class in the same loader, which makes
 			// protected and default access members accessible.
-			Method method = ClassLoader.class.getDeclaredMethod("defineClass", new Class[] { String.class, byte[].class, int.class, int.class, ProtectionDomain.class });
-			if (!method.isAccessible()) {
-				method.setAccessible(true);
-			}
-			return (Class<?>) method.invoke(getParent(), new Object[] { name, bytes, Integer.valueOf(0), Integer.valueOf(bytes.length), getClass().getProtectionDomain() });
-		} catch (Exception ignored) {}
+			return (Class<?>) getDefineClassMethod().invoke(getParent(), new Object[] { name, bytes, Integer.valueOf(0), Integer.valueOf(bytes.length), getClass().getProtectionDomain() });
+		} catch (Exception ignored) {
+			// continue with the definition in the current loader (won't have
+			// access to protected and package-protected members)
+		}
 		return defineClass(name, bytes, 0, bytes.length, getClass().getProtectionDomain());
 	}
 
-	private static ClassLoader getParentClassLoader(Class<?> type) {
-		ClassLoader parent = type.getClassLoader();
-		if (parent == null) {
-			parent = ClassLoader.getSystemClassLoader();
+	// As per JLS, section 5.3,
+	// "The runtime package of a class or interface is determined by the package
+	// name and defining class loader of the class or
+	// interface."
+	static boolean areInSameRuntimeClassLoader(Class<?> type1, Class<?> type2) {
+		if (type1.getPackage() != type2.getPackage()) {
+			return false;
 		}
+		ClassLoader loader1 = type1.getClassLoader();
+		ClassLoader loader2 = type2.getClassLoader();
+		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+		if (loader1 == null) {
+			return (loader2 == null || loader2 == systemClassLoader);
+		}
+		if (loader2 == null)
+			return loader1 == systemClassLoader;
+		return loader1 == loader2;
+	}
+
+	static private ClassLoader getParentClassLoader(Class<?> type) {
+		ClassLoader parent = type.getClassLoader();
+		if (parent == null)
+			parent = ClassLoader.getSystemClassLoader();
 		return parent;
+	}
+
+	static private Method getDefineClassMethod() throws Exception {
+		// DCL on volatile
+		if (defineClassMethod == null) {
+			synchronized (accessClassLoaders) {
+				defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", new Class[] { String.class, byte[].class, int.class, int.class, ProtectionDomain.class });
+				try {
+					defineClassMethod.setAccessible(true);
+				} catch (Exception ignored) {}
+			}
+		}
+		return defineClassMethod;
+	}
+
+	static AccessClassLoader get(Class<?> type) {
+		ClassLoader parent = getParentClassLoader(type);
+		// 1. fast-path:
+		if (selfContextParentClassLoader.equals(parent)) {
+			if (selfContextAccessClassLoader == null) {
+				synchronized (accessClassLoaders) { // DCL with volatile
+													// semantics
+					if (selfContextAccessClassLoader == null)
+						selfContextAccessClassLoader = new AccessClassLoader(selfContextParentClassLoader);
+				}
+			}
+			return selfContextAccessClassLoader;
+		}
+		// 2. normal search:
+		synchronized (accessClassLoaders) {
+			WeakReference<AccessClassLoader> ref = accessClassLoaders.get(parent);
+			if (ref != null) {
+				AccessClassLoader accessClassLoader = ref.get();
+				if (accessClassLoader != null)
+					return accessClassLoader;
+				else
+					accessClassLoaders.remove(parent); // the value has been
+														// GC-reclaimed, but
+														// still not the key
+														// (defensive sanity)
+			}
+			AccessClassLoader accessClassLoader = new AccessClassLoader(parent);
+			accessClassLoaders.put(parent, new WeakReference<AccessClassLoader>(accessClassLoader));
+			return accessClassLoader;
+		}
+	}
+
+	static public void remove(ClassLoader parent) {
+		// 1. fast-path:
+		if (selfContextParentClassLoader.equals(parent)) {
+			selfContextAccessClassLoader = null;
+		} else {
+			// 2. normal search:
+			synchronized (accessClassLoaders) {
+				accessClassLoaders.remove(parent);
+			}
+		}
+	}
+
+	static public int activeAccessClassLoaders() {
+		int sz = accessClassLoaders.size();
+		if (selfContextAccessClassLoader != null)
+			sz++;
+		return sz;
 	}
 }
