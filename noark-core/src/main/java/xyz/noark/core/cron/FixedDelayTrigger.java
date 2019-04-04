@@ -27,7 +27,7 @@ class FixedDelayTrigger implements DelayTrigger {
 	private final int initialDelay;
 	private final int fixedRate;
 
-	// 上次执行计算时间.
+	/** 上次执行计算时间. */
 	private Date lastScheduledExecutionTime;
 
 	public FixedDelayTrigger(long initialDelay, long fixedRate) {

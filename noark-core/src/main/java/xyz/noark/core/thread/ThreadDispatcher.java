@@ -35,6 +35,7 @@ import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.command.PlayerThreadCommand;
 import xyz.noark.core.thread.command.SystemThreadCommand;
 
@@ -207,8 +208,16 @@ public class ThreadDispatcher {
 		case ModuleThreadGroup:
 			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler));
 			break;
+
+		// 玩家线程组，那就是要所有在线的人都要发一条
+		case PlayerThreadGroup: {
+			for (Serializable playerId : SessionManager.getOnlinePlayerIdList()) {
+				this.dispatchPlayerThreadHandle(null, 0, new PlayerThreadCommand(playerId, handler, playerId));
+			}
+			break;
+		}
 		default:
-			throw new UnrealizedException("@Scheduled只能应用在系统模块:" + handler.threadGroup());
+			throw new UnrealizedException("@Scheduled只能应用在系统模块或玩家模块：" + handler.threadGroup());
 		}
 	}
 

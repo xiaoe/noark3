@@ -72,7 +72,7 @@ public class EventMethodManager {
 	 * @return 事件处理管理类单例
 	 */
 	public EventMethodManager listenerExtend() {
-		final Map<Class<? extends Event>, List<EventMethodWrapper>> extend = new HashMap<>();
+		final Map<Class<? extends Event>, List<EventMethodWrapper>> extend = new HashMap<>(32);
 		// 查找一下所有父类，有监听那就要增强扩展
 		for (Class<? extends Event> klass : handlers.keySet()) {
 			for (Map.Entry<Class<? extends Event>, List<EventMethodWrapper>> e : handlers.entrySet()) {

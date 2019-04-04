@@ -32,6 +32,13 @@ import xyz.noark.core.util.StringUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class CronExpression {
+	/** 星号 */
+	public static final String ASTERISK = "*";
+	/** 连字符 */
+	public static final String HYPHEN = "-";
+	/** 问号 */
+	public static final String QUESTION_MARK = "?";
+
 	private final String expression;
 	private final TimeZone timeZone;
 	private final BitSet months = new BitSet(12);
@@ -112,7 +119,8 @@ public class CronExpression {
 		int month = calendar.get(Calendar.MONTH);
 		int updateMonth = findNext(this.months, month, calendar, Calendar.MONTH, Calendar.YEAR, resets);
 		if (month != updateMonth) {
-			if (calendar.get(Calendar.YEAR) - dot > 4) {
+			final int day = 4;
+			if (calendar.get(Calendar.YEAR) - dot > day) {
 				throw new IllegalArgumentException("Invalid cron expression \"" + this.expression + "\" led to runaway search for next trigger");
 			}
 			doNext(calendar, dot);
@@ -169,9 +177,10 @@ public class CronExpression {
 		setDaysOfMonth(this.daysOfMonth, fields[3]);
 		setMonths(this.months, fields[4]);
 		setDays(this.daysOfWeek, replaceOrdinals(fields[5], "SUN,MON,TUE,WED,THU,FRI,SAT"), 8);
-		if (this.daysOfWeek.get(7)) {
+		final int maxDaysOfWeek = 7;
+		if (this.daysOfWeek.get(maxDaysOfWeek)) {
 			this.daysOfWeek.set(0);
-			this.daysOfWeek.clear(7);
+			this.daysOfWeek.clear(maxDaysOfWeek);
 		}
 	}
 
@@ -191,8 +200,8 @@ public class CronExpression {
 	}
 
 	private void setDays(BitSet bits, String field, int max) {
-		if (field.contains("?")) {
-			field = "*";
+		if (field.contains(QUESTION_MARK)) {
+			field = ASTERISK;
 		}
 		setNumberHits(bits, field, 0, max);
 	}
@@ -237,16 +246,17 @@ public class CronExpression {
 
 	private int[] getRange(String field, int min, int max) {
 		int[] result = new int[2];
-		if (field.contains("*")) {
+		if (field.contains(ASTERISK)) {
 			result[0] = min;
 			result[1] = max - 1;
 			return result;
 		}
-		if (!field.contains("-")) {
+		if (!field.contains(HYPHEN)) {
 			result[0] = result[1] = Integer.valueOf(field);
 		} else {
-			String[] split = StringUtils.split(field, "-");
-			if (split.length > 2) {
+			String[] split = StringUtils.split(field, HYPHEN);
+			final int maxRangeLength = 2;
+			if (split.length > maxRangeLength) {
 				throw new IllegalArgumentException("Range has more than two fields: '" + field + "' in expression \"" + this.expression + "\"");
 			}
 			result[0] = Integer.valueOf(split[0]);
