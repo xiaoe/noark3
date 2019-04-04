@@ -280,12 +280,12 @@ public class MathUtils {
 	 * @param <T> 资源类型
 	 * @param resources N种资源(参数选用LinkedHashMap，就是想按顺序优先扣前面的...)
 	 * @param max 掠夺的最大值
-	 * @param ratio 掠夺比例
+	 * @param ratio 掠夺比例<b>建议：比例总和在100以内</b>
 	 * @return 一种最优的掠夺结果
 	 */
 	public static <T> Map<T, Long> plunder(Map<T, Long> resources, long max, Map<T, Integer> ratio) {
 		final Map<T, Long> result = new HashMap<>(resources.size());
-		final long step = max / 100;
+		final long step = max / Math.min(1000, Math.max(10, ratio.values().stream().reduce(0, (a, b) -> a + b)));
 		// 总计要抢的资源量
 		long total = max;
 

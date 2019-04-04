@@ -75,10 +75,10 @@ public class NoarkIoc implements Ioc {
 	private void finishBeanAnalysis(IocLoader loader) {
 		loader.getBeans().forEach((k, v) -> v.doAnalysisFunction(this));
 
+		// 事件管理类中的事件监听扩展处理并排序
+		EventMethodManager.getInstance().listenerExtend().sort();
 		// 对自定义的注解进行排序.
 		customMethods.values().forEach(v -> v.sort((m1, m2) -> m1.getOrder() - m2.getOrder()));
-		// 事件管理类中的事件处理排序
-		EventMethodManager.getInstance().sort();
 
 		this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(DefaultBeanDefinition::getBeanClass, v -> v.getSingle())));
 	}

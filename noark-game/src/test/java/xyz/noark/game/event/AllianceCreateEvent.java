@@ -11,23 +11,17 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation.controller;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package xyz.noark.game.event;
 
 /**
- * 不需要认证的就可以访问的协议.
- * <p>
- * 一般只用
+ * 联盟创建事件，对于盟主也是一个加入事件.
  *
- * @since 3.0
+ * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Unauthorized {}
+public class AllianceCreateEvent extends AllianceJoinEvent {
+
+	public AllianceCreateEvent(long playerId, String allianceName) {
+		super(playerId, allianceName);
+	}
+}

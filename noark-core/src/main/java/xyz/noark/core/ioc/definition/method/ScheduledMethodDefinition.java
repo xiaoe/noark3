@@ -11,69 +11,34 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.orm.accessor;
+package xyz.noark.core.ioc.definition.method;
+
+import java.lang.reflect.Method;
+
+import xyz.noark.core.annotation.controller.Scheduled;
+import xyz.noark.reflectasm.MethodAccess;
 
 /**
- * 属性类型.
+ * 延迟任务入口的定义.
  *
- * @since 3.0
+ * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
  */
-public enum FieldType {
-	/**
-	 * 字符串
-	 */
-	AsString,
-	/**
-	 * Long类型
-	 */
-	AsLong,
-	/**
-	 * Int类型
-	 */
-	AsInteger,
-	/**
-	 * AtomicInteger类型
-	 */
-	AsAtomicInteger,
-	/**
-	 * AtomicLong类型
-	 */
-	AsAtomicLong,
-	/**
-	 * LongAdder类型
-	 */
-	AsLongAdder,
-	/**
-	 * Boolean类型
-	 */
-	AsBoolean,
-	/**
-	 * Float类型
-	 */
-	AsFloat,
-	/**
-	 * Double类型
-	 */
-	AsDouble,
-	/**
-	 * Double类型
-	 */
-	AsInstant,
-	/**
-	 * Date类型
-	 */
-	AsDate,
-	/**
-	 * LocalDateTime类型
-	 */
-	AsLocalDateTime,
-	/**
-	 * Json类型
-	 */
-	AsJson,
-	/**
-	 * Blob类型
-	 */
-	AsBlob;
+public class ScheduledMethodDefinition extends SimpleMethodDefinition {
+	private final Scheduled scheduled;
+	private final String methodName;
+
+	public ScheduledMethodDefinition(MethodAccess methodAccess, Method method, Scheduled scheduled) {
+		super(methodAccess, method);
+		this.scheduled = scheduled;
+		this.methodName = method.getName();
+	}
+
+	public Scheduled getScheduled() {
+		return scheduled;
+	}
+
+	public String getMethodName() {
+		return methodName;
+	}
 }

@@ -11,69 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.orm.accessor;
+package xyz.noark.core.cron;
+
+import java.util.Date;
 
 /**
- * 属性类型.
+ * CRON表达式类型的触发器.
  *
- * @since 3.0
+ * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
  */
-public enum FieldType {
-	/**
-	 * 字符串
-	 */
-	AsString,
-	/**
-	 * Long类型
-	 */
-	AsLong,
-	/**
-	 * Int类型
-	 */
-	AsInteger,
-	/**
-	 * AtomicInteger类型
-	 */
-	AsAtomicInteger,
-	/**
-	 * AtomicLong类型
-	 */
-	AsAtomicLong,
-	/**
-	 * LongAdder类型
-	 */
-	AsLongAdder,
-	/**
-	 * Boolean类型
-	 */
-	AsBoolean,
-	/**
-	 * Float类型
-	 */
-	AsFloat,
-	/**
-	 * Double类型
-	 */
-	AsDouble,
-	/**
-	 * Double类型
-	 */
-	AsInstant,
-	/**
-	 * Date类型
-	 */
-	AsDate,
-	/**
-	 * LocalDateTime类型
-	 */
-	AsLocalDateTime,
-	/**
-	 * Json类型
-	 */
-	AsJson,
-	/**
-	 * Blob类型
-	 */
-	AsBlob;
+class CronTrigger implements DelayTrigger {
+	// 上次执行计算时间.
+	private Date lastScheduledExecutionTime;
+
+	private final CronExpression expression;
+
+	public CronTrigger(String expression) {
+		this.expression = new CronExpression(expression);
+		this.lastScheduledExecutionTime = new Date();
+	}
+
+	@Override
+	public Date nextExecutionTime() {
+		return lastScheduledExecutionTime = expression.next(lastScheduledExecutionTime);
+	}
 }

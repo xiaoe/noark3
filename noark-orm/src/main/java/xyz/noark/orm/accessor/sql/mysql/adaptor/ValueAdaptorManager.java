@@ -31,6 +31,8 @@ public class ValueAdaptorManager {
 		ADAPTOR.put(FieldType.AsLong, new LongAdaptor());
 		ADAPTOR.put(FieldType.AsString, new StringAdaptor());
 		ADAPTOR.put(FieldType.AsAtomicInteger, new AtomicIntegerAdaptor());
+		ADAPTOR.put(FieldType.AsAtomicLong, new AtomicLongAdaptor());
+		ADAPTOR.put(FieldType.AsLongAdder, new LongAdderAdaptor());
 		ADAPTOR.put(FieldType.AsBoolean, new BooleanAdaptor());
 		ADAPTOR.put(FieldType.AsFloat, new FloatAdaptor());
 		ADAPTOR.put(FieldType.AsDouble, new DoubleAdaptor());

@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.ioc.definition;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -117,20 +119,28 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	}
 
 	private void analysisMethod() {
-		MethodUtils.getAllMethod(beanClass).forEach(method -> {
+		List<Method> methods = MethodUtils.getAllMethod(beanClass);
+		final HashSet<String> methodNames = new HashSet<String>(methods.size());
+		for (Method method : methods) {
 			Annotation[] annotations = method.getAnnotations();
 			// 没有注解的忽略掉
 			if (annotations != null && annotations.length > 0) {
-				for (Annotation annotation : annotations) {
-					final Class<? extends Annotation> annotationType = annotation.annotationType();
-					// 忽略一些系统警告类的注解
-					if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
-						continue;
+				// 如果有重名方法，需要警告提示修正
+				if (methodNames.add(method.getName())) {
+					for (Annotation annotation : annotations) {
+						final Class<? extends Annotation> annotationType = annotation.annotationType();
+						// 忽略一些系统警告类的注解
+						if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
+							continue;
+						}
+
+						this.analysisMethodByAnnotation(annotationType, annotation, method);
 					}
-					this.analysisMthodByAnnotation(annotationType, annotation, method);
+				} else {
+					logger.warn("重名方法 class={}, method={}", beanClass.getName(), method.getName());
 				}
 			}
-		});
+		}
 	}
 
 	/**
@@ -140,7 +150,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 	 * @param annotation 注解对象
 	 * @param method 方法体
 	 */
-	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+	protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
 		customMethods.computeIfAbsent(annotationType, key -> new ArrayList<>(64)).add(new SimpleMethodDefinition(methodAccess, method));
 	}
 

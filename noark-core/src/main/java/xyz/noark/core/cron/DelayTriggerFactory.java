@@ -11,28 +11,31 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.orm.accessor.sql;
+package xyz.noark.core.cron;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import xyz.noark.core.exception.DataAccessException;
+import xyz.noark.core.annotation.controller.Scheduled;
+import xyz.noark.core.util.StringUtils;
 
 /**
- * 链接回调.
+ * 延迟触发器创建工厂.
  *
- * @since 3.0
+ * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
  */
-@FunctionalInterface
-public interface ConnectionCallback<T> {
+public class DelayTriggerFactory {
+
 	/**
-	 * 获取链接后的处理逻辑.
+	 * 创建延迟触发器
 	 * 
-	 * @param con SQL链接
-	 * @return 处理逻辑所返回的结果
-	 * @throws SQLException 可能会出现SQL异常
-	 * @throws DataAccessException 可能会出现数据访问异常
+	 * @param scheduled 延迟配置
+	 * @return 延迟触发器
 	 */
-	T doInConnection(Connection con) throws SQLException, DataAccessException;
+	public static DelayTrigger create(Scheduled scheduled) {
+		// 表达式方式的
+		if (StringUtils.isNotEmpty(scheduled.cron())) {
+			return new CronTrigger(scheduled.cron());
+		}
+		// 固定速率的
+		return new FixedDelayTrigger(scheduled.initialDelay(), scheduled.fixedRate());
+	}
 }

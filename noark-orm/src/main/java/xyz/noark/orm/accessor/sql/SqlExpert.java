@@ -137,6 +137,16 @@ public interface SqlExpert {
 	<T> String genUpdateTableColumnSql(EntityMapping<T> em, FieldMapping fm);
 
 	/**
+	 * 生成删除表字段的SQL
+	 * 
+	 * @param <T> 实体对象类型
+	 * @param em 实体映射对象
+	 * @param columnName 字段名称
+	 * @return SQL语句
+	 */
+	<T> String genDropTableColumnSql(EntityMapping<T> em, String columnName);
+
+	/**
 	 * 生成带值的一条语句
 	 * 
 	 * @param <T> 实体对象类型

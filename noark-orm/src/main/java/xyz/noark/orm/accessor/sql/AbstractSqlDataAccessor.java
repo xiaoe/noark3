@@ -51,6 +51,8 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	protected boolean statementParameterSetLogEnable = false;
 	/** 慢查询时间阀值(单位：毫秒),如果为0则不监控 */
 	protected int slowQuerySqlMillis = 0;
+	/** 自动删除表中多余的字段 */
+	private boolean autoAlterTableDropColumn = false;
 
 	public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {
 		this.expert = expert;
@@ -74,15 +76,11 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		this.slowQuerySqlMillis = slowQuerySqlMillis;
 	}
 
-	protected <T> T execute(ConnectionCallback<T> action) {
-		try (Connection con = dataSource.getConnection()) {
-			return action.doInConnection(con);
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
+	public void setAutoAlterTableDropColumn(boolean autoAlterTableDropColumn) {
+		this.autoAlterTableDropColumn = autoAlterTableDropColumn;
 	}
 
-	protected <T> T execute(StatementCallback<T> action) {
+	protected <T> T executeStatement(StatementCallback<T> action) {
 		try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
 			return action.doInStatement(stmt);
 		} catch (SQLException e) {
@@ -126,16 +124,14 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	 * @return 如果存在返回true,否则返回false
 	 */
 	protected boolean exists(final String tableName) {
-		return this.execute(new StatementCallback<Boolean>() {
-			@Override
-			public Boolean doInStatement(Statement stmt) throws SQLException {
-				String sql = "SELECT COUNT(1) FROM " + tableName + " where 1!=1";
-				try (ResultSet rs = stmt.executeQuery(sql)) {
-					return rs.next();
-				} catch (Exception e) {
-					// 有异常就是表不存在嘛~~~~
-					return Boolean.FALSE;
-				}
+		return this.executeStatement((stmt) -> {
+			String sql = "SELECT COUNT(1) FROM " + tableName + " where 1!=1";
+			try (ResultSet rs = stmt.executeQuery(sql)) {
+				return rs.next();
+			}
+			// 有异常就是表不存在嘛~~~~
+			catch (Exception e) {
+				return Boolean.FALSE;
 			}
 		});
 	}
@@ -155,52 +151,65 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	}
 
 	private synchronized <T> void checkEntityTable(final EntityMapping<T> em) {
-		this.execute(new StatementCallback<Void>() {
-			@Override
-			public Void doInStatement(Statement stmt) throws SQLException {
-				try (ResultSet rs = stmt.executeQuery(StringUtils.join("SELECT * FROM ", em.getTableName(), " LIMIT 0"))) {
-					ResultSetMetaData rsmd = rs.getMetaData();
-					// 缓存为Map的方式
-					final int len = rsmd.getColumnCount();
-					Map<String, Integer> caches = new HashMap<>(len);
-					for (int i = 1; i <= len; i++) {
-						caches.put(rsmd.getColumnName(i), i);
+		this.executeStatement((stmt) -> {
+			try (ResultSet rs = stmt.executeQuery(StringUtils.join("SELECT * FROM ", em.getTableName(), " LIMIT 0"))) {
+				ResultSetMetaData rsmd = rs.getMetaData();
+				// 缓存为Map的方式
+				final int len = rsmd.getColumnCount();
+				Map<String, Integer> caches = new HashMap<>(len);
+				for (int i = 1; i <= len; i++) {
+					caches.put(rsmd.getColumnName(i), i);
+				}
+
+				// 循环字段检查，如果属性比字段多，就自动补上...
+				for (FieldMapping fm : em.getFieldMapping()) {
+					// 字段如果有大写字母，则警告提示输出
+					if (!fm.getColumnName().equals(fm.getColumnName().toLowerCase())) {
+						logger.warn("字段名称中有大写字母,建议修正为下划线命名方式! entity={},field={},columnName={}", em.getEntityClass().getName(), fm.getField().getName(), fm.getColumnName());
 					}
 
-					// 循环字段检查，如果属性比字段多，就自动补上...
-					for (FieldMapping fm : em.getFieldMapping()) {
-						// 字段如果有大写字母，则警告提示输出
-						if (!fm.getColumnName().equals(fm.getColumnName().toLowerCase())) {
-							logger.warn("字段名称中有大写字母,建议修正为下划线命名方式! entity={},field={},columnName={}", em.getEntityClass().getName(), fm.getField().getName(), fm.getColumnName());
-						}
-
-						Integer index = caches.remove(fm.getColumnName());
-						// 字段不存在，修补字段
-						if (index == null) {
-							autoUpdateTable(em, fm, false);
-							tryRepairTextDefaultValue(em, fm);
-							continue;
-						}
-
-						// 字符串类型的字段，要修正长度的(只能变长，不能变短)
-						if (rsmd.getColumnType(index) == Types.VARCHAR) {
-							final int length = rsmd.getColumnDisplaySize(index);
-							if (fm.getWidth() > length) {
-								autoUpdateTable(em, fm, true);
-							} else if (fm.getWidth() < length) {
-								logger.warn("表中字段长度大于配置长度，建议手动修正! entity={},field={},length={}", em.getEntityClass().getName(), fm.getField().getName(), fm.getWidth());
-							}
-						}
+					Integer index = caches.remove(fm.getColumnName());
+					// 字段不存在，修补字段
+					if (index == null) {
+						autoAlterTableAddColumn(em, fm);
+						tryRepairTextDefaultValue(em, fm);
+						continue;
 					}
 
-					// 还有剩的，那表结构比字段属性多了...
-					if (!caches.isEmpty()) {
+					// 字符串类型的字段，要修正长度的(只能变长，不能变短)
+					if (rsmd.getColumnType(index) == Types.VARCHAR) {
+						final int length = rsmd.getColumnDisplaySize(index);
+						if (fm.getWidth() > length) {
+							autoAlterTableUpdateColumn(em, fm);
+						} else if (fm.getWidth() < length) {
+							logger.warn("表中字段长度大于配置长度，建议手动修正! entity={},field={},length={}", em.getEntityClass().getName(), fm.getField().getName(), fm.getWidth());
+						}
+					}
+				}
+
+				// 还有剩的，那表结构比字段属性多了...
+				if (!caches.isEmpty()) {
+					// 允许自动删除表中多余的字段...
+					if (autoAlterTableDropColumn) {
+						caches.keySet().forEach(key -> autoAlterTableDropColumn(em, key));
+					}
+					// 不允许，那就异常阻止服务启动，把主动权交给研发人员...
+					else {
 						throw new DataException("表结构字段比实体类属性多. 表[" + em.getTableName() + "]中的属性：" + Arrays.toString(caches.keySet().toArray()));
 					}
 				}
-				return null;
 			}
+
+			// 随便返回一个，没有实际意义
+			return 0;
 		});
+	}
+
+	/** 自动修正字段 */
+	private <T> void autoAlterTableUpdateColumn(EntityMapping<T> em, FieldMapping fm) {
+		final String sql = expert.genUpdateTableColumnSql(em, fm);
+		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);
+		this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 	}
 
 	/** 如果是Text智能修补一下默认值 */
@@ -208,28 +217,23 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		// 修正Text字段的默认值.
 		if (fm.getWidth() >= DataConstant.COLUMN_MAX_WIDTH && fm.hasDefaultValue()) {
 			final String sql = expert.genUpdateDefaultValueSql(em, fm);
-			logger.info("实体类[{}]中的字段[{}]不支持默认值，准备智能修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
-			this.execute(new StatementCallback<Void>() {
-				@Override
-				public Void doInStatement(Statement stmt) throws SQLException {
-					stmt.executeUpdate(sql);
-					return null;
-				}
-			});
+			logger.warn("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
+			this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 		}
 	}
 
-	/** 自动修补表结构 */
-	private <T> void autoUpdateTable(final EntityMapping<T> em, final FieldMapping fm, boolean update) {
-		final String sql = update ? expert.genUpdateTableColumnSql(em, fm) : expert.genAddTableColumnSql(em, fm);
-		logger.info("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);
-		this.execute(new StatementCallback<Void>() {
-			@Override
-			public Void doInStatement(Statement stmt) throws SQLException {
-				stmt.executeUpdate(sql);
-				return null;
-			}
-		});
+	/** 自动增加表中不存在的字段 */
+	private <T> void autoAlterTableAddColumn(EntityMapping<T> em, FieldMapping fm) {
+		final String sql = expert.genAddTableColumnSql(em, fm);
+		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动修补新增的字段，SQL如下:\n{}", em.getEntityClass(), sql);
+		this.executeStatement((stmt) -> stmt.executeUpdate(sql));
+	}
+
+	/** 自动删除表中不再使用的字段 */
+	private <T> void autoAlterTableDropColumn(EntityMapping<T> em, String columnName) {
+		String sql = expert.genDropTableColumnSql(em, columnName);
+		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动删除多余字段，SQL如下:\n{}", em.getEntityClass(), sql);
+		this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 	}
 
 	/**
@@ -238,15 +242,6 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	private synchronized <T> void createEntityTable(EntityMapping<T> em) {
 		final String sql = expert.genCreateTableSql(em);
 		logger.warn("实体类[{}]对应的数据库表不存在，准备自动创建表结构，SQL如下:\n{}", em.getEntityClass(), sql);
-		this.execute(new StatementCallback<Integer>() {
-			@Override
-			public Integer doInStatement(Statement stmt) throws SQLException {
-				try {
-					return stmt.executeUpdate(sql);
-				} catch (Exception e) {
-					throw new DataAccessException(e);
-				}
-			}
-		});
+		this.executeStatement((stmt) -> stmt.executeUpdate(sql));
 	}
 }

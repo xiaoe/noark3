@@ -23,16 +23,20 @@ import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.HttpHandler;
 import xyz.noark.core.annotation.controller.PacketMapping;
+import xyz.noark.core.annotation.controller.Scheduled;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
+import xyz.noark.core.ioc.definition.method.ScheduledMethodDefinition;
 import xyz.noark.core.ioc.manager.EventMethodManager;
 import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
+import xyz.noark.core.ioc.manager.ScheduledMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 
 /**
  * 控制器的Bean定义描述类.
@@ -47,6 +51,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
 	private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
 	private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
+	private final ArrayList<ScheduledMethodDefinition> smds = new ArrayList<>();
 
 	public ControllerBeanDefinition(Class<?> klass, Controller controller) {
 		this(klass, controller.threadGroup(), klass);
@@ -63,7 +68,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	}
 
 	@Override
-	protected void analysisMthodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+	protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
 		// 客户端过来的协议入口.
 		if (annotationType == PacketMapping.class) {
 			pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
@@ -76,9 +81,13 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		else if (annotationType == HttpHandler.class) {
 			hmds.add(new HttpMethodDefinition(methodAccess, method, HttpHandler.class.cast(annotation)));
 		}
+		// 延迟任务
+		else if (annotationType == Scheduled.class) {
+			smds.add(new ScheduledMethodDefinition(methodAccess, method, Scheduled.class.cast(annotation)));
+		}
 		// 其他的交给父类去处理
 		else {
-			super.analysisMthodByAnnotation(annotationType, annotation, method);
+			super.analysisMethodByAnnotation(annotationType, annotation, method);
 		}
 	}
 
@@ -91,6 +100,14 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		this.doAnalysisEventHandler(noarkIoc);
 
 		this.doAnalysisHttpHandler(noarkIoc);
+
+		this.doAnalysisScheduledHandler(noarkIoc);
+	}
+
+	/** 分析延迟任务处理入口. */
+	private void doAnalysisScheduledHandler(NoarkIoc noarkIoc) {
+		final ScheduledMethodManager manager = ScheduledMethodManager.getInstance();
+		smds.forEach(smd -> manager.resetScheduledHander(new ScheduledMethodWrapper(methodAccess, single, smd, threadGroup, controllerMasterClass)));
 	}
 
 	/** 分析HTTP处理入口. */

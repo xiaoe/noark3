@@ -57,8 +57,10 @@ public abstract class AbstractSqlExpert implements SqlExpert {
 
 		// 数字类型的就写成通用的，Mysql的由子类重写
 		case AsInteger:
-		case AsLong:
 		case AsAtomicInteger:
+		case AsLong:
+		case AsLongAdder:
+		case AsAtomicLong:
 			// 用户自定义了宽度
 			if (fm.getWidth() > 0) {
 				return "INT(" + fm.getWidth() + ")";

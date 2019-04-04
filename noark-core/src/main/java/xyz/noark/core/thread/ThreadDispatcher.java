@@ -29,6 +29,7 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.NetworkPacket;
@@ -193,6 +194,21 @@ public class ThreadDispatcher {
 			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
+		}
+	}
+
+	/**
+	 * 派发延迟任务.
+	 * 
+	 * @param handler 延迟任务处理方法
+	 */
+	public void dispatchScheduled(ScheduledMethodWrapper handler) {
+		switch (handler.threadGroup()) {
+		case ModuleThreadGroup:
+			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler));
+			break;
+		default:
+			throw new UnrealizedException("@Scheduled只能应用在系统模块:" + handler.threadGroup());
 		}
 	}
 

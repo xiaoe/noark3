@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.orm.Column;
@@ -164,6 +166,16 @@ public class AnnotationEntityMaker {
 		else if (type == AtomicInteger.class) {
 			fm.setWidth(8);
 			fm.setType(FieldType.AsAtomicInteger);
+		}
+		// AtomicLong
+		else if (type == AtomicLong.class) {
+			fm.setWidth(16);
+			fm.setType(FieldType.AsAtomicLong);
+		}
+		// LongAdder
+		else if (type == LongAdder.class) {
+			fm.setWidth(16);
+			fm.setType(FieldType.AsLongAdder);
 		}
 		// Blob或byte[]
 		else if (fm.isBlob()) {

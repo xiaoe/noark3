@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import xyz.noark.benchmark.Benchmark;
-import xyz.noark.core.util.StringUtils;
 
 /**
  * 字符串工具类测试用例.
@@ -103,4 +102,10 @@ public class StringUtilsTest {
 	private static String join2(String delimiter, String prefix, String suffix, String... strings) {
 		return Stream.of(strings).collect(Collectors.joining(delimiter, prefix, suffix));
 	}
+
+	@Test
+	public void testFormat() throws Exception {
+		assertTrue("hahatrue,false,10000,false".equals(StringUtils.format("haha{1},{2},{0},{2}", 10000, true, false, 4)));
+	}
+
 }

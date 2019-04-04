@@ -11,69 +11,30 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.orm.accessor;
+package xyz.noark.game.event;
+
+import javax.annotation.PostConstruct;
+
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Service;
 
 /**
- * 属性类型.
+ * 联盟业务.
  *
- * @since 3.0
+ * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
  */
-public enum FieldType {
-	/**
-	 * 字符串
-	 */
-	AsString,
-	/**
-	 * Long类型
-	 */
-	AsLong,
-	/**
-	 * Int类型
-	 */
-	AsInteger,
-	/**
-	 * AtomicInteger类型
-	 */
-	AsAtomicInteger,
-	/**
-	 * AtomicLong类型
-	 */
-	AsAtomicLong,
-	/**
-	 * LongAdder类型
-	 */
-	AsLongAdder,
-	/**
-	 * Boolean类型
-	 */
-	AsBoolean,
-	/**
-	 * Float类型
-	 */
-	AsFloat,
-	/**
-	 * Double类型
-	 */
-	AsDouble,
-	/**
-	 * Double类型
-	 */
-	AsInstant,
-	/**
-	 * Date类型
-	 */
-	AsDate,
-	/**
-	 * LocalDateTime类型
-	 */
-	AsLocalDateTime,
-	/**
-	 * Json类型
-	 */
-	AsJson,
-	/**
-	 * Blob类型
-	 */
-	AsBlob;
+@Service
+public class AllianceService {
+
+	@Autowired
+	private EventManager eventManager;
+
+	@PostConstruct
+	public void init() {
+		// 模拟1号玩家创建名称为天下的联盟
+		eventManager.publish(new AllianceCreateEvent(1L, "天下"));
+		// 模拟2号玩家加入名称为天下的联盟
+		eventManager.publish(new AllianceJoinEvent(2L, "天下"));
+	}
 }
