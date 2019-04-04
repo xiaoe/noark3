@@ -48,7 +48,9 @@ public class DelayEventManager implements EventManager {
 		this.initScheduled();
 	}
 
-	// 延迟任务
+	/**
+	 * 延迟任务初始化
+	 */
 	private void initScheduled() {
 		for (ScheduledMethodWrapper sch : SCHEDULED_MANAGER.getHandlers()) {
 			ScheduledEvent event = new ScheduledEvent();

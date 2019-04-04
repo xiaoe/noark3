@@ -25,7 +25,8 @@ import xyz.noark.core.util.StringUtils;
  * Scheduled注解用来标识一个可延迟执行的方法.
  * <p>
  * 1. 延迟多久，间隔多久执行指定方法<br>
- * 2. CRON表达式的调度执行
+ * 2. CRON表达式的调度执行 <br>
+ * 如果当前Controller线程组为玩家，当前标识的方法应该具有一个PlayerId的参数
  *
  * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
@@ -38,6 +39,7 @@ public @interface Scheduled {
 	/**
 	 * 一种类似CRON的表达式。
 	 * <p>
+	 * 例cron="1/10 * * * * *" <br>
 	 * 如果设计表达式，下面两个参数将不在生效
 	 * 
 	 * @return 可以解析为CRON调度的表达式

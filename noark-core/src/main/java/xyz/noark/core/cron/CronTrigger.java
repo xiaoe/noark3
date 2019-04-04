@@ -22,7 +22,7 @@ import java.util.Date;
  * @author 小流氓(176543888@qq.com)
  */
 class CronTrigger implements DelayTrigger {
-	// 上次执行计算时间.
+	/** 上次执行计算时间. */
 	private Date lastScheduledExecutionTime;
 
 	private final CronExpression expression;

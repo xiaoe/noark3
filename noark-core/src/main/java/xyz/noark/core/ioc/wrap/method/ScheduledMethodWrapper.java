@@ -30,14 +30,14 @@ import xyz.noark.reflectasm.MethodAccess;
  */
 public class ScheduledMethodWrapper extends AbstractControllerMethodWrapper {
 	/** 自动增的ID编号，用于唯一调度 */
-	private static final AtomicLong autoId = new AtomicLong(0);
+	private static final AtomicLong AUTO_ID = new AtomicLong(0);
 	private final Long id;
 	private final DelayTrigger trigger;
 
 	public ScheduledMethodWrapper(MethodAccess methodAccess, Object single, ScheduledMethodDefinition smd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
 		super(methodAccess, single, smd.getMethodIndex(), threadGroup, controllerMasterClass.getName(), smd.getOrder(), "scheduled(" + smd.getMethodName() + ")");
 		// 生成一个唯一ID编号.
-		this.id = autoId.incrementAndGet();
+		this.id = AUTO_ID.incrementAndGet();
 		this.trigger = DelayTriggerFactory.create(smd.getScheduled());
 	}
 

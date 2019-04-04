@@ -131,7 +131,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 				// PID文件已存在...
 				else {
 					final String fileName = pidFileName;
-					this.pidFileName = null;//
+					this.pidFileName = null;
 					throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + fileName);
 				}
 
