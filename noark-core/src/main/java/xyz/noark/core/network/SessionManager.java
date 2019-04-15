@@ -48,11 +48,11 @@ public class SessionManager {
 	 * 群发封包.
 	 * 
 	 * @param opcode 协议编号
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 * @param playerIds 接受人的ID列表
 	 */
-	public static void send(Integer opcode, Object protocal, Serializable... playerIds) {
-		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocal(opcode, protocal));
+	public static void send(Integer opcode, Object protocol, Serializable... playerIds) {
+		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocol(opcode, protocol));
 		// 全服发送
 		if (playerIds.length == 0) {
 			PLAYER_ID_2_SESSION.forEach((k, v) -> v.send(packet));

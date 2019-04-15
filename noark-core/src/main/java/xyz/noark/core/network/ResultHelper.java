@@ -42,12 +42,12 @@ public class ResultHelper {
 		}
 
 		// 如果是网络协议，那就直接转发...
-		if (result instanceof NetworkProtocal) {
-			NetworkProtocal networkProtocal = (NetworkProtocal) result;
-			networkProtocal.setReqId(reqId);
-			session.send(networkProtocal);
+		if (result instanceof NetworkProtocol) {
+			NetworkProtocol networkProtocol = (NetworkProtocol) result;
+			networkProtocol.setReqId(reqId);
+			session.send(networkProtocol);
 		} else {
-			logger.warn("Controller入口返回值未实现NetworkProtocal接口，已忽略发送处理. result={}", result.getClass().getName());
+			logger.warn("Controller入口返回值未实现NetworkProtocol接口，已忽略发送处理. result={}", result.getClass().getName());
 		}
 	}
 }

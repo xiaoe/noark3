@@ -21,14 +21,14 @@ package xyz.noark.core.network;
  * @since 3.2.2
  * @author 小流氓(176543888@qq.com)
  */
-public class NetworkProtocal {
+public class NetworkProtocol {
 	private final Integer opcode;
-	private final Object protocal;
+	private final Object protocol;
 	private int reqId;
 
-	public NetworkProtocal(Integer opcode, Object protocal) {
+	public NetworkProtocol(Integer opcode, Object protocol) {
 		this.opcode = opcode;
-		this.protocal = protocal;
+		this.protocol = protocol;
 	}
 
 	public void setReqId(int reqId) {
@@ -43,7 +43,7 @@ public class NetworkProtocal {
 		return opcode;
 	}
 
-	public Object getProtocal() {
-		return protocal;
+	public Object getProtocol() {
+		return protocol;
 	}
 }

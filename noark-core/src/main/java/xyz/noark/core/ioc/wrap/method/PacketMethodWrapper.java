@@ -50,7 +50,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private boolean deprecated = false;
 
 	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-		super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocal(opcode=" + md.getOpcode() + ")");
+		super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocol(opcode=" + md.getOpcode() + ")");
 		this.state = md.getState();
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();
@@ -100,13 +100,13 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 * 分析参数.
 	 * 
 	 * @param playerId 玩家ID
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 * @return 参数列表
 	 */
-	public Object[] analysisParam(Serializable playerId, Object protocal) {
+	public Object[] analysisParam(Serializable playerId, Object protocol) {
 		List<Object> args = new ArrayList<>(parameters.size());
 		for (ParamWrapper parameter : parameters) {
-			args.add(parameter.read(playerId, protocal));
+			args.add(parameter.read(playerId, protocol));
 		}
 		return args.toArray();
 	}

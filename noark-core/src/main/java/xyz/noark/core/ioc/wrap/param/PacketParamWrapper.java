@@ -35,11 +35,11 @@ public class PacketParamWrapper implements ParamWrapper {
 
 	@Override
 	public Object read(Session session, ByteArray bytes) {
-		return PacketCodecHolder.getPacketCodec().decodeProtocal(bytes, klass);
+		return PacketCodecHolder.getPacketCodec().decodeProtocol(bytes, klass);
 	}
 
 	@Override
-	public Object read(Serializable playerId, Object protocal) {
-		return protocal;
+	public Object read(Serializable playerId, Object protocol) {
+		return protocol;
 	}
 }

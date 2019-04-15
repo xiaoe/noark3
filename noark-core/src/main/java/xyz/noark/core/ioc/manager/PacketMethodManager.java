@@ -90,7 +90,7 @@ public class PacketMethodManager {
 		for (Map.Entry<Integer, PacketMethodWrapper> e : handlers.entrySet()) {
 			final long num = e.getValue().getCallNum();
 			if (num > 0) {
-				logger.info("protocal stat. opcode={}, call={}", e.getKey(), num);
+				logger.info("protocol stat. opcode={}, call={}", e.getKey(), num);
 			}
 		}
 	}

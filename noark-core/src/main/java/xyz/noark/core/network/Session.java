@@ -48,17 +48,17 @@ public interface Session extends SessionAttrMap {
 	 * 发送一个网络封包.
 	 * 
 	 * @param opcode 协议编号
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 */
-	public void send(Integer opcode, Object protocal);
+	public void send(Integer opcode, Object protocol);
 
 	/**
 	 * 发送完成后关闭当前链接.
 	 * 
 	 * @param opcode 协议编号
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 */
-	public void sendAndClose(Integer opcode, Object protocal);
+	public void sendAndClose(Integer opcode, Object protocol);
 
 	/**
 	 * 发送一个网络封包.
@@ -72,9 +72,9 @@ public interface Session extends SessionAttrMap {
 	/**
 	 * 发送一个网络协议
 	 * 
-	 * @param networkProtocal 网络协议
+	 * @param networkProtocol 网络协议
 	 */
-	public void send(NetworkProtocal networkProtocal);
+	public void send(NetworkProtocol networkProtocol);
 
 	/**
 	 * 获取当前链接状态.

@@ -39,8 +39,8 @@ public interface ParamWrapper {
 	 * 解析参数对象
 	 * 
 	 * @param playerId 玩家ID.
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 * @return 返回参数对象
 	 */
-	public Object read(Serializable playerId, Object protocal);
+	public Object read(Serializable playerId, Object protocol);
 }

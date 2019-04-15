@@ -34,7 +34,7 @@ public class SessionParamWrapper implements ParamWrapper {
 	}
 
 	@Override
-	public Object read(Serializable playerId, Object protocal) {
+	public Object read(Serializable playerId, Object protocol) {
 		return SessionManager.getSessionByPlayerId(playerId);
 	}
 }

@@ -21,7 +21,7 @@ import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.lang.ByteArrayOutputStream;
 import xyz.noark.core.lang.ImmutableByteArray;
 import xyz.noark.core.network.NetworkPacket;
-import xyz.noark.core.network.NetworkProtocal;
+import xyz.noark.core.network.NetworkProtocol;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;
@@ -35,18 +35,18 @@ import xyz.noark.network.codec.DefaultNetworkPacket;
 public class SimpleJsonCodec extends AbstractPacketCodec {
 
 	@Override
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass) {
+	public <T> T decodeProtocol(ByteArray bytes, Class<T> klass) {
 		return JSON.parseObject(bytes.array(), klass);
 	}
 
 	@Override
-	public ByteArray encodePacket(NetworkProtocal networkProtocal) {
-		final byte[] bytes = JSON.toJSONBytes(networkProtocal.getProtocal());
+	public ByteArray encodePacket(NetworkProtocol networkProtocol) {
+		final byte[] bytes = JSON.toJSONBytes(networkProtocol.getProtocol());
 
 		ImmutableByteArray byteArray = new ImmutableByteArray(bytes.length + 4);
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(byteArray)) {
 			// 写入Opcode
-			byteArrayOutputStream.writeInt(networkProtocal.getOpcode());
+			byteArrayOutputStream.writeInt(networkProtocol.getOpcode());
 			// 写入协议内容
 			byteArrayOutputStream.writeBytes(bytes);
 		}

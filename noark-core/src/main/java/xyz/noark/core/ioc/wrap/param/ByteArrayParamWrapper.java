@@ -33,7 +33,7 @@ public class ByteArrayParamWrapper implements ParamWrapper {
 	}
 
 	@Override
-	public Object read(Serializable playerId, Object protocal) {
-		return protocal;
+	public Object read(Serializable playerId, Object protocol) {
+		return protocol;
 	}
 }

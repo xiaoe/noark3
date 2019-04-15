@@ -118,9 +118,9 @@ public class ThreadDispatcher {
 	 * 
 	 * @param playerId 玩家ID
 	 * @param opcode 协议编号
-	 * @param protocal 协议内容
+	 * @param protocol 协议内容
 	 */
-	public void dispatchInnerPacket(Serializable playerId, Integer opcode, Object protocal) {
+	public void dispatchInnerPacket(Serializable playerId, Integer opcode, Object protocol) {
 		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
 		if (pmw == null) {
 			logger.warn("undefined protocol, opcode={}", opcode);
@@ -137,7 +137,7 @@ public class ThreadDispatcher {
 		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
-		this.dispatchPacket(null, playerId, 0, pmw, pmw.analysisParam(playerId, protocal));
+		this.dispatchPacket(null, playerId, 0, pmw, pmw.analysisParam(playerId, protocol));
 	}
 
 	private void dispatchPacket(Session session, Serializable playerId, int reqId, PacketMethodWrapper pmw, Object... args) {
@@ -157,8 +157,8 @@ public class ThreadDispatcher {
 	}
 
 	/** 派发给Netty线程处理的逻辑. */
-	void dispatchNettyThreadHandle(Session session, int reqId, PacketMethodWrapper protocal, Object... args) {
-		ResultHelper.trySendResult(session, reqId, protocal.invoke(args));
+	void dispatchNettyThreadHandle(Session session, int reqId, PacketMethodWrapper protocol, Object... args) {
+		ResultHelper.trySendResult(session, reqId, protocol.invoke(args));
 	}
 
 	/** 派发给系统线程处理的逻辑. */

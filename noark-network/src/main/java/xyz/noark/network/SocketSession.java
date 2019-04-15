@@ -24,7 +24,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.AbstractSession;
-import xyz.noark.core.network.NetworkProtocal;
+import xyz.noark.core.network.NetworkProtocol;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.PacketEncrypt;
 import xyz.noark.core.network.SessionAttr;
@@ -100,8 +100,8 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	}
 
 	@Override
-	public void send(Integer opcode, Object protocal) {
-		this.send(buildPacket(opcode, protocal));
+	public void send(Integer opcode, Object protocol) {
+		this.send(buildPacket(opcode, protocol));
 	}
 
 	@Override
@@ -122,8 +122,8 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	}
 
 	@Override
-	public void send(NetworkProtocal networkProtocal) {
-		this.send(PacketCodecHolder.getPacketCodec().encodePacket(networkProtocal));
+	public void send(NetworkProtocol networkProtocol) {
+		this.send(PacketCodecHolder.getPacketCodec().encodePacket(networkProtocol));
 	}
 
 	/**
@@ -136,19 +136,19 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	}
 
 	@Override
-	public void sendAndClose(Integer opcode, Object protocal) {
-		channel.writeAndFlush(buildPacket(opcode, protocal)).addListener(ChannelFutureListener.CLOSE);
+	public void sendAndClose(Integer opcode, Object protocol) {
+		channel.writeAndFlush(buildPacket(opcode, protocol)).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	/**
 	 * 构建发送的封包对象.
 	 * 
 	 * @param opcode 协议编号
-	 * @param protocal 协议内容
+	 * @param protocol 协议内容
 	 * @return 封包对象
 	 */
-	protected ByteArray buildPacket(Integer opcode, Object protocal) {
-		return PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocal(opcode, protocal));
+	protected ByteArray buildPacket(Integer opcode, Object protocol) {
+		return PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocol(opcode, protocol));
 	}
 
 	/**

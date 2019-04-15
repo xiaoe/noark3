@@ -36,10 +36,10 @@ public final class Sender {
 	 * 给全服在线玩家转发一个封包.
 	 * 
 	 * @param opcode 协议编号
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 */
-	public static void relayPacket(Integer opcode, Object protocal) {
-		SessionManager.send(opcode, protocal);
+	public static void relayPacket(Integer opcode, Object protocol) {
+		SessionManager.send(opcode, protocol);
 	}
 
 	/**
@@ -47,10 +47,10 @@ public final class Sender {
 	 * 
 	 * @param playerId 指定玩家的ID
 	 * @param opcode 协议编号
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 */
-	public static void relayPacket(Serializable playerId, Integer opcode, Object protocal) {
-		SessionManager.send(opcode, protocal, playerId);
+	public static void relayPacket(Serializable playerId, Integer opcode, Object protocol) {
+		SessionManager.send(opcode, protocol, playerId);
 	}
 
 	/**
@@ -60,11 +60,11 @@ public final class Sender {
 	 * 
 	 * @param playerIds 指定的一群玩家ID
 	 * @param opcode 封包操作码
-	 * @param protocal 封包对象
+	 * @param protocol 封包对象
 	 */
-	public static void relayPacket(Serializable[] playerIds, Integer opcode, Object protocal) {
+	public static void relayPacket(Serializable[] playerIds, Integer opcode, Object protocol) {
 		if (ArrayUtils.isNotEmpty(playerIds)) {
-			SessionManager.send(opcode, protocal, playerIds);
+			SessionManager.send(opcode, protocol, playerIds);
 		}
 	}
 
@@ -74,9 +74,9 @@ public final class Sender {
 	 * 
 	 * @param playerId 指定玩家的ID
 	 * @param opcode 协议编号
-	 * @param protocal 协议对象
+	 * @param protocol 协议对象
 	 */
-	public static void innerRelayPacket(Serializable playerId, Integer opcode, Object protocal) {
-		threadDispatcher.dispatchInnerPacket(playerId, opcode, protocal);
+	public static void innerRelayPacket(Serializable playerId, Integer opcode, Object protocol) {
+		threadDispatcher.dispatchInnerPacket(playerId, opcode, protocol);
 	}
 }

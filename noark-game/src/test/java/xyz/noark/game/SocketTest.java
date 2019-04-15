@@ -36,8 +36,8 @@ public class SocketTest {
 		Thread.sleep(10000);
 	}
 
-	private static void send(Socket socket, int opcode, String protocal) throws Exception {
-		byte[] body = JSON.toJSONString(protocal).getBytes();
+	private static void send(Socket socket, int opcode, String protocol) throws Exception {
+		byte[] body = JSON.toJSONString(protocol).getBytes();
 		socket.getOutputStream().write(ByteArrayUtils.toByteArray((short) (body.length + 4)));
 		socket.getOutputStream().write(ByteArrayUtils.toByteArray(opcode));
 		socket.getOutputStream().write(body);

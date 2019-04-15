@@ -37,8 +37,8 @@ public class WebSocketSession extends SocketSession {
 	}
 
 	@Override
-	public void sendAndClose(Integer opcode, Object protocal) {
-		channel.writeAndFlush(buildFrame(buildPacket(opcode, protocal))).addListener(ChannelFutureListener.CLOSE);
+	public void sendAndClose(Integer opcode, Object protocol) {
+		channel.writeAndFlush(buildFrame(buildPacket(opcode, protocol))).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	private BinaryWebSocketFrame buildFrame(ByteArray packet) {

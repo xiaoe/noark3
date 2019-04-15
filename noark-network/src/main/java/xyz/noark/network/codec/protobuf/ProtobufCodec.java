@@ -28,7 +28,7 @@ import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.lang.ByteArrayOutputStream;
 import xyz.noark.core.lang.ImmutableByteArray;
 import xyz.noark.core.network.NetworkPacket;
-import xyz.noark.core.network.NetworkProtocal;
+import xyz.noark.core.network.NetworkProtocol;
 import xyz.noark.core.util.MethodUtils;
 import xyz.noark.core.util.UnsignedUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
@@ -46,25 +46,25 @@ public class ProtobufCodec extends AbstractPacketCodec {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T decodeProtocal(ByteArray bytes, Class<T> klass) {
+	public <T> T decodeProtocol(ByteArray bytes, Class<T> klass) {
 		Method method = CACHES.computeIfAbsent(klass, key -> MethodUtils.getMethod(key, "parseFrom", byte[].class));
 		return (T) MethodUtils.invoke(null, method, bytes.array());
 	}
 
 	@Override
-	public ByteArray encodePacket(NetworkProtocal networkProtocal) {
-		final int opcode = networkProtocal.getOpcode();
+	public ByteArray encodePacket(NetworkProtocol networkProtocol) {
+		final int opcode = networkProtocol.getOpcode();
 		if (opcode > Short.MAX_VALUE) {
 			throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
 		}
 
 		MessageLite message = null;
-		if (networkProtocal.getProtocal() instanceof MessageLite) {
-			message = (MessageLite) networkProtocal.getProtocal();
-		} else if (networkProtocal.getProtocal() instanceof MessageLite.Builder) {
-			message = ((MessageLite.Builder) networkProtocal.getProtocal()).build();
+		if (networkProtocol.getProtocol() instanceof MessageLite) {
+			message = (MessageLite) networkProtocol.getProtocol();
+		} else if (networkProtocol.getProtocol() instanceof MessageLite.Builder) {
+			message = ((MessageLite.Builder) networkProtocol.getProtocol()).build();
 		} else {
-			throw new UnrealizedException("illegal data type：" + networkProtocal.getProtocal().getClass());
+			throw new UnrealizedException("illegal data type：" + networkProtocol.getProtocol().getClass());
 		}
 
 		ImmutableByteArray byteArray = new ImmutableByteArray(message.getSerializedSize() + 2);
