@@ -23,3 +23,5 @@ hs_err_pid*
 .gradle
 .settings
 .project
+.idea
+*.iml
