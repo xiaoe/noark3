@@ -4,8 +4,8 @@ subprojects {
     apply plugin: 'maven'
 	apply plugin: 'signing'
 	
-	group = 'xyz.noark'  
-	version = '3.3.0-SNAPSHOT'
+	group = 'xyz.noark'
+	version = '3.3.0.Final'
 	
 	sourceCompatibility = 1.8  
 	targetCompatibility = 1.8  
