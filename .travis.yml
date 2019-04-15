@@ -1,5 +1,5 @@
 language: java
-script: "gradle clean jar"
+script: "gradle clean build"
 jdk:
   - oraclejdk8
   
@@ -11,6 +11,6 @@ before_install:
 branches:
   only:
     - master
-    - 3.2
+    - 3.3
 notifications:
   email: false
