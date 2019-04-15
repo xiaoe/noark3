@@ -89,7 +89,7 @@ public class ThreadDispatcher {
 		if (pmw.isDeprecated()) {
 			logger.warn("deprecated protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
 			if (networkListener != null) {
-				networkListener.handleDeprecatedPacket(session);
+				networkListener.handleDeprecatedPacket(session, packet);
 			}
 			return;
 		}

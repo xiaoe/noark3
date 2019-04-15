@@ -169,7 +169,7 @@ class CsvReader implements AutoCloseable {
 		}
 
 		// 删除最后一个\r
-		if (sbing.length() > 1 && sbing.charAt(sbing.length() - 1) == CR) {
+		if (sbing.length() > 0 && sbing.charAt(sbing.length() - 1) == CR) {
 			sbing.deleteCharAt(sbing.length() - 1);
 		}
 

@@ -66,8 +66,9 @@ public interface NetworkListener {
 	 * 临时关闭参考 {@link PacketMethodManager#temporarilyClosed(Integer)}
 	 * 
 	 * @param session Session对象
+	 * @param packet 网络封包
 	 */
-	void handleDeprecatedPacket(Session session);
+	void handleDeprecatedPacket(Session session, NetworkPacket packet);
 
 	/**
 	 * 处理封包统计预警功能.

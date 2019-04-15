@@ -34,7 +34,7 @@ public abstract class AbstractNetworkListener implements NetworkListener {
 	}
 
 	@Override
-	public void handleDeprecatedPacket(Session session) {}
+	public void handleDeprecatedPacket(Session session, NetworkPacket packet) {}
 
 	@Override
 	public boolean handlePacketWarning(Session session, int second, int count, int threshold) {
