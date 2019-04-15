@@ -74,6 +74,8 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
 	 * @param entity 新增对象.
 	 */
 	public void cacheInsert(T entity) {
+		entityMapping.touchForCreate(entity);
+
 		dataCache.insert(entity);
 
 		asyncWriteService.insert(entityMapping, entity);
@@ -107,6 +109,8 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
 	 * @param entity 实体对象.
 	 */
 	public void cacheUpdate(T entity) {
+		entityMapping.touchForUpdate(entity);
+
 		dataCache.update(entity);
 
 		asyncWriteService.update(entityMapping, entity);

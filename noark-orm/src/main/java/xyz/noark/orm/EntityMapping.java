@@ -13,11 +13,18 @@
  */
 package xyz.noark.orm;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
+import xyz.noark.core.annotation.orm.CreatedDate;
 import xyz.noark.core.annotation.orm.Entity;
 import xyz.noark.core.annotation.orm.Entity.FeatchType;
+import xyz.noark.core.annotation.orm.LastModifiedDate;
 import xyz.noark.reflectasm.ConstructorAccess;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -45,6 +52,11 @@ public class EntityMapping<T> {
 	protected FieldMapping playerId;
 	/** 全部属性 */
 	protected List<FieldMapping> fieldInfo;
+
+	/** 创建时间 */
+	protected FieldMapping createdDate;
+	/** 最后修改时间 */
+	protected FieldMapping lastModifiedDate;
 
 	public EntityMapping(Class<T> klass) {
 		this.klass = klass;
@@ -126,6 +138,14 @@ public class EntityMapping<T> {
 		this.tableComment = tableComment;
 	}
 
+	public void setCreatedDate(FieldMapping createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public void setLastModifiedDate(FieldMapping lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+
 	/**
 	 * 构造一个回写数据的唯一Key.
 	 * <p>
@@ -144,5 +164,53 @@ public class EntityMapping<T> {
 
 	public MethodAccess getMethodAccess() {
 		return methodAccess;
+	}
+
+	/**
+	 * 如果当前实体有实现了{@link CreatedDate}或{@link LastModifiedDate}注解的字段，那就要按规则给他赋值
+	 * 
+	 * @param entity 实体对象
+	 */
+	public void touchForCreate(T entity) {
+		// 实现了CreatedDate注解 并且 这个属性没有值
+		if (createdDate != null && methodAccess.invoke(entity, createdDate.getGetMethodIndex()) == null) {
+			this.touchDate(entity, createdDate);
+		}
+		// 实现了LastModifiedDate注解 并且 这个属性没有值
+		if (lastModifiedDate != null && methodAccess.invoke(entity, lastModifiedDate.getGetMethodIndex()) == null) {
+			this.touchDate(entity, lastModifiedDate);
+		}
+	}
+
+	/**
+	 * 如果当前实体有实现了{@link LastModifiedDate}注解的字段，那就要按规则给他赋值
+	 * 
+	 * @param entity 实体对象
+	 */
+	public void touchForUpdate(T entity) {
+		// 更新逻辑，只要有更新那就要重新给值
+		if (lastModifiedDate != null) {
+			this.touchDate(entity, lastModifiedDate);
+		}
+	}
+
+	private void touchDate(T entity, FieldMapping fm) {
+		switch (fm.getType()) {
+		case AsDate:
+			methodAccess.invoke(entity, fm.getSetMethodIndex(), new Date());
+			break;
+		case AsInstant:
+			methodAccess.invoke(entity, fm.getSetMethodIndex(), Instant.now());
+			break;
+		case AsLocalDateTime:
+			methodAccess.invoke(entity, fm.getSetMethodIndex(), LocalDateTime.now());
+			break;
+		case AsLong:
+			methodAccess.invoke(entity, fm.getSetMethodIndex(), System.currentTimeMillis());
+			break;
+		default:
+			logger.warn("未实现的类型 type={}", fm.getType().name());
+			break;
+		}
 	}
 }

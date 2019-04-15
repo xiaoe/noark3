@@ -84,9 +84,21 @@ public class AnnotationEntityMaker {
 			if (fm.isPrimaryId()) {
 				em.setPrimaryId(fm);
 			}
+
+			// 玩家ID
 			if (fm.isPlayerId()) {
 				em.setPlayerId(fm);
 			}
+			// 创建时间
+			else if (fm.isCreatedDate()) {
+				em.setCreatedDate(fm);
+			}
+			// 最后修改时间
+			else if (fm.isLastModifiedDate()) {
+				em.setLastModifiedDate(fm);
+			}
+
+			// 所有字段
 			fieldInfo.add(fm);
 		}
 		em.setFieldInfo(fieldInfo);

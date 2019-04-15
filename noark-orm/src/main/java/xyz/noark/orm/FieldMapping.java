@@ -19,8 +19,10 @@ import java.lang.reflect.Type;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.orm.Blob;
 import xyz.noark.core.annotation.orm.Column;
+import xyz.noark.core.annotation.orm.CreatedDate;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.annotation.orm.Json;
+import xyz.noark.core.annotation.orm.LastModifiedDate;
 import xyz.noark.core.util.FieldUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.accessor.FieldType;
@@ -42,6 +44,11 @@ public class FieldMapping {
 	private final PlayerId playerId;
 	private final Json json;
 
+	/** 创建时间 */
+	private final CreatedDate createdDate;
+	/** 最后修改时间 */
+	private final LastModifiedDate lastModifiedDate;
+
 	private String columnName;
 	private int width;
 	private final int getMethodIndex;
@@ -57,6 +64,8 @@ public class FieldMapping {
 		this.column = field.getAnnotation(Column.class);
 		this.playerId = field.getAnnotation(PlayerId.class);
 		this.json = field.getAnnotation(Json.class);
+		this.createdDate = field.getAnnotation(CreatedDate.class);
+		this.lastModifiedDate = field.getAnnotation(LastModifiedDate.class);
 
 		this.getMethodIndex = methodAccess.getIndex(FieldUtils.genGetMethodName(field));
 		this.setMethodIndex = methodAccess.getIndex(FieldUtils.genSetMethodName(field));
@@ -180,5 +189,13 @@ public class FieldMapping {
 
 	public boolean isJson() {
 		return json != null;
+	}
+
+	public boolean isCreatedDate() {
+		return createdDate != null;
+	}
+
+	public boolean isLastModifiedDate() {
+		return lastModifiedDate != null;
 	}
 }
