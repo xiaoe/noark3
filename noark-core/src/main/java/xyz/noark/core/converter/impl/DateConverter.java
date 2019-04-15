@@ -52,8 +52,8 @@ public class DateConverter implements Converter<Date> {
 		return this.convert(parameter.getAnnotation(DateTimeFormat.class), value);
 	}
 
-	private Date convert(DateTimeFormat foramt, String value) throws ParseException {
-		return new SimpleDateFormat(foramt == null ? "yyyy-MM-dd HH:mm:ss" : foramt.pattern()).parse(value);
+	private Date convert(DateTimeFormat format, String value) throws ParseException {
+		return new SimpleDateFormat(format == null ? "yyyy-MM-dd HH:mm:ss" : format.pattern()).parse(value);
 	}
 
 	@Override

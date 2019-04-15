@@ -18,7 +18,7 @@ import java.util.List;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
-import xyz.noark.core.annotation.orm.Entity.FeatchType;
+import xyz.noark.core.annotation.orm.Entity.FetchType;
 import xyz.noark.orm.DataModular;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.cache.DataCache;
@@ -33,7 +33,7 @@ import xyz.noark.orm.write.AsyncWriteService;
 abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRepository<T, K> implements CacheRepository<T, K> {
 	protected DataCache<T, K> dataCache;
 
-	@Value(DataModular.DATA_OFFLINE_INERVAL)
+	@Value(DataModular.DATA_OFFLINE_INTERVAL)
 	private int offlineInterval = 3600;
 	@Autowired
 	protected AsyncWriteService asyncWriteService;
@@ -55,7 +55,7 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
 		// 缓存抓取策略
 		this.dataCache = buildDataCache(offlineInterval);
 
-		if (entityMapping.getFeatchType() == FeatchType.START) {
+		if (entityMapping.getFetchType() == FetchType.START) {
 			dataCache.initCacheData();
 		}
 	}

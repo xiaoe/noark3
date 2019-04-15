@@ -38,7 +38,7 @@ public @interface Entity {
 	 * 
 	 * @return 返回配置的抓取策略，默认值为什么用，什么时候初始化.
 	 */
-	FeatchType fetch() default FeatchType.USE;
+	FetchType fetch() default FetchType.USE;
 
 	/**
 	 * 抓取策略.
@@ -49,7 +49,7 @@ public @interface Entity {
 	 * 
 	 * @author 小流氓(176543888@qq.com)
 	 */
-	public enum FeatchType {
+	public enum FetchType {
 		/**
 		 * 启动服务器的时候，初始化当前实体数据.
 		 */

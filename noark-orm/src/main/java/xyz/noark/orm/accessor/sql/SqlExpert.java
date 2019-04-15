@@ -57,7 +57,7 @@ public interface SqlExpert {
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
-	<T> String genSeleteByPlayerId(EntityMapping<T> em);
+	<T> String genSelectByPlayerId(EntityMapping<T> em);
 
 	/**
 	 * 获取删除的SQL语句.
@@ -75,7 +75,7 @@ public interface SqlExpert {
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
-	<T> String genSeleteSql(EntityMapping<T> em);
+	<T> String genSelectSql(EntityMapping<T> em);
 
 	/**
 	 * 获取查询全部的SQL语句.
@@ -84,7 +84,7 @@ public interface SqlExpert {
 	 * @param em 实体映射对象
 	 * @return SQL语句
 	 */
-	<T> String genSeleteAllSql(EntityMapping<T> em);
+	<T> String genSelectAllSql(EntityMapping<T> em);
 
 	/**
 	 * 生成带值的一条语句

@@ -25,9 +25,9 @@ import java.time.format.DateTimeFormatter;
 abstract class AbstractMessage implements Message {
 	// 单线程不需要ThreadLocal来保护...
 	/** 拼接日志所用的缓存区 */
-	private static final StringBuilder DEFUALT_LOG_BUILDER = new StringBuilder(512);
+	private static final StringBuilder DEFAULT_LOG_BUILDER = new StringBuilder(512);
 	/** 日志中输出的时间格式 */
-	private static final DateTimeFormatter DEFAULT_DATE_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+	private static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
 	private final Level level;
 	protected final String msg;
@@ -50,7 +50,7 @@ abstract class AbstractMessage implements Message {
 				StackTraceElement stackTraceElement = elements[i];
 				fileName = stackTraceElement.getFileName();
 				lineNumber = stackTraceElement.getLineNumber();
-				if (fileName != null && !fileName.endsWith("Loger.java")) {
+				if (fileName != null && !fileName.endsWith("Logger.java")) {
 					break;
 				}
 			}
@@ -69,22 +69,22 @@ abstract class AbstractMessage implements Message {
 
 	@Override
 	public String build() {
-		DEFUALT_LOG_BUILDER.setLength(0);
+		DEFAULT_LOG_BUILDER.setLength(0);
 
 		// 2017-11-11 19:59:42.538 [main] INFO Test.java:18 - test
-		DEFUALT_LOG_BUILDER.append(DEFAULT_DATE_FORMATER.format(date));
+		DEFAULT_LOG_BUILDER.append(DEFAULT_DATE_FORMATTER.format(date));
 		// 线程名称+输出级别
-		DEFUALT_LOG_BUILDER.append(" [").append(threadName).append("] ").append(level);
+		DEFAULT_LOG_BUILDER.append(" [").append(threadName).append("] ").append(level);
 		// Debug状态，输出线程等细节信息
 		if (LogConfigurator.DEFAULT_LEVEL == Level.DEBUG) {
-			DEFUALT_LOG_BUILDER.append(" ").append(fileName).append(":").append(lineNumber);
+			DEFAULT_LOG_BUILDER.append(" ").append(fileName).append(":").append(lineNumber);
 		}
-		DEFUALT_LOG_BUILDER.append(" - ");
+		DEFAULT_LOG_BUILDER.append(" - ");
 
-		this.onBuildMessage(DEFUALT_LOG_BUILDER);
+		this.onBuildMessage(DEFAULT_LOG_BUILDER);
 
-		DEFUALT_LOG_BUILDER.append("\n");
-		return DEFUALT_LOG_BUILDER.toString();
+		DEFAULT_LOG_BUILDER.append("\n");
+		return DEFAULT_LOG_BUILDER.toString();
 	}
 
 	/**

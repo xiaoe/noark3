@@ -29,6 +29,6 @@ public class NettyLoggerFactory extends InternalLoggerFactory {
 
 	@Override
 	public InternalLogger newInstance(String name) {
-		return new NettyLoger();
+		return new NettyLogger();
 	}
 }

@@ -108,11 +108,11 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	 * @param entity 实体对象
 	 * @param type 操作类型
 	 */
-	private <T> void operationing(EntityMapping<T> em, T entity, OperateType type) {
+	private <T> void operation(EntityMapping<T> em, T entity, OperateType type) {
 		Serializable roleId = this.analysisRoleIdByEntity(em, entity);
 		AsyncWriteContainer container = containers.get(roleId);
 		switch (type) {
-		case INSTER:
+		case INSERT:
 			container.insert(em, entity);
 			break;
 		case DELETE:
@@ -129,24 +129,24 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 
 	@Override
 	public <T> void insert(EntityMapping<T> em, T entity) {
-		this.operationing(em, entity, OperateType.INSTER);
+		this.operation(em, entity, OperateType.INSERT);
 	}
 
 	@Override
 	public <T> void delete(EntityMapping<T> em, T entity) {
-		this.operationing(em, entity, OperateType.DELETE);
+		this.operation(em, entity, OperateType.DELETE);
 	}
 
 	@Override
 	public <T> void deleteAll(EntityMapping<T> em, List<T> result) {
 		for (T entity : result) {
-			this.operationing(em, entity, OperateType.DELETE);
+			this.operation(em, entity, OperateType.DELETE);
 		}
 	}
 
 	@Override
 	public <T> void update(EntityMapping<T> em, T entity) {
-		this.operationing(em, entity, OperateType.UPDATE);
+		this.operation(em, entity, OperateType.UPDATE);
 	}
 
 	@Override

@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class FloatArrayList implements FloatList, RandomAccess {
 	private static final int DEFAULT_CAPACITY = 10;
 	/** 共享的空数组 */
-	private static final float[] EMPTY_ELEMENTDATA = {};
+	private static final float[] EMPTY_ELEMENT_DATA = {};
 
 	private float[] elementData;
 	/** 列表中元素的个数 */
@@ -40,7 +40,7 @@ public class FloatArrayList implements FloatList, RandomAccess {
 	 * 构建一个空的列表.
 	 */
 	public FloatArrayList() {
-		this.elementData = EMPTY_ELEMENTDATA;
+		this.elementData = EMPTY_ELEMENT_DATA;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class FloatArrayList implements FloatList, RandomAccess {
 		if (initialCapacity > 0) {
 			this.elementData = new float[initialCapacity];
 		} else if (initialCapacity == 0) {
-			this.elementData = EMPTY_ELEMENTDATA;
+			this.elementData = EMPTY_ELEMENT_DATA;
 		} else {
 			throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
 		}
@@ -65,7 +65,7 @@ public class FloatArrayList implements FloatList, RandomAccess {
 	 */
 	public void trimToSize() {
 		if (size < elementData.length) {
-			elementData = (size == 0) ? EMPTY_ELEMENTDATA : Arrays.copyOf(elementData, size);
+			elementData = (size == 0) ? EMPTY_ELEMENT_DATA : Arrays.copyOf(elementData, size);
 		}
 	}
 
@@ -279,7 +279,7 @@ public class FloatArrayList implements FloatList, RandomAccess {
 	}
 
 	private void ensureCapacityInternal(int minCapacity) {
-		if (elementData == EMPTY_ELEMENTDATA) {
+		if (elementData == EMPTY_ELEMENT_DATA) {
 			minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
 		}
 

@@ -44,7 +44,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 
 	@Override
 	public <T> int insert(final EntityMapping<T> em, final T entity) {
-		class InsterPreparedStatementCallback implements PreparedStatementCallback<Integer> {
+		class InsertPreparedStatementCallback implements PreparedStatementCallback<Integer> {
 			private int index = 1;
 
 			@Override
@@ -55,7 +55,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(new InsterPreparedStatementCallback(), expert.genInsertSql(em));
+		return execute(new InsertPreparedStatementCallback(), expert.genInsertSql(em));
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(new LoadPreparedStatementCallback(), expert.genSeleteSql(em));
+		return execute(new LoadPreparedStatementCallback(), expert.genSelectSql(em));
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(new LoadAllPreparedStatementCallback(), expert.genSeleteAllSql(em));
+		return execute(new LoadAllPreparedStatementCallback(), expert.genSelectAllSql(em));
 	}
 
 	public <T> List<T> newEntityList(final EntityMapping<T> em, ResultSet rs) throws Exception {
@@ -157,7 +157,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSeleteByPlayerId(em));
+		return execute(new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSelectByPlayerId(em));
 	}
 
 	private <T> void setPstmtParameter(EntityMapping<T> em, FieldMapping fm, PreparedStatementProxy pstmt, final T entity, final int index) throws Exception {

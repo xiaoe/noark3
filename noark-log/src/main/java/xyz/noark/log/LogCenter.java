@@ -28,13 +28,13 @@ import java.util.concurrent.TimeUnit;
 class LogCenter {
 	private static final LogCenter INSTANCE = new LogCenter();
 	/** 异步日志线程 */
-	private final ExecutorService ANSYC_LOG_EXEC;
+	private final ExecutorService ASYNC_LOG_EXEC;
 
 	private LogCenter() {
-		ANSYC_LOG_EXEC = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+		ASYNC_LOG_EXEC = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
-				Thread t = new Thread(r, "ansyc-log");
+				Thread t = new Thread(r, "async-log");
 				t.setDaemon(true);
 				return t;
 			}
@@ -46,14 +46,14 @@ class LogCenter {
 	}
 
 	void execute(LogExecutor info) {
-		ANSYC_LOG_EXEC.execute(info);
+		ASYNC_LOG_EXEC.execute(info);
 	}
 
 	public void shutdown() {
-		ANSYC_LOG_EXEC.shutdown();
+		ASYNC_LOG_EXEC.shutdown();
 
 		try {// 最大等待时间为1分钟...
-			ANSYC_LOG_EXEC.awaitTermination(1, TimeUnit.MINUTES);
+			ASYNC_LOG_EXEC.awaitTermination(1, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {}
 	}
 }

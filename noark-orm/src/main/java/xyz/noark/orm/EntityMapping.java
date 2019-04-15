@@ -23,7 +23,7 @@ import java.util.List;
 
 import xyz.noark.core.annotation.orm.CreatedDate;
 import xyz.noark.core.annotation.orm.Entity;
-import xyz.noark.core.annotation.orm.Entity.FeatchType;
+import xyz.noark.core.annotation.orm.Entity.FetchType;
 import xyz.noark.core.annotation.orm.LastModifiedDate;
 import xyz.noark.reflectasm.ConstructorAccess;
 import xyz.noark.reflectasm.MethodAccess;
@@ -40,7 +40,7 @@ public class EntityMapping<T> {
 	private final ConstructorAccess<T> constructorAccess;
 
 	/** 抓取策略 */
-	protected final FeatchType featchType;
+	protected final FetchType fetchType;
 	/** 表名 */
 	protected String tableName;
 	/** 注释 */
@@ -61,13 +61,13 @@ public class EntityMapping<T> {
 	public EntityMapping(Class<T> klass) {
 		this.klass = klass;
 		Entity entity = klass.getAnnotation(Entity.class);
-		this.featchType = entity.fetch();
+		this.fetchType = entity.fetch();
 		this.methodAccess = MethodAccess.get(klass);
 		this.constructorAccess = ConstructorAccess.get(klass);
 	}
 
-	public FeatchType getFeatchType() {
-		return featchType;
+	public FetchType getFetchType() {
+		return fetchType;
 	}
 
 	public String getTableName() {

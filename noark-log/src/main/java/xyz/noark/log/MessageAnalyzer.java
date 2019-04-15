@@ -25,9 +25,8 @@ import java.util.Arrays;
  * @author 小流氓(176543888@qq.com)
  */
 class MessageAnalyzer {
-	private static final char DELIM_START = '{';
-	private static final char DELIM_STOP = '}';
-	// private static final char ESCAPE_CHAR = '\\';
+	private static final char DELIMIT_START = '{';
+	private static final char DELIMIT_STOP = '}';
 
 	private ArrayList<Placeholder> caches = new ArrayList<>();
 	/** 占位符个数 */
@@ -46,7 +45,7 @@ class MessageAnalyzer {
 		/** 最后的字符被排除在循环之外 */
 		for (; i < len - 1; i++) {
 			final char curChar = messagePattern.charAt(i);
-			if (isDelimPair(curChar, messagePattern, i)) {
+			if (isDelimitPair(curChar, messagePattern, i)) {
 
 				if (beginIndex != i) {
 					caches.add(new StrPlaceholder(messagePattern.substring(beginIndex, i)));
@@ -69,8 +68,8 @@ class MessageAnalyzer {
 	 * {@code curCharIndex + 1} in the specified message pattern together form a
 	 * "{}" delimiter pair, returns {@code false} otherwise.
 	 */
-	private static boolean isDelimPair(final char curChar, final String messagePattern, final int curCharIndex) {
-		return curChar == DELIM_START && messagePattern.charAt(curCharIndex + 1) == DELIM_STOP;
+	private static boolean isDelimitPair(final char curChar, final String messagePattern, final int curCharIndex) {
+		return curChar == DELIMIT_START && messagePattern.charAt(curCharIndex + 1) == DELIMIT_STOP;
 	}
 
 	public void build(StringBuilder sb, Object[] args) {

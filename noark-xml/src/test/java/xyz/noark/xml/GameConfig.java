@@ -60,7 +60,7 @@ public class GameConfig {
 	@TplAttr(name = "data.offlineInterval")
 	private int offlineInterval = 3600;
 
-	@TplAttr(name = "GobleRedis.ip")
+	@TplAttr(name = "GlobalRedis.ip")
 	private String redisIp;
 
 	public String getPid() {

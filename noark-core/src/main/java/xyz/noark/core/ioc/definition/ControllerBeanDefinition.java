@@ -107,7 +107,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	/** 分析延迟任务处理入口. */
 	private void doAnalysisScheduledHandler(NoarkIoc noarkIoc) {
 		final ScheduledMethodManager manager = ScheduledMethodManager.getInstance();
-		smds.forEach(smd -> manager.resetScheduledHander(new ScheduledMethodWrapper(methodAccess, single, smd, threadGroup, controllerMasterClass)));
+		smds.forEach(smd -> manager.resetScheduledHandler(new ScheduledMethodWrapper(methodAccess, single, smd, threadGroup, controllerMasterClass)));
 	}
 
 	/** 分析HTTP处理入口. */
@@ -119,7 +119,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	/** 分析事件处理入口. */
 	private void doAnalysisEventHandler(NoarkIoc ioc) {
 		final EventMethodManager manager = EventMethodManager.getInstance();
-		emds.forEach(emd -> manager.resetEventHander(new EventMethodWrapper(methodAccess, single, emd, threadGroup, controllerMasterClass)));
+		emds.forEach(emd -> manager.resetEventHandler(new EventMethodWrapper(methodAccess, single, emd, threadGroup, controllerMasterClass)));
 	}
 
 	/** 分析一下封包处理方法. */

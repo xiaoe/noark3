@@ -183,8 +183,8 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	}
 
 	@Override
-	public <T> String genSeleteByPlayerId(EntityMapping<T> em) {
-		// Selete id from item where role_id = ?
+	public <T> String genSelectByPlayerId(EntityMapping<T> em) {
+		// Select id from item where role_id = ?
 		StringBuilder sb = new StringBuilder(128);
 		sb.append("SELECT ");
 		for (FieldMapping fm : em.getFieldMapping()) {
@@ -201,8 +201,8 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	}
 
 	@Override
-	public <T> String genSeleteSql(EntityMapping<T> sem) {
-		// Selete id from item where role_id = ?
+	public <T> String genSelectSql(EntityMapping<T> sem) {
+		// Select id from item where role_id = ?
 		StringBuilder sb = new StringBuilder(128);
 		sb.append("SELECT ");
 		for (FieldMapping fm : sem.getFieldMapping()) {
@@ -217,7 +217,7 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 	}
 
 	@Override
-	public <T> String genSeleteAllSql(EntityMapping<T> sem) {
+	public <T> String genSelectAllSql(EntityMapping<T> sem) {
 		StringBuilder sb = new StringBuilder(128);
 		sb.append("SELECT ");
 		for (FieldMapping fm : sem.getFieldMapping()) {

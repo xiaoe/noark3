@@ -36,6 +36,6 @@ public class NoarkPropertiesLoaderTest {
 
 		assertTrue("中国".equals(config.get("noark.key.test")));
 		assertTrue("2".equals(config.get("noark.server.id")));
-		assertTrue("2 server".equals(config.get("noark.setver.name")));
+		assertTrue("2 server".equals(config.get("noark.server.name")));
 	}
 }

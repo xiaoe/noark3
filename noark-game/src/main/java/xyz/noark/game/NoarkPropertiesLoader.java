@@ -50,15 +50,15 @@ class NoarkPropertiesLoader {
 		final ClassLoader loader = Noark.class.getClassLoader();
 		HashMap<String, String> result = new HashMap<>(256, 1);
 
-		loadPorperties(loader, DEFAULT_PROPERTIES, result);
+		loadProperties(loader, DEFAULT_PROPERTIES, result);
 
 		// 加载指定的Profile
 		if (StringUtils.isNotEmpty(profile)) {
-			loadPorperties(loader, PROFILE_PREFIX + profile + PROFILE_SUFFIX, result);
+			loadProperties(loader, PROFILE_PREFIX + profile + PROFILE_SUFFIX, result);
 		}
 		// 没有配置的情况，要加载那个Test配置
 		else {
-			loadPorperties(loader, TEST_PROPERTIES, result);
+			loadProperties(loader, TEST_PROPERTIES, result);
 		}
 
 		// 密文解密
@@ -78,7 +78,7 @@ class NoarkPropertiesLoader {
 		return result;
 	}
 
-	private void loadPorperties(ClassLoader loader, String filename, HashMap<String, String> result) {
+	private void loadProperties(ClassLoader loader, String filename, HashMap<String, String> result) {
 		try (InputStream in = loader.getResourceAsStream(filename)) {
 			if (in != null) {
 				try (InputStreamReader isr = new InputStreamReader(in, "utf-8")) {

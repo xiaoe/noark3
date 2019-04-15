@@ -46,8 +46,8 @@ class ArrayXmlHandler<T> extends AbstractXmlHandler<T> {
 	}
 
 	public List<T> getResult() {
-		List<T> reslut = new ArrayList<>(datas.size());
-		datas.forEach(v -> reslut.add(buildObject(v, false)));
-		return reslut;
+		List<T> result = new ArrayList<>(datas.size());
+		datas.forEach(v -> result.add(buildObject(v, false)));
+		return result;
 	}
 }

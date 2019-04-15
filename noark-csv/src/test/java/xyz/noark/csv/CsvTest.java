@@ -36,7 +36,7 @@ public class CsvTest {
 
 	@Test
 	public void test() {
-		ConvertManager.getInstance().regist(RewardConverter.class);
+		ConvertManager.getInstance().register(RewardConverter.class);
 		Csv csv = new Csv('	');
 		File file = new File("src/test/resources/");
 		List<ItemTemplate> ts = csv.loadAll(file.getAbsolutePath(), ItemTemplate.class);

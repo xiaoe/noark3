@@ -55,7 +55,7 @@ public class EventMethodManager {
 	 * 
 	 * @param eventWrapper 事件处理方法包装对象
 	 */
-	public void resetEventHander(EventMethodWrapper eventWrapper) {
+	public void resetEventHandler(EventMethodWrapper eventWrapper) {
 		handlers.computeIfAbsent(eventWrapper.getEventClass(), key -> new ArrayList<>()).add(eventWrapper);
 	}
 

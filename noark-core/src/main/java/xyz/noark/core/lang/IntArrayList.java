@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 public class IntArrayList implements IntList, RandomAccess {
 	private static final int DEFAULT_CAPACITY = 10;
 	/** 共享的空数组 */
-	private static final int[] EMPTY_ELEMENTDATA = {};
+	private static final int[] EMPTY_ELEMENT_DATA = {};
 
 	private int[] elementData;
 	/** 列表中元素的个数 */
@@ -43,7 +43,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	 * 构建一个空的列表.
 	 */
 	public IntArrayList() {
-		this.elementData = EMPTY_ELEMENTDATA;
+		this.elementData = EMPTY_ELEMENT_DATA;
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class IntArrayList implements IntList, RandomAccess {
 		if (initialCapacity > 0) {
 			this.elementData = new int[initialCapacity];
 		} else if (initialCapacity == 0) {
-			this.elementData = EMPTY_ELEMENTDATA;
+			this.elementData = EMPTY_ELEMENT_DATA;
 		} else {
 			throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
 		}
@@ -78,7 +78,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	 */
 	public void trimToSize() {
 		if (size < elementData.length) {
-			elementData = (size == 0) ? EMPTY_ELEMENTDATA : Arrays.copyOf(elementData, size);
+			elementData = (size == 0) ? EMPTY_ELEMENT_DATA : Arrays.copyOf(elementData, size);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class IntArrayList implements IntList, RandomAccess {
 	}
 
 	private void ensureCapacityInternal(int minCapacity) {
-		if (elementData == EMPTY_ELEMENTDATA) {
+		if (elementData == EMPTY_ELEMENT_DATA) {
 			minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
 		}
 

@@ -49,7 +49,7 @@ public class ScheduledMethodManager {
 	 * 
 	 * @param scheduledWrapper 延迟任务处理方法包装对象
 	 */
-	public void resetScheduledHander(ScheduledMethodWrapper scheduledWrapper) {
+	public void resetScheduledHandler(ScheduledMethodWrapper scheduledWrapper) {
 		handlers.put(scheduledWrapper.getId(), scheduledWrapper);
 	}
 }

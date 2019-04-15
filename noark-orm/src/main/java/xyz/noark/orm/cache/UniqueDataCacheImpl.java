@@ -28,7 +28,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
-import xyz.noark.core.annotation.orm.Entity.FeatchType;
+import xyz.noark.core.annotation.orm.Entity.FetchType;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.orm.repository.CacheRepository;
 
@@ -58,7 +58,7 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 		};
 
 		// 没有玩家ID或启服时加载内存是需要永久缓存
-		if (entityMapping.getPlayerId() == null || entityMapping.getFeatchType() == FeatchType.START) {
+		if (entityMapping.getPlayerId() == null || entityMapping.getFetchType() == FetchType.START) {
 			caches = Caffeine.newBuilder().build(loader);
 		}
 		// 其他情况是有缓存超时的
@@ -115,7 +115,7 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 
 	private DataWrapper<T> getDataWrapper(K entityId) {
 		// 如果是启服就载入的，就没有必要再去访问DB了...
-		if (entityMapping.getFeatchType() == FeatchType.START) {
+		if (entityMapping.getFetchType() == FetchType.START) {
 			return caches.getIfPresent(entityId);
 		}
 

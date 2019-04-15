@@ -49,7 +49,7 @@ public class IocLoader {
 	private static final String CLASS_SUFFIX = ".class";
 	private final HashMap<Class<?>, DefaultBeanDefinition> beans = new HashMap<>(1024);
 	private final List<BeanDefinition> configurations = new ArrayList<>();
-	private final List<StaticComponentBeanDefinition> staticcomponents = new ArrayList<>();
+	private final List<StaticComponentBeanDefinition> staticComponents = new ArrayList<>();
 
 	IocLoader(String... packages) {
 		ResourceScanning.scanPackage(packages, (resource) -> analysisResource(resource));
@@ -145,7 +145,7 @@ public class IocLoader {
 
 	/** 静态组件 */
 	private void analytical(Class<?> klass, StaticComponent component) {
-		staticcomponents.add(new StaticComponentBeanDefinition(klass).init());
+		staticComponents.add(new StaticComponentBeanDefinition(klass).init());
 	}
 
 	/** 组件类型的Bean... */
@@ -171,7 +171,7 @@ public class IocLoader {
 	}
 
 	private void analytical(Class<?> klass, TemplateConverter converter) {
-		ConvertManager.getInstance().regist(klass, converter);
+		ConvertManager.getInstance().register(klass, converter);
 	}
 
 	private void analytical(Class<?> klass, Configuration configuration) {
@@ -187,6 +187,6 @@ public class IocLoader {
 	}
 
 	public List<StaticComponentBeanDefinition> getStaticComponents() {
-		return staticcomponents;
+		return staticComponents;
 	}
 }

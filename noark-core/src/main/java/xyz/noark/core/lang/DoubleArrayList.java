@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DoubleArrayList implements DoubleList, RandomAccess {
 	private static final int DEFAULT_CAPACITY = 10;
 	/** 共享的空数组 */
-	private static final double[] EMPTY_ELEMENTDATA = {};
+	private static final double[] EMPTY_ELEMENT_DATA = {};
 
 	private double[] elementData;
 	/** 列表中元素的个数 */
@@ -40,7 +40,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess {
 	 * 构建一个空的列表.
 	 */
 	public DoubleArrayList() {
-		this.elementData = EMPTY_ELEMENTDATA;
+		this.elementData = EMPTY_ELEMENT_DATA;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess {
 		if (initialCapacity > 0) {
 			this.elementData = new double[initialCapacity];
 		} else if (initialCapacity == 0) {
-			this.elementData = EMPTY_ELEMENTDATA;
+			this.elementData = EMPTY_ELEMENT_DATA;
 		} else {
 			throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
 		}
@@ -65,7 +65,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess {
 	 */
 	public void trimToSize() {
 		if (size < elementData.length) {
-			elementData = (size == 0) ? EMPTY_ELEMENTDATA : Arrays.copyOf(elementData, size);
+			elementData = (size == 0) ? EMPTY_ELEMENT_DATA : Arrays.copyOf(elementData, size);
 		}
 	}
 
@@ -279,7 +279,7 @@ public class DoubleArrayList implements DoubleList, RandomAccess {
 	}
 
 	private void ensureCapacityInternal(int minCapacity) {
-		if (elementData == EMPTY_ELEMENTDATA) {
+		if (elementData == EMPTY_ELEMENT_DATA) {
 			minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
 		}
 

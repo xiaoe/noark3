@@ -24,8 +24,8 @@ import io.netty.util.internal.logging.InternalLogger;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-class NettyLoger implements InternalLogger {
-	NettyLoger() {}
+class NettyLogger implements InternalLogger {
+	NettyLogger() {}
 
 	@Override
 	public String name() {

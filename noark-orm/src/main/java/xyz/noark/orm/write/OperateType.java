@@ -21,5 +21,5 @@ package xyz.noark.orm.write;
  */
 public enum OperateType {
 	// MYSQL
-	INSTER, DELETE, UPDATE, SELECT;
+	INSERT, DELETE, UPDATE, SELECT;
 }

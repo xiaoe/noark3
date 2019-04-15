@@ -54,8 +54,8 @@ public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boole
 	}
 
 	@Override
-	public int compareTo(MutableBoolean anotherbooleaneger) {
-		return Boolean.compare(value, anotherbooleaneger.value);
+	public int compareTo(MutableBoolean other) {
+		return Boolean.compare(value, other.value);
 	}
 
 	@Override

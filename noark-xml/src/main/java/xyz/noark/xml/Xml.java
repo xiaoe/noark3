@@ -103,9 +103,9 @@ public class Xml {
 		}
 
 		try (InputStream is = Files.newInputStream(Paths.get(templatePath, file.value()), StandardOpenOption.READ)) {
-			ArrayXmlHandler<T> myhandler = new ArrayXmlHandler<>(klass, file.value());
-			SAXParserFactory.newInstance().newSAXParser().parse(is, myhandler);
-			return myhandler.getResult();
+			ArrayXmlHandler<T> myHandler = new ArrayXmlHandler<>(klass, file.value());
+			SAXParserFactory.newInstance().newSAXParser().parse(is, myHandler);
+			return myHandler.getResult();
 		} catch (IOException e) {
 			throw new FileNotFoundException("XML配置文件未找到." + file.value(), e);
 		} catch (SAXException | ParserConfigurationException e) {

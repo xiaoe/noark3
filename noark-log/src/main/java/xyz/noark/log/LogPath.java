@@ -43,8 +43,8 @@ class LogPath {
 
 			// 有配置日期格式后缀
 			if (start > 0 && end > start) {
-				String dateformat = path.substring(start + 1, end);
-				this.formatter = DateTimeFormatter.ofPattern(dateformat);
+				String dateFormat = path.substring(start + 1, end);
+				this.formatter = DateTimeFormatter.ofPattern(dateFormat);
 
 				this.prefix = path.substring(0, start);
 				this.suffix = path.substring(end + 1);

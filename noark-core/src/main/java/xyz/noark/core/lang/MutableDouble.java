@@ -59,8 +59,8 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
 	}
 
 	@Override
-	public int compareTo(MutableDouble anotherdoubleeger) {
-		return Double.compare(value, anotherdoubleeger.value);
+	public int compareTo(MutableDouble other) {
+		return Double.compare(value, other.value);
 	}
 
 	@Override

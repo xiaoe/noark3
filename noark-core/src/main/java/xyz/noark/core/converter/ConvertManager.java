@@ -40,13 +40,13 @@ public class ConvertManager {
 	private static final Map<Class<?>, Converter<?>> CONVERTERS = new HashMap<>(128);
 
 	static {
-		INSTANCE.regist(BooleanConverter.class);
-		INSTANCE.regist(IntegerConverter.class);
-		INSTANCE.regist(LongConverter.class);
-		INSTANCE.regist(StringConverter.class);
-		INSTANCE.regist(FloatConverter.class);
-		INSTANCE.regist(IntListConverter.class);
-		INSTANCE.regist(FloatListConverter.class);
+		INSTANCE.register(BooleanConverter.class);
+		INSTANCE.register(IntegerConverter.class);
+		INSTANCE.register(LongConverter.class);
+		INSTANCE.register(StringConverter.class);
+		INSTANCE.register(FloatConverter.class);
+		INSTANCE.register(IntListConverter.class);
+		INSTANCE.register(FloatListConverter.class);
 		// 使用了IOC功能，有自动扫描功能了，就不再需要手工添加...
 	}
 
@@ -66,7 +66,7 @@ public class ConvertManager {
 	 * @param klass 类型
 	 * @param templateConverter 转化器
 	 */
-	public void regist(Class<?> klass, TemplateConverter templateConverter) {
+	public void register(Class<?> klass, TemplateConverter templateConverter) {
 		Object object = ClassUtils.newInstance(klass);
 		if (!(object instanceof Converter<?>)) {
 			throw new ServerBootstrapException("非法的转化器." + klass.getName());
@@ -79,7 +79,7 @@ public class ConvertManager {
 	 * 
 	 * @param klass 转化类
 	 */
-	public void regist(Class<? extends Converter<?>> klass) {
+	public void register(Class<? extends Converter<?>> klass) {
 		this.putConvert(ClassUtils.newInstance(klass), klass.getAnnotation(TemplateConverter.class));
 	}
 

@@ -31,16 +31,16 @@ import xyz.noark.orm.write.AsyncWriteService;
 @Component(name = Modular.DATA_MODULAR)
 public class DataModular implements Modular {
 	/** 服务器数据存档间隔，单位：秒，默认值：5分钟 */
-	public static final String DATA_SAVE_INERVAL = "data.save.inerval";
+	public static final String DATA_SAVE_INTERVAL = "data.save.interval";
 	/** 服务器数据缓存间隔，单位：秒，默认值：1小时 */
-	public static final String DATA_OFFLINE_INERVAL = "data.offline.inerval";
+	public static final String DATA_OFFLINE_INTERVAL = "data.offline.interval";
 	/** 数据存储默认开启下划线命名方式检测 */
 	public static boolean CheckUnderScoreCase = true;
 
 	/** 定时存档间隔 */
-	@Value(DataModular.DATA_SAVE_INERVAL)
+	@Value(DataModular.DATA_SAVE_INTERVAL)
 	private int saveInterval = 300;
-	@Value(DataModular.DATA_OFFLINE_INERVAL)
+	@Value(DataModular.DATA_OFFLINE_INTERVAL)
 	private int offlineInterval = 3600;
 	@Autowired
 	private DataAccessor dataAccessor;
