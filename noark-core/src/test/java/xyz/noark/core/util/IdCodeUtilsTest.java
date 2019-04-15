@@ -24,7 +24,7 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class IdCodeUtilsTest {
-	private final static Benchmark BENCHMARK = new Benchmark(1000_0000);
+	private final static Benchmark BENCHMARK = new Benchmark(1000);
 	private static final int MAX = 10000;
 
 	@Test

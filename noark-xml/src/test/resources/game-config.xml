@@ -13,7 +13,7 @@
 	<mysql ip="192.168.0.92" port="3306" user="root" password="123456" dbname="d_wdj" />
 
 	<!-- 全局Redis -->
-	<GobleRedis ip="${mysql.ip}" port="6379" index="0" />
+	<GlobalRedis ip="${mysql.ip}" port="6379" index="0" />
 	<!-- 本地Redis -->
 	<LocalRedis ip="${mysql.ip}" port="6379" index="1" />
 

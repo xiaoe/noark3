@@ -30,7 +30,7 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class StringUtilsTest {
-	private final Benchmark benchmark = new Benchmark(1000_0000);
+	private final Benchmark benchmark = new Benchmark(1000);
 
 	@Test
 	public void testIsEmpty() {

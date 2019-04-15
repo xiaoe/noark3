@@ -15,7 +15,6 @@ package xyz.noark.network;
 
 import java.net.Socket;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
@@ -29,12 +28,7 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class NettyServerTest {
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
-
-	@Test
-	public void test() throws Exception {
+	public static void main(String[] args) throws Exception {
 		Socket socket = new Socket("127.0.0.1", 9527);
 		socket.getOutputStream().write("socket".getBytes());
 		socket.getOutputStream().flush();
@@ -42,7 +36,7 @@ public class NettyServerTest {
 		socket.close();
 	}
 
-	private final Benchmark benchmark = new Benchmark(1000_0000);
+	private final Benchmark benchmark = new Benchmark(1);
 
 	@Test
 	public void testBenchmark() throws Exception {

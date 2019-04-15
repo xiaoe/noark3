@@ -1,11 +1,10 @@
 dependencies {
-	implementation project(':noark-core')
+	compile project(':noark-core')
 	implementation project(':noark-network')
-	
-	compileOnly project(':noark-csv')
-	compileOnly project(':noark-xml')
-	compileOnly group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.15'
-	compileOnly 'com.alibaba:fastjson:1.2.51'
+	implementation project(':noark-csv')
+	implementation project(':noark-xml')
+	implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.16'
+	implementation 'com.alibaba:fastjson:1.2.57'
 	
 	testImplementation project(':noark-benchmark')
 	testImplementation project(':noark-orm')

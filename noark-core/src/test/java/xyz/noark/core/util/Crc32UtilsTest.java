@@ -27,7 +27,7 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class Crc32UtilsTest {
-	private final static Benchmark BENCHMARK = new Benchmark(1000_0000);
+	private final static Benchmark BENCHMARK = new Benchmark(1000);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {}

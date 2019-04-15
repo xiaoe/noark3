@@ -1,8 +1,8 @@
 dependencies {
 	compile project(':noark-asm')
 	compile project(':noark-log')
+	implementation group: 'io.netty', name: 'netty-all', version: '4.1.34.Final'
 
-	compileOnly group: 'io.netty', name: 'netty-all', version: '4.1.25.Final'
 	testImplementation project(':noark-benchmark')
 	testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
 }

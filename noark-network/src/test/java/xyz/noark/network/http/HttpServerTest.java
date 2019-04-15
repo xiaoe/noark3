@@ -15,9 +15,6 @@ package xyz.noark.network.http;
 
 import java.util.HashMap;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.alibaba.fastjson.JSON;
 
 import xyz.noark.core.util.HttpUtils;
@@ -30,11 +27,7 @@ import xyz.noark.core.util.HttpUtils;
  */
 public class HttpServerTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
-
-	@Test
-	public void test() {
+	public static void main(String[] args) {
 		HttpServer httpServer = new HttpServer();
 		httpServer.setPort(12345);
 		httpServer.setSecretKey("1dcypsz1/2jss1/2j#f00");

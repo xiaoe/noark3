@@ -27,7 +27,7 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class MethodAccessTest {
-	private final Benchmark benchmark = new Benchmark(1_0000_0000);
+	private final Benchmark benchmark = new Benchmark(1);
 	private final TestBean bean = new TestBean();
 	private Method method;// JDK的反射.
 	private MethodAccess access;// ReflectAsm

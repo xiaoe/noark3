@@ -21,8 +21,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import xyz.noark.benchmark.Benchmark;
-
 /**
  * 日志测试类.
  *
@@ -30,8 +28,6 @@ import xyz.noark.benchmark.Benchmark;
  * @author 小流氓(176543888@qq.com)
  */
 public class LogTest {
-	private final static org.apache.logging.log4j.Logger LOG4J2 = org.apache.logging.log4j.LogManager.getLogger(LogTest.class);
-
 	@Before
 	public void setUp() throws Exception {
 		HashMap<String, String> config = new HashMap<>(16, 1);
@@ -50,13 +46,5 @@ public class LogTest {
 		logger.info("haha");
 		logger.warn("123123123, {},{}", 1, null);
 		logger.error("123123123", new RuntimeException("123"));
-	}
-
-	private final Benchmark benchmark = new Benchmark(10_0000);
-
-	@Test
-	public void testBenchmark() throws Exception {
-		benchmark.doSomething("noark log:", () -> logger.error("test={},{},{}", 123, "abc", true));
-		benchmark.doSomething("log4j2:", () -> LOG4J2.error("test={},{},{}", 123, "abc", true));
 	}
 }

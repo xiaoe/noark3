@@ -15,9 +15,6 @@ package xyz.noark.redis;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 /**
  * Redis方法测试
  *
@@ -27,22 +24,19 @@ import org.junit.Test;
 public class RedisTest {
 	private static Redis redis;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void main(String[] args) {
 		redis = new Redis("192.168.51.234", 6380);
+		RedisTest.testPing();
 	}
 
-	@Test
-	public void testPing() {
+	public static void testPing() {
 		redis.ping();
 	}
 
-	@Test
 	public void testHgetAll() {
 		assertNotNull(redis.hgetAll("not-exist"));
 	}
 
-	@Test
 	public void testHkeys() {
 		assertNotNull(redis.hkeys("not-exist"));
 	}

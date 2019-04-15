@@ -28,5 +28,4 @@ public class MessageAnalyzerTest {
 		MessageAnalyzer analyzer = new MessageAnalyzer("1111{}1{}{}1{}");
 		System.out.println(analyzer);
 	}
-
 }
