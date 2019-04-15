@@ -136,6 +136,7 @@ public abstract class FieldAccess {
 	/**
 	 * @param type Must not be the Object class, an interface, a primitive type,
 	 *            or void.
+	 * @return 返回属性访问器
 	 */
 	static public FieldAccess get(Class<?> type) {
 		if (type.getSuperclass() == null)

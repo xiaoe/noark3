@@ -63,6 +63,7 @@ class AccessClassLoader extends ClassLoader {
 		return defineClass(name, bytes);
 	}
 
+	@Override
 	protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		// These classes come from the classloader that loaded
 		// AccessClassLoader.

@@ -48,6 +48,8 @@ abstract public class ConstructorAccess<T> {
 	 * instance will be created using <code>null</code> as the this$0 synthetic
 	 * reference. The instantiated object will work as long as it actually don't
 	 * use any member variable or method fron the enclosing instance.
+	 * 
+	 * @return new object
 	 */
 	abstract public T newInstance();
 
@@ -57,6 +59,8 @@ abstract public class ConstructorAccess<T> {
 	 * @param enclosingInstance The instance of the enclosing type to which this
 	 *            inner instance is related to (assigned to its synthetic this$0
 	 *            field).
+	 * 
+	 * @return new object
 	 */
 	abstract public T newInstance(Object enclosingInstance);
 
