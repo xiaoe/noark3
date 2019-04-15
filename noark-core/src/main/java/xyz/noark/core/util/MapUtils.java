@@ -97,13 +97,44 @@ public class MapUtils {
 	/**
 	 * 将第二个Map加到第一个Map上.
 	 * <p>
-	 * 如果K为对象注意要重写HashCode与Equips方法
+	 * 建议使用{@link MapUtils#addByIntValue(Map, Map)}
 	 * 
 	 * @param <K> 键的类型
 	 * @param source 存结果的Map对象.
 	 * @param value 要加的Map对象
 	 */
+	@Deprecated
 	public static <K> void add(Map<K, Integer> source, Map<K, Integer> value) {
-		value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> v1 + v2));
+		MapUtils.addByIntValue(source, value);
+	}
+
+	/**
+	 * 将第二个Map加到第一个Map上.
+	 * <p>
+	 * 如果K为对象注意要重写HashCode与Equips方法
+	 * 
+	 * @param <K> 键的类型
+	 * @param source 存结果的Map对象.
+	 * @param value 要加的Map对象，此对象可以为空或null
+	 */
+	public static <K> void addByIntValue(Map<K, Integer> source, Map<K, Integer> value) {
+		if (MapUtils.isNotEmpty(value)) {
+			value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> v1 + v2));
+		}
+	}
+
+	/**
+	 * 将第二个Map加到第一个Map上.
+	 * <p>
+	 * 如果K为对象注意要重写HashCode与Equips方法
+	 * 
+	 * @param <K> 键的类型
+	 * @param source 存结果的Map对象.
+	 * @param value 要加的Map对象，此对象可以为空或null
+	 */
+	public static <K> void addByLongValue(Map<K, Long> source, Map<K, Long> value) {
+		if (MapUtils.isNotEmpty(value)) {
+			value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> v1 + v2));
+		}
 	}
 }
