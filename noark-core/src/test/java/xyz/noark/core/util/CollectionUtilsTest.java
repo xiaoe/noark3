@@ -38,8 +38,8 @@ public class CollectionUtilsTest {
 	public void setUp() throws Exception {
 		for (int i = 0; i < MAX; i++) {
 			Pet data = new Pet();
-			data.id = 1;
-			data.level = (i < 10) ? 1 : 2;
+			data.id = i;
+			data.level = i * 2;
 			data.exp = i * i;
 			list.add(data);
 		}
@@ -60,6 +60,19 @@ public class CollectionUtilsTest {
 		PairMap<Integer, Integer, List<Pet>> result = CollectionUtils.groupingBy(list, Pet::getId, Pet::getLevel);
 		assertTrue(result.size() == 2);
 		assertTrue(result.get(1, 1).size() == 10);
+	}
+
+	@Test
+	public void testMatching() {
+		assertTrue(CollectionUtils.matching(list, Pet::getExp, 0).orElse(null).getId() == 0);
+		assertTrue(CollectionUtils.matching(list, Pet::getExp, 1).orElse(null).getId() == 1);
+		assertTrue(CollectionUtils.matching(list, Pet::getExp, 25L).orElse(null).getId() == 5);
+		assertTrue(CollectionUtils.matching(list, Pet::getExp, 100000).orElse(null).getId() == 19);
+
+		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 0).orElse(null).getId() == 0);
+		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 1).orElse(null).getId() == 0);
+		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 25).orElse(null).getId() == 12);
+		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 100000).orElse(null).getId() == 19);
 	}
 
 	class Pet {

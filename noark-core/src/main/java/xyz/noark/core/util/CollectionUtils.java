@@ -15,8 +15,12 @@ package xyz.noark.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import xyz.noark.core.lang.PairHashMap;
 import xyz.noark.core.lang.PairMap;
@@ -49,6 +53,21 @@ public class CollectionUtils {
 	}
 
 	/**
+	 * 根据指定属性为条件对指定集合进行分组.
+	 * <p>
+	 * 常用于模板分组缓存备用
+	 * 
+	 * @param <K> 分组后的Key类型
+	 * @param <V> 集合元素的类型
+	 * @param collection 指定集合
+	 * @param keyMapper 分组属性
+	 * @return 返回分组后的Map集合
+	 */
+	public static <K, V> Map<K, List<V>> groupingBy(final Collection<V> collection, Function<? super V, ? extends K> keyMapper) {
+		return collection.stream().collect(Collectors.groupingBy(keyMapper));
+	}
+
+	/**
 	 * 根据两个属性为条件对指定集合进行分组.
 	 * <p>
 	 * 常用于模板分组缓存备用
@@ -65,5 +84,51 @@ public class CollectionUtils {
 		PairMap<L, R, List<V>> result = new PairHashMap<>();
 		collection.forEach(t -> result.computeIfAbsent(leftMapper.apply(t), rightMapper.apply(t), () -> new ArrayList<>()).add(t));
 		return result;
+	}
+
+	/**
+	 * 在指定集合中匹配最优临近值元素.
+	 * <p>
+	 * Pet [id=1, level=1, exp=0]<br>
+	 * Pet [id=2, level=3, exp=9]<br>
+	 * Pet [id=3, level=4, exp=16]<br>
+	 * Pet [id=4, level=5, exp=25]<br>
+	 * Pet [id=5, level=8, exp=64]<br>
+	 * <br>
+	 * 如果传入匹配值为0，那则匹配到的最优PetId=1<br>
+	 * 如果传入匹配值为20，那则匹配到的最优PetId=3<br>
+	 * 如果传入匹配值为10000，那则匹配到的最优PetId=5<br>
+	 * 
+	 * @param <V> 集合元素的类型
+	 * @param collection 指定集合
+	 * @param keyMapper 匹配属性
+	 * @param value 最优临近值
+	 * @return 最优匹配结果
+	 */
+	public static <V> Optional<V> matching(final Collection<V> collection, Function<V, ? extends Long> keyMapper, long value) {
+		return collection.stream().filter(v -> keyMapper.apply(v) <= value).max(Comparator.comparing(keyMapper));
+	}
+
+	/**
+	 * 在指定集合中匹配最优临近值元素.
+	 * <p>
+	 * Pet [id=1, level=1, exp=0]<br>
+	 * Pet [id=2, level=3, exp=9]<br>
+	 * Pet [id=3, level=4, exp=16]<br>
+	 * Pet [id=4, level=5, exp=25]<br>
+	 * Pet [id=5, level=8, exp=64]<br>
+	 * <br>
+	 * 如果传入匹配值为0，那则匹配到的最优PetId=1<br>
+	 * 如果传入匹配值为20，那则匹配到的最优PetId=3<br>
+	 * 如果传入匹配值为10000，那则匹配到的最优PetId=5<br>
+	 * 
+	 * @param <V> 集合元素的类型
+	 * @param collection 指定集合
+	 * @param keyMapper 匹配属性
+	 * @param value 最优临近值
+	 * @return 最优匹配结果
+	 */
+	public static <V> Optional<V> matching(final Collection<V> collection, Function<V, ? extends Integer> keyMapper, int value) {
+		return collection.stream().filter(v -> keyMapper.apply(v) <= value).max(Comparator.comparing(keyMapper));
 	}
 }
