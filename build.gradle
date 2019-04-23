@@ -5,7 +5,7 @@ subprojects {
 	apply plugin: 'signing'
 	
 	group = 'xyz.noark'
-	version = '3.3.0.Final'
+	version = '3.3.1-SNAPSHOT'
 	
 	sourceCompatibility = 1.8  
 	targetCompatibility = 1.8  
