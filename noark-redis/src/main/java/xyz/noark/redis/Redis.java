@@ -889,6 +889,22 @@ public class Redis {
 	}
 
 	/**
+	 * 返回有序集 key中，指定区间内的成员
+	 * <p>
+	 * 等同{@link #zrevrank(String, String)}方法，只是返回值多了一个分值
+	 * 
+	 * @param key 有序集key
+	 * @param start 开始下标
+	 * @param end 结束下标
+	 * @return 指定区间内，带有score值的有序集成员的列表
+	 */
+	public Set<Tuple> zrevrangeWithScores(final String key, final long start, final long end) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.zrevrangeWithScores(key, start, end);
+		}
+	}
+
+	/**
 	 * 返回有序集key中，成员member的score值
 	 * <p>
 	 * 如果 member元素不是有序集 key的成员，或 key不存在，返回 null 。
