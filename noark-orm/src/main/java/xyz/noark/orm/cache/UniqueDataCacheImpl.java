@@ -52,13 +52,18 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 		CacheLoader<K, DataWrapper<T>> loader = new CacheLoader<K, DataWrapper<T>>() {
 			@Override
 			public DataWrapper<T> load(K entityId) throws Exception {
+				// 如果是启服就载入的，就没有必要再去访问DB了...
+				if (entityMapping.getFetchType() == FetchType.START) {
+					return new DataWrapper<>(null);
+				}
+
 				// 没有缓存时，从数据访问策略中加载
 				return new DataWrapper<>(repository.load(entityId));
 			}
 		};
 
-		// 没有玩家ID或启服时加载内存是需要永久缓存
-		if (entityMapping.getPlayerId() == null || entityMapping.getFetchType() == FetchType.START) {
+		// 启服时加载内存是需要永久缓存
+		if (entityMapping.getFetchType() == FetchType.START) {
 			caches = Caffeine.newBuilder().build(loader);
 		}
 		// 其他情况是有缓存超时的
@@ -71,11 +76,7 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	public void insert(T entity) {
 		final K entityId = this.getPrimaryIdValue(entity);
 
-		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
-		if (wrapper == null) {
-			wrapper = new DataWrapper<>(null);
-			this.caches.put(entityId, wrapper);
-		}
+		DataWrapper<T> wrapper = caches.get(entityId);
 		if (wrapper.getEntity() == null) {
 			wrapper.setEntity(entity);
 		} else {
@@ -99,8 +100,8 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	public void update(T entity) {
 		final K entityId = this.getPrimaryIdValue(entity);
 
-		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
-		if (wrapper == null || wrapper.getEntity() == null) {
+		DataWrapper<T> wrapper = caches.get(entityId);
+		if (wrapper.getEntity() == null) {
 			throw new DataException("修改了一个不存在的Key:" + entityId);
 		} else {
 			wrapper.setEntity(entity);
@@ -109,17 +110,7 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 
 	@Override
 	public T load(K entityId) {
-		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
-		return wrapper == null ? null : wrapper.getEntity();
-	}
-
-	private DataWrapper<T> getDataWrapper(K entityId) {
-		// 如果是启服就载入的，就没有必要再去访问DB了...
-		if (entityMapping.getFetchType() == FetchType.START) {
-			return caches.getIfPresent(entityId);
-		}
-
-		return caches.get(entityId);
+		return caches.get(entityId).getEntity();
 	}
 
 	@Override
@@ -133,6 +124,8 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	}
 
 	private List<T> loadAllByQueryFilter(Predicate<T> filter) {
+		this.assertEntityFetchTypeIsStart();
+
 		ConcurrentMap<K, DataWrapper<T>> map = caches.asMap();
 		if (map.isEmpty()) {
 			return Collections.emptyList();
@@ -155,8 +148,8 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 
 	@Override
 	public T delete(K entityId) {
-		DataWrapper<T> wrapper = this.getDataWrapper(entityId);
-		if (wrapper == null || wrapper.getEntity() == null) {
+		DataWrapper<T> wrapper = caches.get(entityId);
+		if (wrapper.getEntity() == null) {
 			throw new DataException("删除了一个不存在的Key:" + entityId);
 		} else {
 			T result = wrapper.getEntity();

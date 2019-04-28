@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.function.Predicate;
 
+import xyz.noark.core.annotation.orm.Entity.FetchType;
+import xyz.noark.core.exception.HackerException;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.repository.CacheRepository;
 
@@ -118,5 +120,14 @@ abstract class AbstractDataCache<T, K extends Serializable> implements DataCache
 	public T delete(K entityId) {
 		// 当不支持请求的操作时，抛出该异常。
 		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * 断言实体的抓取策略为启服载入
+	 */
+	protected void assertEntityFetchTypeIsStart() {
+		if (entityMapping.getFetchType() != FetchType.START) {
+			throw new HackerException("调用LoadAll接口时，当前实体类抓取策略为启服载入");
+		}
 	}
 }

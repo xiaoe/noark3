@@ -32,6 +32,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
+import xyz.noark.core.annotation.orm.Entity.FetchType;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.orm.repository.CacheRepository;
 
@@ -54,6 +55,11 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 		CacheLoader<Serializable, ConcurrentMap<K, T>> loader = new CacheLoader<Serializable, ConcurrentMap<K, T>>() {
 			@Override
 			public ConcurrentHashMap<K, T> load(Serializable playerId) throws Exception {
+				// 如果是启服就载入的，就没有必要再去访问DB了...
+				if (entityMapping.getFetchType() == FetchType.START) {
+					return new ConcurrentHashMap<>(16);
+				}
+
 				List<T> result = repository.loadAll(playerId);
 				int initSize = result.size() > 32 ? result.size() : 32;
 				ConcurrentHashMap<K, T> datas = new ConcurrentHashMap<>(initSize);
@@ -64,8 +70,14 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 			}
 		};
 
-		// 只要有角色Id，必有超时
-		caches = Caffeine.newBuilder().expireAfterAccess(offlineInterval, TimeUnit.SECONDS).build(loader);
+		// 启服时加载内存是需要永久缓存
+		if (entityMapping.getFetchType() == FetchType.START) {
+			caches = Caffeine.newBuilder().build(loader);
+		}
+		// 其他情况是有缓存超时的
+		else {
+			caches = Caffeine.newBuilder().expireAfterAccess(offlineInterval, TimeUnit.SECONDS).build(loader);
+		}
 	}
 
 	@Override
@@ -82,8 +94,9 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 	@Override
 	public void delete(T entity) {
 		Serializable playerId = entityMapping.getPlayerIdValue(entity);
+		final ConcurrentMap<K, T> data = caches.get(playerId);
+
 		K entityId = this.getPrimaryIdValue(entity);
-		ConcurrentMap<K, T> data = caches.get(playerId);
 		T result = data.remove(entityId);
 		if (result == null) {
 			throw new DataException("删除了一个不存在的Key:" + entityId);
@@ -100,7 +113,7 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 
 	@Override
 	public List<T> deleteAll(Serializable playerId) {
-		ConcurrentMap<K, T> data = caches.get(playerId);
+		final ConcurrentMap<K, T> data = caches.get(playerId);
 		List<T> result = new ArrayList<>(data.values());
 		data.clear();
 		return result;
@@ -109,7 +122,7 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 	@Override
 	public void update(T entity) {
 		Serializable playerId = entityMapping.getPlayerIdValue(entity);
-		ConcurrentMap<K, T> data = caches.get(playerId);
+		final ConcurrentMap<K, T> data = caches.get(playerId);
 		K entityId = this.getPrimaryIdValue(entity);
 		if (!data.containsKey(entityId)) {
 			throw new DataException("修改了一个不存在的Key:" + entityId);
@@ -144,6 +157,8 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 
 	@Override
 	public List<T> loadAll() {
+		this.assertEntityFetchTypeIsStart();
+
 		ConcurrentMap<Serializable, ConcurrentMap<K, T>> map = caches.asMap();
 		if (map.isEmpty()) {
 			return Collections.emptyList();
@@ -152,6 +167,22 @@ public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataC
 		ArrayList<T> result = new ArrayList<>(map.size());
 		for (Entry<Serializable, ConcurrentMap<K, T>> e : map.entrySet()) {
 			result.addAll(e.getValue().values());
+		}
+		return result;
+	}
+
+	@Override
+	public List<T> loadAll(Predicate<T> filter) {
+		this.assertEntityFetchTypeIsStart();
+
+		ConcurrentMap<Serializable, ConcurrentMap<K, T>> map = caches.asMap();
+		if (map.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		ArrayList<T> result = new ArrayList<>(map.size());
+		for (Entry<Serializable, ConcurrentMap<K, T>> e : map.entrySet()) {
+			result.addAll(e.getValue().values().stream().filter(filter).collect(Collectors.toList()));
 		}
 		return result;
 	}
