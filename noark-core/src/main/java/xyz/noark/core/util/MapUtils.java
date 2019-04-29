@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.util;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,20 +79,12 @@ public class MapUtils {
 	 */
 	public static <V> V getOrMaxKey(final Map<Integer, V> map, Integer key) {
 		V v = map.get(key);
-		if (v == null) {
-			// 遍历查找最优解...
-			int max = Integer.MIN_VALUE;
-			for (Map.Entry<Integer, V> e : map.entrySet()) {
-				if (v == null) {
-					v = e.getValue();
-					max = e.getKey().intValue();
-				} else if (e.getKey().intValue() > max && e.getKey().intValue() <= key.intValue()) {
-					v = e.getValue();
-					max = e.getKey().intValue();
-				}
-			}
+		if (v != null) {
+			return v;
 		}
-		return v;
+
+		// Key不存在的情况，那就找到Key刚好小于他且是最大的那个值.
+		return map.entrySet().stream().filter(x -> x.getKey() < key).max(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getValue).orElse(null);
 	}
 
 	/**
