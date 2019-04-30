@@ -36,6 +36,7 @@ public class Item {
 	@Column(name = "id")
 	private int id;
 
+	@Id
 	@Column(name = "template_id", length = 17)
 	private int templateId;
 

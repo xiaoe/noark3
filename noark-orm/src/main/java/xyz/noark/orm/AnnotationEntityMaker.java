@@ -78,15 +78,27 @@ public class AnnotationEntityMaker {
 			throw new NoEntityException(klass.getName(), "没有可映射的属性 ≡ (^(OO)^) ≡");
 		}
 
+		boolean hasId = false;
+		boolean hasPlayerId = false;
 		ArrayList<FieldMapping> fieldInfo = new ArrayList<>(fields.length);
 		for (Field field : fields) {
 			FieldMapping fm = makeFieldMapping(klass, field, em.getMethodAccess());
 			if (fm.isPrimaryId()) {
+				if (hasId) {
+					throw new NoEntityException(klass.getName(), "一个实体中最多只能有一个@Id ≡ (^(OO)^) ≡");
+				}
+
+				hasId = true;
 				em.setPrimaryId(fm);
 			}
 
 			// 玩家ID
 			if (fm.isPlayerId()) {
+				if (hasPlayerId) {
+					throw new NoEntityException(klass.getName(), "一个实体中最多只能有一个@PlayerId ≡ (^(OO)^) ≡");
+				}
+
+				hasPlayerId = true;
 				em.setPlayerId(fm);
 			}
 			// 创建时间
