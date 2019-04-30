@@ -29,7 +29,7 @@ public enum FieldType {
 	 */
 	AsLong,
 	/**
-	 * Int类型
+	 * Integer类型
 	 */
 	AsInteger,
 	/**
@@ -57,7 +57,7 @@ public enum FieldType {
 	 */
 	AsDouble,
 	/**
-	 * Double类型
+	 * Instant类型
 	 */
 	AsInstant,
 	/**
@@ -69,7 +69,7 @@ public enum FieldType {
 	 */
 	AsLocalDateTime,
 	/**
-	 * Json类型
+	 * JSON类型
 	 */
 	AsJson,
 	/**
