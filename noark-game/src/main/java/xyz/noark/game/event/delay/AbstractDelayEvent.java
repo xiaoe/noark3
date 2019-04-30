@@ -42,7 +42,7 @@ public class AbstractDelayEvent implements DelayEvent {
 
 	@Override
 	public long getDelay(TimeUnit unit) {
-		return unit.convert(endTime.getTime() - System.currentTimeMillis(), TimeUnit.NANOSECONDS);
+		return unit.convert(endTime.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 	}
 
 	public long getId() {

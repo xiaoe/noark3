@@ -13,6 +13,8 @@
  */
 package xyz.noark.game.domain;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.util.Date;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -20,7 +22,9 @@ import javax.annotation.PostConstruct;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Repository;
+import xyz.noark.core.util.DateUtils;
 import xyz.noark.game.LoginEvent;
+import xyz.noark.game.event.BuildingUpgradeEvent;
 import xyz.noark.game.event.EventManager;
 import xyz.noark.orm.repository.UniqueCacheRepository;
 
@@ -56,5 +60,12 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 		this.cacheDelete(item);
 
 		eventManager.publish(new LoginEvent());
+
+		// 测试延迟事件
+		BuildingUpgradeEvent event = new BuildingUpgradeEvent();
+		event.setId(1);
+		event.setEndTime(DateUtils.addSeconds(new Date(), 5));
+		eventManager.publish(event);
+		logger.debug("建筑开始升级了...");
 	}
 }

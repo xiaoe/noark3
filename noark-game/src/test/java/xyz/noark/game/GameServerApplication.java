@@ -22,6 +22,7 @@ import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Sender;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
+import xyz.noark.game.event.BuildingUpgradeEvent;
 
 /**
  * 一个简单的服务器启动测试入口.
@@ -52,5 +53,10 @@ public class GameServerApplication {
 	@EventListener(LoginEvent.class)
 	public void handleEvent() {
 		logger.info("处理事件........");
+	}
+
+	@EventListener(BuildingUpgradeEvent.class)
+	public void handleBuildingUpgradeEvent() {
+		logger.info("建筑升级时间到........");
 	}
 }
