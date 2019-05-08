@@ -58,8 +58,7 @@ public class CollectionUtilsTest {
 	@Test
 	public void testGroupingBy() {
 		PairMap<Integer, Integer, List<Pet>> result = CollectionUtils.groupingBy(list, Pet::getId, Pet::getLevel);
-		assertTrue(result.size() == 2);
-		assertTrue(result.get(1, 1).size() == 10);
+		assertTrue(result.size() == 20);
 	}
 
 	@Test
