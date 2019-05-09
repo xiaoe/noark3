@@ -130,4 +130,80 @@ public class MapUtils {
 			value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> v1 + v2));
 		}
 	}
+
+	/**
+	 * 从Map中获取指定Key的值加成比率.
+	 * <p>
+	 * 返回值中已有1+比率，常用于加成计算.<br>
+	 * 如果Key对应的值不存在返回值就是1,相当于没有加成
+	 * 
+	 * <pre>
+	 * double ratio = 1.0 + map.getOrDefault(key, 0L) / valueRatio;
+	 * </pre>
+	 * 
+	 * @param <K> 键的类型
+	 * @param map Map对象
+	 * @param key 键
+	 * @return 返回万分比的值
+	 */
+	public static <K> double getRatioValue(Map<K, Long> map, K key, double valueRatio) {
+		return MathUtils.ONE + map.getOrDefault(key, 0L) / valueRatio;
+	}
+
+	/**
+	 * 从Map中获取指定Key的值加成比率，默认值为万分之一.
+	 * <p>
+	 * 返回值中已有1+比率，常用于加成计算.<br>
+	 * 如果Key对应的值不存在返回值就是1,相当于没有加成
+	 * 
+	 * <pre>
+	 * double ratio = 1.0 + map.getOrDefault(key, 0L) / 1_0000D;
+	 * </pre>
+	 * 
+	 * @param <K> 键的类型
+	 * @param map Map对象
+	 * @param key 键
+	 * @return 返回万分比的值
+	 */
+	public static <K> double getRatioValue(Map<K, Long> map, K key) {
+		return MapUtils.getRatioValue(map, key, MathUtils.TEN_THOUSAND);
+	}
+
+	/**
+	 * 从Map中获取指定Key的值加成比率，千分之一.
+	 * <p>
+	 * 返回值中已有1+比率，常用于加成计算.<br>
+	 * 如果Key对应的值不存在返回值就是1,相当于没有加成
+	 * 
+	 * <pre>
+	 * double ratio = 1.0 + map.getOrDefault(key, 0L) / 1000D;
+	 * </pre>
+	 * 
+	 * @param <K> 键的类型
+	 * @param map Map对象
+	 * @param key 键
+	 * @return 返回万分比的值
+	 */
+	public static <K> double getRatioValueByPermillage(Map<K, Long> map, K key) {
+		return MapUtils.getRatioValue(map, key, MathUtils.THOUSAND);
+	}
+
+	/**
+	 * 从Map中获取指定Key的值加成比率，百分之一.
+	 * <p>
+	 * 返回值中已有1+比率，常用于加成计算.<br>
+	 * 如果Key对应的值不存在返回值就是1,相当于没有加成
+	 * 
+	 * <pre>
+	 * double ratio = 1.0 + map.getOrDefault(key, 0L) / 100D;
+	 * </pre>
+	 * 
+	 * @param <K> 键的类型
+	 * @param map Map对象
+	 * @param key 键
+	 * @return 返回万分比的值
+	 */
+	public static <K> double getRatioValueByPercentage(Map<K, Long> map, K key) {
+		return MapUtils.getRatioValue(map, key, MathUtils.HUNDRED);
+	}
 }

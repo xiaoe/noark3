@@ -27,14 +27,16 @@ import xyz.noark.core.lang.Point;
  * @author 小流氓(176543888@qq.com)
  */
 public class MathUtils {
+	/** 一 */
+	public static final double ONE = 1.0;
 	/** 百 */
-	public static final double HUNDRED = 100.0D;
+	public static final double HUNDRED = 100.0;
 	/** 千 */
-	public static final double THOUSAND = 1000.0D;
+	public static final double THOUSAND = 1000.0;
 	/** 万 */
-	public static final double TEN_THOUSAND = 1_0000.0D;
+	public static final double TEN_THOUSAND = 1_0000.0;
 	/** 百万 */
-	public static final double MILLION = 100_0000.0D;
+	public static final double MILLION = 100_0000.0;
 
 	/**
 	 * 计算两个参数的和，如果相加出现溢出那就返回{@code int}的最大值.
