@@ -29,10 +29,6 @@ import java.util.function.ToIntFunction;
  * @author 小流氓(176543888@qq.com)
  */
 public class RandomUtils {
-	/** 百分比之分母 */
-	private static final double PERCENTAGE = 100.0d;
-	/** 千分比之分母 */
-	private static final double PERMILLAGE = 1000.0d;
 
 	/**
 	 * 返回一个随机Boolean值.
@@ -136,7 +132,7 @@ public class RandomUtils {
 	 * @return 如果成功返回true,否则返回false.
 	 */
 	public static boolean isSuccessByPercentage(int rate) {
-		return RandomUtils.isSuccess(rate / PERCENTAGE);
+		return RandomUtils.isSuccess(rate / MathUtils.HUNDRED);
 	}
 
 	/**
@@ -152,7 +148,7 @@ public class RandomUtils {
 	 * @return 如果成功返回true,否则返回false.
 	 */
 	public static boolean isSuccessByPermillage(int rate) {
-		return RandomUtils.isSuccess(rate / PERMILLAGE);
+		return RandomUtils.isSuccess(rate / MathUtils.THOUSAND);
 	}
 
 	/**
