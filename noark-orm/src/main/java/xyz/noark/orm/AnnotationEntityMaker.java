@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,7 +46,8 @@ import xyz.noark.reflectasm.MethodAccess;
  * @author 小流氓(176543888@qq.com)
  */
 public class AnnotationEntityMaker {
-
+	/** 所有表名 */
+	private static final HashSet<String> TABLE_NAME_SET = new HashSet<>(512);
 	private static final List<Class<? extends Annotation>> ANNOTATIONS = new ArrayList<>();
 	static {
 		ANNOTATIONS.add(Column.class);
@@ -69,6 +71,11 @@ public class AnnotationEntityMaker {
 		em.setTableName((table == null || StringUtils.isEmpty(table.name())) ? StringUtils.lowerWord(klass.getSimpleName(), '_') : table.name());
 		if (table != null) {
 			em.setTableComment(table.comment());
+		}
+
+		// 表名判定是否已存在..
+		if (!TABLE_NAME_SET.add(em.getTableName())) {
+			throw new NoEntityException(klass.getName(), "重复表名:" + em.getTableName() + " ≡ (^(OO)^) ≡");
 		}
 
 		// 解析属性
