@@ -338,4 +338,42 @@ public class MathUtils {
 		}
 		return result;
 	}
+
+	/**
+	 * long类型的数值按比率转化为double类型的值.
+	 * <p>
+	 * 由于配置表在转化中精度丢失问题，建议策划配置的是long类型的数值，所以就有了这个转化方法。 <br>
+	 * 比如：约定XX列为百分比，那配置50，就是50%，等于0.5
+	 * 
+	 * @param value long类型的数值
+	 * @param ratio 比率
+	 * @return double类型的值
+	 */
+	public static double longToDouble(long value, double ratio) {
+		return value / ratio;
+	}
+
+	/**
+	 * long类型的数值以千分比转化为double类型的值.
+	 * <p>
+	 * 参考 {@link MathUtils#longToDouble(long, double)}
+	 * 
+	 * @param value long类型的数值
+	 * @return double类型的值
+	 */
+	public static double permillage(long value) {
+		return MathUtils.longToDouble(value, MathUtils.THOUSAND);
+	}
+
+	/**
+	 * long类型的数值以百分比转化为double类型的值.
+	 * <p>
+	 * 参考 {@link MathUtils#longToDouble(long, double)}
+	 * 
+	 * @param value long类型的数值
+	 * @return double类型的值
+	 */
+	public static double percentage(long value) {
+		return MathUtils.longToDouble(value, MathUtils.HUNDRED);
+	}
 }
