@@ -152,21 +152,6 @@ public class MapUtils {
 	}
 
 	/**
-	 * 从Map中获取指定Key的值所转化的万分比的和.
-	 * <p>
-	 * 如果Key对应的值不存在返回值就是0,相当于没有加成
-	 * 
-	 * @param <K> 键的类型
-	 * @param map Map对象
-	 * @param keys 键列表
-	 * @return 返回万分比的和
-	 */
-	@SafeVarargs
-	public static <K> double getRatioValue(Map<K, Long> map, K... keys) {
-		return MapUtils.getRatioValue(map, MathUtils.TEN_THOUSAND, keys);
-	}
-
-	/**
 	 * 从Map中获取指定Key的值所转化的千分比的和.
 	 * <p>
 	 * 如果Key对应的值不存在返回值就是0,相当于没有加成
