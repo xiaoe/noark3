@@ -15,6 +15,7 @@ package xyz.noark.game.domain;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -40,6 +41,10 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 	@Autowired
 	private EventManager eventManager;
 
+	public ItemRepository() {
+		System.out.println("............");
+	}
+	
 	@PostConstruct
 	public void test() {
 		Item item = this.cacheGet(1);
@@ -50,6 +55,7 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 			item.setRead(true);
 			item.setCreateTime(new Date());
 			item.setModifyTime(item.getCreateTime());
+			item.setTestTime(Instant.now());
 			this.cacheInsert(item);
 		}
 

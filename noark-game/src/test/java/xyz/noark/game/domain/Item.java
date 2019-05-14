@@ -13,6 +13,7 @@
  */
 package xyz.noark.game.domain;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -36,7 +37,6 @@ public class Item {
 	@Column(name = "id")
 	private int id;
 
-	@Id
 	@Column(name = "template_id", length = 17)
 	private int templateId;
 
@@ -54,6 +54,9 @@ public class Item {
 
 	@Column(name = "modify_time", nullable = false, comment = "修改时间", defaultValue = "2018-07-06 05:04:03")
 	private Date modifyTime;
+
+	@Column(name = "test_time", nullable = false, comment = "测试时间", defaultValue = "2018-07-06 05:04:03")
+	private Instant testTime;
 
 	public int getId() {
 		return id;
@@ -109,5 +112,13 @@ public class Item {
 
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+
+	public Instant getTestTime() {
+		return testTime;
+	}
+
+	public void setTestTime(Instant testTime) {
+		this.testTime = testTime;
 	}
 }

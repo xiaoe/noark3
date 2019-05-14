@@ -34,7 +34,7 @@ class InstantAdaptor extends AbstractValueAdaptor<Instant> {
 		if (value == null) {
 			pstmt.setNull(parameterIndex, Types.TIMESTAMP);
 		} else {
-			pstmt.setTimestamp(parameterIndex, new Timestamp(value.getEpochSecond()));
+			pstmt.setTimestamp(parameterIndex, new Timestamp(value.toEpochMilli()));
 		}
 	}
 
