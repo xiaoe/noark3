@@ -23,6 +23,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
@@ -71,6 +72,13 @@ public class NettyServer implements TcpServer {
 	@Value(NetworkConstant.LOG_ACTIVE)
 	protected boolean logActive = false;
 
+	/** Netty低水位，默认值32K */
+	@Value(NetworkConstant.LOW_WATER_MARK)
+	private int DEFAULT_LOW_WATER_MARK = 32 * 1024;
+	/** Netty高水位，默认值64K */
+	@Value(NetworkConstant.HIGH_WATER_MARK)
+	private int DEFAULT_HIGH_WATER_MARK = 64 * 1024;
+
 	@Autowired
 	protected InitializeHandlerManager initializeHandlerManager;
 	@Autowired
@@ -91,9 +99,19 @@ public class NettyServer implements TcpServer {
 		}
 
 		// http://www.jianshu.com/p/0bff7c020af2
+
+		// Socket参数，地址复用，默认值false
 		bootstrap.option(ChannelOption.SO_REUSEADDR, true);
 		// Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝。默认值，Windows为200，其他为128。
 		bootstrap.option(ChannelOption.SO_BACKLOG, 65535);
+
+		// TCP参数，立即发送数据，默认值为Ture（Netty默认为True而操作系统默认为False）。
+		// 该值设置Nagle算法的启用，改算法将小的碎片数据连接成更大的报文来最小化所发送的报文的数量，
+		// 如果需要发送一些较小的报文，则需要禁用该算法。Netty默认禁用该算法，从而最小化报文传输延时。
+		bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+		// Netty参数，写低水位标记，默认值32KB。当Netty的写缓冲区中的字节超过高水位之后若下降到低水位，则Channel的isWritable()返回True。
+		// Netty参数，写高水位标记，默认值64KB。如果Netty的写缓冲区中的字节超过该值，Channel的isWritable()返回False。
+		bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(DEFAULT_LOW_WATER_MARK, DEFAULT_HIGH_WATER_MARK));
 
 		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
