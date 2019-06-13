@@ -11,16 +11,31 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package com.company.game.event;
 
-import xyz.noark.game.event.delay.AbstractDelayEvent;
+import javax.annotation.PostConstruct;
+
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Service;
+import xyz.noark.game.event.EventManager;
 
 /**
- * 建筑升级事件.
+ * 联盟业务.
  *
- * @since 3.2.8
+ * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
  */
-public class BuildingUpgradeEvent extends AbstractDelayEvent {
+@Service
+public class AllianceService {
 
+	@Autowired
+	private EventManager eventManager;
+
+	@PostConstruct
+	public void init() {
+		// 模拟1号玩家创建名称为天下的联盟
+		eventManager.publish(new AllianceCreateEvent(1L, "天下"));
+		// 模拟2号玩家加入名称为天下的联盟
+		eventManager.publish(new AllianceJoinEvent(2L, "天下"));
+	}
 }

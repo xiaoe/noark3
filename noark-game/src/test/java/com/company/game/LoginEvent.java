@@ -11,20 +11,16 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game;
+package com.company.game;
 
-import xyz.noark.game.bootstrap.BaseServerBootstrap;
+import xyz.noark.core.event.Event;
 
 /**
- * 启动引导类.
+ * 随意的一个事件源.
  *
  * @since 3.2
  * @author 小流氓(176543888@qq.com)
  */
-public class GameServerBootstrap extends BaseServerBootstrap {
-
-	@Override
-	protected String getServerName() {
-		return "game-server";
-	}
+public class LoginEvent implements Event {
+	// 没有任何功能，只是用于测试
 }

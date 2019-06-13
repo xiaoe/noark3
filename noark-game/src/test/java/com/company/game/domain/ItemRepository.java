@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.domain;
+package com.company.game.domain;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -21,11 +21,12 @@ import java.util.concurrent.atomic.LongAdder;
 
 import javax.annotation.PostConstruct;
 
+import com.company.game.LoginEvent;
+import com.company.game.event.BuildingUpgradeEvent;
+
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Repository;
 import xyz.noark.core.util.DateUtils;
-import xyz.noark.game.LoginEvent;
-import xyz.noark.game.event.BuildingUpgradeEvent;
 import xyz.noark.game.event.EventManager;
 import xyz.noark.orm.repository.UniqueCacheRepository;
 

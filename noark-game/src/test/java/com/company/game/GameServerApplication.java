@@ -11,9 +11,11 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game;
+package com.company.game;
 
 import static xyz.noark.log.LogHelper.logger;
+
+import com.company.game.event.BuildingUpgradeEvent;
 
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.EventListener;
@@ -22,7 +24,7 @@ import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Sender;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
-import xyz.noark.game.event.BuildingUpgradeEvent;
+import xyz.noark.game.Noark;
 
 /**
  * 一个简单的服务器启动测试入口.

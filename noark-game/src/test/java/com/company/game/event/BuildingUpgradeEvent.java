@@ -11,17 +11,16 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package com.company.game.event;
+
+import xyz.noark.game.event.delay.AbstractDelayEvent;
 
 /**
- * 联盟创建事件，对于盟主也是一个加入事件.
+ * 建筑升级事件.
  *
- * @since 3.2.6
+ * @since 3.2.8
  * @author 小流氓(176543888@qq.com)
  */
-public class AllianceCreateEvent extends AllianceJoinEvent {
+public class BuildingUpgradeEvent extends AbstractDelayEvent {
 
-	public AllianceCreateEvent(long playerId, String allianceName) {
-		super(playerId, allianceName);
-	}
 }

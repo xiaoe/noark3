@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package com.company.game.event;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -39,12 +39,12 @@ public class RankController {
 		logger.info("修正玩家联盟信息 playerId={}, allianceName={}", event.getPlayerId(), event.getAllianceName());
 	}
 
-	@Scheduled(cron = "0/1 * * * * *")
+	@Scheduled(cron = "0 0 0/1 * * *")
 	public void testCronScheduled() {
 		logger.debug("测试CRON表达式，testCronScheduled");
 	}
 
-	@Scheduled(initialDelay = 1000, fixedRate = 2000)
+	@Scheduled(initialDelay = 1000, fixedRate = 20000)
 	public void testFixedScheduled() {
 		logger.debug("测试定时任务，testFixedScheduled");
 	}

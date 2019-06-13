@@ -11,33 +11,20 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.id;
+package com.company.game;
 
-import org.junit.Test;
-
-import xyz.noark.core.util.IdCodeUtils;
+import xyz.noark.game.bootstrap.BaseServerBootstrap;
 
 /**
- * ID生成器测试.
+ * 启动引导类.
  *
- * @since 3.1
+ * @since 3.2
  * @author 小流氓(176543888@qq.com)
  */
-public class IdGeneratorTest {
+public class GameServerBootstrap extends BaseServerBootstrap {
 
-	@Test
-	public void test() throws IdMaxSequenceException {
-		IdGenerator id = new IdGenerator(50000, 65535);
-		try {
-			System.out.println(IdCodeUtils.toCode(id.generateId()));
-		} catch (IdMaxSequenceException e) {
-			e.printStackTrace();
-		}
-		System.out.println(Long.MAX_VALUE);
-
-		long idx = id.generateId();
-		System.out.println(idx);
-		System.out.println(IdCodeUtils.toCode(idx));
-		System.out.println(IdCodeUtils.toLong(IdCodeUtils.toCode(idx)));
+	@Override
+	protected String getServerName() {
+		return "game-server";
 	}
 }
