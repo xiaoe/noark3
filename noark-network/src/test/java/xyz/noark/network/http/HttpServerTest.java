@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import com.alibaba.fastjson.JSON;
 
+import io.netty.util.ResourceLeakDetector;
 import xyz.noark.core.util.HttpUtils;
 
 /**
@@ -28,6 +29,7 @@ import xyz.noark.core.util.HttpUtils;
 public class HttpServerTest {
 
 	public static void main(String[] args) {
+		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
 		HttpServer httpServer = new HttpServer();
 		httpServer.setPort(12345);
 		httpServer.setSecretKey("1dcypsz1/2jss1/2j#f00");
@@ -39,7 +41,6 @@ public class HttpServerTest {
 		params.put("byte", new String("pub!@~#$%^&*(\"\"::;;'')_+lic skdfsdaf ?!@#!$!@$   ".getBytes()));
 
 		System.out.println();
-
-		HttpUtils.post("http://192.168.50.40:12345/api/hotfix/", JSON.toJSONString(params));
+		HttpUtils.post("http://127.0.0.1:12345/api/hotfix/", JSON.toJSONString(params));
 	}
 }

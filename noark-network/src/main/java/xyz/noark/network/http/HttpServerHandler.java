@@ -37,6 +37,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.util.ReferenceCountUtil;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
@@ -74,12 +75,22 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		if (msg instanceof FullHttpRequest) {
-			HttpResult result = this.exec(ctx, (FullHttpRequest) msg);
-			ByteBuf buf = Unpooled.wrappedBuffer(JSON.toJSONString(result).getBytes(DEFAULT_CHARSET));
-			FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
-			ctx.write(response).addListener(ChannelFutureListener.CLOSE);
+		try {
+			if (msg instanceof FullHttpRequest) {
+				this.handleFullHttpRequest(ctx, (FullHttpRequest) msg);
+			}
+		} finally {
+			// HttpRequestDecoder过来的msg是需要手工释放的...
+			// http://netty.io/wiki/reference-counted-objects.html
+			ReferenceCountUtil.release(msg);
 		}
+	}
+
+	private void handleFullHttpRequest(ChannelHandlerContext ctx, FullHttpRequest request) {
+		HttpResult result = this.exec(ctx, request);
+		ByteBuf buf = Unpooled.wrappedBuffer(JSON.toJSONString(result).getBytes(DEFAULT_CHARSET));
+		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
+		ctx.write(response).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	private HttpResult exec(ChannelHandlerContext ctx, FullHttpRequest fhr) {
