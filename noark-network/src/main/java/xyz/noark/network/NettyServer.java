@@ -74,10 +74,10 @@ public class NettyServer implements TcpServer {
 
 	/** Netty低水位，默认值32K */
 	@Value(NetworkConstant.LOW_WATER_MARK)
-	private int DEFAULT_LOW_WATER_MARK = 32 * 1024;
+	private int defaultLowWaterMark = 32 * 1024;
 	/** Netty高水位，默认值64K */
 	@Value(NetworkConstant.HIGH_WATER_MARK)
-	private int DEFAULT_HIGH_WATER_MARK = 64 * 1024;
+	private int defaultHighWaterMark = 64 * 1024;
 
 	@Autowired
 	protected InitializeHandlerManager initializeHandlerManager;
@@ -111,7 +111,7 @@ public class NettyServer implements TcpServer {
 		bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
 		// Netty参数，写低水位标记，默认值32KB。当Netty的写缓冲区中的字节超过高水位之后若下降到低水位，则Channel的isWritable()返回True。
 		// Netty参数，写高水位标记，默认值64KB。如果Netty的写缓冲区中的字节超过该值，Channel的isWritable()返回False。
-		bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(DEFAULT_LOW_WATER_MARK, DEFAULT_HIGH_WATER_MARK));
+		bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(defaultLowWaterMark, defaultHighWaterMark));
 
 		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
