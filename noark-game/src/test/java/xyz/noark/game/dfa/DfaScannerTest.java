@@ -78,7 +78,7 @@ public class DfaScannerTest {
 	}
 
 	@Test
-	public void testIssuesIR7R1() {
+	public void testIssuesIr7r1() {
 		assertTrue(!scanner.findAll("今天真是个好日子").isEmpty());
 		assertTrue(!scanner.findAll("今日天真是个好子").isEmpty());
 		assertTrue(!scanner.findAll("日今天日真是个好子").isEmpty());

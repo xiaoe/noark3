@@ -36,7 +36,7 @@ public class GameServerConfiguration {
 	@Value("data.mysql.port")
 	private int mysqlPort;
 	@Value("data.mysql.db")
-	private String mysqlDB;
+	private String mysqlDb;
 	@Value("data.mysql.user")
 	private String mysqlUser;
 	@Value("data.mysql.password")
@@ -48,7 +48,7 @@ public class GameServerConfiguration {
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setUsername(mysqlUser);
 		dataSource.setPassword(mysqlPassword);
-		dataSource.setUrl(String.format("jdbc:mysql://%s:%d/%s?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false", mysqlIp, mysqlPort, mysqlDB));
+		dataSource.setUrl(String.format("jdbc:mysql://%s:%d/%s?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false", mysqlIp, mysqlPort, mysqlDb));
 		dataSource.setInitialSize(4);
 		dataSource.setMinIdle(4);
 		dataSource.setMaxActive(8);

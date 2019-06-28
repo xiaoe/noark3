@@ -49,12 +49,12 @@ public class ThreadMonitorService extends AbstractMonitorService {
 
 	@Override
 	protected void exe() throws Exception {
-		final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+		final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
 		int run = 0;
 		int blocked = 0;
 		int waiting = 0;
-		for (long threadId : threadMXBean.getAllThreadIds()) {
-			ThreadInfo threadInfo = threadMXBean.getThreadInfo(threadId);
+		for (long threadId : threadMxBean.getAllThreadIds()) {
+			ThreadInfo threadInfo = threadMxBean.getThreadInfo(threadId);
 			switch (threadInfo.getThreadState()) {
 			case RUNNABLE:
 				run++;

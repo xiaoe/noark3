@@ -48,8 +48,8 @@ class NettyLogger implements InternalLogger {
 	}
 
 	@Override
-	public void trace(String format, Object argA, Object argB) {
-		this.debug(format, argA, argB);
+	public void trace(String format, Object arg1, Object arg2) {
+		this.debug(format, arg1, arg2);
 	}
 
 	@Override
@@ -83,8 +83,8 @@ class NettyLogger implements InternalLogger {
 	}
 
 	@Override
-	public void debug(String format, Object argA, Object argB) {
-		logger.debug(format, argA, argB);
+	public void debug(String format, Object arg1, Object arg2) {
+		logger.debug(format, arg1, arg2);
 	}
 
 	@Override
@@ -118,8 +118,8 @@ class NettyLogger implements InternalLogger {
 	}
 
 	@Override
-	public void info(String format, Object argA, Object argB) {
-		logger.info(format, argA, argB);
+	public void info(String format, Object arg1, Object arg2) {
+		logger.info(format, arg1, arg2);
 	}
 
 	@Override
@@ -158,8 +158,8 @@ class NettyLogger implements InternalLogger {
 	}
 
 	@Override
-	public void warn(String format, Object argA, Object argB) {
-		logger.warn(format, argA, argB);
+	public void warn(String format, Object arg1, Object arg2) {
+		logger.warn(format, arg1, arg2);
 	}
 
 	@Override
@@ -188,8 +188,8 @@ class NettyLogger implements InternalLogger {
 	}
 
 	@Override
-	public void error(String format, Object argA, Object argB) {
-		logger.error(format, argA, argB);
+	public void error(String format, Object arg1, Object arg2) {
+		logger.error(format, arg1, arg2);
 	}
 
 	@Override
@@ -253,21 +253,21 @@ class NettyLogger implements InternalLogger {
 	}
 
 	@Override
-	public void log(InternalLogLevel level, String format, Object argA, Object argB) {
+	public void log(InternalLogLevel level, String format, Object arg1, Object arg2) {
 		switch (level) {
 		case TRACE:
 		case DEBUG:
-			this.debug(format, argA, argB);
+			this.debug(format, arg1, arg2);
 			break;
 		case INFO:
-			this.info(format, argA, argB);
+			this.info(format, arg1, arg2);
 			break;
 		case WARN:
-			this.warn(format, argA, argB);
+			this.warn(format, arg1, arg2);
 			break;
 		case ERROR:
 		default:
-			this.error(format, argA, argB);
+			this.error(format, arg1, arg2);
 			break;
 		}
 	}
