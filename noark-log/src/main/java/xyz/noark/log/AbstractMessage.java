@@ -74,7 +74,7 @@ abstract class AbstractMessage implements Message {
 		// 2017-11-11 19:59:42.538 [main] INFO Test.java:18 - test
 		DEFAULT_LOG_BUILDER.append(DEFAULT_DATE_FORMATTER.format(date));
 		// 线程名称+输出级别
-		DEFAULT_LOG_BUILDER.append(" [").append(threadName).append("] ").append(level);
+		DEFAULT_LOG_BUILDER.append(' ').append(level).append(" [").append(threadName).append("]");
 		// Debug状态，输出线程等细节信息
 		if (LogConfigurator.DEFAULT_LEVEL == Level.DEBUG) {
 			DEFAULT_LOG_BUILDER.append(" ").append(fileName).append(":").append(lineNumber);
