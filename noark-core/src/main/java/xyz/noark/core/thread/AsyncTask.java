@@ -77,9 +77,9 @@ public class AsyncTask implements Runnable {
 			// 执行结束的时间
 			long endExecuteTime = System.nanoTime();
 			if (playerId == null) {
-				logger.info("handle {},delay={} ms,exe={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
+				logger.info("handle {},delay={} ms,exec={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
 			} else {
-				logger.info("handle {},delay={} ms,exe={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, playerId);
+				logger.info("handle {},delay={} ms,exec={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, playerId);
 			}
 		}
 	}
