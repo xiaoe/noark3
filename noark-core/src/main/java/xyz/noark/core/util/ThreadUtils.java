@@ -35,4 +35,20 @@ public class ThreadUtils {
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * 输出当前线程正在运行的堆栈信息.
+	 * 
+	 * @param thread 当前线程
+	 * @return 当前线程正在运行的堆栈信息
+	 */
+	public static String printStackTrace(Thread thread) {
+		final StackTraceElement[] st = thread.getStackTrace();
+		StringBuffer sb = new StringBuffer(2048);
+		sb.append("\n");
+		for (StackTraceElement e : st) {
+			sb.append("\tat ").append(e).append("\n");
+		}
+		return sb.toString();
+	}
 }
