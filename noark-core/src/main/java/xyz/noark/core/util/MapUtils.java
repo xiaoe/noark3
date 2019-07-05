@@ -132,6 +132,62 @@ public class MapUtils {
 	}
 
 	/**
+	 * 给Map指定Key的值上加一个int值.
+	 * <p>
+	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
+	 * 
+	 * @param source Map对象
+	 * @param key 指定Key
+	 * @param value 要添加的值
+	 * @return 返回添加指定值以后的Value
+	 */
+	public static <K> Integer addValue(Map<K, Integer> source, K key, int value) {
+		return source.compute(key, (k, v) -> v == null ? value : value + v);
+	}
+
+	/**
+	 * 给Map指定Key的值上加一个long值.
+	 * <p>
+	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
+	 * 
+	 * @param source Map对象
+	 * @param key 指定Key
+	 * @param value 要添加的值
+	 * @return 返回添加指定值以后的Value
+	 */
+	public static <K> Long addValue(Map<K, Long> source, K key, long value) {
+		return source.compute(key, (k, v) -> v == null ? value : value + v);
+	}
+
+	/**
+	 * 给Map指定Key的值上加一个float值.
+	 * <p>
+	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
+	 * 
+	 * @param source Map对象
+	 * @param key 指定Key
+	 * @param value 要添加的值
+	 * @return 返回添加指定值以后的Value
+	 */
+	public static <K> Float addValue(Map<K, Float> source, K key, float value) {
+		return source.compute(key, (k, v) -> v == null ? value : value + v);
+	}
+
+	/**
+	 * 给Map指定Key的值上加一个double值.
+	 * <p>
+	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
+	 * 
+	 * @param source Map对象
+	 * @param key 指定Key
+	 * @param value 要添加的值
+	 * @return 返回添加指定值以后的Value
+	 */
+	public static <K> Double addValue(Map<K, Double> source, K key, double value) {
+		return source.compute(key, (k, v) -> v == null ? value : value + v);
+	}
+
+	/**
 	 * 从Map中获取指定Key的值所转化的比率和.
 	 * <p>
 	 * 如果Key对应的值不存在返回值就是0,相当于没有加成

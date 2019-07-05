@@ -50,4 +50,13 @@ public class MapUtilsTest {
 		assertTrue(MapUtils.getOrMaxKey(map, 6) == 30);
 		assertTrue(MapUtils.getOrMaxKey(map, 12) == 100);
 	}
+
+	@Test
+	public void testAddValue() {
+		Map<Integer, Integer> map = new HashMap<>(16);
+		assertTrue(MapUtils.addValue(map, 1, 0) == 0);
+		assertTrue(MapUtils.addValue(map, 1, 1) == 1);
+		assertTrue(MapUtils.addValue(map, 1, 1) == 2);
+		assertTrue(MapUtils.addValue(map, 1, 0) == 2);
+	}
 }
