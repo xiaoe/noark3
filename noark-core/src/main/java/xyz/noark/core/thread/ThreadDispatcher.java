@@ -57,6 +57,8 @@ public class ThreadDispatcher {
 
 	@Autowired(required = false)
 	private NetworkListener networkListener;
+	@Autowired(required = false)
+	private MonitorThreadPool monitorThreadPool;
 
 	public ThreadDispatcher() {}
 
@@ -66,10 +68,12 @@ public class ThreadDispatcher {
 	 * @param poolSize 处理业务逻辑的线程数量
 	 * @param threadNamePrefix 线程名称前缀
 	 * @param timeout 队列超时销毁时间，单位：分钟
+	 * @param execTimeout 任务执行超时，单位：秒
+	 * @param outputStack 任务执行超时输出线程执行堆栈信息，默认开启
 	 */
-	public void init(int poolSize, String threadNamePrefix, int timeout) {
+	public void init(int poolSize, String threadNamePrefix, int timeout, int execTimeout, boolean outputStack) {
 		this.businessThreadPool = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new NamedThreadFactory(threadNamePrefix));
-		this.businessThreadPoolTaskQueue = new TimeoutHashMap<>(timeout, TimeUnit.MINUTES, () -> new TaskQueue(businessThreadPool));
+		this.businessThreadPoolTaskQueue = new TimeoutHashMap<>(timeout, TimeUnit.MINUTES, () -> execTimeout > 0 ? new MonitorTaskQueue(monitorThreadPool, businessThreadPool, execTimeout, outputStack) : new TaskQueue(businessThreadPool));
 	}
 
 	/**

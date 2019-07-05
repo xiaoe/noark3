@@ -31,8 +31,12 @@ public class ThreadModular implements Modular {
 	public static final String THREAD_POOL_SIZE = "thread.pool.size";
 	/** 线程名称前缀 */
 	public static final String THREAD_NAME_PREFIX = "thread.name.prefix";
-	/** 队列超时销毁时间，单位：分钟 */
+	/** 队列超时销毁时间，单位：分钟，默认1分钟 */
 	public static final String THREAD_TASK_QUEUE_TIMEOUT = "thread.task.queue.timeout";
+	/** 任务执行超时，单位：秒，默认关闭 */
+	public static final String THREAD_TASK_EXEC_TIMEOUT = "thread.task.exec.timeout";
+	/** 任务执行超时输出线程执行堆栈信息，默认开启 */
+	public static final String THREAD_TASK_EXEC_STACK = "thread.task.exec.stack";
 
 	/** 处理业务逻辑的线程数量 */
 	@Value(ThreadModular.THREAD_POOL_SIZE)
@@ -41,15 +45,22 @@ public class ThreadModular implements Modular {
 	@Value(ThreadModular.THREAD_NAME_PREFIX)
 	private String threadNamePrefix = "business";
 	/** 队列超时销毁时间，单位：分钟 */
-	@Value(ThreadModular.THREAD_NAME_PREFIX)
+	@Value(ThreadModular.THREAD_TASK_QUEUE_TIMEOUT)
 	private int timeout = 1;
+
+	/** 任务执行超时，单位：秒 */
+	@Value(ThreadModular.THREAD_TASK_EXEC_TIMEOUT)
+	private int execTimeout = 0;
+	/** 任务执行超时输出线程执行堆栈信息，默认开启 */
+	@Value(ThreadModular.THREAD_TASK_EXEC_STACK)
+	private boolean outputStack = true;
 
 	@Autowired
 	private ThreadDispatcher threadDispatcher;
 
 	@Override
 	public void init() {
-		threadDispatcher.init(poolSize, threadNamePrefix, timeout);
+		threadDispatcher.init(poolSize, threadNamePrefix, timeout, execTimeout, outputStack);
 	}
 
 	@Override

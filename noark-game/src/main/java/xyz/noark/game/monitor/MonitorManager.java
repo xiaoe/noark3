@@ -13,9 +13,11 @@
  */
 package xyz.noark.game.monitor;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+import xyz.noark.core.thread.MonitorThreadPool;
 import xyz.noark.core.thread.NamedThreadFactory;
 
 /**
@@ -24,12 +26,17 @@ import xyz.noark.core.thread.NamedThreadFactory;
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class MonitorManager {
+public class MonitorManager implements MonitorThreadPool {
 	private static final int POOL_SIZE = 1;
 	private final ScheduledExecutorService scheduledExecutor;
 
 	public MonitorManager() {
 		this.scheduledExecutor = new ScheduledThreadPoolExecutor(POOL_SIZE, new NamedThreadFactory("monitor", false));
+	}
+
+	@Override
+	public ExecutorService getMonitorService() {
+		return scheduledExecutor;
 	}
 
 	public void addMonitorService(AbstractMonitorService abstractMonitorService) {

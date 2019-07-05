@@ -20,6 +20,7 @@ import java.io.Serializable;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.util.ThreadUtils;
 
 /**
  * 异步任务.
@@ -39,6 +40,9 @@ public class AsyncTask implements Runnable {
 	private final int reqId;
 	private final Session session;
 
+	private Thread currentThread;
+	private long startExecuteTime;
+
 	public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId, int reqId, Session session) {
 		this.taskQueue = taskQueue;
 		this.command = command;
@@ -51,7 +55,8 @@ public class AsyncTask implements Runnable {
 	@Override
 	public void run() {
 		// 开始执行的时间
-		long startExecuteTime = System.nanoTime();
+		this.startExecuteTime = System.nanoTime();
+		this.currentThread = Thread.currentThread();
 		try {
 			// 开始处理协议，并发送结果
 			ResultHelper.trySendResult(session, reqId, command.exec());
@@ -81,6 +86,25 @@ public class AsyncTask implements Runnable {
 			} else {
 				logger.info("handle {},delay={} ms,exec={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, playerId);
 			}
+		}
+	}
+
+	/**
+	 * 记录执行超时信息.
+	 * 
+	 * @param outputStack 是否输出执行线程当前执行堆栈信息
+	 */
+	public void logExecTimeoutInfo(boolean outputStack) {
+		final long now = System.nanoTime();
+		if (playerId == null) {
+			logger.error("exec timeout {},delay={} ms,exec={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (now - startExecuteTime) / 100_0000F);
+		} else {
+			logger.error("exec timeout {},delay={} ms,exec={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (now - startExecuteTime) / 100_0000F, playerId);
+		}
+
+		// 输出当前执行线程执行堆栈信息
+		if (outputStack) {
+			logger.error(ThreadUtils.printStackTrace(currentThread));
 		}
 	}
 }

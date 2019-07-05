@@ -42,7 +42,7 @@ public class TaskQueue {
 			queue.add(task);
 			// 只有一个任务，那就是刚刚加的，直接开始执行...
 			if (queue.size() == 1) {
-				threadPool.execute(task);
+				this.exec(task);
 			}
 		}
 	}
@@ -57,8 +57,28 @@ public class TaskQueue {
 
 			// 完成一个任务后，如果还有任务，则继续执行。
 			if (!queue.isEmpty()) {
-				this.threadPool.submit(queue.getFirst());
+				this.exec(queue.getFirst());
 			}
 		}
+	}
+
+	/**
+	 * 获取执行业务线程池
+	 * 
+	 * @return 执行业务线程池
+	 */
+	protected ExecutorService getThreadPool() {
+		return threadPool;
+	}
+
+	/**
+	 * 执行异步任务.
+	 * <p>
+	 * 就是把任务提交到线程池中
+	 * 
+	 * @param task 异步任务
+	 */
+	protected void exec(AsyncTask task) {
+		threadPool.execute(task);
 	}
 }
