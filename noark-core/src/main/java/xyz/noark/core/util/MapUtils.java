@@ -136,6 +136,7 @@ public class MapUtils {
 	 * <p>
 	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
 	 * 
+	 * @param <K> 键的类型
 	 * @param source Map对象
 	 * @param key 指定Key
 	 * @param value 要添加的值
@@ -150,6 +151,7 @@ public class MapUtils {
 	 * <p>
 	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
 	 * 
+	 * @param <K> 键的类型
 	 * @param source Map对象
 	 * @param key 指定Key
 	 * @param value 要添加的值
@@ -164,6 +166,7 @@ public class MapUtils {
 	 * <p>
 	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
 	 * 
+	 * @param <K> 键的类型
 	 * @param source Map对象
 	 * @param key 指定Key
 	 * @param value 要添加的值
@@ -178,6 +181,7 @@ public class MapUtils {
 	 * <p>
 	 * 如果Key不存在，则直接Put，这个方法就是留给不了解J8的人使用的
 	 * 
+	 * @param <K> 键的类型
 	 * @param source Map对象
 	 * @param key 指定Key
 	 * @param value 要添加的值
