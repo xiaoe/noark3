@@ -10,7 +10,6 @@ before_install:
   - export TZ=Asia/Shanghai
 branches:
   only:
-    - master
     - 3.3
 notifications:
   email: false
