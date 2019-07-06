@@ -27,7 +27,7 @@ public class SystemUtilsTest {
 
 	@Test
 	public void test() {
-		assertTrue(SystemUtils.IS_OS_WINDOWS);
+		// assertTrue(SystemUtils.IS_OS_WINDOWS);
 		assertTrue(SystemUtils.getPid() > 0);
 	}
 }
