@@ -77,7 +77,7 @@ public class AesUtils {
 	/**
 	 * 使用AES算法解密指定数据.
 	 * 
-	 * @param text 待解密的数据
+	 * @param data 待解密的数据
 	 * @param key 解密密钥
 	 * @return 解密后的结果
 	 */
