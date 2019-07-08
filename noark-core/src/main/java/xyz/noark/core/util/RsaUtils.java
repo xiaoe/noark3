@@ -36,15 +36,16 @@ import xyz.noark.core.lang.Pair;
  * @author 小流氓(176543888@qq.com)
  */
 public class RsaUtils {
+
 	public static void main(String[] args) throws Exception {
-		String password = "12355中文,.asdf1，。工，顶替";
+		String password = ArrayUtils.isEmpty(args) ? "ps!see(3#K)shit!say(man)" : args[0];
 		Pair<String, String> keyPair = genKeyPair(512);
 		System.out.println("privateKey:" + keyPair.getLeft());
 		System.out.println("publicKey:" + keyPair.getRight());
 
 		String p = encrypt(keyPair.getLeft(), password);
 		System.out.println("password:" + p);
-		System.out.println(decrypt(keyPair.getRight() + "", p));
+		System.out.println(decrypt(keyPair.getRight(), p));
 	}
 
 	/**
