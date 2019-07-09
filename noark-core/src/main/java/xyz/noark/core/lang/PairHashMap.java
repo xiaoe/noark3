@@ -53,6 +53,11 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 	}
 
 	@Override
+	public V remove(L left, R right) {
+		return hashmap.remove(Pair.of(left, right));
+	}
+
+	@Override
 	public int size() {
 		return hashmap.size();
 	}
