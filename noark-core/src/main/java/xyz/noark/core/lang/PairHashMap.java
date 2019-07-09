@@ -63,6 +63,11 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 	}
 
 	@Override
+	public V getOrDefault(L left, R right, V defaultValue) {
+		return hashmap.getOrDefault(Pair.of(left, right), defaultValue);
+	}
+
+	@Override
 	public String toString() {
 		return "PairHashMap [data=" + hashmap + "]";
 	}
