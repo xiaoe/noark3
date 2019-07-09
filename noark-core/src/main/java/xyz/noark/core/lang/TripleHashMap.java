@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.lang;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -70,6 +71,11 @@ public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
 	@Override
 	public V getOrDefault(L left, M middle, R right, V defaultValue) {
 		return hashmap.getOrDefault(Triple.of(left, middle, right), defaultValue);
+	}
+
+	@Override
+	public Collection<V> values() {
+		return hashmap.values();
 	}
 
 	@Override

@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.lang;
 
+import java.util.Collection;
+
 /**
  * 三个元素当键的Map.
  *
@@ -70,4 +72,10 @@ public interface TripleMap<L, M, R, V> {
 	 */
 	public V getOrDefault(final L left, final M middle, final R right, V defaultValue);
 
+	/**
+	 * 返回当前Map集合中所有值
+	 * 
+	 * @return 值集合的视图
+	 */
+	public Collection<V> values();
 }
