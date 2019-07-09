@@ -33,6 +33,16 @@ public interface TripleMap<L, M, R, V> {
 	public V put(final L left, final M middle, final R right, V value);
 
 	/**
+	 * 移除指定键的值并返回.
+	 * 
+	 * @param left 键之左边元素
+	 * @param middle 键之中间元素
+	 * @param right 键之右边元素
+	 * @return 返回与之关联的值，如果没有返回null.
+	 */
+	V remove(final L left, final M middle, final R right);
+
+	/**
 	 * 返回Map中键值数量.
 	 * 
 	 * @return Map中键值数量

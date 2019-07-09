@@ -58,6 +58,11 @@ public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
 	}
 
 	@Override
+	public V remove(L left, M middle, R right) {
+		return hashmap.remove(Triple.of(left, middle, right));
+	}
+
+	@Override
 	public V get(L left, M middle, R right) {
 		return hashmap.get(Triple.of(left, middle, right));
 	}
