@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.lang;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -70,6 +71,11 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 	@Override
 	public V getOrDefault(L left, R right, V defaultValue) {
 		return hashmap.getOrDefault(Pair.of(left, right), defaultValue);
+	}
+
+	@Override
+	public Collection<V> values() {
+		return hashmap.values();
 	}
 
 	@Override

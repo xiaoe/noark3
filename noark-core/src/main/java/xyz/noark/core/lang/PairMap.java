@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.lang;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -68,6 +69,13 @@ public interface PairMap<L, R, V> {
 	 * @return 对应的值，如果不存在则返回默认值
 	 */
 	public V getOrDefault(final L left, final R right, V defaultValue);
+
+	/**
+	 * 返回当前Map集合中所有值
+	 * 
+	 * @return 值集合的视图
+	 */
+	public Collection<V> values();
 
 	/**
 	 * 根据两个元素的键来取出来对应的值，如果不存在则调用创建方法.
