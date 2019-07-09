@@ -48,4 +48,16 @@ public interface TripleMap<L, M, R, V> {
 	 * @return 对应的值，可能会为空.
 	 */
 	public V get(final L left, final M middle, final R right);
+
+	/**
+	 * 根据三个元素的键来取出来对应的值，如果不存在则返回默认值.
+	 * 
+	 * @param left 键之左边元素
+	 * @param middle 键之中间元素
+	 * @param right 键之右边元素
+	 * @param defaultValue 默认值
+	 * @return 对应的值，如果不存在则返回默认值
+	 */
+	public V getOrDefault(final L left, final M middle, final R right, V defaultValue);
+
 }

@@ -61,4 +61,14 @@ public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
 	public V get(L left, M middle, R right) {
 		return hashmap.get(Triple.of(left, middle, right));
 	}
+
+	@Override
+	public V getOrDefault(L left, M middle, R right, V defaultValue) {
+		return hashmap.getOrDefault(Triple.of(left, middle, right), defaultValue);
+	}
+
+	@Override
+	public String toString() {
+		return "TripleHashMap [hashmap=" + hashmap + "]";
+	}
 }
