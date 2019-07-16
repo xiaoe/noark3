@@ -56,7 +56,7 @@ public final class Sender {
 	/**
 	 * 给指定一群ID的玩家转发一个封包.
 	 * <p>
-	 * 如果roleIds为空则忽略本次发送，不然会发给全服玩家...
+	 * 如果playerIds为空则忽略本次发送，不然会发给全服玩家...
 	 * 
 	 * @param playerIds 指定的一群玩家ID
 	 * @param opcode 封包操作码
@@ -71,6 +71,7 @@ public final class Sender {
 	/**
 	 * 游戏服务器内部转发封包.
 	 * <p>
+	 * 服务器内部中转一次的协议功能，比如模拟玩家退出副本
 	 * 
 	 * @param playerId 指定玩家的ID
 	 * @param opcode 协议编号
