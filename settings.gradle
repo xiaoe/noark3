@@ -8,4 +8,4 @@ include "noark-asm", "noark-benchmark", "noark-log", "noark-core"
 include "noark-network", "noark-orm", "noark-redis", "noark-csv", "noark-xml"
 
 // 游戏服务器
-include "noark-game"
+include "noark-game", "noark-robot"
