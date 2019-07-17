@@ -30,8 +30,8 @@ import xyz.noark.core.annotation.controller.Scheduled;
 public class RankController {
 
 	@EventListener
-	public void handleAllianceCreateEvent(AllianceCreateEvent event) {
-		logger.info("处理联盟排行榜 新加一个联盟={}", event.getAllianceName());
+	public void handleAllianceCreateEvent(AllianceEvent event) {
+		logger.info("处理联盟排行榜 新加一个联盟={}", event);
 	}
 
 	@EventListener

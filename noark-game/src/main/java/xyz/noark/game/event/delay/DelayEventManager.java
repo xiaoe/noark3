@@ -72,8 +72,14 @@ public class DelayEventManager implements EventManager {
 	void notifyListeners(Event event) {
 		List<EventMethodWrapper> handlers = MANAGER.getEventMethodWrappers(event.getClass());
 		if (handlers.isEmpty()) {
-			logger.warn("No subscription event. class={}", event.getClass());
-			return;
+			// 如果有只监听了接口而无子类时，就在这里尝试重构这个子类的所对应的方法
+			synchronized (MANAGER) {
+				handlers = MANAGER.rebuildEventHandler(event.getClass());
+			}
+			if (handlers.isEmpty()) {
+				logger.warn("No subscription event. class={}", event.getClass());
+				return;
+			}
 		}
 
 		for (EventMethodWrapper handler : handlers) {
