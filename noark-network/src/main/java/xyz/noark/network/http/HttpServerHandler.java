@@ -97,6 +97,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		// 局域网判定
 		final String ip = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
 		if (!IpUtils.isInnerIP(ip)) {
+			logger.warn("client request's not authorized. ip={}, uri={}", ip, fhr.uri());
 			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
 		}
 
@@ -105,11 +106,13 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
 		// API不存在...
 		if (handler == null) {
+			logger.warn("client request's API Unrealized. ip={}, uri={}", ip, fhr.uri());
 			return new HttpResult(HttpErrorCode.NO_API, "client request's API Unrealized.");
 		}
 
 		// 已废弃
 		if (handler.isDeprecated()) {
+			logger.warn("client request's API Deprecated. ip={}, uri={}", ip, fhr.uri());
 			return new HttpResult(HttpErrorCode.API_DEPRECATED, "client request's API Deprecated.");
 		}
 
@@ -121,11 +124,13 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			buf.readBytes(bs);
 			parameters = JSON.parseObject(new String(bs), new TypeReference<Map<String, String>>() {});
 		} catch (Exception e) {
+			logger.warn("client request's parameters not json. ip={}, uri={}, e={}", ip, fhr.uri(), e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters not json.");
 		}
 
 		// 验证签名，如果未配置密钥，将忽略对签名的验证...
 		if (secretKey != null && !checkSign(parameters.getOrDefault(TIME, StringUtils.EMPTY), parameters.get(SIGN))) {
+			logger.warn("client request's sign failed. ip={}, uri={}", ip, fhr.uri());
 			return new HttpResult(HttpErrorCode.SIGN_FAILED, "client request's sign failed.");
 		}
 
@@ -134,7 +139,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		try {
 			args = this.analysisParam(handler, fhr.uri(), parameters);
 		} catch (Exception e) {
-			logger.warn("解析HTTP参数异常.{}", e);
+			logger.warn("client request's parameters are invalid, ip={}, uri={}, e={}", ip, fhr.uri(), e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters are invalid, " + e.getMessage());
 		}
 
@@ -157,6 +162,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			result.setData(returnValue);
 			return result;
 		} catch (Exception e) {
+			logger.warn("server internal error, ip={}, uri={}, e={}", ip, fhr.uri(), e);
 			return new HttpResult(HttpErrorCode.INTERNAL_ERROR, "server internal error, " + e.getMessage());
 		} finally {
 			final long endExecuteTime = System.nanoTime();
