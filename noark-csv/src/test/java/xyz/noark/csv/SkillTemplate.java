@@ -43,7 +43,7 @@ public class SkillTemplate {
 	private int initStock;
 	/** 充能时长 */
 	@TplAttr(name = "StockCD")
-	private int stockCD;
+	private int stockCd;
 	/** 技能目标选择 */
 	@TplAttr(name = "TargetType")
 	private int targetType;
@@ -138,8 +138,8 @@ public class SkillTemplate {
 		return initStock;
 	}
 
-	public int getStockCD() {
-		return stockCD;
+	public int getStockCd() {
+		return stockCd;
 	}
 
 	public int getTargetType() {
