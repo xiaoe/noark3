@@ -27,9 +27,21 @@ import java.util.List;
 public class StringUtils {
 
 	/**
-	 * The empty String {@code ""}.
+	 * 空字符串 {@code ""}.
 	 */
 	public static final String EMPTY = "";
+	/**
+	 * 一个空格字符串 {@code " "}
+	 */
+	public static final String SPACE = " ";
+	/**
+	 * 一个换行字符串 {@code "\n"}
+	 */
+	public static final String LF = "\n";
+	/**
+	 * 一个回车字符串 {@code "\r"}
+	 */
+	public static final String CR = "\r";
 
 	/**
 	 * 一个空字符串数组.
