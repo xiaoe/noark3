@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * HTTP方法管理类.
@@ -37,7 +38,7 @@ public class HttpMethodManager {
 
 	public void resetHttpHandler(HttpMethodWrapper handler) {
 		// URI不能有空格...
-		if (handler.getUri().indexOf(" ") != -1) {
+		if (handler.getUri().indexOf(StringUtils.SPACE) != -1) {
 			throw new ServerBootstrapException("URI中发现空格：" + handler.getUri());
 		}
 		// 重复定义的URI
