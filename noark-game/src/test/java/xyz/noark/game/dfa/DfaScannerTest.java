@@ -31,7 +31,7 @@ public class DfaScannerTest {
 
 	@Before
 	public void setUp() {
-		this.scanner = new DfaScanner(Arrays.asList("淘宝", "taobao", "出售", "出售元宝", "日", "64"));
+		this.scanner = new DfaScanner(Arrays.asList("淘宝", "taobao", "出售", "出售元宝", "日", "64", "<br", "<font", "<", ">"));
 	}
 
 	@Test
@@ -83,5 +83,10 @@ public class DfaScannerTest {
 		assertTrue(!scanner.findAll("今日天真是个好子").isEmpty());
 		assertTrue(!scanner.findAll("日今天日真是个好子").isEmpty());
 		assertTrue(!scanner.findAll("今天真日是个好子日").isEmpty());
+	}
+
+	@Test
+	public void testIssuesIzlsa() {
+		assertTrue("**********".equals(scanner.replace("<<><><><>>")));
 	}
 }

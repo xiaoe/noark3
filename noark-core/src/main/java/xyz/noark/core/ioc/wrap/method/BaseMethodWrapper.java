@@ -50,4 +50,38 @@ public class BaseMethodWrapper implements MethodWrapper {
 	public int getOrder() {
 		return order;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + methodIndex;
+		result = prime * result + ((single == null) ? 0 : single.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		BaseMethodWrapper other = (BaseMethodWrapper) obj;
+		if (methodIndex != other.methodIndex) {
+			return false;
+		}
+		if (single == null) {
+			if (other.single != null) {
+				return false;
+			}
+		} else if (!single.equals(other.single)) {
+			return false;
+		}
+		return true;
+	}
 }

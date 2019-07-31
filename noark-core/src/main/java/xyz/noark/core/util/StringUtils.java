@@ -27,9 +27,21 @@ import java.util.List;
 public class StringUtils {
 
 	/**
-	 * The empty String {@code ""}.
+	 * 空字符串 {@code ""}.
 	 */
 	public static final String EMPTY = "";
+	/**
+	 * 一个空格字符串 {@code " "}
+	 */
+	public static final String SPACE = " ";
+	/**
+	 * 一个换行字符串 {@code "\n"}
+	 */
+	public static final String LF = "\n";
+	/**
+	 * 一个回车字符串 {@code "\r"}
+	 */
+	public static final String CR = "\r";
 
 	/**
 	 * 一个空字符串数组.
@@ -37,9 +49,7 @@ public class StringUtils {
 	public static final String[] EMPTY_STRING_ARRAY = {};
 
 	/**
-	 * <p>
 	 * 检测字符串是否为 null或"".
-	 * </p>
 	 *
 	 * <pre>
 	 * StringUtils.isEmpty(null)      = true
@@ -57,10 +67,8 @@ public class StringUtils {
 	}
 
 	/**
-	 * <p>
 	 * 检测字符串是否不为 null且不为"".
-	 * </p>
-	 *
+	 * 
 	 * <pre>
 	 * StringUtils.isNotEmpty(null)      = false
 	 * StringUtils.isNotEmpty("")        = false
@@ -74,6 +82,55 @@ public class StringUtils {
 	 */
 	public static boolean isNotEmpty(final String text) {
 		return !isEmpty(text);
+	}
+
+	/**
+	 * 检测字符串是否为空，null或Java空白字符。
+	 * <p>
+	 * Java空白字符的定义请参考{@link Character#isWhitespace(char)}.
+	 * 
+	 * <pre>
+	 * StringUtils.isBlank(null)      = true
+	 * StringUtils.isBlank("")        = true
+	 * StringUtils.isBlank(" ")       = true
+	 * StringUtils.isBlank("bob")     = false
+	 * StringUtils.isBlank("  bob  ") = false
+	 * </pre>
+	 * 
+	 * @param text 被检测字符串
+	 * @return 如果字符串为空，null或Java空白字符则返回true,否则返回false.
+	 */
+	public static boolean isBlank(final String text) {
+		if (text == null) {
+			return true;
+		}
+		// 只要有一个字符不为空白，那就肯定不是空白
+		for (int i = 0, len = text.length(); i < len; i++) {
+			if (!Character.isWhitespace(text.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 检测字符串是否不为空，null或Java空白字符。
+	 * <p>
+	 * Java空白字符的定义请参考{@link Character#isWhitespace(char)}.
+	 * 
+	 * <pre>
+	 * StringUtils.isNotBlank(null)      = false
+	 * StringUtils.isNotBlank("")        = false
+	 * StringUtils.isNotBlank(" ")       = false
+	 * StringUtils.isNotBlank("bob")     = true
+	 * StringUtils.isNotBlank("  bob  ") = true
+	 * </pre>
+	 * 
+	 * @param text 被检测字符串
+	 * @return 如果字符串不为空，null或Java空白字符则返回true,否则返回false.
+	 */
+	public static boolean isNotBlank(final String text) {
+		return !isBlank(text);
 	}
 
 	/**

@@ -258,36 +258,6 @@ public class IntArrayList implements IntList, RandomAccess {
 		return (minCapacity > MAX_ARRAY_SIZE) ? Integer.MAX_VALUE : MAX_ARRAY_SIZE;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(elementData);
-		result = prime * result + size;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		IntArrayList other = (IntArrayList) obj;
-		if (!Arrays.equals(elementData, other.elementData)) {
-			return false;
-		}
-		if (size != other.size) {
-			return false;
-		}
-		return true;
-	}
-
 	public void forEach(Consumer<? super Integer> action) {
 		Objects.requireNonNull(action);
 		final int size = this.size;
@@ -303,5 +273,43 @@ public class IntArrayList implements IntList, RandomAccess {
 			result.add(Integer.valueOf(elementData[i]));
 		}
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return Arrays.toString(toArray());
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 1;
+		for (int i = 0; i < size; i++) {
+			hashCode = 31 * hashCode + Integer.hashCode(elementData[i]);
+		}
+		return hashCode;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof IntList)) {
+			return false;
+		}
+
+		IntList target = (IntList) o;
+		// 数量不等，直接就是不等于
+		if (this.size() != target.size()) {
+			return false;
+		}
+
+		// 有一个不等于就是不等
+		for (int i = 0; i < this.size(); i++) {
+			if (this.get(i) != target.get(i)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

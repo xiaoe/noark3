@@ -16,30 +16,11 @@ package com.company.game.event;
 import xyz.noark.core.event.Event;
 
 /**
- * 联盟加入事件.
+ * 
  *
- * @since 3.2.6
+ * @since 3.3
  * @author 小流氓(176543888@qq.com)
  */
-public class AllianceJoinEvent implements Event, AllianceEvent {
-	private final long playerId;
-	private final String allianceName;
+public interface AllianceEvent extends Event {
 
-	public AllianceJoinEvent(long playerId, String allianceName) {
-		this.playerId = playerId;
-		this.allianceName = allianceName;
-	}
-
-	public long getPlayerId() {
-		return playerId;
-	}
-
-	public String getAllianceName() {
-		return allianceName;
-	}
-
-	@Override
-	public String toString() {
-		return "AllianceJoinEvent [playerId=" + playerId + ", allianceName=" + allianceName + "]";
-	}
 }

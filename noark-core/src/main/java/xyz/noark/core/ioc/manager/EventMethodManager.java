@@ -16,8 +16,10 @@ package xyz.noark.core.ioc.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import xyz.noark.core.event.Event;
@@ -31,7 +33,7 @@ import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
  */
 public class EventMethodManager {
 	private final Map<Class<? extends Event>, List<EventMethodWrapper>> handlers = new ConcurrentHashMap<>();
-
+	private final Set<Class<? extends Event>> rebuildSet = new HashSet<>();
 	private static final EventMethodManager INSTANCE = new EventMethodManager();
 
 	private EventMethodManager() {}
@@ -72,18 +74,49 @@ public class EventMethodManager {
 	 * @return 事件处理管理类单例
 	 */
 	public EventMethodManager listenerExtend() {
-		final Map<Class<? extends Event>, List<EventMethodWrapper>> extend = new HashMap<>(32);
+		final Map<Class<? extends Event>, Set<EventMethodWrapper>> extend = new HashMap<>(32);
 		// 查找一下所有父类，有监听那就要增强扩展
 		for (Class<? extends Event> klass : handlers.keySet()) {
 			for (Map.Entry<Class<? extends Event>, List<EventMethodWrapper>> e : handlers.entrySet()) {
 				// klass 是 e.getKey() 的父类
 				if (!klass.equals(e.getKey()) && e.getKey().isAssignableFrom(klass)) {
-					extend.computeIfAbsent(klass, key -> new ArrayList<>()).addAll(e.getValue());
+					extend.computeIfAbsent(klass, key -> new HashSet<>()).addAll(e.getValue());
 				}
 			}
 		}
 		// 再把上面的扩展加进去...
 		extend.forEach((k, v) -> handlers.computeIfAbsent(k, key -> new ArrayList<>()).addAll(v));
 		return INSTANCE;
+	}
+
+	/**
+	 * 重构事件处理器.
+	 * <p>
+	 * 当有接口有子类时只监听了接口会出现这种情况.
+	 * 
+	 * @param klass 事件类型
+	 * @return 返回关心这个事件的所有处理器
+	 */
+	public List<EventMethodWrapper> rebuildEventHandler(Class<? extends Event> klass) {
+		List<EventMethodWrapper> result = this.getEventMethodWrappers(klass);
+		if (!result.isEmpty() || rebuildSet.contains(klass)) {
+			return result;
+		}
+
+		// 存档在重构过的集合中
+		this.rebuildSet.add(klass);
+
+		// 查找一下所有父类，有监听那就要增强扩展
+		final Set<EventMethodWrapper> hs = new HashSet<>();
+		for (Map.Entry<Class<? extends Event>, List<EventMethodWrapper>> e : handlers.entrySet()) {
+			// klass 是 e.getKey() 的父类
+			if (!klass.equals(e.getKey()) && e.getKey().isAssignableFrom(klass)) {
+				hs.addAll(e.getValue());
+			}
+		}
+
+		result = new ArrayList<EventMethodWrapper>(hs);
+		handlers.put(klass, result);
+		return result;
 	}
 }

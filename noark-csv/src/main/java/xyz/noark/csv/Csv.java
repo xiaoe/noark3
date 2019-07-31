@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import xyz.noark.core.annotation.tpl.TplAttr;
+import xyz.noark.core.annotation.tpl.TplAttrSuffix;
 import xyz.noark.core.annotation.tpl.TplFile;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
@@ -106,28 +107,20 @@ public class Csv {
 				continue;
 			}
 
-			// 只有一个配置
-			if (array.length == 1) {
-				TplAttr attr = array[0];
+			// 后缀配置
+			TplAttrSuffix suffix = field.getAnnotation(TplAttrSuffix.class);
 
-				Integer index = titles.get(attr.name());
-				if (index == null) {
-					if (attr.required()) {
-						throw new TplAttrRequiredException(klass, field, attr);
-					}
+			// 只有一个配置且没有后缀配置
+			if (array.length == 1 && suffix == null) {
+				final TplAttr attr = array[0];
+
+				// 查找配置
+				int index = this.lookupIndex(klass, field, titles, values, attr, attr.name());
+				if (index == -1) {
 					continue;
 				}
 
-				// 竟然有的数量不到最后
-				if (index > values.length - 1) {
-					continue;
-				}
-
-				String value = values[index];
-				if (StringUtils.isEmpty(value)) {
-					continue;
-				}
-
+				final String value = values[index];
 				Converter<?> converter = this.getConverter(field);
 				try {
 					FieldUtils.writeField(result, field, converter.convert(field, value));
@@ -135,29 +128,40 @@ public class Csv {
 					throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
 				}
 			}
-			// 多个配置
+			// 只有一个配置且有后缀，那也是个多个配置
+			else if (array.length == 1 && suffix != null) {
+				// 如果后缀配置小于等于0，那就没得玩了哈...
+				if (suffix.step() <= 0) {
+					throw new ConvertException(klass.getName() + " >> " + field.getName() + " >> TplAttrSuffix#step=" + suffix.step() + "-->" + "不可以小于等于0.");
+				}
+
+				TplAttr attr = array[0];
+				Map<String, String> data = new LinkedHashMap<>((suffix.end() - suffix.start()) / suffix.step() + 1);
+				for (int i = suffix.start(); i <= suffix.end(); i += suffix.step()) {
+					final String attrName = attr.name() + i;
+
+					// 查找配置
+					int index = this.lookupIndex(klass, field, titles, values, attr, attrName);
+					if (index != -1) {
+						data.put(attrName, values[index]);
+					}
+				}
+				Converter<?> converter = this.getConverter(field);
+				try {
+					FieldUtils.writeField(result, field, converter.convert(field, data));
+				} catch (Exception e) {
+					throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + data + "-->" + converter.buildErrorMsg(), e);
+				}
+			}
+			// 多个配置时，忽略后缀的
 			else {
 				Map<String, String> data = new LinkedHashMap<>(array.length + 1);
 				for (TplAttr attr : array) {
-					Integer index = titles.get(attr.name());
-					if (index == null) {
-						if (attr.required()) {
-							throw new TplAttrRequiredException(klass, field, attr);
-						}
-						continue;
+					// 查找配置
+					int index = this.lookupIndex(klass, field, titles, values, attr, attr.name());
+					if (index != -1) {
+						data.put(attr.name(), values[index]);
 					}
-
-					// 竟然有的数量不到最后
-					if (index > values.length - 1) {
-						continue;
-					}
-
-					String value = values[index];
-					if (StringUtils.isEmpty(value)) {
-						continue;
-					}
-
-					data.put(attr.name(), value);
 				}
 				Converter<?> converter = this.getConverter(field);
 				try {
@@ -169,6 +173,31 @@ public class Csv {
 		}
 
 		return result;
+	}
+
+	private int lookupIndex(Class<?> klass, Field field, Map<String, Integer> titles, String[] values, TplAttr attr, String attrName) {
+		// 找到属性名称对应值所对应的下标位置
+		Integer index = titles.get(attrName);
+		if (index == null) {
+			if (attr.required()) {
+				throw new TplAttrRequiredException(klass, field, attr);
+			}
+			return -1;
+		}
+
+		// 竟然有的数量不到最后
+		if (index > values.length - 1) {
+			return -1;
+		}
+
+		// 未配值
+		String value = values[index];
+		if (StringUtils.isEmpty(value)) {
+			return -1;
+		}
+
+		// 其他情况都算有值
+		return index.intValue();
 	}
 
 	private Converter<?> getConverter(Field field) {

@@ -41,5 +41,11 @@ public class CsvTest {
 		File file = new File("src/test/resources/");
 		List<ItemTemplate> ts = csv.loadAll(file.getAbsolutePath(), ItemTemplate.class);
 		assertTrue(ts.size() == 22);
+
+		List<MonsterRefreshTemplate> templates = csv.loadAll(file.getAbsolutePath(), MonsterRefreshTemplate.class);
+		List<MonsterRefreshTemplate2> templates2 = csv.loadAll(file.getAbsolutePath(), MonsterRefreshTemplate2.class);
+		for (int i = 0; i < templates.size(); i++) {
+			assertTrue(templates.get(i).getLevelNumList().equals(templates2.get(i).getLevelNumList()));
+		}
 	}
 }

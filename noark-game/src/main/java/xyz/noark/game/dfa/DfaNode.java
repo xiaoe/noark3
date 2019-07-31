@@ -43,15 +43,14 @@ class DfaNode {
 	 * @return 返回这个子节点
 	 */
 	public DfaNode addIfAbsent(final int value, final boolean last) {
-		if (subNodes == null) {
-			return addSubNode(new DfaNode(value, last));
-		}
-		for (DfaNode subNode : subNodes) {
-			if (subNode.value == value) {
-				if (!subNode.last && last) {
-					subNode.last = true;
+		if (subNodes != null) {
+			for (DfaNode subNode : subNodes) {
+				if (subNode.value == value) {
+					if (!subNode.last && last) {
+						subNode.last = true;
+					}
+					return subNode;
 				}
-				return subNode;
 			}
 		}
 		return addSubNode(new DfaNode(value, last));
@@ -96,5 +95,14 @@ class DfaNode {
 	 */
 	public boolean isLast() {
 		return last;
+	}
+
+	/**
+	 * 设置当前节点是否为一个完整敏感词.
+	 * 
+	 * @param last 是否为一个完整敏感词
+	 */
+	void setLast(boolean last) {
+		this.last = last;
 	}
 }

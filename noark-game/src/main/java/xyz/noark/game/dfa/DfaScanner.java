@@ -100,11 +100,17 @@ public class DfaScanner {
 				continue;
 			}
 
-			char[] array = word.toCharArray();
-			final int first = charConvert(array[0]);
-			DfaNode fnode = nodes.computeIfAbsent(first, key -> new DfaNode(first, array.length == 1));
-			for (int i = 1, len = array.length, lastIndex = array.length - 1; i < len; i++) {
-				fnode = fnode.addIfAbsent(charConvert(array[i]), i == lastIndex);
+			final int first = charConvert(word.charAt(0));
+			DfaNode fnode = nodes.computeIfAbsent(first, key -> new DfaNode(first, word.length() == 1));
+			// 长度为1时要修正这个节点为单字节点
+			if (word.length() == 1) {
+				fnode.setLast(true);
+			}
+			// 其他情况
+			else {
+				for (int i = 1, len = word.length(), lastIndex = len - 1; i < len; i++) {
+					fnode = fnode.addIfAbsent(charConvert(word.charAt(i)), i == lastIndex);
+				}
 			}
 		}
 	}
