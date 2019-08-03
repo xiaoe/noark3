@@ -15,11 +15,15 @@ package xyz.noark.core.util;
 
 import static xyz.noark.log.LogHelper.logger;
 
-import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.Map;
 
 import xyz.noark.core.exception.HttpAccessException;
 
@@ -30,6 +34,10 @@ import xyz.noark.core.exception.HttpAccessException;
  * @author 小流氓(176543888@qq.com)
  */
 public class HttpUtils {
+	/**
+	 * HTTP请求默认超时：默认3秒
+	 */
+	static final int DEFAULT_TIMEOUT = 3000;
 
 	/**
 	 * 向指定URL发送GET方法的请求
@@ -38,26 +46,51 @@ public class HttpUtils {
 	 * @return URL 所代表远程资源的响应结果
 	 */
 	public static String get(String url) {
+		return get(url, DEFAULT_TIMEOUT, Collections.emptyMap());
+	}
+
+	/**
+	 * 向指定URL发送GET方法的请求
+	 * 
+	 * @param url 发送请求的URL
+	 * @param timeout 请求超时（单位：毫秒）
+	 * @return URL 所代表远程资源的响应结果
+	 */
+	public static String get(String url, int timeout) {
+		return get(url, timeout, Collections.emptyMap());
+	}
+
+	/**
+	 * 向指定URL发送GET方法的请求
+	 * 
+	 * @param url 发送请求的URL
+	 * @param requestProperty 请求属性
+	 * @return URL 所代表远程资源的响应结果
+	 */
+	public static String get(String url, Map<String, String> requestProperty) {
+		return get(url, DEFAULT_TIMEOUT, requestProperty);
+	}
+
+	/**
+	 * 向指定URL发送GET方法的请求
+	 * 
+	 * @param url 发送请求的URL
+	 * @param timeout 请求超时（单位：毫秒）
+	 * @param requestProperty 请求属性
+	 * @return URL 所代表远程资源的响应结果
+	 */
+	public static String get(String url, int timeout, Map<String, String> requestProperty) {
 		logger.info("GET: url={}", url);
 		try {
 			// 打开和URL之间的连接
 			URLConnection connection = new URL(url).openConnection();
-			// 设置通用的请求属性
-			connection.setRequestProperty("accept", "*/*");
-			connection.setRequestProperty("connection", "Keep-Alive");
+			connection.setReadTimeout(timeout);
+			requestProperty.forEach((key, value) -> connection.setRequestProperty(key, value));
+
 			// 建立实际的连接
 			connection.connect();
 
-			StringBuilder sb = new StringBuilder();
-			// 定义 BufferedReader输入流来读取URL的响应
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				String line;
-				while ((line = in.readLine()) != null) {
-					sb.append(line);
-				}
-			}
-
-			String result = sb.toString();
+			String result = HttpUtils.readString(connection.getInputStream());
 			logger.info(result);
 			return result;
 		} catch (Exception e) {
@@ -73,19 +106,58 @@ public class HttpUtils {
 	 * @return 所代表远程资源的响应结果
 	 */
 	public static String post(String url, String params) {
+		return post(url, params, DEFAULT_TIMEOUT, Collections.emptyMap());
+	}
+
+	/**
+	 * 向指定 URL 发送POST方法的请求
+	 * 
+	 * @param url 发送请求的 URL
+	 * @param params 请求参数
+	 * @param timeout 请求超时（单位：毫秒）
+	 * @return 所代表远程资源的响应结果
+	 */
+	public static String post(String url, String params, int timeout) {
+		return post(url, params, timeout, Collections.emptyMap());
+	}
+
+	/**
+	 * 向指定 URL 发送POST方法的请求
+	 * 
+	 * @param url 发送请求的 URL
+	 * @param params 请求参数
+	 * @param requestProperty 请求属性
+	 * @return 所代表远程资源的响应结果
+	 */
+	public static String post(String url, String params, Map<String, String> requestProperty) {
+		return post(url, params, DEFAULT_TIMEOUT, requestProperty);
+	}
+
+	/**
+	 * 向指定 URL 发送POST方法的请求
+	 * 
+	 * @param url 发送请求的 URL
+	 * @param params 请求参数
+	 * @param timeout 请求超时（单位：毫秒）
+	 * @param requestProperty 请求属性
+	 * @return 所代表远程资源的响应结果
+	 */
+	public static String post(String url, String params, int timeout, Map<String, String> requestProperty) {
 		logger.info("POST: url={}, param={}", url, params);
 		try {
 			// 打开和URL之间的连接
 			URLConnection connection = new URL(url).openConnection();
 			// 设置通用的请求属性
-			connection.setRequestProperty("accept", "*/*");
-			connection.setRequestProperty("connection", "Keep-Alive");
-			connection.setRequestProperty("Charset", "UTF-8");
+			connection.setReadTimeout(timeout);
+			requestProperty.forEach((key, value) -> connection.setRequestProperty(key, value));
+
 			// 发送POST请求必须设置如下两行
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
+			// 建立实际的连接
+			connection.connect();
 
-			if (!params.isEmpty()) {
+			if (StringUtils.isNotEmpty(params)) {
 				// 获取URLConnection对象对应的输出流
 				try (PrintWriter out = new PrintWriter(connection.getOutputStream())) {
 					// 发送请求参数
@@ -95,20 +167,49 @@ public class HttpUtils {
 				}
 			}
 
-			StringBuilder sb = new StringBuilder();
-			// 定义BufferedReader输入流来读取URL的响应
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				String line;
-				while ((line = in.readLine()) != null) {
-					sb.append(line);
-				}
-			}
-
-			String result = sb.toString();
+			String result = HttpUtils.readString(connection.getInputStream());
 			logger.info(result);
 			return result;
 		} catch (Exception e) {
 			throw new HttpAccessException(e);
 		}
+	}
+
+	/**
+	 * 从输入流中读出所有文本.
+	 * 
+	 * @param inputStream 输入流
+	 * @return 返回流中的文本
+	 * @throws IOException If an I/O error occurs
+	 */
+	public static String readString(InputStream inputStream) throws IOException {
+		return readString(inputStream, CharsetUtils.CHARSET_UTF_8);
+	}
+
+	/**
+	 * 从输入流中读出所有文本.
+	 * 
+	 * @param inputStream 输入流
+	 * @param charset 文本的编码方式
+	 * @return 返回流中的文本
+	 * @throws IOException If an I/O error occurs
+	 */
+	public static String readString(InputStream inputStream, Charset charset) throws IOException {
+		final StringBuilder sb = new StringBuilder(256);
+		// 这里没有选择BufferedReader就是不想一行一行的读，浪费字符串拼接性能
+		try (InputStreamReader isr = new InputStreamReader(inputStream, charset)) {
+			// 申明一次读取缓冲区
+			final char[] cbuf = new char[64];
+			// 这里并没有使用while(true),如果一个文本超过100W，还是放弃后面的算了
+			while (sb.length() < MathUtils.MILLION) {
+				int n = isr.read(cbuf);
+				// 读结束了，就GG了
+				if (n < 0) {
+					break;
+				}
+				sb.append(cbuf, 0, n);
+			}
+		}
+		return sb.toString();
 	}
 }
