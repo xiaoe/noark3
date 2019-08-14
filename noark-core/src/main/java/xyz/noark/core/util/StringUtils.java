@@ -13,6 +13,10 @@
  */
 package xyz.noark.core.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -466,5 +470,56 @@ public class StringUtils {
 			str = str.replace(join("{", String.valueOf(i), "}"), String.valueOf(arguments[i]));
 		}
 		return str;
+	}
+
+	/**
+	 * 从输入流中读出所有文本.
+	 * 
+	 * @param inputStream 输入流
+	 * @return 返回流中的文本
+	 * @throws IOException If an I/O error occurs
+	 */
+	public static String readString(InputStream inputStream) throws IOException {
+		return readString(inputStream, CharsetUtils.CHARSET_UTF_8);
+	}
+
+	/**
+	 * 从输入流中读出所有文本.
+	 * 
+	 * @param inputStream 输入流
+	 * @param charset 文本的编码方式
+	 * @return 返回流中的文本
+	 * @throws IOException If an I/O error occurs
+	 */
+	public static String readString(InputStream inputStream, Charset charset) throws IOException {
+		try (InputStreamReader isr = new InputStreamReader(inputStream, charset)) {
+			return readString(isr);
+		}
+	}
+
+	/**
+	 * 读出所有文本。
+	 * <p>
+	 * 这里没有选择BufferedReader就是不想一行一行的读，浪费字符串拼接性能 <br>
+	 * 正常用于读HTTP的响应，配置文件内容，小文件等情况
+	 * 
+	 * @param reader 抽象的文本流
+	 * @return 返回流中所有文本
+	 * @throws IOException If an I/O error occurs
+	 */
+	public static String readString(Reader reader) throws IOException {
+		final StringBuilder sb = new StringBuilder(1024);
+		// 申明一次读取缓冲区
+		final char[] cbuf = new char[256];
+		// 这里并没有使用while(true),如果一个文本超过100W，还是放弃后面的算了
+		while (sb.length() < MathUtils.MILLION) {
+			int n = reader.read(cbuf);
+			// 读结束了，就GG了
+			if (n < 0) {
+				break;
+			}
+			sb.append(cbuf, 0, n);
+		}
+		return sb.toString();
 	}
 }

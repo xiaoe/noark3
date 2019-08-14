@@ -15,13 +15,9 @@ package xyz.noark.core.util;
 
 import static xyz.noark.log.LogHelper.logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 
@@ -90,7 +86,7 @@ public class HttpUtils {
 			// 建立实际的连接
 			connection.connect();
 
-			String result = HttpUtils.readString(connection.getInputStream());
+			String result = StringUtils.readString(connection.getInputStream());
 			logger.info(result);
 			return result;
 		} catch (Exception e) {
@@ -167,49 +163,11 @@ public class HttpUtils {
 				}
 			}
 
-			String result = HttpUtils.readString(connection.getInputStream());
+			String result = StringUtils.readString(connection.getInputStream());
 			logger.info(result);
 			return result;
 		} catch (Exception e) {
 			throw new HttpAccessException(e);
 		}
-	}
-
-	/**
-	 * 从输入流中读出所有文本.
-	 * 
-	 * @param inputStream 输入流
-	 * @return 返回流中的文本
-	 * @throws IOException If an I/O error occurs
-	 */
-	public static String readString(InputStream inputStream) throws IOException {
-		return readString(inputStream, CharsetUtils.CHARSET_UTF_8);
-	}
-
-	/**
-	 * 从输入流中读出所有文本.
-	 * 
-	 * @param inputStream 输入流
-	 * @param charset 文本的编码方式
-	 * @return 返回流中的文本
-	 * @throws IOException If an I/O error occurs
-	 */
-	public static String readString(InputStream inputStream, Charset charset) throws IOException {
-		final StringBuilder sb = new StringBuilder(256);
-		// 这里没有选择BufferedReader就是不想一行一行的读，浪费字符串拼接性能
-		try (InputStreamReader isr = new InputStreamReader(inputStream, charset)) {
-			// 申明一次读取缓冲区
-			final char[] cbuf = new char[64];
-			// 这里并没有使用while(true),如果一个文本超过100W，还是放弃后面的算了
-			while (sb.length() < MathUtils.MILLION) {
-				int n = isr.read(cbuf);
-				// 读结束了，就GG了
-				if (n < 0) {
-					break;
-				}
-				sb.append(cbuf, 0, n);
-			}
-		}
-		return sb.toString();
 	}
 }

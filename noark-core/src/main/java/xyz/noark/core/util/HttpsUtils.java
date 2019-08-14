@@ -94,7 +94,7 @@ public class HttpsUtils {
 			requestProperty.forEach((key, value) -> connection.setRequestProperty(key, value));
 
 			// 取出HTTP响应结果
-			String result = HttpUtils.readString(connection.getInputStream());
+			String result = StringUtils.readString(connection.getInputStream());
 			logger.info(result);
 			return result;
 		} catch (Exception e) {
@@ -169,7 +169,7 @@ public class HttpsUtils {
 				}
 			}
 
-			String result = HttpUtils.readString(connection.getInputStream());
+			String result = StringUtils.readString(connection.getInputStream());
 			logger.info(result);
 			return result;
 
