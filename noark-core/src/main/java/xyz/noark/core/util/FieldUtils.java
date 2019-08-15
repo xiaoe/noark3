@@ -72,6 +72,24 @@ public class FieldUtils {
 	}
 
 	/**
+	 * 强制读取一个属性{@link Field}的值.
+	 * 
+	 * @param target 目标类对象，如果是静态方法，目标为null
+	 * @param field 对象的属性
+	 * @return 返回对象属性的值
+	 */
+	public static Object readField(final Object target, final Field field) {
+		if (!field.isAccessible()) {
+			field.setAccessible(true);
+		}
+		try {
+			return field.get(target);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw new ServerBootstrapException(target.getClass() + " 的 " + field.getName() + " 属性无法读取.", e);
+		}
+	}
+
+	/**
 	 * 获取指定名称的属性.
 	 * 
 	 * @param klass 指定类

@@ -15,8 +15,13 @@ package xyz.noark.core.util;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -52,6 +57,40 @@ public class AssertUtils {
 		if (!result.isEmpty()) {
 			result.forEach(v -> logger.warn(tips, stringFunc.apply(v), maxLength));
 			throw new ServerBootstrapException("断言集合中字符串属性长度超出了最大限制，请速速处理...");
+		}
+	}
+
+	/**
+	 * 断言一个常量类中是否有重复值。
+	 * <p>
+	 * 一般应用于错误提示编号类，消息协议类型等...
+	 * 
+	 * @param klass 常量类
+	 */
+	public static void assertConstantValueDuplicated(Class<?> klass) {
+		List<Field> allField = FieldUtils.getAllField(klass);
+
+		int totalNum = 0;
+		Map<Object, Field> caches = new HashMap<>(allField.size());
+		for (Field field : allField) {
+			final int mod = field.getModifiers();
+			// 不是静态的属性，忽略
+			if (!Modifier.isStatic(mod)) {
+				continue;
+			}
+			// 不是公开的属性，忽略
+			if (!Modifier.isPublic(mod)) {
+				continue;
+			}
+
+			totalNum++;
+			Object value = FieldUtils.readField(null, field);
+			Optional.ofNullable(caches.put(value, field)).ifPresent(v -> logger.warn("常量类[{}]中重复定义的值 value={}, field1={}, field2={}", klass.getName(), value, v.getName(), field.getName()));
+		}
+
+		// 如果计数器比缓存多，那就是有重复值
+		if (totalNum > caches.size()) {
+			throw new ServerBootstrapException("断言常量类中有重复定义的值，请速速处理...");
 		}
 	}
 }

@@ -14,8 +14,12 @@
 package xyz.noark.core.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.util.Optional;
 
@@ -32,16 +36,59 @@ public class FileUtils {
 	/**
 	 * 加载类路径下指定名称文件中的文本.
 	 * 
-	 * @param name 文件名称
+	 * @param fileName 文件名称
 	 * @return 返回文件中的文本
 	 */
-	public static Optional<String> getFileText(String name) {
-		try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(name)) {
-			byte[] bytes = new byte[is.available()];
-			is.read(bytes);
-			return Optional.of(new String(bytes));
+	public static Optional<String> getFileText(String fileName) {
+		try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)) {
+			return Optional.ofNullable(StringUtils.readString(is));
 		} catch (Exception e) {}
+		// 文件不存在等其他情况返回null
 		return Optional.empty();
+	}
+
+	/**
+	 * 读取指定名称文件中的文本.
+	 * 
+	 * @param fileName 文件名称
+	 * @return 返回文件中的文本
+	 * @throws IOException If an I/O error occurs
+	 * @throws FileNotFoundException 文件未找到会抛出此异常
+	 */
+	public static String readFileText(String fileName) throws FileNotFoundException, IOException {
+		try (FileReader reader = new FileReader(fileName)) {
+			return StringUtils.readString(reader);
+		}
+	}
+
+	/**
+	 * 写入指定文本到文件中.
+	 * <p>
+	 * 文件不存在，则会自动创建，默认是覆盖原文件
+	 * 
+	 * @param fileName 文件名称
+	 * @param content 要写入的内容
+	 * @throws IOException If an I/O error occurs
+	 */
+	public static void writeFileText(String fileName, String content) throws IOException {
+		writeFileText(fileName, false, content);
+	}
+
+	/**
+	 * 写入指定文本到文件中.
+	 * <p>
+	 * 文件不存在，则会自动创建
+	 * 
+	 * @param fileName 文件名称
+	 * @param append 是否追加写入
+	 * @param content 要写入的内容
+	 * @throws IOException If an I/O error occurs
+	 */
+	public static void writeFileText(String fileName, boolean append, String content) throws IOException {
+		try (FileOutputStream fos = new FileOutputStream(fileName, append); OutputStreamWriter osw = new OutputStreamWriter(fos, CharsetUtils.CHARSET_UTF_8);) {
+			osw.write(content);
+			osw.flush();
+		}
 	}
 
 	/**
