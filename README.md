@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/xiaoe/noark3.svg?branch=master)](https://gitee.com/xiaoe/noark3)
 [![JDK](https://img.shields.io/badge/JDK-1.8%2B-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
 [![maven](https://maven-badges.herokuapp.com/maven-central/xyz.noark/noark-game/badge.svg)](https://search.maven.org/search?q=g:xyz.noark)
-[![license](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![license](https://img.shields.io/badge/license-MulanPSL-blue)](http://license.coscl.org.cn/MulanPSL)
 [![GitHub last commit](https://img.shields.io/github/last-commit/xiaoe/noark3.svg?style=flat-square)](https://github.com/xiaoe/noark3/commits)
 
 
