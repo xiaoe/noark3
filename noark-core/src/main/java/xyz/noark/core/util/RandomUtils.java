@@ -131,7 +131,7 @@ public class RandomUtils {
 	 * @param rate 成功率/100D
 	 * @return 如果成功返回true,否则返回false.
 	 */
-	public static boolean isSuccessByPercentage(int rate) {
+	public static boolean isSuccessByPercentage(long rate) {
 		return RandomUtils.isSuccess(rate / MathUtils.HUNDRED);
 	}
 
@@ -147,7 +147,7 @@ public class RandomUtils {
 	 * @param rate 成功率/1000D
 	 * @return 如果成功返回true,否则返回false.
 	 */
-	public static boolean isSuccessByPermillage(int rate) {
+	public static boolean isSuccessByPermillage(long rate) {
 		return RandomUtils.isSuccess(rate / MathUtils.THOUSAND);
 	}
 
