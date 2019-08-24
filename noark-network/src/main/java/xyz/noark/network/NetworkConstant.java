@@ -31,6 +31,8 @@ public class NetworkConstant {
 	public static final String INCODE = "network.incode";
 	/** 网络安全之checksum检测：默认false不开启 */
 	public static final String CHECKSUM = "network.checksum";
+	/** 网络安全之相同IP最大链接数，默认为：256 */
+	public static final String SOME_IP_MAX = "network.some.ip.max";
 
 	// Netty相关配置--------------------------------------
 	/** 心跳功能，默认值为0，则不生效 */

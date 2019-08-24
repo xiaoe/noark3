@@ -33,23 +33,23 @@ public class IpUtilsTest {
 
 	@Test
 	public void testIsInnerIP() {
-		assertTrue(IpUtils.isInnerIP("127.0.0.1"));
+		assertTrue(IpUtils.isInnerIp("127.0.0.1"));
 
-		assertTrue(IpUtils.isInnerIP("10.0.0.0"));
-		assertTrue(IpUtils.isInnerIP("10.0.0.1"));
-		assertTrue(IpUtils.isInnerIP("10.255.255.254"));
-		assertTrue(IpUtils.isInnerIP("10.255.255.255"));
+		assertTrue(IpUtils.isInnerIp("10.0.0.0"));
+		assertTrue(IpUtils.isInnerIp("10.0.0.1"));
+		assertTrue(IpUtils.isInnerIp("10.255.255.254"));
+		assertTrue(IpUtils.isInnerIp("10.255.255.255"));
 
-		assertTrue(IpUtils.isInnerIP("172.16.0.0"));
-		assertTrue(IpUtils.isInnerIP("172.16.0.1"));
-		assertTrue(IpUtils.isInnerIP("172.31.255.254"));
-		assertTrue(IpUtils.isInnerIP("172.31.255.255"));
+		assertTrue(IpUtils.isInnerIp("172.16.0.0"));
+		assertTrue(IpUtils.isInnerIp("172.16.0.1"));
+		assertTrue(IpUtils.isInnerIp("172.31.255.254"));
+		assertTrue(IpUtils.isInnerIp("172.31.255.255"));
 
-		assertTrue(IpUtils.isInnerIP("192.168.0.0"));
-		assertTrue(IpUtils.isInnerIP("192.168.0.1"));
-		assertTrue(IpUtils.isInnerIP("192.168.255.254"));
-		assertTrue(IpUtils.isInnerIP("192.168.255.255"));
+		assertTrue(IpUtils.isInnerIp("192.168.0.0"));
+		assertTrue(IpUtils.isInnerIp("192.168.0.1"));
+		assertTrue(IpUtils.isInnerIp("192.168.255.254"));
+		assertTrue(IpUtils.isInnerIp("192.168.255.255"));
 
-		assertFalse(IpUtils.isInnerIP("180.173.66.62"));
+		assertFalse(IpUtils.isInnerIp("180.173.66.62"));
 	}
 }

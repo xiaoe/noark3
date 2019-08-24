@@ -27,6 +27,7 @@ import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
+import xyz.noark.core.util.IpUtils;
 
 /**
  * Netty链接默认功能处理器.
@@ -37,20 +38,31 @@ import xyz.noark.core.network.SessionManager;
 @Service
 @Sharable
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
+	private final IpManager ipManager = new IpManager();
 	/** 心跳功能，默认值为0，则不生效 */
 	@Value(NetworkConstant.HEARTBEAT)
 	protected int heartbeat = 0;
+	/** 网络安全之相同IP最大链接数，默认为：256 */
+	@Value(NetworkConstant.SOME_IP_MAX)
+	protected int maxSomeIp = 256;
+
 	@Autowired(required = false)
 	private NetworkListener networkListener;
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		logger.info("发现客户端链接，channel={}", ctx.channel());
+		if (ipManager.active(IpUtils.getIp(ctx.channel())) > maxSomeIp) {
+			logger.warn("同一个IP链接数超出上限 max={}", maxSomeIp);
+			ctx.channel().close();
+		}
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		logger.info("客户端断开链接，channel={}", ctx.channel());
+		ipManager.inactive(IpUtils.getIp(ctx.channel()));
+
 		Session session = SessionManager.getSession(ctx.channel().id());
 		if (session != null) {
 			try {

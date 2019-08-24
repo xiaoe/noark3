@@ -96,7 +96,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	private HttpResult exec(ChannelHandlerContext ctx, FullHttpRequest fhr) {
 		// 局域网判定
 		final String ip = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
-		if (!IpUtils.isInnerIP(ip)) {
+		if (!IpUtils.isInnerIp(ip)) {
 			logger.warn("client request's not authorized. ip={}, uri={}", ip, fhr.uri());
 			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
 		}
