@@ -28,10 +28,12 @@ public class ClassUtils {
 	 * @return 给定的类
 	 */
 	public static Class<?> loadClass(String className) {
+		// ClassLoader#loadClass(String)：将.class文件加载到JVM中，不会执行static块,只有在创建实例时才会去执行static块
 		try {
 			return Thread.currentThread().getContextClassLoader().loadClass(className);
 		} catch (ClassNotFoundException e) {}
 
+		// Class#forName(String)：将.class文件加载到JVM中，还会对类进行解释，并执行类中的static块
 		try {
 			return Class.forName(className);
 		} catch (ClassNotFoundException e) {}
