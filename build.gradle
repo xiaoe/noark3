@@ -1,3 +1,70 @@
+
+ apply plugin: 'java'
+ apply plugin: 'maven'
+ sourceCompatibility = 1.8
+ group = 'xyz.noark'
+ version = "1.0"
+
+task writeNewPom {
+	doLast {
+		pom {
+			project {
+				name 'Noark'
+				packaging 'jar'
+				description 'This is a game server framework.'
+				url 'http://noark.xyz'
+
+				scm {
+					connection 'scm:git:git@gitee.com:xiaoe/noark3.git'
+					developerConnection 'scm:git:git@gitee.com:xiaoe/noark3.git'
+					url 'https://gitee.com/xiaoe/noark3/'
+				}
+
+				licenses {
+					license {
+						name 'The Apache License, Version 2.0'
+						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
+
+				developers {
+					developer {
+						id 'xiaoe'
+						name '小流氓'
+						email '176543888@qq.com'
+						url "http://blog.noark.xyz"
+					}
+				}
+		
+				modules {
+					module 'norak-asm'
+					module 'noark-benchmark'
+					module 'noark-core'
+					module 'noark-csv'
+					module 'noark-game'
+					module 'noark-log'
+					module 'noark-network'
+					module 'noark-orm'
+					module 'noark-redis'
+					module 'noark-xml'
+				}
+			}
+
+		}.writeTo("$buildDir/poms/pom-default.xml")	
+	}
+}
+
+
+
+task convert2Maven {
+	doLast {
+		file("$buildDir/poms/pom-default.xml").renameTo(file("$rootDir/pom.xml"))
+	}
+}
+convert2Maven.dependsOn(writeNewPom)
+install.dependsOn(convert2Maven)
+
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
@@ -107,4 +174,11 @@ subprojects {
         archives sourceJar
         archives javadocJar
     }
+
+	task convert2Maven {
+		doLast {
+			file("$buildDir/poms/pom-default.xml").renameTo(file("$projectDir/pom.xml"))
+		}
+	}
+	install.dependsOn(convert2Maven)
 }

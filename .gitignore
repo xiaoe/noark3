@@ -25,3 +25,7 @@ hs_err_pid*
 .project
 .idea
 *.iml
+.classpath
+.vscode/settings.json
+build
+
