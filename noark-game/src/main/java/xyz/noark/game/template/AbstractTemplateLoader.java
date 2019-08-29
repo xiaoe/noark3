@@ -17,10 +17,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.PairHashMap;
 import xyz.noark.core.lang.PairMap;
 import xyz.noark.core.lang.TripleHashMap;
 import xyz.noark.core.lang.TripleMap;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * 抽象实现的模板加载器.
@@ -29,10 +31,24 @@ import xyz.noark.core.lang.TripleMap;
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractTemplateLoader implements TemplateLoader {
+	/** 策划配置文件路径 */
 	protected final String templatePath;
+	/**
+	 * 版本大区，比如CN，US，KR...<br>
+	 * 如果为""则没有版本目录，直接索引{@link AbstractTemplateLoader#templatePath}
+	 */
+	protected final String zone;
 
 	public AbstractTemplateLoader(String templatePath) {
+		this(templatePath, StringUtils.EMPTY);
+	}
+
+	public AbstractTemplateLoader(String templatePath, String zone) {
 		this.templatePath = templatePath;
+		this.zone = zone;
+		if (zone == null) {
+			throw new ServerBootstrapException("版本目录配置不可以为null,如果没有版本规划请使用\"\"");
+		}
 	}
 
 	@Override

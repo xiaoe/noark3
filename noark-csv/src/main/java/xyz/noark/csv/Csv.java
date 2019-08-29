@@ -76,6 +76,19 @@ public class Csv {
 	 * @return 模板类对象的集合
 	 */
 	public <T> List<T> loadAll(String templatePath, Class<T> klass) {
+		return loadAll(templatePath, StringUtils.EMPTY, klass);
+	}
+
+	/**
+	 * 根据指定类文件加载CSV格式的模板.
+	 * 
+	 * @param <T> 要转化对象的类型
+	 * @param templatePath 模板文件路径
+	 * @param zone 版本编号
+	 * @param klass 模板类文件
+	 * @return 模板类对象的集合
+	 */
+	public <T> List<T> loadAll(String templatePath, String zone, Class<T> klass) {
 		TplFile file = klass.getAnnotation(TplFile.class);
 		if (file == null) {
 			throw new TplConfigurationException("这不是CSV格式的配置文件类:" + klass.getName());
@@ -86,7 +99,7 @@ public class Csv {
 			logger.warn("模板类正常为只读模式，不应该存在Set方法噢，class={}", klass.getName());
 		}
 
-		try (CsvReader reader = new CsvReader(separator, Files.newBufferedReader(Paths.get(templatePath, file.value()), CharsetUtils.CHARSET_UTF_8))) {
+		try (CsvReader reader = new CsvReader(separator, Files.newBufferedReader(Paths.get(templatePath, zone, file.value()), CharsetUtils.CHARSET_UTF_8))) {
 			/** 标题 */
 			Map<String, Integer> titles = reader.getHeaders();
 

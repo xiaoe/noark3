@@ -15,6 +15,7 @@ package xyz.noark.game.template.csv;
 
 import java.util.List;
 
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.csv.Csv;
 import xyz.noark.game.template.AbstractTemplateLoader;
 
@@ -33,12 +34,16 @@ public class CsvTemplateLoader extends AbstractTemplateLoader {
 	}
 
 	public CsvTemplateLoader(String templatePath, char separator) {
-		super(templatePath);
+		this(templatePath, StringUtils.EMPTY, separator);
+	}
+
+	public CsvTemplateLoader(String templatePath, String zone, char separator) {
+		super(templatePath, zone);
 		this.parser = new Csv(separator);
 	}
 
 	@Override
 	public <T> List<T> loadAll(Class<T> klass) {
-		return parser.loadAll(templatePath, klass);
+		return parser.loadAll(templatePath, zone, klass);
 	}
 }

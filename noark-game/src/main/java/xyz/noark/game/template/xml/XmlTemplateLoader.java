@@ -30,8 +30,12 @@ public class XmlTemplateLoader extends AbstractTemplateLoader {
 		super(templatePath);
 	}
 
+	public XmlTemplateLoader(String templatePath, String zone) {
+		super(templatePath, zone);
+	}
+
 	@Override
 	public <T> List<T> loadAll(Class<T> klass) {
-		return Xml.loadAll(templatePath, klass);
+		return Xml.loadAll(templatePath, zone, klass);
 	}
 }
