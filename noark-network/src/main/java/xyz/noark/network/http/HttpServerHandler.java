@@ -122,7 +122,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			final ByteBuf buf = fhr.content();
 			byte[] bs = new byte[buf.readableBytes()];
 			buf.readBytes(bs);
-			parameters = JSON.parseObject(new String(bs), new TypeReference<Map<String, String>>() {});
+			parameters = JSON.parseObject(new String(bs, DEFAULT_CHARSET), new TypeReference<Map<String, String>>() {});
 		} catch (Exception e) {
 			logger.warn("client request's parameters not json. ip={}, uri={}, e={}", ip, fhr.uri(), e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters not json.");
