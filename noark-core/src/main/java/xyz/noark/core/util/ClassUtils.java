@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.util;
 
+import java.lang.reflect.Method;
+
 /**
  * Class工具类.
  *
@@ -54,5 +56,17 @@ public class ClassUtils {
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException("无法创建实例. Class=" + klass.getName(), e);
 		}
+	}
+
+	/**
+	 * 尝试运行一个带有Main方法的类.
+	 * 
+	 * @param mainClass 带有Main方法类的名称
+	 * @param args 启动参数数组
+	 */
+	public static void invokeMain(String mainClass, String[] args) {
+		final Class<?> klass = ClassUtils.loadClass(mainClass);
+		Method mainMethod = MethodUtils.getMethod(klass, "main", String[].class);
+		MethodUtils.invoke(null, mainMethod, new Object[] { args });
 	}
 }
