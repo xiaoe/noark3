@@ -29,7 +29,7 @@ public class ExceptionUtils {
 	 * @param e 异常堆栈
 	 * @return 堆栈字符
 	 */
-	public static String toString(Exception e) {
+	public static String toString(Throwable e) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		// 无需关闭此流，那个破方法本来就是空的
