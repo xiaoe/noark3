@@ -43,9 +43,11 @@ public class NetworkConstant {
 	public static final String WORK_THREADS = "network.workthreads";
 	/** 网络封包日志激活 */
 	public static final String LOG_ACTIVE = "network.log.active";
-	/** Netty低水位，默认值32K */
+	/** EPOLL模型是否激活 */
+	public static final String EPOLL_ACTIVE = "network.epoll.active";
+	/** NETTY低水位，默认值32K */
 	public static final String LOW_WATER_MARK = "network.low.water.mark";
-	/** Netty高水位，默认值64K */
+	/** NETTY高水位，默认值64K */
 	public static final String HIGH_WATER_MARK = "network.high.water.mark";
 
 	// 接收HTTP服务相关配置--------------------------------------
