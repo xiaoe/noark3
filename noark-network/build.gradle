@@ -1,6 +1,5 @@
 dependencies {
 	compile project(':noark-core')
-	compile group: 'io.netty', name: 'netty-all', version: '4.1.39.Final'
 	implementation 'com.alibaba:fastjson:1.2.57'
 	
 	compileOnly group: 'com.google.protobuf', name: 'protobuf-java', version: '3.6.0'
