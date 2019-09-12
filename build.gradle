@@ -93,7 +93,7 @@ subprojects {
 		            		url "http://blog.noark.xyz"
 	          			}
 	        		}
-	        	}.writeTo("$projectDir/pom.xml")
+	        	}
 	        }
 	    }
 	}
