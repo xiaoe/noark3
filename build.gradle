@@ -112,4 +112,28 @@ subprojects {
         archives sourceJar
         archives javadocJar
     }
+    
+    task fixPomXml {
+		doLast {// 把依赖修一下
+			def String pomPath = "$buildDir/../pom.xml";
+			def pomRoot = new XmlParser().parse(file(pomPath))
+			
+			// 添加Parent
+			def parent = pomRoot.appendNode("parent");
+			parent.appendNode("groupId", "xyz.noark");
+			parent.appendNode("artifactId", "noark-parent");
+			parent.appendNode("version", "1.0");
+			
+			def pomDependencies = pomRoot.dependencies.first();
+			pomDependencies.dependency.each{dep -> pomDependencies.remove(dep) }
+			// pom-default.xml 有依赖配置，先去那边拿过来用着
+			def defaultRoot = new XmlParser().parse(file("$buildDir/poms/pom-default.xml"))
+			defaultRoot.dependencies.dependency.each { item -> pomDependencies.append(item) }
+			
+			def printer = new XmlNodePrinter(new PrintWriter(new FileWriter(pomPath)))
+			printer.preserveWhitespace = true
+			printer.print(pomRoot)
+		}
+	}
+	build.dependsOn(install, fixPomXml)
 }
