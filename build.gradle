@@ -93,7 +93,7 @@ subprojects {
 		            		url "http://blog.noark.xyz"
 	          			}
 	        		}
-	        	}
+	        	}.writeTo("$buildDir/../pom.xml");
 	        }
 	    }
 	}
@@ -113,7 +113,7 @@ subprojects {
         archives javadocJar
     }
     
-    task fixPomXml {
+    task fixpom {
 		doLast {// 把依赖修一下
 			def String pomPath = "$buildDir/../pom.xml";
 			def pomRoot = new XmlParser().parse(file(pomPath))
@@ -130,10 +130,14 @@ subprojects {
 			def defaultRoot = new XmlParser().parse(file("$buildDir/poms/pom-default.xml"))
 			defaultRoot.dependencies.dependency.each { item -> pomDependencies.append(item) }
 			
-			def printer = new XmlNodePrinter(new PrintWriter(new FileWriter(pomPath)))
-			printer.preserveWhitespace = true
-			printer.print(pomRoot)
+			final PrintWriter printWriter = new PrintWriter(new FileWriter(pomPath));
+			printWriter.format("<?xml version='1.0' encoding='UTF-8'?>%n");
+			def printer = new XmlNodePrinter(printWriter);
+			printer.preserveWhitespace = true;
+			printer.print(pomRoot);
+			printWriter.flush();
 		}
 	}
-	fixPomXml.dependsOn(install)
+	fixpom.dependsOn(install);
+	build.dependsOn(fixpom);
 }

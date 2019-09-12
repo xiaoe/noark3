@@ -68,12 +68,4 @@
     <developerConnection>scm:git:git@gitee.com:xiaoe/noark3.git</developerConnection>
     <url>https://gitee.com/xiaoe/noark3/</url>
   </scm>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>
