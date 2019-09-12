@@ -135,5 +135,5 @@ subprojects {
 			printer.print(pomRoot)
 		}
 	}
-	build.dependsOn(install, fixPomXml)
+	fixPomXml.dependsOn(install)
 }
