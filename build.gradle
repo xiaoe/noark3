@@ -46,7 +46,7 @@ subprojects {
 	signing {
 	    //sign configurations.archives
 	}
-	
+
 	uploadArchives {
 	    repositories {
 	        mavenDeployer {
@@ -62,10 +62,14 @@ subprojects {
 	            }
 	            
 	            pom.project {
-	        		name 'Noark'
-	        		packaging 'jar'
+	                groupId project.group
+	            	artifactId project.name
+	            	version project.version
+	            	
+	                name 'Noark'
 	        		description 'This is a game server framework.'
 	        		url 'http://noark.xyz'
+	                packaging 'jar'
 	
 	        		scm {
 	          			connection 'scm:git:git@gitee.com:xiaoe/noark3.git'
@@ -75,8 +79,9 @@ subprojects {
 	
 	        		licenses {
 	          			license {
-	            			name 'The Apache License, Version 2.0'
-	            			url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+	            			name '木兰宽松许可证, 第1版'
+	            			url 'http://license.coscl.org.cn/MulanPSL'
+	            			distribution 'repo'
 	          			}
 	        		}
 	
@@ -88,7 +93,7 @@ subprojects {
 		            		url "http://blog.noark.xyz"
 	          			}
 	        		}
-	        	}
+	        	}.writeTo("$projectDir/pom.xml")
 	        }
 	    }
 	}
