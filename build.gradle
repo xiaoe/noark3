@@ -117,6 +117,7 @@ subprojects {
 		doLast {// 把依赖修一下
 			def String pomPath = "$buildDir/../pom.xml";
 			def pomRoot = new XmlParser().parse(file(pomPath))
+			pomRoot.remove(pomRoot.get("groupId"));
 			
 			// 添加Parent
 			def parent = pomRoot.appendNode("parent");
@@ -128,7 +129,7 @@ subprojects {
 			pomDependencies.dependency.each{dep -> pomDependencies.remove(dep) }
 			// pom-default.xml 有依赖配置，先去那边拿过来用着
 			def defaultRoot = new XmlParser().parse(file("$buildDir/poms/pom-default.xml"))
-			defaultRoot.dependencies.dependency.each { item -> pomDependencies.append(item) }
+			defaultRoot.dependencies.dependency.each { item -> pomDependencies.append(item)}
 			
 			final PrintWriter printWriter = new PrintWriter(new FileWriter(pomPath));
 			printWriter.format("<?xml version='1.0' encoding='UTF-8'?>%n");
