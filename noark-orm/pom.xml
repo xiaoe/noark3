@@ -31,13 +31,13 @@
       <groupId>xyz.noark</groupId>
       <artifactId>noark-core</artifactId>
       <version>3.3.5-SNAPSHOT</version>
-      <scope>runtime</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
       <version>1.2.57</version>
-      <scope>runtime</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

@@ -129,7 +129,18 @@ subprojects {
 			pomDependencies.dependency.each{dep -> pomDependencies.remove(dep) }
 			// pom-default.xml 有依赖配置，先去那边拿过来用着
 			def defaultRoot = new XmlParser().parse(file("$buildDir/poms/pom-default.xml"))
-			defaultRoot.dependencies.dependency.each { item -> pomDependencies.append(item)}
+			//defaultRoot.dependencies.dependency.each { item -> pomDependencies.append(item)}
+			defaultRoot.dependencies.dependency.each { item -> 
+				if("runtime".equals(item.get("scope").text())){
+					def dependencyNode = pomDependencies.appendNode('dependency');
+	                dependencyNode.append(item.get("groupId"));
+	                dependencyNode.append(item.get("artifactId"));
+	                dependencyNode.append(item.get("version"));
+	                dependencyNode.appendNode('scope', "compile");
+				} else {
+					pomDependencies.append(item);
+				}
+			}
 			
 			final PrintWriter printWriter = new PrintWriter(new FileWriter("$buildDir/../pom.xml"));
 			printWriter.format("<?xml version='1.0' encoding='UTF-8'?>%n");
