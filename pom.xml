@@ -9,7 +9,7 @@
   <url>http://noark.xyz</url>
   <packaging>pom</packaging>
   <modules>
-    
+    <module>noark-asm</module>
     <module>noark-benchmark</module>
     <module>noark-core</module>
     <module>noark-csv</module>
@@ -19,7 +19,7 @@
     <module>noark-orm</module>
     <module>noark-redis</module>
     <module>noark-xml</module>
-    <module>noark-asm</module>
+    <module>noark-robot</module>
   </modules>
   <build>
     <plugins>
