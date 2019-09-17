@@ -11,23 +11,37 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.bt;
+package xyz.noark.robot;
+
+import java.util.Date;
+
+import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.EventListener;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.util.DateUtils;
+import xyz.noark.game.event.EventManager;
+import xyz.noark.robot.event.RobotAiEvent;
 
 /**
- * 装饰节点
- * <p>
- * 这类的功能基本就是判定子节点是否执行，以及行为节点执行后的结果反馈和处理
+ * AI入口.
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractDecoratorNode extends AbstractBehaviorNode {
-	/** 装饰节点只会有一个子节点 */
-	protected AbstractBehaviorNode node;
+@Controller(threadGroup = ExecThreadGroup.PlayerThreadGroup)
+public class RobotAiController {
+	@Autowired
+	private EventManager eventManager;
+	@Autowired
+	private RobotManager robotManager;
 
-	@Override
-	public AbstractBehaviorNode addChild(AbstractBehaviorNode childNode) {
-		this.node = childNode;
-		return childNode;
+	@EventListener(printLog = false)
+	public void handleRobotAiEvent(RobotAiEvent event) {
+		try {
+			robotManager.getRobot(event.getPlayerId()).tick();
+		} finally {
+			eventManager.publish(new RobotAiEvent(event.getPlayerId(), DateUtils.addSeconds(new Date(), 1)));
+		}
 	}
 }

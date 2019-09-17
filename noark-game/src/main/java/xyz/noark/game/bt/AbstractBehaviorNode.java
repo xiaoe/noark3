@@ -20,12 +20,19 @@ package xyz.noark.game.bt;
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractBehaviorNode implements BehaviorNode {
-	protected NodeState state;
 
 	// 包装函数，防止打破调用契约
 	public final NodeState tick() {
-		return this.state = update();
+		return this.update();
 	}
 
 	public abstract NodeState update();
+
+	/**
+	 * 添加一个孩子节点.
+	 * 
+	 * @param childNode 孩子节点
+	 * @return 返回这个孩子节点
+	 */
+	public abstract AbstractBehaviorNode addChild(AbstractBehaviorNode childNode);
 }

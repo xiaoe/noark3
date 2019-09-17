@@ -13,6 +13,8 @@
  */
 package xyz.noark.game.bt;
 
+import xyz.noark.core.exception.UnrealizedException;
+
 /**
  * 行为节点.
  *
@@ -20,5 +22,8 @@ package xyz.noark.game.bt;
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractActionNode extends AbstractBehaviorNode {
-
+	@Override
+	public AbstractBehaviorNode addChild(AbstractBehaviorNode childNode) {
+		throw new UnrealizedException("行为节点没有子节点啦.... class=" + this.getClass().getName());
+	}
 }

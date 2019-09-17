@@ -25,4 +25,9 @@ import java.util.List;
 public abstract class AbstractCompositeNode extends AbstractBehaviorNode {
 	protected List<AbstractBehaviorNode> nodeList = new LinkedList<>();
 
+	@Override
+	public AbstractBehaviorNode addChild(AbstractBehaviorNode childNode) {
+		nodeList.add(childNode);
+		return childNode;
+	}
 }

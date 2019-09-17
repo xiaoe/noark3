@@ -11,23 +11,34 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.bt;
+package xyz.noark.robot;
+
+import xyz.noark.game.bt.BehaviorTree;
 
 /**
- * 装饰节点
- * <p>
- * 这类的功能基本就是判定子节点是否执行，以及行为节点执行后的结果反馈和处理
+ * 机器人实体
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractDecoratorNode extends AbstractBehaviorNode {
-	/** 装饰节点只会有一个子节点 */
-	protected AbstractBehaviorNode node;
+public class Robot {
+	private final String playerId;
+	private final BehaviorTree ai;
 
-	@Override
-	public AbstractBehaviorNode addChild(AbstractBehaviorNode childNode) {
-		this.node = childNode;
-		return childNode;
+	public Robot(String playerId, BehaviorTree ai) {
+		this.playerId = playerId;
+		this.ai = ai;
+	}
+
+	public String getPlayerId() {
+		return playerId;
+	}
+
+	public BehaviorTree getAi() {
+		return ai;
+	}
+
+	public void tick() {
+		ai.tick();
 	}
 }
