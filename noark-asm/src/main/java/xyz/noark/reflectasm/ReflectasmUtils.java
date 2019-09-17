@@ -11,39 +11,30 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.template.csv;
-
-import java.util.List;
-
-import xyz.noark.core.util.StringUtils;
-import xyz.noark.csv.Csv;
-import xyz.noark.game.template.AbstractTemplateLoader;
+package xyz.noark.reflectasm;
 
 /**
- * CSV格式的模板加载类.
+ * Reflectasm工具类
  *
- * @since 3.0
+ * @since 3.3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class CsvTemplateLoader extends AbstractTemplateLoader {
-	private final Csv parser;
+public class ReflectasmUtils {
+	private static final String NOARK_PACKAGE_NAME = "xyz.noark.";
 
-	public CsvTemplateLoader(String templatePath) {
-		super(templatePath);
-		this.parser = new Csv();
-	}
-
-	public CsvTemplateLoader(String templatePath, char separator) {
-		this(templatePath, StringUtils.EMPTY, separator);
-	}
-
-	public CsvTemplateLoader(String templatePath, String zone, char separator) {
-		super(templatePath, zone);
-		this.parser = new Csv(separator);
-	}
-
-	@Override
-	public <T> List<T> loadAll(Class<T> klass) {
-		return parser.loadAll(templatePath, zone, klass);
+	/**
+	 * 重新构建类名称.
+	 * <p>
+	 * 为了一些特别的功能，需要把动态生成的类移出原来目录，在这里当然会丢失同级包方法访问的权限，但是谁又不会没事需要这个权限呢. <br>
+	 * 非xyz.noark开关的包名，就要前面添加一个前缀
+	 * 
+	 * @param className 类名
+	 * @return 返回处理后的新名称
+	 */
+	public static String rebuildClassName(String className) {
+		if (!className.startsWith(NOARK_PACKAGE_NAME)) {
+			className = NOARK_PACKAGE_NAME + className;
+		}
+		return className;
 	}
 }

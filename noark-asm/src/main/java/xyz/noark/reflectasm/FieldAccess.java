@@ -167,8 +167,7 @@ public abstract class FieldAccess {
 
 		String className = type.getName();
 		String accessClassName = className + "FieldAccess";
-		if (accessClassName.startsWith("java."))
-			accessClassName = "reflectasm." + accessClassName;
+		accessClassName = ReflectasmUtils.rebuildClassName(accessClassName);
 
 		AccessClassLoader loader = AccessClassLoader.get(type);
 		Class<?> accessClass = loader.loadAccessClass(accessClassName);

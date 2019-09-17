@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import xyz.noark.core.exception.NoPublicMethodException;
+
 /**
  * 方法工具类.
  *
@@ -76,7 +78,7 @@ public class MethodUtils {
 		try {
 			return klass.getMethod(name, parameterTypes);
 		} catch (NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException("反射调用方式时出现了异常情况...", e);
+			throw new NoPublicMethodException(e.getMessage());
 		}
 	}
 

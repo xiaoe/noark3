@@ -31,6 +31,8 @@ public class NetworkConstant {
 	public static final String INCODE = "network.incode";
 	/** 网络安全之checksum检测：默认false不开启 */
 	public static final String CHECKSUM = "network.checksum";
+	/** 网络安全之相同IP最大链接数，默认为：256 */
+	public static final String SOME_IP_MAX = "network.some.ip.max";
 
 	// Netty相关配置--------------------------------------
 	/** 心跳功能，默认值为0，则不生效 */
@@ -41,9 +43,11 @@ public class NetworkConstant {
 	public static final String WORK_THREADS = "network.workthreads";
 	/** 网络封包日志激活 */
 	public static final String LOG_ACTIVE = "network.log.active";
-	/** Netty低水位，默认值32K */
+	/** EPOLL模型是否激活 */
+	public static final String EPOLL_ACTIVE = "network.epoll.active";
+	/** NETTY低水位，默认值32K */
 	public static final String LOW_WATER_MARK = "network.low.water.mark";
-	/** Netty高水位，默认值64K */
+	/** NETTY高水位，默认值64K */
 	public static final String HIGH_WATER_MARK = "network.high.water.mark";
 
 	// 接收HTTP服务相关配置--------------------------------------

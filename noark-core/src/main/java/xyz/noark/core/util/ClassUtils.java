@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.util;
 
+import java.lang.reflect.Method;
+
 /**
  * Class工具类.
  *
@@ -28,10 +30,12 @@ public class ClassUtils {
 	 * @return 给定的类
 	 */
 	public static Class<?> loadClass(String className) {
+		// ClassLoader#loadClass(String)：将.class文件加载到JVM中，不会执行static块,只有在创建实例时才会去执行static块
 		try {
 			return Thread.currentThread().getContextClassLoader().loadClass(className);
 		} catch (ClassNotFoundException e) {}
 
+		// Class#forName(String)：将.class文件加载到JVM中，还会对类进行解释，并执行类中的static块
 		try {
 			return Class.forName(className);
 		} catch (ClassNotFoundException e) {}
@@ -52,5 +56,17 @@ public class ClassUtils {
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new RuntimeException("无法创建实例. Class=" + klass.getName(), e);
 		}
+	}
+
+	/**
+	 * 尝试运行一个带有Main方法的类.
+	 * 
+	 * @param mainClass 带有Main方法类的名称
+	 * @param args 启动参数数组
+	 */
+	public static void invokeMain(String mainClass, String[] args) {
+		final Class<?> klass = ClassUtils.loadClass(mainClass);
+		Method mainMethod = MethodUtils.getMethod(klass, "main", String[].class);
+		MethodUtils.invoke(null, mainMethod, new Object[] { args });
 	}
 }

@@ -11,39 +11,33 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.template.csv;
+package xyz.noark.core.lang;
 
-import java.util.List;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import xyz.noark.core.util.StringUtils;
-import xyz.noark.csv.Csv;
-import xyz.noark.game.template.AbstractTemplateLoader;
+import org.junit.Test;
 
 /**
- * CSV格式的模板加载类.
+ * Int范围测试.
  *
- * @since 3.0
+ * @since 3.3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class CsvTemplateLoader extends AbstractTemplateLoader {
-	private final Csv parser;
+public class IntRangeTest {
 
-	public CsvTemplateLoader(String templatePath) {
-		super(templatePath);
-		this.parser = new Csv();
-	}
-
-	public CsvTemplateLoader(String templatePath, char separator) {
-		this(templatePath, StringUtils.EMPTY, separator);
-	}
-
-	public CsvTemplateLoader(String templatePath, String zone, char separator) {
-		super(templatePath, zone);
-		this.parser = new Csv(separator);
-	}
-
-	@Override
-	public <T> List<T> loadAll(Class<T> klass) {
-		return parser.loadAll(templatePath, zone, klass);
+	@Test
+	public void testContains() {
+		IntRange range = new IntRange("1,3,4-6,8");
+		assertFalse(range.contains(0));
+		assertTrue(range.contains(1));
+		assertFalse(range.contains(2));
+		assertTrue(range.contains(3));
+		assertTrue(range.contains(4));
+		assertTrue(range.contains(5));
+		assertTrue(range.contains(6));
+		assertFalse(range.contains(7));
+		assertTrue(range.contains(8));
+		assertFalse(range.contains(9));
 	}
 }

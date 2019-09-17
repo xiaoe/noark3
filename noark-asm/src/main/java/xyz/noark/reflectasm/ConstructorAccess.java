@@ -71,8 +71,7 @@ abstract public class ConstructorAccess<T> {
 
 		String className = type.getName();
 		String accessClassName = className + "ConstructorAccess";
-		if (accessClassName.startsWith("java."))
-			accessClassName = "reflectasm." + accessClassName;
+		accessClassName = ReflectasmUtils.rebuildClassName(accessClassName);
 
 		AccessClassLoader loader = AccessClassLoader.get(type);
 		Class<?> accessClass = loader.loadAccessClass(accessClassName);

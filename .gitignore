@@ -22,6 +22,10 @@ hs_err_pid*
 
 .gradle
 .settings
-.project
-.idea
+*.project
+*.idea
 *.iml
+**/bin/
+**/build/
+**/target/
+*.classpath

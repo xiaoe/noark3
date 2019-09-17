@@ -11,39 +11,28 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.template.csv;
+package xyz.noark.core.converter.impl;
 
-import java.util.List;
-
-import xyz.noark.core.util.StringUtils;
-import xyz.noark.csv.Csv;
-import xyz.noark.game.template.AbstractTemplateLoader;
+import xyz.noark.core.annotation.TemplateConverter;
+import xyz.noark.core.converter.AbstractConverter;
+import xyz.noark.core.lang.IntRange;
 
 /**
- * CSV格式的模板加载类.
+ * IntRange转化器.
  *
- * @since 3.0
+ * @since 3.3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class CsvTemplateLoader extends AbstractTemplateLoader {
-	private final Csv parser;
+@TemplateConverter(IntRange.class)
+public class IntRangeConverter extends AbstractConverter<IntRange> {
 
-	public CsvTemplateLoader(String templatePath) {
-		super(templatePath);
-		this.parser = new Csv();
-	}
-
-	public CsvTemplateLoader(String templatePath, char separator) {
-		this(templatePath, StringUtils.EMPTY, separator);
-	}
-
-	public CsvTemplateLoader(String templatePath, String zone, char separator) {
-		super(templatePath, zone);
-		this.parser = new Csv(separator);
+	@Override
+	public IntRange convert(String value) {
+		return new IntRange(value);
 	}
 
 	@Override
-	public <T> List<T> loadAll(Class<T> klass) {
-		return parser.loadAll(templatePath, zone, klass);
+	public String buildErrorMsg() {
+		return "Int范围错误，例：1,3,4-6,8";
 	}
 }

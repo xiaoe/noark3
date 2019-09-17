@@ -11,39 +11,24 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.template.csv;
-
-import java.util.List;
-
-import xyz.noark.core.util.StringUtils;
-import xyz.noark.csv.Csv;
-import xyz.noark.game.template.AbstractTemplateLoader;
+package xyz.noark.game.loader.scheme;
 
 /**
- * CSV格式的模板加载类.
+ * 加数字方案.
  *
- * @since 3.0
+ * @since 3.3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class CsvTemplateLoader extends AbstractTemplateLoader {
-	private final Csv parser;
+class NumScheme extends AbstractScheme {
 
-	public CsvTemplateLoader(String templatePath) {
-		super(templatePath);
-		this.parser = new Csv();
-	}
-
-	public CsvTemplateLoader(String templatePath, char separator) {
-		this(templatePath, StringUtils.EMPTY, separator);
-	}
-
-	public CsvTemplateLoader(String templatePath, String zone, char separator) {
-		super(templatePath, zone);
-		this.parser = new Csv(separator);
+	NumScheme(int schemeCode) {
+		super(schemeCode);
 	}
 
 	@Override
-	public <T> List<T> loadAll(Class<T> klass) {
-		return parser.loadAll(templatePath, zone, klass);
+	public void decode(byte[] bytes) {
+		for (int i = 0, len = bytes.length; i < len; i++) {
+			bytes[i] += i;
+		}
 	}
 }

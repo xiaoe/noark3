@@ -169,8 +169,7 @@ public abstract class MethodAccess {
 
 		String className = type.getName();
 		String accessClassName = className + "MethodAccess";
-		if (accessClassName.startsWith("java."))
-			accessClassName = "reflectasm." + accessClassName;
+		accessClassName = ReflectasmUtils.rebuildClassName(accessClassName);
 
 		AccessClassLoader loader = AccessClassLoader.get(type);
 		Class<?> accessClass = loader.loadAccessClass(accessClassName);

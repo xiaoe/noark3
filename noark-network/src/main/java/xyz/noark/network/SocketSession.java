@@ -16,7 +16,6 @@ package xyz.noark.network;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
-import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,6 +28,7 @@ import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.PacketEncrypt;
 import xyz.noark.core.network.SessionAttr;
 import xyz.noark.core.network.SessionAttrKey;
+import xyz.noark.core.util.IpUtils;
 
 /**
  * 基于Netty的Channel实现的Session.
@@ -48,7 +48,7 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	protected int incode = -1;
 
 	public SocketSession(Channel channel, boolean encrypt, byte[] secretKey) {
-		super(channel.id(), ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress());
+		super(channel.id(), IpUtils.getIp(channel));
 		this.channel = channel;
 		this.attrs = new ConcurrentHashMap<>();
 		this.packetEncrypt = new DefaultPacketEncrypt(encrypt, secretKey);
