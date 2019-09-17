@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import xyz.noark.core.annotation.Autowired;
@@ -136,7 +137,9 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
 						this.analysisMethodByAnnotation(annotationType, annotation, method);
 					}
-				} else {
+				}
+				// 如果这个方法上有Override那就不警告了...
+				else if (Objects.nonNull(method.getAnnotation(Override.class))) {
 					logger.warn("重名方法 class={}, method={}", beanClass.getName(), method.getName());
 				}
 			}
