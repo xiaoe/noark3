@@ -14,9 +14,9 @@
 package xyz.noark.game.bt;
 
 /**
- * 顺序节点(Sequence)
+ * 选择节点（Selector）
  * <p>
- * <b>它依次执行每个子行为，直到所有子行为执行成功或者有一个失败为止</b>
+ * <b>它会依次执行每个子行为直到其中一个成功执行或者全部失败为止</b>
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
@@ -26,11 +26,10 @@ public class SelectorNode extends AbstractCompositeNode {
 	@Override
 	public NodeState update() {
 		for (AbstractBehaviorNode node : nodeList) {
-			if (node.update() == NodeState.FAILURE) {
-				return NodeState.FAILURE;
+			if (node.update() == NodeState.SUCCESS) {
+				return NodeState.SUCCESS;
 			}
 		}
-		return NodeState.SUCCESS;
+		return NodeState.FAILURE;
 	}
-
 }
