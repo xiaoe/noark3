@@ -57,6 +57,9 @@ public class RobotManager {
 	/** 机器人的AI间隔（单位：秒） */
 	@Value(RobotConstant.ROBOT_AI_INTERVAL)
 	private int aiInterval = 1;
+	/** 机器人的账号前缀（默认："robot:"） */
+	@Value(RobotConstant.ROBOT_ACCOUNT_PREFIX)
+	private String accountPrefix = "robot:";
 
 	@Autowired
 	private EventManager eventManager;
@@ -93,7 +96,7 @@ public class RobotManager {
 
 	private Robot createRobot(int id, AbstractRobotBootstrap bootstrap) {
 		logger.info("创建机器人 id={}", id);
-		final String playerId = "robot:" + id;
+		final String playerId = accountPrefix + id;
 		return new Robot(playerId, bootstrap.rebuildAi(playerId));
 	}
 

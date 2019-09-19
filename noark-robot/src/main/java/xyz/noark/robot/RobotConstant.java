@@ -32,4 +32,9 @@ public class RobotConstant {
 	 * 机器人的AI间隔（单位：秒）
 	 */
 	public static final String ROBOT_AI_INTERVAL = "robot.ai.interval";
+
+	/**
+	 * 机器人的账号前缀（默认："robot:"）
+	 */
+	public static final String ROBOT_ACCOUNT_PREFIX = "robot.account.prefix";
 }
