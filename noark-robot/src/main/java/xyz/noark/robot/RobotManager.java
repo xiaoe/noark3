@@ -35,6 +35,7 @@ import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session.State;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.util.DateUtils;
+import xyz.noark.core.util.ThreadUtils;
 import xyz.noark.game.event.EventManager;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.init.SocketInitializeHandler;
@@ -50,6 +51,13 @@ public class RobotManager {
 	/** 机器人启动数量 */
 	@Value(RobotConstant.ROBOT_NUM)
 	private int robotNum = 1;
+	/** 启动机器人的间隔（单位：秒） */
+	@Value(RobotConstant.ROBOT_CREATE_INTERVAL)
+	private int createInterval = 1;
+	/** 机器人的AI间隔（单位：秒） */
+	@Value(RobotConstant.ROBOT_AI_INTERVAL)
+	private int aiInterval = 1;
+
 	@Autowired
 	private EventManager eventManager;
 	@Autowired
@@ -78,7 +86,8 @@ public class RobotManager {
 		for (int id = 1; id <= robotNum; id++) {
 			Robot robot = this.createRobot(id, bootstrap);
 			robots.put(robot.getPlayerId(), robot);
-			eventManager.publish(new RobotAiEvent(robot.getPlayerId(), DateUtils.addSeconds(new Date(), 1)));
+			eventManager.publish(new RobotAiEvent(robot.getPlayerId(), DateUtils.addSeconds(new Date(), aiInterval)));
+			ThreadUtils.sleep(1L * createInterval * DateUtils.MILLISECOND_PER_SECOND);
 		}
 	}
 

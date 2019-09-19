@@ -17,6 +17,7 @@ import java.util.Date;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.util.DateUtils;
@@ -34,13 +35,16 @@ public class RobotAiController {
 	private EventManager eventManager;
 	@Autowired
 	private RobotManager robotManager;
+	/** 机器人的AI间隔（单位：秒） */
+	@Value(RobotConstant.ROBOT_AI_INTERVAL)
+	private int aiInterval = 1;
 
 	@EventListener(printLog = false)
 	public void handleRobotAiEvent(RobotAiEvent event) {
 		try {
 			robotManager.getRobot(event.getPlayerId()).tick();
 		} finally {
-			eventManager.publish(new RobotAiEvent(event.getPlayerId(), DateUtils.addSeconds(new Date(), 1)));
+			eventManager.publish(new RobotAiEvent(event.getPlayerId(), DateUtils.addSeconds(new Date(), aiInterval)));
 		}
 	}
 }

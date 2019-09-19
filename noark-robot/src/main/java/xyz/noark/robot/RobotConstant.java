@@ -24,4 +24,12 @@ public class RobotConstant {
 	 * 启动机器人的数量
 	 */
 	public static final String ROBOT_NUM = "robot.num";
+	/**
+	 * 启动机器人的间隔（单位：秒）
+	 */
+	public static final String ROBOT_CREATE_INTERVAL = "robot.create.interval";
+	/**
+	 * 机器人的AI间隔（单位：秒）
+	 */
+	public static final String ROBOT_AI_INTERVAL = "robot.ai.interval";
 }
