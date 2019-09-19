@@ -24,10 +24,12 @@ import xyz.noark.game.bt.BehaviorTree;
 public class Robot {
 	private final String playerId;
 	private final BehaviorTree ai;
+	private final RobotData data;
 
 	public Robot(String playerId, BehaviorTree ai) {
 		this.playerId = playerId;
 		this.ai = ai;
+		this.data = new RobotData();
 	}
 
 	public String getPlayerId() {
@@ -40,5 +42,9 @@ public class Robot {
 
 	public void tick() {
 		ai.tick();
+	}
+
+	public <T> T getData(Class<? extends T> klass) {
+		return data.getData(klass);
 	}
 }

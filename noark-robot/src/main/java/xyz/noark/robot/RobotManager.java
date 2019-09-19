@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.PostConstruct;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -31,10 +32,12 @@ import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.PacketCodecHolder;
+import xyz.noark.core.network.Session.State;
+import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.game.event.EventManager;
 import xyz.noark.network.codec.AbstractPacketCodec;
-import xyz.noark.robot.event.RobotAiEvent;
+import xyz.noark.network.init.SocketInitializeHandler;
 
 /**
  * 机器人管理类.
@@ -87,5 +90,21 @@ public class RobotManager {
 
 	public Robot getRobot(String playerId) {
 		return robots.get(playerId);
+	}
+
+	public <T> T getData(String playerId, Class<? extends T> klass) {
+		return robots.get(playerId).getData(klass);
+	}
+
+	public void connect(String playerId, String ip, int port) throws InterruptedException {
+		logger.debug("TCP链接");
+		Channel channel = BOOTSTRAP.connect(ip, port).sync().channel();
+		logger.debug("链接成功，发送暗号，请求密钥...");
+		RobotSession session = (RobotSession) SessionManager.createSession(channel.id(), key -> new RobotSession(channel));
+		session.setPlayerId(playerId);
+		session.setState(State.INGAME);
+		SessionManager.bindPlayerIdAndSession(session.getPlayerId(), session);
+		logger.debug("创建Session={}", session.getId());
+		channel.writeAndFlush(SocketInitializeHandler.SOCKET_NAME);
 	}
 }

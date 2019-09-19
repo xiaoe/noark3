@@ -13,34 +13,21 @@
  */
 package xyz.noark.robot;
 
-import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Controller;
-import xyz.noark.core.annotation.controller.EventListener;
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.core.util.DateUtils;
-import xyz.noark.game.event.EventManager;
+import xyz.noark.core.util.ClassUtils;
 
 /**
- * AI入口.
+ * 机器人数据.
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-@Controller(threadGroup = ExecThreadGroup.PlayerThreadGroup)
-public class RobotAiController {
-	@Autowired
-	private EventManager eventManager;
-	@Autowired
-	private RobotManager robotManager;
+class RobotData {
+	private final ConcurrentHashMap<Class<? extends Object>, Object> dataMap = new ConcurrentHashMap<>();
 
-	@EventListener(printLog = false)
-	public void handleRobotAiEvent(RobotAiEvent event) {
-		try {
-			robotManager.getRobot(event.getPlayerId()).tick();
-		} finally {
-			eventManager.publish(new RobotAiEvent(event.getPlayerId(), DateUtils.addSeconds(new Date(), 1)));
-		}
+	@SuppressWarnings("unchecked")
+	public <T> T getData(Class<? extends T> klass) {
+		return (T) dataMap.computeIfAbsent(klass, key -> ClassUtils.newInstance(klass));
 	}
 }
