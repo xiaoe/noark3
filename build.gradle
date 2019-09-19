@@ -3,6 +3,7 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'maven'
 	apply plugin: 'signing'
+	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
 	version = '3.3.5-SNAPSHOT'
