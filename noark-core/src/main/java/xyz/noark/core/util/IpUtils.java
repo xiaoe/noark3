@@ -13,6 +13,10 @@
  */
 package xyz.noark.core.util;
 
+import java.net.InetSocketAddress;
+
+import io.netty.channel.Channel;
+
 /**
  * IP相关操作工具类.
  *
@@ -60,7 +64,7 @@ public class IpUtils {
 	 * @param ipAddress IP地址
 	 * @return 如果是则返回true,否则返回false
 	 */
-	public static boolean isInnerIP(String ipAddress) {
+	public static boolean isInnerIp(String ipAddress) {
 		final long ipNum = ipToLong(ipAddress);
 		return isInner(ipNum, A_BEGIN, A_END) || isInner(ipNum, B_BEGIN, B_END) || isInner(ipNum, C_BEGIN, C_END) || LOCAL_IP.equals(ipAddress);
 	}
@@ -75,5 +79,15 @@ public class IpUtils {
 	 */
 	private static boolean isInner(long ipNum, long begin, long end) {
 		return (ipNum >= begin) && (ipNum <= end);
+	}
+
+	/**
+	 * 获取Netty通道的IP
+	 * 
+	 * @param channel Netty通道
+	 * @return 返回目标IP
+	 */
+	public static String getIp(Channel channel) {
+		return ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
 	}
 }

@@ -22,10 +22,10 @@ hs_err_pid*
 
 .gradle
 .settings
-.project
-.idea
+*.project
+*.idea
 *.iml
-.classpath
-.vscode/settings.json
-build
-
+**/bin/
+**/build/
+**/target/
+*.classpath

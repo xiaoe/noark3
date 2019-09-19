@@ -37,6 +37,10 @@ public class JsonTemplateLoader extends AbstractTemplateLoader {
 		super(templatePath);
 	}
 
+	public JsonTemplateLoader(String templatePath, String zone) {
+		super(templatePath, zone);
+	}
+
 	@Override
 	public <T> List<T> loadAll(Class<T> klass) {
 		TplFile file = klass.getAnnotation(TplFile.class);
@@ -45,7 +49,7 @@ public class JsonTemplateLoader extends AbstractTemplateLoader {
 		}
 
 		try {
-			byte[] bytes = Files.readAllBytes(Paths.get(templatePath, file.value()));
+			byte[] bytes = Files.readAllBytes(Paths.get(templatePath, zone, file.value()));
 			return JSON.parseArray(new String(bytes, CharsetUtils.CHARSET_UTF_8), klass);
 		} catch (IOException e) {
 			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
@@ -70,7 +74,7 @@ public class JsonTemplateLoader extends AbstractTemplateLoader {
 		}
 
 		try {
-			return JSON.parseObject(Files.readAllBytes(Paths.get(templatePath, file.value())), klass);
+			return JSON.parseObject(Files.readAllBytes(Paths.get(templatePath, zone, file.value())), klass);
 		} catch (IOException e) {
 			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
 		}

@@ -1,78 +1,12 @@
-
- apply plugin: 'java'
- apply plugin: 'maven'
- sourceCompatibility = 1.8
- group = 'xyz.noark'
- version = "1.0"
-
-task writeNewPom {
-	doLast {
-		pom {
-			project {
-				name 'Noark'
-				packaging 'jar'
-				description 'This is a game server framework.'
-				url 'http://noark.xyz'
-
-				scm {
-					connection 'scm:git:git@gitee.com:xiaoe/noark3.git'
-					developerConnection 'scm:git:git@gitee.com:xiaoe/noark3.git'
-					url 'https://gitee.com/xiaoe/noark3/'
-				}
-
-				licenses {
-					license {
-						name 'The Apache License, Version 2.0'
-						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-					}
-				}
-
-				developers {
-					developer {
-						id 'xiaoe'
-						name '小流氓'
-						email '176543888@qq.com'
-						url "http://blog.noark.xyz"
-					}
-				}
-		
-				modules {
-					module 'norak-asm'
-					module 'noark-benchmark'
-					module 'noark-core'
-					module 'noark-csv'
-					module 'noark-game'
-					module 'noark-log'
-					module 'noark-network'
-					module 'noark-orm'
-					module 'noark-redis'
-					module 'noark-xml'
-				}
-			}
-
-		}.writeTo("$buildDir/poms/pom-default.xml")	
-	}
-}
-
-
-
-task convert2Maven {
-	doLast {
-		file("$buildDir/poms/pom-default.xml").renameTo(file("$rootDir/pom.xml"))
-	}
-}
-convert2Maven.dependsOn(writeNewPom)
-install.dependsOn(convert2Maven)
-
-
 subprojects {
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'maven'
 	apply plugin: 'signing'
+	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.3.4-SNAPSHOT'
+	version = '3.3.5-SNAPSHOT'
 	
 	sourceCompatibility = 1.8  
 	targetCompatibility = 1.8  
@@ -113,7 +47,7 @@ subprojects {
 	signing {
 	    //sign configurations.archives
 	}
-	
+
 	uploadArchives {
 	    repositories {
 	        mavenDeployer {
@@ -129,10 +63,14 @@ subprojects {
 	            }
 	            
 	            pom.project {
-	        		name 'Noark'
-	        		packaging 'jar'
+	                groupId project.group
+	            	artifactId project.name
+	            	version project.version
+	            	
+	                name 'Noark'
 	        		description 'This is a game server framework.'
 	        		url 'http://noark.xyz'
+	                packaging 'jar'
 	
 	        		scm {
 	          			connection 'scm:git:git@gitee.com:xiaoe/noark3.git'
@@ -142,8 +80,9 @@ subprojects {
 	
 	        		licenses {
 	          			license {
-	            			name 'The Apache License, Version 2.0'
-	            			url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+	            			name '木兰宽松许可证, 第1版'
+	            			url 'http://license.coscl.org.cn/MulanPSL'
+	            			distribution 'repo'
 	          			}
 	        		}
 	
@@ -155,7 +94,7 @@ subprojects {
 		            		url "http://blog.noark.xyz"
 	          			}
 	        		}
-	        	}
+	        	}.writeTo("$buildDir/poms/pom.xml");
 	        }
 	    }
 	}
@@ -174,11 +113,44 @@ subprojects {
         archives sourceJar
         archives javadocJar
     }
-
-	task convert2Maven {
-		doLast {
-			file("$buildDir/poms/pom-default.xml").renameTo(file("$projectDir/pom.xml"))
+    
+    task fixpom {
+		doLast {// 把依赖修一下
+			def String pomPath = "$buildDir/poms/pom.xml";
+			def pomRoot = new XmlParser().parse(file(pomPath))
+			pomRoot.remove(pomRoot.get("groupId"));
+			
+			// 添加Parent
+			def parent = pomRoot.appendNode("parent");
+			parent.appendNode("groupId", "xyz.noark");
+			parent.appendNode("artifactId", "noark-parent");
+			parent.appendNode("version", "1.0");
+			
+			def pomDependencies = pomRoot.dependencies.first();
+			pomDependencies.dependency.each{dep -> pomDependencies.remove(dep) }
+			// pom-default.xml 有依赖配置，先去那边拿过来用着
+			def defaultRoot = new XmlParser().parse(file("$buildDir/poms/pom-default.xml"))
+			//defaultRoot.dependencies.dependency.each { item -> pomDependencies.append(item)}
+			defaultRoot.dependencies.dependency.each { item -> 
+				if("runtime".equals(item.get("scope").text())){
+					def dependencyNode = pomDependencies.appendNode('dependency');
+	                dependencyNode.append(item.get("groupId"));
+	                dependencyNode.append(item.get("artifactId"));
+	                dependencyNode.append(item.get("version"));
+	                dependencyNode.appendNode('scope', "compile");
+				} else {
+					pomDependencies.append(item);
+				}
+			}
+			
+			final PrintWriter printWriter = new PrintWriter(new FileWriter("$buildDir/../pom.xml"));
+			printWriter.format("<?xml version='1.0' encoding='UTF-8'?>%n");
+			def printer = new XmlNodePrinter(printWriter);
+			printer.preserveWhitespace = true;
+			printer.print(pomRoot);
+			printWriter.flush();
 		}
 	}
-	install.dependsOn(convert2Maven)
+	fixpom.dependsOn(install);
+	build.dependsOn(fixpom);
 }

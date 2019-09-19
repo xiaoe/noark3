@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 import xyz.noark.core.annotation.tpl.TplFile;
 import xyz.noark.core.exception.FileNotFoundException;
 import xyz.noark.core.exception.TplConfigurationException;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * 史上最快的XML序列化工具包.
@@ -97,12 +98,25 @@ public class Xml {
 	 * @return 模板类对象的集合
 	 */
 	public static <T> List<T> loadAll(String templatePath, Class<T> klass) {
+		return loadAll(templatePath, StringUtils.EMPTY, klass);
+	}
+
+	/**
+	 * 根据指定类文件加载XML格式的模板.
+	 * 
+	 * @param <T> 目标类型
+	 * @param templatePath 模板文件路径
+	 * @param zone 版本编号
+	 * @param klass 模板类文件
+	 * @return 模板类对象的集合
+	 */
+	public static <T> List<T> loadAll(String templatePath, String zone, Class<T> klass) {
 		TplFile file = klass.getAnnotation(TplFile.class);
 		if (file == null) {
 			throw new TplConfigurationException("这不是XML格式的配置文件类:" + klass.getName());
 		}
 
-		try (InputStream is = Files.newInputStream(Paths.get(templatePath, file.value()), StandardOpenOption.READ)) {
+		try (InputStream is = Files.newInputStream(Paths.get(templatePath, zone, file.value()), StandardOpenOption.READ)) {
 			ArrayXmlHandler<T> myHandler = new ArrayXmlHandler<>(klass, file.value());
 			SAXParserFactory.newInstance().newSAXParser().parse(is, myHandler);
 			return myHandler.getResult();

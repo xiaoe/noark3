@@ -1,10 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>xyz.noark</groupId>
   <artifactId>noark-asm</artifactId>
-  <version>3.3.4-SNAPSHOT</version>
+  <version>3.3.5-SNAPSHOT</version>
+  <name>Noark</name>
+  <description>This is a game server framework.</description>
+  <url>http://noark.xyz</url>
+  <licenses>
+    <license>
+      <name>木兰宽松许可证, 第1版</name>
+      <url>http://license.coscl.org.cn/MulanPSL</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>xiaoe</id>
+      <name>小流氓</name>
+      <email>176543888@qq.com</email>
+      <url>http://blog.noark.xyz</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@gitee.com:xiaoe/noark3.git</connection>
+    <developerConnection>scm:git:git@gitee.com:xiaoe/noark3.git</developerConnection>
+    <url>https://gitee.com/xiaoe/noark3/</url>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -15,8 +36,13 @@
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-benchmark</artifactId>
-      <version>3.3.4-SNAPSHOT</version>
+      <version>3.3.5-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <parent>
+    <groupId>xyz.noark</groupId>
+    <artifactId>noark-parent</artifactId>
+    <version>1.0</version>
+  </parent>
 </project>

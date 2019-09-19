@@ -1,17 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>xyz.noark</groupId>
-  <artifactId>noark3</artifactId>
+  <artifactId>noark-parent</artifactId>
   <version>1.0</version>
   <name>Noark</name>
   <description>This is a game server framework.</description>
   <url>http://noark.xyz</url>
+  <packaging>pom</packaging>
+  <modules>
+    
+    <module>noark-benchmark</module>
+    <module>noark-core</module>
+    <module>noark-csv</module>
+    <module>noark-game</module>
+    <module>noark-log</module>
+    <module>noark-network</module>
+    <module>noark-orm</module>
+    <module>noark-redis</module>
+    <module>noark-xml</module>
+    <module>noark-asm</module>
+  </modules>
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <encoding>UTF-8</encoding>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.1.1</version>
+            <configuration>
+                <encoding>UTF-8</encoding>
+                <aggregate>true</aggregate>
+                <charset>UTF-8</charset>
+                <docencoding>UTF-8</docencoding>
+                <additionalOptions>
+                    <additionalOption>-Xdoclint:none</additionalOption>
+                </additionalOptions>
+            </configuration>
+        </plugin>
+    </plugins>
+  </build>
   <licenses>
     <license>
-      <name>The Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <name>木兰宽松许可证, 第1版</name>
+      <url>http://license.coscl.org.cn/MulanPSL</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
   <developers>
@@ -22,18 +63,6 @@
       <url>http://blog.noark.xyz</url>
     </developer>
   </developers>
-  <modules>
-    <module>norak-asm</module>
-    <module>noark-benchmark</module>
-    <module>noark-core</module>
-    <module>noark-csv</module>
-    <module>noark-game</module>
-    <module>noark-log</module>
-    <module>noark-network</module>
-    <module>noark-orm</module>
-    <module>noark-redis</module>
-    <module>noark-xml</module>
-  </modules>
   <scm>
     <connection>scm:git:git@gitee.com:xiaoe/noark3.git</connection>
     <developerConnection>scm:git:git@gitee.com:xiaoe/noark3.git</developerConnection>

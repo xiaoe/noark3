@@ -71,6 +71,9 @@ public class NettyServer implements TcpServer {
 	/** 网络封包日志激活 */
 	@Value(NetworkConstant.LOG_ACTIVE)
 	protected boolean logActive = false;
+	/** EPOLL模型是否激活 */
+	@Value(NetworkConstant.EPOLL_ACTIVE)
+	protected boolean epollActive = false;
 
 	/** Netty低水位，默认值32K */
 	@Value(NetworkConstant.LOW_WATER_MARK)
@@ -88,7 +91,7 @@ public class NettyServer implements TcpServer {
 		this.bootstrap = new ServerBootstrap();
 
 		final int nThreads = workthreads == 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workthreads;
-		if (Epoll.isAvailable()) {
+		if (epollActive && Epoll.isAvailable()) {
 			this.bossGroup = new EpollEventLoopGroup(1);
 			this.workGroup = new EpollEventLoopGroup(nThreads);
 			bootstrap.group(bossGroup, workGroup).channel(EpollServerSocketChannel.class);
