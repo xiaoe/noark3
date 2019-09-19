@@ -149,8 +149,9 @@ subprojects {
 			printer.preserveWhitespace = true;
 			printer.print(pomRoot);
 			printWriter.flush();
+			printWriter.close();
 		}
 	}
 	fixpom.dependsOn(install);
-	build.dependsOn(fixpom);
+	//build.dependsOn(fixpom);
 }
