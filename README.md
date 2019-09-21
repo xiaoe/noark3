@@ -7,7 +7,7 @@
 [![maven](https://maven-badges.herokuapp.com/maven-central/xyz.noark/noark-game/badge.svg)](https://search.maven.org/search?q=g:xyz.noark)
 [![license](https://img.shields.io/badge/license-MulanPSL-blue)](http://license.coscl.org.cn/MulanPSL)
 [![GitHub last commit](https://img.shields.io/github/last-commit/xiaoe/noark3.svg?style=flat-square)](https://github.com/xiaoe/noark3/commits)
-
+[![Coverage Status](https://coveralls.io/repos/github/xiaoe/noark3/badge.svg?branch=master)](https://coveralls.io/github/xiaoe/noark3?branch=master)
 
 官方网站 [www.noark.xyz](http://www.noark.xyz)
 
