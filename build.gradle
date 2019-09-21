@@ -165,7 +165,13 @@ subprojects {
 	check.dependsOn jacocoTestReport
 }
 allprojects {
-  apply plugin: 'jacoco'
+	apply plugin: 'jacoco'
+  
+	repositories {
+		maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    	mavenCentral()
+    	jcenter()
+	}
 }
 task codeCoverageReport(type: JacocoReport) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
