@@ -2,14 +2,16 @@
  <a href="http://noark.xyz/" title="Noark">Noark</a>
 </h1>
 
+官方网站 [www.noark.xyz](http://www.noark.xyz)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/aeb44e524fdb4be89611125e8775d514)](https://www.codacy.com/manual/xiaoe/noark3?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=xiaoe/noark3&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/xiaoe/noark3.svg?branch=master)](https://gitee.com/xiaoe/noark3)
-[![JDK](https://img.shields.io/badge/JDK-1.8%2B-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
 [![maven](https://maven-badges.herokuapp.com/maven-central/xyz.noark/noark-game/badge.svg)](https://search.maven.org/search?q=g:xyz.noark)
+[![JDK](https://img.shields.io/badge/JDK-1.8%2B-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
 [![license](https://img.shields.io/badge/license-MulanPSL-blue)](http://license.coscl.org.cn/MulanPSL)
 [![GitHub last commit](https://img.shields.io/github/last-commit/xiaoe/noark3.svg?style=flat-square)](https://github.com/xiaoe/noark3/commits)
 [![Coverage Status](https://coveralls.io/repos/github/xiaoe/noark3/badge.svg?branch=master)](https://coveralls.io/github/xiaoe/noark3?branch=master)
 
-官方网站 [www.noark.xyz](http://www.noark.xyz)
 
 ### 简介
 Noark是一个游戏服务器端框架，可快速开发出一个易维护、易扩展且稳定高能的游戏服务器，让开发者专注于业务功能的开发<br>
