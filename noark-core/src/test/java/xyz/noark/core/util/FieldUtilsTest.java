@@ -51,11 +51,6 @@ public class FieldUtilsTest extends MethodUtilsTest {
 	}
 
 	@Test
-	public void testGetAllField() {
-		assertTrue(FieldUtils.getAllField(FieldUtilsTest.class).size() == 2);
-	}
-
-	@Test
 	public void testGenGetMethodName() {
 		assertTrue("getTest1".equals(FieldUtils.genGetMethodName(FieldUtils.getField(FieldUtilsTest.class, "test1"))));
 	}

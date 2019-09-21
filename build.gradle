@@ -3,6 +3,7 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'maven'
 	apply plugin: 'signing'
+	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
 	version = '3.4.0-SNAPSHOT'
@@ -148,8 +149,38 @@ subprojects {
 			printer.preserveWhitespace = true;
 			printer.print(pomRoot);
 			printWriter.flush();
+			printWriter.close();
 		}
 	}
 	fixpom.dependsOn(install);
 	build.dependsOn(fixpom);
+	
+	jacocoTestReport {
+	    reports {
+	        xml.enabled true
+	        html.enabled false
+	    }
+	}
+	
+	check.dependsOn jacocoTestReport
+}
+allprojects {
+	apply plugin: 'jacoco'
+  
+	repositories {
+		maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    	mavenCentral()
+    	jcenter()
+	}
+}
+task codeCoverageReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+}
+
+codeCoverageReport.dependsOn {
+    subprojects*.test
 }
