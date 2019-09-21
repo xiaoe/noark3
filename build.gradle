@@ -164,19 +164,14 @@ subprojects {
 	
 	check.dependsOn jacocoTestReport
 }
-
+allprojects {
+  apply plugin: 'jacoco'
+}
 task codeCoverageReport(type: JacocoReport) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     subprojects.each {
         sourceSets it.sourceSets.main
-    }
-
-    reports {
-        xml.enabled true
-        //xml.destination "${buildDir}/reports/jacoco/report.xml"
-        html.enabled false
-        csv.enabled false
     }
 }
 
