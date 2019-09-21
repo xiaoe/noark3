@@ -153,7 +153,7 @@ subprojects {
 		}
 	}
 	fixpom.dependsOn(install);
-	//build.dependsOn(fixpom);
+	build.dependsOn(fixpom);
 	
 	jacocoTestReport {
 	    reports {
