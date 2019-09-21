@@ -10,9 +10,7 @@ before_install:
   - chmod +x gradlew
   - export TZ=Asia/Shanghai
 script:
-  - ./gradlew clean
-  - ./gradlew build
-  - ./gradlew codeCoverageReport
+  - ./gradlew clean build codeCoverageReport
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 notifications:
