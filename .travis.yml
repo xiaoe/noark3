@@ -1,19 +1,19 @@
 language: java
-script: "gradle clean build"
-jdk:
-  - openjdk8
-  
 sudo: required
-
-before_install:
-  - chmod +x gradlew
-  - export TZ=Asia/Shanghai
 branches:
   only:
     - master
     - 3.3
-notifications:
-  email: false
-  
+jdk:
+  - openjdk8
+before_install:
+  - chmod +x gradlew
+  - export TZ=Asia/Shanghai
+script:
+  - ./gradlew clean
+  - ./gradlew build
+  - ./gradlew codeCoverageReport
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+notifications:
+  email: false
