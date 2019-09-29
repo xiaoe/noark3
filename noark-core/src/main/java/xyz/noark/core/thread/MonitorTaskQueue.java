@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.thread;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +34,10 @@ public class MonitorTaskQueue extends TaskQueue {
 	private final int timeout;
 	/** 任务执行超时输出线程执行堆栈信息，默认开启 */
 	private final boolean outputStack;
+	/** 一个任务最大监控10次 */
+	private final int max = 10;
+
+	private int count = 0;
 
 	public MonitorTaskQueue(MonitorThreadPool monitorThreadPool, ExecutorService threadPool, int timeout, boolean outputStack) {
 		super(threadPool);
@@ -42,15 +48,21 @@ public class MonitorTaskQueue extends TaskQueue {
 
 	@Override
 	protected void exec(AsyncTask task) {
-		this.monitor(this.getThreadPool().submit(task), task);
+		Future<?> future = this.getThreadPool().submit(task);
+		// 执行任务提交后，再添加一个监控任务
+		this.monitor(future, task);
 	}
 
 	private void monitor(Future<?> future, AsyncTask task) {
-		// 如果有独立的监控线程，则不会使用业务线程，不然所有业务线程都挂了，这个监控也就没有用了...
-		final ExecutorService monitorService = monitorThreadPool == null ? this.getThreadPool() : monitorThreadPool.getMonitorService();
+		final ExecutorService monitorService = this.getExecutorService();
 		if (!monitorService.isShutdown()) {
 			monitorService.execute(() -> startMonitorExecTimeoutTask(future, task));
 		}
+	}
+
+	private ExecutorService getExecutorService() {
+		// 如果有独立的监控线程，则不会使用业务线程，不然所有业务线程都挂了，这个监控也就没有用了...
+		return monitorThreadPool == null ? this.getThreadPool() : monitorThreadPool.getMonitorService();
 	}
 
 	/**
@@ -62,11 +74,18 @@ public class MonitorTaskQueue extends TaskQueue {
 	 * @param task 任务对象
 	 */
 	private void startMonitorExecTimeoutTask(Future<?> future, AsyncTask task) {
+		// 监控一次，计次加一
+		count++;
 		try {
 			future.get(timeout, TimeUnit.SECONDS);
-		} catch (Exception e1) {
+		} catch (Exception e) {
 			task.logExecTimeoutInfo(outputStack);
-			this.monitor(future, task);
+			if (max > count) {
+				this.monitor(future, task);
+			} else {
+				logger.warn("监控任务已执行10次，还没有完成，准备强制结束当前任务.");
+				future.cancel(true);
+			}
 		}
 	}
 }
