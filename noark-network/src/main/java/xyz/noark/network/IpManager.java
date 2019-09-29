@@ -35,7 +35,7 @@ public class IpManager {
 	 * @return 返回这个IP已激活的IP数量
 	 */
 	public int active(String ip) {
-		return COUNTS.merge(ip,1, Integer::sum);
+		return COUNTS.merge(ip, 1, Integer::sum);
 	}
 
 	/**
@@ -46,9 +46,6 @@ public class IpManager {
 	 * @param ip 目标IP
 	 */
 	public void inactive(String ip) {
-		COUNTS.computeIfPresent(ip, (k, v) -> {
-		  int newV = v - 1;
-		  return  newV <= 0 ? null : newV;
-    });
+		COUNTS.computeIfPresent(ip, (k, v) -> v > 1 ? v - 1 : null);
 	}
 }
