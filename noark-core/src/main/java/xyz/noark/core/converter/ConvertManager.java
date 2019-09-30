@@ -56,8 +56,9 @@ public class ConvertManager {
 		return INSTANCE;
 	}
 
-	public Converter<?> getConverter(Class<?> type) {
-		return CONVERTERS.get(type);
+	@SuppressWarnings("unchecked")
+	public <T> Converter<T> getConverter(Class<T> type) {
+		return (Converter<T>) CONVERTERS.get(type);
 	}
 
 	/**
