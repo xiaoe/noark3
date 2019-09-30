@@ -58,7 +58,7 @@ public class Redis {
 
 	public Redis(String host, int port, String password, int index) {
 		this.pool = new JedisPool(new GenericObjectPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
-		logger.info("redis info. host={},port={},database={},password={}", host, port, index, password);
+		logger.info("redis info. host={},port={},database={}", host, port, index);
 	}
 
 	public Redis ping() {
