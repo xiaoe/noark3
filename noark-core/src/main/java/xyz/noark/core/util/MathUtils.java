@@ -250,7 +250,7 @@ public class MathUtils {
 	 * @return 返回要被保留指定小数位数的值.
 	 */
 	public static float formatScale(float value, int newScale, RoundingMode mode) {
-		return new BigDecimal(value).setScale(newScale, mode).floatValue();
+		return BigDecimal.valueOf(value).setScale(newScale, mode).floatValue();
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class MathUtils {
 	 * @return 返回要被保留指定小数位数的值.
 	 */
 	public static double formatScale(double value, int newScale, RoundingMode mode) {
-		return new BigDecimal(value).setScale(newScale, mode).doubleValue();
+		return BigDecimal.valueOf(value).setScale(newScale, mode).doubleValue();
 	}
 
 	/**
