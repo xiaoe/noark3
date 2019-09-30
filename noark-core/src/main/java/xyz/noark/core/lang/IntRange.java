@@ -43,7 +43,7 @@ public class IntRange {
 			return;
 		}
 
-		for (String x : StringUtils.split(expression, ",")) {
+		for (String x : StringUtils.split(expression, StringUtils.COMMA)) {
 			if (StringUtils.isBlank(x)) {
 				continue;
 			}
