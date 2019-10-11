@@ -94,7 +94,7 @@ public class FieldUtilsTest extends MethodUtilsTest {
 
 	@Test
 	public void testGetAllField() {
-		assertTrue(FieldUtils.getAllField(FieldUtilsTest.class).size() == 3);
+		assertTrue(!FieldUtils.getAllField(FieldUtilsTest.class).isEmpty());
 	}
 
 	@Test
