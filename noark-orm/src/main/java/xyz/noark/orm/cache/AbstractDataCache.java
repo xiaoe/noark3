@@ -106,6 +106,11 @@ abstract class AbstractDataCache<T, K extends Serializable> implements DataCache
 	}
 
 	@Override
+	public long count() {
+		throw new UnsupportedOperationException("非法操作 ...");
+	}
+
+	@Override
 	public long count(Serializable playerId, Predicate<T> filter) {
 		throw new UnsupportedOperationException("非法操作 ...");
 	}

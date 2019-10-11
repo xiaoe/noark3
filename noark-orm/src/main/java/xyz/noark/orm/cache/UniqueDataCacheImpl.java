@@ -159,6 +159,13 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	}
 
 	@Override
+	public long count() {
+		this.assertEntityFetchTypeIsStart();
+		// 调用这个方法，基本不会存在过期数据
+		return caches.estimatedSize();
+	}
+
+	@Override
 	public void initCacheData() {
 		logger.debug("实体类[{}]抓取策略为启动服务器就加载缓存.", entityMapping.getEntityClass());
 		List<T> result = repository.loadAll();

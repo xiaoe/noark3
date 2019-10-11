@@ -78,6 +78,15 @@ public class UniqueCacheRepository<T, K extends Serializable> extends AbstractCa
 		return dataCache.loadAll(filter);
 	}
 
+	/**
+	 * 直接统计缓存中数据的数量
+	 * 
+	 * @return 缓存中数据的数量
+	 */
+	public long cacheCount() {
+		return dataCache.count();
+	}
+
 	@Override
 	protected DataCache<T, K> buildDataCache(int offlineInterval) {
 		return new UniqueDataCacheImpl<>(this, offlineInterval);

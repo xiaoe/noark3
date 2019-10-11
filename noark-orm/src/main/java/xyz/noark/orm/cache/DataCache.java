@@ -124,6 +124,13 @@ public interface DataCache<T, K extends Serializable> {
 	T load(Serializable playerId, Predicate<T> filter);
 
 	/**
+	 * 统计有多少实体对象
+	 * 
+	 * @return 实体对象数量
+	 */
+	long count();
+
+	/**
 	 * 统计以玩家ID所要条件有多少实体对象
 	 * 
 	 * @param playerId 玩家ID
@@ -140,4 +147,5 @@ public interface DataCache<T, K extends Serializable> {
 	 * @return 实体对象列表
 	 */
 	List<T> loadAll(Serializable playerId, Predicate<T> filter);
+
 }
