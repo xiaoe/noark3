@@ -36,6 +36,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		for (FieldMapping fm : em.getFieldMapping()) {
 			sb.append('\n').append('`').append(fm.getColumnName()).append('`');
 			sb.append(' ').append(evalFieldType(fm));
+
+			// 如果指定了排序规则，那也要加进去.
+			this.buildCollate(sb, fm);
+
 			// 主键的 @Id，应该加入唯一性约束
 			if (fm.isPrimaryId()) {
 				sb.append(" UNIQUE NOT NULL");
@@ -102,6 +106,18 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 			sb.append(" COMMENT='").append(em.getTableComment()).append("'");
 		}
 		return sb.append(";").toString();
+	}
+
+	/**
+	 * 构建排序规则信息.
+	 * 
+	 * @param sb SQL拼接字符串
+	 * @param fm 当前属性
+	 */
+	private void buildCollate(StringBuilder sb, FieldMapping fm) {
+		if (fm.hasCollate()) {
+			sb.append(" COLLATE ").append(fm.getCollateValue());
+		}
 	}
 
 	@Override
@@ -308,6 +324,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 		StringBuilder sb = new StringBuilder(128);
 		sb.append("ALTER TABLE `").append(em.getTableName()).append("` ").append(update ? "MODIFY" : "ADD").append(" COLUMN `").append(fm.getColumnName());
 		sb.append("` ").append(evalFieldType(fm));
+
+		// 如果指定了排序规则，那也要加进去.
+		this.buildCollate(sb, fm);
+
 		if (fm.isNotNull()) {
 			sb.append(" NOT NULL");
 		} else if (fm.getType() == FieldType.AsDate) {
