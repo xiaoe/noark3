@@ -19,13 +19,13 @@ import java.util.List;
 import xyz.noark.benchmark.Benchmark;
 
 /**
- * Java8Lambdafor性能测试
+ * Java8Lambda性能测试
  *
  * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
 public class Java8LambdaBenchmark {
-	private final static Benchmark benchmark = new Benchmark();
+	private final static Benchmark BENCHMARK = new Benchmark();
 
 	public static void main(String[] args) throws Exception {
 		int max = 1_0000;
@@ -34,16 +34,19 @@ public class Java8LambdaBenchmark {
 			list.add(i);
 		}
 
-		benchmark.doSomething("jdk7:", () -> jdk7(list));
-		benchmark.doSomething("jdk8:", () -> jdk8(list));
+		BENCHMARK.doSomething("jdk7sum:", () -> jdk7sum(list));
+		BENCHMARK.doSomething("jdk8sum:", () -> jdk8sum(list));
 	}
 
-	@SuppressWarnings("unused")
-	public static void jdk7(List<Integer> list) {
-		for (int i : list) {}
+	public static int jdk7sum(List<Integer> list) {
+		int sum = 0;
+		for (int i : list) {
+			sum += i;
+		}
+		return sum;
 	}
 
-	public static void jdk8(List<Integer> list) {
-		list.stream().forEach(v -> {});
+	public static int jdk8sum(List<Integer> list) {
+		return list.stream().mapToInt(Integer::intValue).sum();
 	}
 }
