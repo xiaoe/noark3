@@ -26,6 +26,7 @@ import xyz.noark.core.annotation.tpl.TplAttr;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
+import xyz.noark.core.exception.NoPublicFieldException;
 import xyz.noark.core.exception.ServerBootstrapException;
 
 /**
@@ -68,7 +69,11 @@ public class FieldUtils {
 	 * @param value 要写入的值
 	 */
 	public static void writeField(final Object target, final String fieldName, final Object value) {
-		FieldUtils.writeField(target, FieldUtils.getField(target.getClass(), fieldName), value);
+		Field field = FieldUtils.getField(target.getClass(), fieldName);
+		if (field == null) {
+			throw new NoPublicFieldException("Class=" + target.getClass().getName() + ", field=" + fieldName + " not found.");
+		}
+		FieldUtils.writeField(target, field, value);
 	}
 
 	/**
@@ -109,6 +114,8 @@ public class FieldUtils {
 
 	/**
 	 * 获取指定类的所有属性，包含父类的属性.
+	 * <p>
+	 * 包含私有属性，包含静态属性等等....
 	 * 
 	 * @param klass 指定类
 	 * @return 指定类的属性集合.

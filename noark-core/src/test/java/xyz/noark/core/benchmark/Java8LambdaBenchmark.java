@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- *
+ * 
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- *
+ * 
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -11,41 +11,42 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.core.benchmark;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
+
+import xyz.noark.benchmark.Benchmark;
 
 /**
- * IP管理器.
- * <p>
- * 主要用于限制相同IP最大链接数以及黑名单等功能
+ * Java8Lambda性能测试
  *
- * @since 3.3.4
+ * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
-public class IpManager {
-	/** IP统计计数 */
-	private static final Map<String, Integer> COUNTS = new ConcurrentHashMap<>();
+public class Java8LambdaBenchmark {
+	private final static Benchmark BENCHMARK = new Benchmark();
 
-	/**
-	 * 新激活一个通道
-	 *
-	 * @param ip 目标IP
-	 * @return 返回这个IP已激活的IP数量
-	 */
-	public int active(String ip) {
-		return COUNTS.merge(ip, 1, Integer::sum);
+	public static void main(String[] args) throws Exception {
+		int max = 1_0000;
+		List<Integer> list = new ArrayList<>(max);
+		for (int i = 0; i < max; i++) {
+			list.add(i);
+		}
+
+		BENCHMARK.doSomething("jdk7sum:", () -> jdk7sum(list));
+		BENCHMARK.doSomething("jdk8sum:", () -> jdk8sum(list));
 	}
 
-	/**
-	 * 断开链接.
-	 * <p>
-	 * 释放这个IP计数
-	 *
-	 * @param ip 目标IP
-	 */
-	public void inactive(String ip) {
-		COUNTS.computeIfPresent(ip, (k, v) -> v > 1 ? v - 1 : null);
+	public static int jdk7sum(List<Integer> list) {
+		int sum = 0;
+		for (int i : list) {
+			sum += i;
+		}
+		return sum;
+	}
+
+	public static int jdk8sum(List<Integer> list) {
+		return list.stream().mapToInt(Integer::intValue).sum();
 	}
 }

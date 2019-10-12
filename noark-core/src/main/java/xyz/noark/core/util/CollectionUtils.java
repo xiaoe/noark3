@@ -131,4 +131,32 @@ public class CollectionUtils {
 	public static <V> Optional<V> matching(final Collection<V> collection, Function<V, ? extends Integer> keyMapper, int value) {
 		return collection.stream().filter(v -> keyMapper.apply(v) <= value).max(Comparator.comparing(keyMapper));
 	}
+
+	/**
+	 * 给定Integer集合进行求和操作.
+	 * 
+	 * @param collection Integer集合
+	 * @return 求和结果
+	 */
+	public static int sumByInt(Collection<Integer> collection) {
+		int sum = 0;
+		for (int i : collection) {
+			sum += i;
+		}
+		return sum;
+	}
+
+	/**
+	 * 给定Integer集合进行求和操作.
+	 * 
+	 * @param collection Integer集合
+	 * @return 求和结果
+	 */
+	public static long sumByLong(Collection<Long> collection) {
+		long sum = 0;
+		for (long i : collection) {
+			sum += i;
+		}
+		return sum;
+	}
 }

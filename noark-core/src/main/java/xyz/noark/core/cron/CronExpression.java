@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import xyz.noark.core.util.ArrayUtils;
 import xyz.noark.core.util.StringUtils;
 
 /**
@@ -165,7 +166,7 @@ public class CronExpression {
 	private void parse(String expression) throws IllegalArgumentException {
 		String[] fields = StringUtils.split(expression, " ");
 		if (!areValidCronFields(fields)) {
-			throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in \"%s\")", fields.length, expression));
+			throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in \"%s\")", ArrayUtils.length(fields), expression));
 		}
 		doParse(fields);
 	}

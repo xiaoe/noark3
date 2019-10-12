@@ -33,12 +33,12 @@ public class SystemUtils {
 	/**
 	 * 如果当前系统为Linux则返回{@code true}.
 	 */
-	public static final boolean IS_OS_LINUX = getOSMatchesName("linux");
+	public static final boolean IS_OS_LINUX = getOsMatchesName("linux");
 
 	/**
 	 * 如果当前系统为Windows则返回{@code true}.
 	 */
-	public static final boolean IS_OS_WINDOWS = getOSMatchesName("win");
+	public static final boolean IS_OS_WINDOWS = getOsMatchesName("win");
 
 	/**
 	 * 对系统名称匹配结果.
@@ -48,8 +48,8 @@ public class SystemUtils {
 	 * @param osNamePrefix 匹配前缀
 	 * @return 如果匹配返回true,否则返回false.
 	 */
-	private static boolean getOSMatchesName(final String osNamePrefix) {
-		return isOSNameMatch(OS_NAME, osNamePrefix);
+	private static boolean getOsMatchesName(final String osNamePrefix) {
+		return isOsNameMatch(OS_NAME, osNamePrefix);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class SystemUtils {
 	 * @param osNamePrefix 匹配前缀
 	 * @return 如果匹配返回true,否则返回false.
 	 */
-	private static boolean isOSNameMatch(final String osName, final String osNamePrefix) {
+	private static boolean isOsNameMatch(final String osName, final String osNamePrefix) {
 		if (StringUtils.isEmpty(osName)) {
 			return false;
 		}

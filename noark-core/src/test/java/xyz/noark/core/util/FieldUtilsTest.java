@@ -15,7 +15,10 @@ package xyz.noark.core.util;
 
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,6 +33,9 @@ import xyz.noark.core.annotation.tpl.TplAttr;
  * @author 小流氓(176543888@qq.com)
  */
 public class FieldUtilsTest extends MethodUtilsTest {
+
+	@TplAttr(name = "name")
+	public static String name;
 
 	@TplAttr(name = "test1")
 	private int test1;
@@ -63,5 +69,39 @@ public class FieldUtilsTest extends MethodUtilsTest {
 	@Test
 	public void testScanAllField() {
 		assertTrue(FieldUtils.scanAllField(FieldUtilsTest.class, Arrays.asList(TplAttr.class)).length == 1);
+	}
+
+	@Test
+	public void testWriteFieldObjectFieldObject() {
+		FieldUtilsTest test = new FieldUtilsTest();
+		Field field = FieldUtils.getField(FieldUtilsTest.class, "test1");
+		FieldUtils.writeField(test, field, 2);
+		assertTrue(test.test1 == 2);
+	}
+
+	@Test
+	public void testReadField() {
+		FieldUtilsTest test = new FieldUtilsTest();
+		assertTrue(FieldUtils.readField(test, FieldUtils.getField(FieldUtilsTest.class, "test1")).equals(0));
+	}
+
+	@Test
+	public void testGetField() {
+		assertTrue(FieldUtils.getField(FieldUtilsTest.class, "test1") != null);
+		assertTrue(FieldUtils.getField(FieldUtilsTest.class, "test2") != null);
+		assertTrue(FieldUtils.getField(FieldUtilsTest.class, "testx") == null);
+	}
+
+	@Test
+	public void testGetAllField() {
+		assertTrue(!FieldUtils.getAllField(FieldUtilsTest.class).isEmpty());
+	}
+
+	@Test
+	public void testInjectionStaticField() {
+		Map<String, String> config = new HashMap<>(2);
+		config.put("name", "haha");
+		FieldUtils.injectionStaticField(config, FieldUtilsTest.class, String::toString);
+		assertTrue("haha".equals(FieldUtilsTest.name));
 	}
 }

@@ -31,7 +31,9 @@ public class MethodUtilsTest {
 		return test2;
 	}
 
-	public void setXX(int x) {}
+	public void setTest2(int test2) {
+		this.test2 = test2;
+	}
 
 	@Test
 	public void testExistSetMethod() {

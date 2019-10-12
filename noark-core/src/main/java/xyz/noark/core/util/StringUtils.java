@@ -46,6 +46,10 @@ public class StringUtils {
 	 * 一个回车字符串 {@code "\r"}
 	 */
 	public static final String CR = "\r";
+	/**
+	 * 一个英文逗号字符串 {@code ","}
+	 */
+	public static final String COMMA = ",";
 
 	/**
 	 * 一个空字符串数组.

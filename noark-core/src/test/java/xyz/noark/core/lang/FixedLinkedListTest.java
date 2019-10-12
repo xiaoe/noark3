@@ -28,7 +28,7 @@ import org.junit.Test;
 public class FixedLinkedListTest {
 
 	@Test
-	public void testAddE() {
+	public void testAdd() {
 		List<String> list = new FixedLinkedList<>(5);
 		list.add("1");
 		assertTrue(list.size() == 1);

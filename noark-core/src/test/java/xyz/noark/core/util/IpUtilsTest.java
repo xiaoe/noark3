@@ -32,7 +32,7 @@ public class IpUtilsTest {
 	}
 
 	@Test
-	public void testIsInnerIP() {
+	public void testIsInnerIp() {
 		assertTrue(IpUtils.isInnerIp("127.0.0.1"));
 
 		assertTrue(IpUtils.isInnerIp("10.0.0.0"));

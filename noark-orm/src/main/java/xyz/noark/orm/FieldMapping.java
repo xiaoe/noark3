@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.orm.Blob;
+import xyz.noark.core.annotation.orm.Collate;
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.CreatedDate;
 import xyz.noark.core.annotation.orm.Id;
@@ -43,6 +44,7 @@ public class FieldMapping {
 	private final Column column;
 	private final PlayerId playerId;
 	private final Json json;
+	private final Collate collate;
 
 	/** 创建时间 */
 	private final CreatedDate createdDate;
@@ -62,6 +64,7 @@ public class FieldMapping {
 		// 所有注解
 		this.id = field.getAnnotation(Id.class);
 		this.column = field.getAnnotation(Column.class);
+		this.collate = field.getAnnotation(Collate.class);
 		this.playerId = field.getAnnotation(PlayerId.class);
 		this.json = field.getAnnotation(Json.class);
 		this.createdDate = field.getAnnotation(CreatedDate.class);
@@ -149,6 +152,14 @@ public class FieldMapping {
 
 	public int getSetMethodIndex() {
 		return setMethodIndex;
+	}
+
+	public boolean hasCollate() {
+		return collate != null;
+	}
+
+	public String getCollateValue() {
+		return collate.value();
 	}
 
 	// ----------- 类型判定 ---------------------------

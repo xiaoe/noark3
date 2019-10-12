@@ -258,4 +258,16 @@ public class ArrayUtils {
 		}
 		return data;
 	}
+
+	/**
+	 * 求数组长度.
+	 * <p>
+	 * 如果数组为null，则返回0
+	 * 
+	 * @param array 字符串数组
+	 * @return 返回字符串数组长度
+	 */
+	public static int length(String[] array) {
+		return array == null ? 0 : array.length;
+	}
 }
