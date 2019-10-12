@@ -57,21 +57,52 @@ public class CollectionUtilsTest {
 
 	@Test
 	public void testGroupingBy() {
+		assertTrue(CollectionUtils.groupingBy(list, Pet::getId, Pet::getLevel).size() == MAX);
+	}
+
+	@Test
+	public void testGroupingBy1() {
+		assertTrue(CollectionUtils.groupingBy(list, Pet::getId).size() == MAX);
+	}
+
+	@Test
+	public void testGroupingBy2() {
 		PairMap<Integer, Integer, List<Pet>> result = CollectionUtils.groupingBy(list, Pet::getId, Pet::getLevel);
 		assertTrue(result.size() == 20);
 	}
 
 	@Test
-	public void testMatching() {
-		assertTrue(CollectionUtils.matching(list, Pet::getExp, 0).orElse(null).getId() == 0);
-		assertTrue(CollectionUtils.matching(list, Pet::getExp, 1).orElse(null).getId() == 1);
+	public void testMatching1() {
+		assertTrue(CollectionUtils.matching(list, Pet::getExp, 0L).orElse(null).getId() == 0);
+		assertTrue(CollectionUtils.matching(list, Pet::getExp, 1L).orElse(null).getId() == 1);
 		assertTrue(CollectionUtils.matching(list, Pet::getExp, 25L).orElse(null).getId() == 5);
-		assertTrue(CollectionUtils.matching(list, Pet::getExp, 100000).orElse(null).getId() == 19);
+		assertTrue(CollectionUtils.matching(list, Pet::getExp, 100000L).orElse(null).getId() == 19);
+	}
 
+	@Test
+	public void testMatching2() {
 		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 0).orElse(null).getId() == 0);
 		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 1).orElse(null).getId() == 0);
 		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 25).orElse(null).getId() == 12);
 		assertTrue(CollectionUtils.matching(list, Pet::getLevel, 100000).orElse(null).getId() == 19);
+	}
+
+	@Test
+	public void testSumByInt() {
+		List<Integer> list = new ArrayList<>();
+		list.add(0);
+		list.add(2);
+		list.add(3);
+		assertTrue(CollectionUtils.sumByInt(list) == 5);
+	}
+
+	@Test
+	public void testSumByLong() {
+		List<Long> list = new ArrayList<>();
+		list.add(0L);
+		list.add(2L);
+		list.add(3L);
+		assertTrue(CollectionUtils.sumByLong(list) == 5);
 	}
 
 	class Pet {
