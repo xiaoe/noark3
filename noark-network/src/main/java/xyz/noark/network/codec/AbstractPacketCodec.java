@@ -13,10 +13,8 @@
  */
 package xyz.noark.network.codec;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
-import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.PacketCodec;
 
 /**
@@ -25,7 +23,7 @@ import xyz.noark.core.network.PacketCodec;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public abstract class AbstractPacketCodec implements PacketCodec {
+public abstract class AbstractPacketCodec extends AbstractWebsocketPacketCodec implements PacketCodec {
 	/**
 	 * 长度编码器.
 	 * <p>
@@ -43,12 +41,4 @@ public abstract class AbstractPacketCodec implements PacketCodec {
 	 * @return 长度解码器
 	 */
 	public abstract ByteToMessageDecoder lengthDecoder();
-
-	/**
-	 * 将二进制数据转化为网络封包对象.
-	 * 
-	 * @param byteBuf 二进制数据
-	 * @return 网络封包对象
-	 */
-	public abstract NetworkPacket decodePacket(ByteBuf byteBuf);
 }
