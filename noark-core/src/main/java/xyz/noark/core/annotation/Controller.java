@@ -20,6 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * Controller注解用来标识一个消息入口处理类.
@@ -38,8 +39,17 @@ public @interface Controller {
 	/**
 	 * 标识这个协议控制中的入口方法由哪个线程组调用.
 	 * <p>
+	 * 默认转化为串型执行队列线程
 	 * 
 	 * @return 执行线程组.
 	 */
-	ExecThreadGroup threadGroup();
+	ExecThreadGroup threadGroup() default ExecThreadGroup.QueueThreadGroup;
+
+	/**
+	 * 串行执行的队列ID
+	 * 
+	 * @return 队列ID
+	 * @since 3.4
+	 */
+	String value() default StringUtils.EMPTY;
 }

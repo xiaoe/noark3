@@ -155,6 +155,9 @@ public class ThreadDispatcher {
 		case ModuleThreadGroup:
 			this.dispatchSystemThreadHandle(session, reqId, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
 			break;
+		case QueueThreadGroup:
+
+			break;
 		default:
 			throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
 		}

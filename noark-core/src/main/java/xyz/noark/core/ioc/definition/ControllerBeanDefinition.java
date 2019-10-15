@@ -37,6 +37,7 @@ import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * 控制器的Bean定义描述类.
@@ -45,24 +46,29 @@ import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
  * @author 小流氓(176543888@qq.com)
  */
 public class ControllerBeanDefinition extends DefaultBeanDefinition {
+	/** 执行线程组 */
 	private final ExecThreadGroup threadGroup;
 	/** 控制器隶属哪个主控制器 */
 	private final Class<?> controllerMasterClass;
+	/** 串行执行队列ID */
+	private final String queueId;
+
 	private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
 	private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
 	private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
 	private final ArrayList<ScheduledMethodDefinition> smds = new ArrayList<>();
 
 	public ControllerBeanDefinition(Class<?> klass, Controller controller) {
-		this(klass, controller.threadGroup(), klass);
+		this(klass, controller.threadGroup(), controller.value(), klass);
 	}
 
 	public ControllerBeanDefinition(Class<?> klass, ModuleController controller) {
-		this(klass, ExecThreadGroup.ModuleThreadGroup, controller.master());
+		this(klass, ExecThreadGroup.ModuleThreadGroup, StringUtils.EMPTY, controller.master());
 	}
 
-	private ControllerBeanDefinition(Class<?> klass, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+	private ControllerBeanDefinition(Class<?> klass, ExecThreadGroup threadGroup, String queueId, Class<?> controllerMasterClass) {
 		super(klass);
+		this.queueId = queueId;
 		this.threadGroup = threadGroup;
 		this.controllerMasterClass = controllerMasterClass;
 	}
