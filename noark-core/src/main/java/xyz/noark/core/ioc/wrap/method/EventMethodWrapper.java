@@ -24,7 +24,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class EventMethodWrapper extends AbstractControllerMethodWrapper {
+public class EventMethodWrapper extends AbstractControllerMethodWrapper implements Comparable<EventMethodWrapper> {
 	private final Class<? extends Event> eventClass;
 	private final boolean async;
 
@@ -51,5 +51,21 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper {
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
+	}
+
+	@Override
+	public int compareTo(EventMethodWrapper o) {
+		// 相同方式，采用Order排序
+		if (async == o.isAsync()) {
+			return this.getOrder() - o.getOrder();
+		}
+
+		// 异步情况向后排
+		return async ? 1 : -1;
+	}
+
+	@Override
+	public String toString() {
+		return "EventMethodWrapper [async=" + async + ", method=" + methodAccess.getMethodNames()[methodIndex] + "]";
 	}
 }

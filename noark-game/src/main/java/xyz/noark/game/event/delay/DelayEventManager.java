@@ -69,6 +69,11 @@ public class DelayEventManager implements EventManager {
 		this.notifyListeners(event);
 	}
 
+	/**
+	 * 通知监听器.
+	 * 
+	 * @param event 事件源
+	 */
 	void notifyListeners(Event event) {
 		List<EventMethodWrapper> handlers = MANAGER.getEventMethodWrappers(event.getClass());
 		if (handlers.isEmpty()) {

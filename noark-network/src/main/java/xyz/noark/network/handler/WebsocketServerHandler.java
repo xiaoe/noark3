@@ -26,7 +26,7 @@ import xyz.noark.core.annotation.Service;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session;
 import xyz.noark.network.WebSocketSession;
-import xyz.noark.network.codec.AbstractPacketCodec;
+import xyz.noark.network.codec.AbstractWebsocketPacketCodec;
 
 /**
  * Websocket服务器处理类.
@@ -38,11 +38,11 @@ import xyz.noark.network.codec.AbstractPacketCodec;
 @Sharable
 public class WebsocketServerHandler extends AbstractServerHandler<WebSocketFrame> {
 
-	private AbstractPacketCodec codec;
+	private AbstractWebsocketPacketCodec codec;
 
 	@PostConstruct
 	public void init() {
-		this.codec = (AbstractPacketCodec) PacketCodecHolder.getPacketCodec();
+		this.codec = (AbstractWebsocketPacketCodec) PacketCodecHolder.getPacketCodec();
 	}
 
 	@Override
