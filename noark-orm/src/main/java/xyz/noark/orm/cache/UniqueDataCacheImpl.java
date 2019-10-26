@@ -161,8 +161,18 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 	@Override
 	public long count() {
 		this.assertEntityFetchTypeIsStart();
-		// 调用这个方法，基本不会存在过期数据
-		return caches.estimatedSize();
+
+		long result = 0;
+		// 包装类中有数据才能计数
+		ConcurrentMap<K, DataWrapper<T>> map = caches.asMap();
+		for (Entry<K, DataWrapper<T>> e : map.entrySet()) {
+			T entity = e.getValue().getEntity();
+			if (entity == null) {
+				continue;
+			}
+			result++;
+		}
+		return result;
 	}
 
 	@Override
