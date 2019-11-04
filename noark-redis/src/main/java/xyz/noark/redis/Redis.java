@@ -973,6 +973,27 @@ public class Redis {
 		}
 	}
 
+	// ------------------------------Sets 集合------------------------------
+	/**
+	 * 添加一个或多个指定的member元素到集合的key中.
+	 * <p>
+	 * 指定的一个或者多个元素member 如果已经在集合key中存在则忽略.<br>
+	 * 如果集合key 不存在，则新建集合key,并添加member元素到集合key中. <br>
+	 * 如果key 的类型不是集合则返回错误.
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度： O(N) 其中N是添加成员的数量
+	 * 
+	 * @param key 集合key
+	 * @param members 多个成员
+	 * @return 返回新成功添加到集合里元素的数量，不包括已经存在于集合中的元素.
+	 */
+	public Long sadd(final String key, final String... members) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.sadd(key, members);
+		}
+	}
+
 	// ------------------------------Lua脚本------------------------------
 
 	/**
