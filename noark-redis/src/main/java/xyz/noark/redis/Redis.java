@@ -1025,6 +1025,21 @@ public class Redis {
 		}
 	}
 
+	/**
+	 * 返回key集合所有的元素.
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(N) N为集合里的数量
+	 * 
+	 * @param key 集合key
+	 * @return 集合中的所有元素.
+	 */
+	public Set<String> smembers(final String key) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.smembers(key);
+		}
+	}
+
 	// ------------------------------Lua脚本------------------------------
 
 	/**
