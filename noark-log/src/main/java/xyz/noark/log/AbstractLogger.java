@@ -14,20 +14,21 @@
 package xyz.noark.log;
 
 /**
- * Base implementation of a Logger. It is highly recommended that any Logger
- * implementation extend this class.
+ * 抽象的日志记录器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
 abstract class AbstractLogger {
+	/** 日志输出管理器 */
+	private static final LogOutputManager OUTPUT_MANAGER = LogOutputManager.getInstance();
 
 	/**
-	 * Logs a message if the specified level is active.
+	 * 记录日志，如果级别达标的话.
 	 * 
-	 * @param level
-	 * @param msg
-	 * @param args
+	 * @param level 日志级别
+	 * @param msg 日志文本
+	 * @param args 日志参数
 	 */
 	protected void logIfEnabled(Level level, String msg, Object... args) {
 		if (isEnabled(level)) {
@@ -36,25 +37,23 @@ abstract class AbstractLogger {
 	}
 
 	/**
-	 * Determines if logging is enabled.
+	 * 判定日志级别是否达标
 	 * 
-	 * @param level
-	 * @return
+	 * @param level 日志级别
+	 * @return 如果达标则返回true
 	 */
 	private boolean isEnabled(Level level) {
 		return LogConfigurator.DEFAULT_LEVEL.getValue() <= level.getValue();
 	}
 
 	/**
-	 * Always logs a message at the specified level. It is the responsibility of
-	 * the caller to ensure the specified level is enabled.
+	 * 记录日志.
 	 * 
 	 * @param level 日志等级
 	 * @param msg 日志信息
 	 * @param args 日志参数
 	 */
-	private void logMessage(Level level, String msg, Object[] args) {
-		Message message = MessageFactory.create(level, msg, args);
-		LogCenter.getInstance().execute(new LogExecutor(message));
+	private void logMessage(Level level, String msg, Object... args) {
+		OUTPUT_MANAGER.asyncLog(MessageFactory.create(level, msg, args));
 	}
 }

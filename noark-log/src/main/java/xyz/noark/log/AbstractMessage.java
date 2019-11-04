@@ -68,7 +68,7 @@ abstract class AbstractMessage implements Message {
 	}
 
 	@Override
-	public String build() {
+	public char[] build() {
 		DEFAULT_LOG_BUILDER.setLength(0);
 
 		// 2017-11-11 19:59:42.538 [main] INFO Test.java:18 - test
@@ -84,7 +84,11 @@ abstract class AbstractMessage implements Message {
 		this.onBuildMessage(DEFAULT_LOG_BUILDER);
 
 		DEFAULT_LOG_BUILDER.append("\n");
-		return DEFAULT_LOG_BUILDER.toString();
+
+		// 把结果复制出来...
+		final char[] result = new char[DEFAULT_LOG_BUILDER.length()];
+		DEFAULT_LOG_BUILDER.getChars(0, result.length, result, 0);
+		return result;
 	}
 
 	/**

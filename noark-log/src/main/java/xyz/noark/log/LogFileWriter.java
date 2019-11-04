@@ -13,10 +13,13 @@
  */
 package xyz.noark.log;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 日志文件写入器.
@@ -25,38 +28,28 @@ import java.time.LocalDateTime;
  * @author 小流氓(176543888@qq.com)
  */
 class LogFileWriter {
-	private int lastWriterHour = -1;
-	private FileWriter fileWriter = null;
+	private final ScheduledFuture<?> future;
+	private final FileWriter fileWriter;
+	private final BufferedWriter bufferedWriter;
 
-	/**
-	 * 写入文本文件中.
-	 * 
-	 * @param date 日志时间.
-	 * @param text 文本日志
-	 * @throws IOException 可能会抛出IO异常.
-	 */
-	void writer(LocalDateTime date, String text) throws IOException {
-		// 不是同一时间，切换输出目标
-		if (fileWriter == null || date.getHour() != lastWriterHour) {
+	LogFileWriter(File file, ScheduledExecutorService scheduledExecutor) throws IOException {
+		this.fileWriter = new FileWriter(file, true);
+		this.bufferedWriter = new BufferedWriter(fileWriter);
+		// 每秒刷一下输入流.
+		this.future = scheduledExecutor.scheduleWithFixedDelay(new LogOutputFlushTask(this), 1, 1, TimeUnit.SECONDS);
+	}
 
-			// 如果上一个输出流存在，先关闭...
-			if (fileWriter != null) {
-				fileWriter.close();
-			}
+	void writer(char[] text) throws IOException {
+		bufferedWriter.write(text);
+	}
 
-			String filename = LogConfigurator.LOG_PATH.getPath(date);
-			File file = new File(filename.toString());
-			if (!file.exists()) {
-				File fileParent = file.getParentFile();
-				if (!fileParent.exists()) {
-					fileParent.mkdirs();
-				}
-				file.createNewFile();
-			}
-			fileWriter = new FileWriter(file, true);
-		}
+	public void flush() throws IOException {
+		bufferedWriter.flush();
+	}
 
-		fileWriter.write(text);
-		fileWriter.flush();
+	public void close() throws IOException {
+		future.cancel(true);
+		bufferedWriter.close();
+		fileWriter.close();
 	}
 }

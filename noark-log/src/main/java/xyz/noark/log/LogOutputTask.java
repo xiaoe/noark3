@@ -13,34 +13,35 @@
  */
 package xyz.noark.log;
 
-import java.time.LocalDateTime;
-
 /**
- * 一条日志接口.
+ * 日志输出任务.
  *
- * @since 3.0
+ * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
-interface Message {
+class LogOutputTask implements Runnable {
+	private final Message message;
+	private final LogOutputManager outputManager;
 
-	/**
-	 * 日志所发生的时间.
-	 * 
-	 * @return 发生的时间
-	 */
-	LocalDateTime getDate();
+	LogOutputTask(Message message, LogOutputManager outputManager) {
+		this.message = message;
+		this.outputManager = outputManager;
+	}
 
-	/**
-	 * 获取当前日志的等级.
-	 * 
-	 * @return 日志的等级.
-	 */
-	Level getLevel();
-
-	/**
-	 * 拼接日志文本
-	 * 
-	 * @return 日志文本
-	 */
-	char[] build();
+	@Override
+	public void run() {
+		try {
+			char[] text = message.build();
+			// 记录到控制台
+			if (LogConfigurator.CONSOLE) {
+				outputManager.recordToConsole(message.getLevel(), text);
+			}
+			// 记录到文件
+			if (LogConfigurator.LOG_PATH.isActivate()) {
+				outputManager.recordToFile(message.getDate(), text);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

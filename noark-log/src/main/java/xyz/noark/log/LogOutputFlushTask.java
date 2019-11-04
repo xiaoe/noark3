@@ -14,41 +14,22 @@
 package xyz.noark.log;
 
 /**
- * 日志记录执行者.
+ * 日志输出Flush任务.
  *
- * @since 3.0
+ * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
-class LogExecutor implements Runnable {
-	private static final LogFileWriter LOGFILE = new LogFileWriter();
-	private Message message;
+public class LogOutputFlushTask implements Runnable {
+	private final LogFileWriter fileWriter;
 
-	LogExecutor(Message message) {
-		this.message = message;
+	public LogOutputFlushTask(LogFileWriter fileWriter) {
+		this.fileWriter = fileWriter;
 	}
 
 	@Override
 	public void run() {
 		try {
-			String text = message.build();
-
-			if (LogConfigurator.CONSOLE) {
-				switch (message.getLevel()) {
-				case DEBUG:
-				case INFO:
-					System.out.print(text);
-					break;
-				default:
-					System.err.print(text);
-					break;
-				}
-			}
-
-			if (LogConfigurator.LOG_PATH.isActivate()) {
-				LOGFILE.writer(message.getDate(), text);
-			}
-		} catch (Exception e) {
-			// logger.error("noark logger in exception.", e);
-		}
+			fileWriter.flush();
+		} catch (Exception e) {}
 	}
 }
