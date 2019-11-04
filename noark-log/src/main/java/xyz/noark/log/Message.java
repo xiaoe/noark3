@@ -42,5 +42,5 @@ interface Message {
 	 * 
 	 * @return 日志文本
 	 */
-	String build();
+	char[] build();
 }

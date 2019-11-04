@@ -973,6 +973,94 @@ public class Redis {
 		}
 	}
 
+	// ------------------------------Sets 集合------------------------------
+	/**
+	 * 添加一个或多个指定的member元素到集合的key中.
+	 * <p>
+	 * 指定的一个或者多个元素member 如果已经在集合key中存在则忽略.<br>
+	 * 如果集合key 不存在，则新建集合key,并添加member元素到集合key中. <br>
+	 * 如果key 的类型不是集合则返回错误.
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度： O(N) 其中N是添加成员的数量
+	 * 
+	 * @param key 集合key
+	 * @param members 多个成员
+	 * @return 返回新成功添加到集合里元素的数量，不包括已经存在于集合中的元素.
+	 */
+	public Long sadd(final String key, final String... members) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.sadd(key, members);
+		}
+	}
+
+	/**
+	 * 返回集合存储的key的基数 (集合元素的数量).
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(1)
+	 * 
+	 * @param key 集合存储的key
+	 * @return 集合的基数(元素的数量),如果key不存在,则返回0.
+	 */
+	public Long scard(final String key) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.scard(key);
+		}
+	}
+
+	/**
+	 * 返回成员member是否是存储的集合key的成员.
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(1)
+	 * 
+	 * @param key 集合key
+	 * @param member 元素
+	 * @return 如果member元素是集合key的成员，则返回true,如果member元素不是key的成员，或者集合key不存在，则返回false
+	 */
+	public Boolean sismember(final String key, final String member) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.sismember(key, member);
+		}
+	}
+
+	/**
+	 * 返回key集合所有的元素.
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(N) N为集合里的数量
+	 * 
+	 * @param key 集合key
+	 * @return 集合中的所有元素.
+	 */
+	public Set<String> smembers(final String key) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.smembers(key);
+		}
+	}
+
+	/**
+	 * 在key集合中移除指定的元素.
+	 * <p>
+	 * 如果指定的元素不是key集合中的元素则忽略<br>
+	 * 如果key集合不存在则被视为一个空的集合，该命令返回0.<br>
+	 * 如果key的类型不是一个集合,则返回错误.<br>
+	 * 
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(N) N为成功移除的数量
+	 * 
+	 * @param key 集合key
+	 * @param members 要移除的元素
+	 * @return 从集合中移除元素的个数，不包括不存在的成员.
+	 */
+	public Long srem(final String key, final String... members) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.srem(key, members);
+		}
+	}
+
 	// ------------------------------Lua脚本------------------------------
 
 	/**

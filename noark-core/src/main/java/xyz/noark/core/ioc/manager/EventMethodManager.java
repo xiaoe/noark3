@@ -65,7 +65,16 @@ public class EventMethodManager {
 	 * 事件处理器排序执行
 	 */
 	public void sort() {
-		handlers.values().forEach(v -> v.sort((h1, h2) -> h1.getOrder() - h2.getOrder()));
+		handlers.values().forEach(v -> sort(v));
+	}
+
+	/**
+	 * 同一事件源的处理器进行排序，同步事件优化，然后才是异步事件.
+	 * 
+	 * @param handlers 处理器列表
+	 */
+	private void sort(List<EventMethodWrapper> handlers) {
+		Collections.sort(handlers);
 	}
 
 	/**
@@ -115,7 +124,9 @@ public class EventMethodManager {
 			}
 		}
 
+		// 重新构建新的监听器列表，需要对此再排序一次
 		result = new ArrayList<EventMethodWrapper>(hs);
+		this.sort(result);
 		handlers.put(klass, result);
 		return result;
 	}

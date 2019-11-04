@@ -11,33 +11,37 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package xyz.noark.log;
 
 /**
- * 标记定义了组件的功能顺序.
- * <p>
- * 对于事件来说，排序维度优先同步事件，然后才是异步事件
- * 
- * @since 3.0
+ * 日志输出任务.
+ *
+ * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface Order {
+class LogOutputTask implements Runnable {
+	private final Message message;
+	private final LogOutputManager outputManager;
 
-	/**
-	 * 用于排序的具体数值.
-	 * <p>
-	 * 数值越小排序越靠前
-	 * 
-	 * @return 排序值
-	 */
-	int value();
+	LogOutputTask(Message message, LogOutputManager outputManager) {
+		this.message = message;
+		this.outputManager = outputManager;
+	}
+
+	@Override
+	public void run() {
+		try {
+			char[] text = message.build();
+			// 记录到控制台
+			if (LogConfigurator.CONSOLE) {
+				outputManager.recordToConsole(message.getLevel(), text);
+			}
+			// 记录到文件
+			if (LogConfigurator.LOG_PATH.isActivate()) {
+				outputManager.recordToFile(message.getDate(), text);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -44,7 +44,11 @@ public class LogTest {
 	public void test() {
 		logger.debug("haha{}", 123, "abc");
 		logger.info("haha");
-		logger.warn("123123123, {},{}", 1, null);
+		logger.warn("123123123, {},{}", 1L, null);
 		logger.error("123123123", new RuntimeException("123"));
+		logger.debug("boolean={}", true);
+		logger.debug("array={}", 1, 2, 3);
+		logger.debug("array={}", new byte[] { 1, 2 });
+		logger.debug("array={}", new int[] { 1, 2 });
 	}
 }

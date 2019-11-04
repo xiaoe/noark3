@@ -60,7 +60,7 @@ public class LogManager {
 	 * 日志功能安全停止.
 	 */
 	public static void shutdown() {
-		LogCenter.getInstance().shutdown();
+		LogOutputManager.getInstance().shutdown();
 	}
 
 	public static Logger getDefaultLogger() {

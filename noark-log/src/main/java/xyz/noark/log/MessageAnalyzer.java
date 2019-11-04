@@ -37,6 +37,10 @@ class MessageAnalyzer {
 		this.caches.trimToSize();
 	}
 
+	int getCount() {
+		return count;
+	}
+
 	private void init(String messagePattern) {
 		int beginIndex = 0;
 		int i = 0;
@@ -114,6 +118,11 @@ class MessageAnalyzer {
 		public void build(StringBuilder sb, Object[] args) {
 			sb.append(str);
 		}
+
+		@Override
+		public String toString() {
+			return "StrPlaceholder [str=" + str + "]";
+		}
 	}
 
 	class ObjPlaceholder implements Placeholder {
@@ -130,6 +139,11 @@ class MessageAnalyzer {
 			} else {
 				sb.append("{}");
 			}
+		}
+
+		@Override
+		public String toString() {
+			return "ObjPlaceholder [index=" + index + ", toString()=" + super.toString() + "]";
 		}
 	}
 
@@ -149,7 +163,21 @@ class MessageAnalyzer {
 
 		// 数组类型的输出...
 		else if (object.getClass().isArray()) {
-			sb.append(Arrays.toString((Object[]) object));
+			if (object instanceof byte[]) {
+				sb.append(Arrays.toString((byte[]) object));
+			} else if (object instanceof short[]) {
+				sb.append(Arrays.toString((short[]) object));
+			} else if (object instanceof int[]) {
+				sb.append(Arrays.toString((int[]) object));
+			} else if (object instanceof long[]) {
+				sb.append(Arrays.toString((long[]) object));
+			} else if (object instanceof float[]) {
+				sb.append(Arrays.toString((float[]) object));
+			} else if (object instanceof double[]) {
+				sb.append(Arrays.toString((double[]) object));
+			} else {
+				sb.append(Arrays.toString((Object[]) object));
+			}
 		}
 
 		// 默认的交给StringBuilder

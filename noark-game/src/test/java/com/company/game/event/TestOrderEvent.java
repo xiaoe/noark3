@@ -11,33 +11,16 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.annotation;
+package com.company.game.event;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import xyz.noark.core.event.Event;
 
 /**
- * 标记定义了组件的功能顺序.
- * <p>
- * 对于事件来说，排序维度优先同步事件，然后才是异步事件
- * 
- * @since 3.0
+ * 测试排序事件.
+ *
+ * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface Order {
+public class TestOrderEvent implements Event {
 
-	/**
-	 * 用于排序的具体数值.
-	 * <p>
-	 * 数值越小排序越靠前
-	 * 
-	 * @return 排序值
-	 */
-	int value();
 }

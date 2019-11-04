@@ -11,44 +11,24 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.network.codec;
+
+import io.netty.buffer.ByteBuf;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.PacketCodec;
 
 /**
- * 日志记录执行者.
+ * 基本Netty实现的一个抽象WebSocket编解码器
  *
- * @since 3.0
+ * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
-class LogExecutor implements Runnable {
-	private static final LogFileWriter LOGFILE = new LogFileWriter();
-	private Message message;
-
-	LogExecutor(Message message) {
-		this.message = message;
-	}
-
-	@Override
-	public void run() {
-		try {
-			String text = message.build();
-
-			if (LogConfigurator.CONSOLE) {
-				switch (message.getLevel()) {
-				case DEBUG:
-				case INFO:
-					System.out.print(text);
-					break;
-				default:
-					System.err.print(text);
-					break;
-				}
-			}
-
-			if (LogConfigurator.LOG_PATH.isActivate()) {
-				LOGFILE.writer(message.getDate(), text);
-			}
-		} catch (Exception e) {
-			// logger.error("noark logger in exception.", e);
-		}
-	}
+public abstract class AbstractWebsocketPacketCodec implements PacketCodec {
+	/**
+	 * 将二进制数据转化为网络封包对象.
+	 * 
+	 * @param byteBuf 二进制数据
+	 * @return 网络封包对象
+	 */
+	public abstract NetworkPacket decodePacket(ByteBuf byteBuf);
 }

@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 
 import com.company.game.LoginEvent;
 import com.company.game.event.BuildingUpgradeEvent;
+import com.company.game.event.TestOrderEvent;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Repository;
@@ -45,7 +46,7 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 	public ItemRepository() {
 		System.out.println("............");
 	}
-	
+
 	@PostConstruct
 	public void test() {
 		Item item = this.cacheGet(1);
@@ -69,10 +70,17 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 		eventManager.publish(new LoginEvent());
 
 		// 测试延迟事件
-		BuildingUpgradeEvent event = new BuildingUpgradeEvent();
-		event.setId(1);
-		event.setEndTime(DateUtils.addSeconds(new Date(), 5));
-		eventManager.publish(event);
-		logger.debug("建筑开始升级了...");
+		{
+			BuildingUpgradeEvent event = new BuildingUpgradeEvent();
+			event.setId(1);
+			event.setEndTime(DateUtils.addSeconds(new Date(), 5));
+			eventManager.publish(event);
+			logger.debug("建筑开始升级了...");
+		}
+
+		{
+			TestOrderEvent event = new TestOrderEvent();
+			eventManager.publish(event);
+		}
 	}
 }
