@@ -994,6 +994,21 @@ public class Redis {
 		}
 	}
 
+	/**
+	 * 返回集合存储的key的基数 (集合元素的数量).
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(1)
+	 * 
+	 * @param key 集合存储的key
+	 * @return 集合元素的数量
+	 */
+	public Long scard(final String key) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.scard(key);
+		}
+	}
+
 	// ------------------------------Lua脚本------------------------------
 
 	/**
