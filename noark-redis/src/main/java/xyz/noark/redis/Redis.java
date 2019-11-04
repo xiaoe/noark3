@@ -1040,6 +1040,27 @@ public class Redis {
 		}
 	}
 
+	/**
+	 * 在key集合中移除指定的元素.
+	 * <p>
+	 * 如果指定的元素不是key集合中的元素则忽略<br>
+	 * 如果key集合不存在则被视为一个空的集合，该命令返回0.<br>
+	 * 如果key的类型不是一个集合,则返回错误.<br>
+	 * 
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(N) N为成功移除的数量
+	 * 
+	 * @param key 集合key
+	 * @param members 要移除的元素
+	 * @return 从集合中移除元素的个数，不包括不存在的成员.
+	 */
+	public Long srem(final String key, final String... members) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.srem(key, members);
+		}
+	}
+
 	// ------------------------------Lua脚本------------------------------
 
 	/**
