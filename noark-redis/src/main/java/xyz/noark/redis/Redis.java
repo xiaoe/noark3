@@ -1001,11 +1001,27 @@ public class Redis {
 	 * 时间复杂度：O(1)
 	 * 
 	 * @param key 集合存储的key
-	 * @return 集合元素的数量
+	 * @return 集合的基数(元素的数量),如果key不存在,则返回0.
 	 */
 	public Long scard(final String key) {
 		try (Jedis jedis = pool.getResource()) {
 			return jedis.scard(key);
+		}
+	}
+
+	/**
+	 * 返回成员member是否是存储的集合key的成员.
+	 * <p>
+	 * 可用版本： &gt;= 1.0.0<br>
+	 * 时间复杂度：O(1)
+	 * 
+	 * @param key 集合key
+	 * @param member 元素
+	 * @return 如果member元素是集合key的成员，则返回true,如果member元素不是key的成员，或者集合key不存在，则返回false
+	 */
+	public Boolean sismember(final String key, final String member) {
+		try (Jedis jedis = pool.getResource()) {
+			return jedis.sismember(key, member);
 		}
 	}
 
