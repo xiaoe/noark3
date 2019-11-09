@@ -16,8 +16,11 @@ package xyz.noark.orm.write.impl;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,6 +58,8 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	private final static ScheduledExecutorService SCHEDULED_EXECUTOR = new ScheduledThreadPoolExecutor(4, new NamedThreadFactory("async-write-data"));
 	/** 异步回写容器缓存 */
 	private LoadingCache<Serializable, AsyncWriteContainer> containers;
+	/** 每次批量操作的最大数量 */
+	private int batchOperateMaxNum = 512;
 
 	@Override
 	public void init(final int saveInterval, final int offlineInterval) {
@@ -290,26 +295,37 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 					try {
 						if (!flushOperates.isEmpty()) {
 							logger.info("开始保存数据，playerId={}", playerId);
+
+							// 数据分组
+							Map<EntityMapping<T>, EnumMap<OperateType, List<T>>> grouping = new HashMap<>(256);
 							for (EntityOperate<?> opx : flushOperates.values()) {
-								try {
-									@SuppressWarnings("unchecked")
-									EntityOperate<T> op = (EntityOperate<T>) opx;
-									if (op.isDelete()) {
-										// 那就是删除操作
-										dataAccessor.delete(op.getEntityMapping(), op.getEntity());
-									} else if (op.isInsert()) {
-										// 插入
-										dataAccessor.insert(op.getEntityMapping(), op.getEntity());
-									} else if (op.isUpdate()) {
-										// 修改
-										dataAccessor.update(op.getEntityMapping(), op.getEntity());
-									} else {
-										throw new DataException("未知的操作实现...");
-									}
-								} catch (Exception ex) {
-									logger.error("保存实体时数据异常，playerId={}{}", playerId, ex);
-									logger.error("保存实体时的异常数据 entity={}", opx.getEntity());
+								@SuppressWarnings("unchecked")
+								EntityOperate<T> op = (EntityOperate<T>) opx;
+								// 一种实体类
+								EnumMap<OperateType, List<T>> category = grouping.computeIfAbsent(op.getEntityMapping(), key -> new EnumMap<>(OperateType.class));
+								// 删除操作
+								if (op.isDelete()) {
+									category.computeIfAbsent(OperateType.DELETE, key -> new LinkedList<>()).add(op.getEntity());
 								}
+								// 插入操作
+								else if (op.isInsert()) {
+									category.computeIfAbsent(OperateType.INSERT, key -> new LinkedList<>()).add(op.getEntity());
+								}
+								// 修改操作
+								else if (op.isUpdate()) {
+									category.computeIfAbsent(OperateType.UPDATE, key -> new LinkedList<>()).add(op.getEntity());
+								}
+								// 未知操作
+								else {
+									throw new DataException("未知的操作实现...");
+								}
+							}
+
+							// 批量存档
+							for (Map.Entry<EntityMapping<T>, EnumMap<OperateType, List<T>>> e : grouping.entrySet()) {
+								this.autoOperateEntity(OperateType.DELETE, e.getKey(), e.getValue());
+								this.autoOperateEntity(OperateType.UPDATE, e.getKey(), e.getValue());
+								this.autoOperateEntity(OperateType.INSERT, e.getKey(), e.getValue());
 							}
 							logger.info("保存数据完成，playerId={}", playerId);
 						}
@@ -319,6 +335,84 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 				}
 			} finally {
 				dataFlushLock.unlock();
+			}
+		}
+
+		/**
+		 * 智能分析存档实体对象.
+		 * 
+		 * @param <T> 实体类型
+		 * @param type 操作类型
+		 * @param em 实体映射
+		 * @param entitys 实体集合
+		 */
+		private <T> void autoOperateEntity(OperateType type, EntityMapping<T> em, EnumMap<OperateType, List<T>> entityMap) {
+			List<T> entitys = entityMap.getOrDefault(type, Collections.emptyList());
+			// 空实体，什么也不做
+			if (entitys.isEmpty()) {
+				return;
+			}
+			// 只有一个元素，那还使用原来的
+			else if (entitys.size() == 1) {
+				this.operateEntity(type, em, entitys.get(0));
+			}
+			// 批量操作
+			else {
+				// 肯定要分批存档，那还是转化为ArrayList来切割
+				if (entitys.size() > batchOperateMaxNum) {
+					entitys = new ArrayList<>(entitys);
+				}
+				// 分批
+				for (int i = 0, len = (entitys.size() - 1) / batchOperateMaxNum + 1; i < len; i++) {
+					int start = i * batchOperateMaxNum;
+					int end = Math.min(start + batchOperateMaxNum, entitys.size());
+					this.batchOperateEntity(type, em, entitys.subList(start, end));
+				}
+			}
+		}
+
+		private <T> void batchOperateEntity(OperateType type, EntityMapping<T> em, List<T> entitys) {
+			try {
+				switch (type) {
+				case INSERT:
+					dataAccessor.batchInsert(em, entitys);
+					break;
+				case DELETE:
+					dataAccessor.batchDelete(em, entitys);
+					break;
+				case UPDATE:
+					dataAccessor.batchUpdate(em, entitys);
+					break;
+				default:
+					break;
+				}
+			} catch (Exception exx) {
+				// 批量失败，那就一个一个来吧...
+				for (T entity : entitys) {
+					this.operateEntity(type, em, entity);
+				}
+			}
+
+		}
+
+		private <T> void operateEntity(OperateType type, EntityMapping<T> em, T entity) {
+			try {
+				switch (type) {
+				case INSERT:
+					dataAccessor.insert(em, entity);
+					break;
+				case DELETE:
+					dataAccessor.delete(em, entity);
+					break;
+				case UPDATE:
+					dataAccessor.update(em, entity);
+					break;
+				default:
+					break;
+				}
+			} catch (Exception exx) {
+				logger.error("操作实体时数据异常，playerId={}{}", playerId, exx);
+				logger.error("操作实体时的异常数据 entity={}", entity);
 			}
 		}
 

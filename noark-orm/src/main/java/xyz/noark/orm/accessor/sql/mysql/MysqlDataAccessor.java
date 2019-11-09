@@ -24,9 +24,9 @@ import javax.sql.DataSource;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
+import xyz.noark.orm.accessor.sql.AbstractSqlDataAccessor;
 import xyz.noark.orm.accessor.sql.PreparedStatementCallback;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
-import xyz.noark.orm.accessor.sql.AbstractSqlDataAccessor;
 import xyz.noark.orm.accessor.sql.mysql.adaptor.AbstractValueAdaptor;
 import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptorManager;
 
@@ -45,17 +45,35 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 	@Override
 	public <T> int insert(final EntityMapping<T> em, final T entity) {
 		class InsertPreparedStatementCallback implements PreparedStatementCallback<Integer> {
-			private int index = 1;
-
 			@Override
 			public Integer doInPreparedStatement(PreparedStatementProxy pstmt) throws Exception {
-				for (FieldMapping fm : em.getFieldMapping()) {
-					setPstmtParameter(em, fm, pstmt, entity, index++);
-				}
+				buildInsertParameter(em, entity, pstmt);
 				return pstmt.executeUpdate();
 			}
 		}
 		return execute(new InsertPreparedStatementCallback(), expert.genInsertSql(em));
+	}
+
+	@Override
+	public <T> int[] batchInsert(final EntityMapping<T> em, final List<T> entitys) {
+		class InsertPreparedStatementCallback implements PreparedStatementCallback<int[]> {
+			@Override
+			public int[] doInPreparedStatement(PreparedStatementProxy pstmt) throws Exception {
+				for (T entity : entitys) {
+					buildInsertParameter(em, entity, pstmt);
+					pstmt.addBatch();
+				}
+				return pstmt.executeBatch();
+			}
+		}
+		return executeBatch(new InsertPreparedStatementCallback(), expert.genInsertSql(em));
+	}
+
+	private <T> void buildInsertParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
+		int index = 1;
+		for (FieldMapping fm : em.getFieldMapping()) {
+			setPstmtParameter(em, fm, pstmt, entity, index++);
+		}
 	}
 
 	@Override
@@ -75,25 +93,58 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 	}
 
 	@Override
+	public <T> int[] batchDelete(EntityMapping<T> em, List<T> entitys) {
+		class DeletePreparedStatementCallback implements PreparedStatementCallback<int[]> {
+			@Override
+			public int[] doInPreparedStatement(PreparedStatementProxy pstmt) throws SQLException {
+				for (T entity : entitys) {
+					pstmt.setObject(1, em.getPrimaryIdValue(entity));
+					pstmt.addBatch();
+				}
+				return pstmt.executeBatch();
+			}
+		}
+		return executeBatch(new DeletePreparedStatementCallback(), expert.genDeleteSql(em));
+	}
+
+	@Override
 	public <T> int update(final EntityMapping<T> em, final T entity) {
 		class UpdatePreparedStatementCallback implements PreparedStatementCallback<Integer> {
-			private int index = 1;
-
 			@Override
 			public Integer doInPreparedStatement(PreparedStatementProxy pstmt) throws Exception {
-				// 非主键
-				for (FieldMapping fm : em.getFieldMapping()) {
-					if (fm.isPrimaryId()) {
-						continue;
-					}
-					setPstmtParameter(em, fm, pstmt, entity, index++);
-				}
-				// 主键
-				setPstmtParameter(em, em.getPrimaryId(), pstmt, entity, index);
+				buildUpdateParameter(em, entity, pstmt);
 				return pstmt.executeUpdate();
 			}
 		}
 		return execute(new UpdatePreparedStatementCallback(), expert.genUpdateSql(em));
+	}
+
+	@Override
+	public <T> int[] batchUpdate(EntityMapping<T> em, List<T> entitys) {
+		class UpdatePreparedStatementCallback implements PreparedStatementCallback<int[]> {
+			@Override
+			public int[] doInPreparedStatement(PreparedStatementProxy pstmt) throws Exception {
+				for (T entity : entitys) {
+					buildUpdateParameter(em, entity, pstmt);
+					pstmt.addBatch();
+				}
+				return pstmt.executeBatch();
+			}
+		}
+		return executeBatch(new UpdatePreparedStatementCallback(), expert.genUpdateSql(em));
+	}
+
+	private <T> void buildUpdateParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
+		int index = 1;
+		// 非主键
+		for (FieldMapping fm : em.getFieldMapping()) {
+			if (fm.isPrimaryId()) {
+				continue;
+			}
+			setPstmtParameter(em, fm, pstmt, entity, index++);
+		}
+		// 主键
+		setPstmtParameter(em, em.getPrimaryId(), pstmt, entity, index);
 	}
 
 	@Override

@@ -51,6 +51,16 @@ public interface DataAccessor {
 	public <T> int insert(EntityMapping<T> em, T entity);
 
 	/**
+	 * 插入一批数据.
+	 * 
+	 * @param <T> 实体对象类型
+	 * @param em 对象实体描述类.
+	 * @param entitys 一批对象数据
+	 * @return 返回插入所受影响行数
+	 */
+	public <T> int[] batchInsert(EntityMapping<T> em, List<T> entitys);
+
+	/**
 	 * 删除一条数据.
 	 * 
 	 * @param <T> 实体对象类型
@@ -61,6 +71,16 @@ public interface DataAccessor {
 	public <T> int delete(EntityMapping<T> em, T entity);
 
 	/**
+	 * 删除一批数据.
+	 * 
+	 * @param <T> 实体对象类型
+	 * @param em 对象实体描述类.
+	 * @param entitys 一批对象数据
+	 * @return 返回删除所受影响行数.
+	 */
+	public <T> int[] batchDelete(EntityMapping<T> em, List<T> entitys);
+
+	/**
 	 * 修改一条数据.
 	 * 
 	 * @param <T> 实体对象类型
@@ -69,6 +89,16 @@ public interface DataAccessor {
 	 * @return 返回修改所受影响行数.
 	 */
 	public <T> int update(EntityMapping<T> em, T entity);
+
+	/**
+	 * 修改一批数据.
+	 * 
+	 * @param <T> 实体对象类型
+	 * @param em 对象实体描述类.
+	 * @param entitys 一批对象数据
+	 * @return 返回修改所受影响行数.
+	 */
+	public <T> int[] batchUpdate(EntityMapping<T> em, List<T> entitys);
 
 	/**
 	 * 加载一个指定ID的数据.

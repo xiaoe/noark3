@@ -18,7 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -30,7 +30,10 @@ import java.util.List;
 public class PreparedStatementProxy {
 	private final PreparedStatement pstmt;
 	private final boolean statementParameterSetLogEnable;
-	private final List<Object> parameters = new ArrayList<>();
+	/** 批量级别的参数列表 */
+	private final List<List<Object>> batchParameterList = new LinkedList<>();
+
+	private List<Object> parameters = new LinkedList<>();
 
 	public PreparedStatementProxy(PreparedStatement pstmt, boolean statementParameterSetLogEnable) {
 		this.pstmt = pstmt;
@@ -39,6 +42,16 @@ public class PreparedStatementProxy {
 
 	public int executeUpdate() throws SQLException {
 		return pstmt.executeUpdate();
+	}
+
+	public void addBatch() throws SQLException {
+		pstmt.addBatch();
+		batchParameterList.add(parameters);
+		this.parameters = new LinkedList<>();
+	}
+
+	public int[] executeBatch() throws SQLException {
+		return pstmt.executeBatch();
 	}
 
 	public ResultSet executeQuery() throws SQLException {
@@ -110,5 +123,9 @@ public class PreparedStatementProxy {
 
 	public List<Object> getParameters() {
 		return parameters;
+	}
+
+	public List<List<Object>> getBatchParameterList() {
+		return batchParameterList;
 	}
 }

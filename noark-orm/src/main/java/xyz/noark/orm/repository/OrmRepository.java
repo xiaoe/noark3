@@ -65,6 +65,15 @@ public class OrmRepository<T, K extends Serializable> {
 	}
 
 	/**
+	 * 向存储策略接口插入一批实体对象.
+	 * 
+	 * @param entitys 一批实体对象
+	 */
+	public void batchInsert(List<T> entitys) {
+		dataAccessor.batchInsert(entityMapping, entitys);
+	}
+
+	/**
 	 * 向存储策略接口删除一个实体对象.
 	 * 
 	 * @param entity 实体类对象.
@@ -74,12 +83,30 @@ public class OrmRepository<T, K extends Serializable> {
 	}
 
 	/**
+	 * 向存储策略接口删除一批实体对象.
+	 * 
+	 * @param entitys 一批实体对象
+	 */
+	public void batchDelete(List<T> entitys) {
+		dataAccessor.batchDelete(entityMapping, entitys);
+	}
+
+	/**
 	 * 向存储策略接口修改一个实体对象.
 	 * 
 	 * @param entity 实体类对象.
 	 */
 	public void update(T entity) {
 		dataAccessor.update(entityMapping, entity);
+	}
+
+	/**
+	 * 向存储策略接口修改一批实体对象.
+	 * 
+	 * @param entitys 一批实体对象
+	 */
+	public void batchUpdate(List<T> entitys) {
+		dataAccessor.batchUpdate(entityMapping, entitys);
 	}
 
 	/**

@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -100,6 +101,33 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		}
 	}
 
+	protected <T> T executeBatch(PreparedStatementCallback<T> action, String sql) {
+		long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
+		// 批量执行，如果出现异常，数据将进行回滚
+		try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+			// 关闭自动提交功能
+			con.setAutoCommit(false);
+			try {
+				// 构建代理，拼接参数
+				PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable);
+				T result = action.doInPreparedStatement(proxy);
+				// 手动提交
+				con.commit();
+				// 记录日志
+				this.logExecutableSql(proxy, sql, startTime);
+				return result;
+			} catch (SQLException e) {
+				con.rollback();
+				throw new DataAccessException(e);
+			} finally {
+				// 还原为自动提交
+				con.setAutoCommit(true);
+			}
+		} catch (Exception e) {
+			throw new DataAccessException(e);
+		}
+	}
+
 	private void logExecutableSql(PreparedStatementProxy statement, String sql, long startTime) {
 		// 不输出，直接忽略所有.
 		if (!statementExecutableSqlLogEnable) {
@@ -114,7 +142,18 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 			}
 		}
 		formattedSql.append("\n").append(statementParameterSetLogEnable ? sql.replaceAll("\\?", "{}") : sql);
-		logger.info(formattedSql.toString(), statement.getParameters().toArray());
+		// 参数为空，当前操作为批量执行的
+		if (statement.getParameters().isEmpty()) {
+			logger.debug("batch start...");
+			for (List<Object> parameters : statement.getBatchParameterList()) {
+				logger.info(formattedSql.toString(), parameters.toArray());
+			}
+			logger.debug("batch end...");
+		}
+		// 有参数就是单独执行的
+		else {
+			logger.info(formattedSql.toString(), statement.getParameters().toArray());
+		}
 	}
 
 	/**
