@@ -16,7 +16,7 @@ package xyz.noark.core.ioc.wrap.param;
 import java.io.Serializable;
 
 import xyz.noark.core.ioc.wrap.ParamWrapper;
-import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 
@@ -29,7 +29,7 @@ import xyz.noark.core.network.SessionManager;
 public class SessionParamWrapper implements ParamWrapper {
 
 	@Override
-	public Object read(Session session, ByteArray bytes) {
+	public Object read(Session session, NetworkPacket packet) {
 		return session;
 	}
 

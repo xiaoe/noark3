@@ -114,7 +114,7 @@ public class ThreadDispatcher {
 		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
-		this.dispatchPacket(session, session.getPlayerId(), packet.getIncode(), pmw, pmw.analysisParam(session, packet.getByteArray()));
+		this.dispatchPacket(session, session.getPlayerId(), packet.getIncode(), pmw, pmw.analysisParam(session, packet));
 	}
 
 	/**
