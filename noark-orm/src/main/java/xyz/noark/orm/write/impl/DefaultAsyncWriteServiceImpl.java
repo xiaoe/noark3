@@ -58,11 +58,15 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	private final static ScheduledExecutorService SCHEDULED_EXECUTOR = new ScheduledThreadPoolExecutor(4, new NamedThreadFactory("async-write-data"));
 	/** 异步回写容器缓存 */
 	private LoadingCache<Serializable, AsyncWriteContainer> containers;
-	/** 每次批量操作的最大数量 */
-	private int batchOperateMaxNum = 512;
+	/** 每次批量操作的数量 */
+	private int batchOperateNum = 256;
 
 	@Override
-	public void init(final int saveInterval, final int offlineInterval) {
+	public void init(final int saveInterval, final int offlineInterval, final int batchOperateNum) {
+		// 批量的情况，只少两个
+		this.batchOperateNum = Math.max(batchOperateNum, 2);
+		logger.debug("存档批量操作数量为:{}", batchOperateNum);
+
 		RemovalListener<Serializable, AsyncWriteContainer> listener = new RemovalListener<Serializable, AsyncWriteContainer>() {
 			@Override
 			public void onRemoval(Serializable key, AsyncWriteContainer value, RemovalCause cause) {
@@ -359,13 +363,13 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 			// 批量操作
 			else {
 				// 肯定要分批存档，那还是转化为ArrayList来切割
-				if (entitys.size() > batchOperateMaxNum) {
+				if (entitys.size() > batchOperateNum) {
 					entitys = new ArrayList<>(entitys);
 				}
 				// 分批
-				for (int i = 0, len = (entitys.size() - 1) / batchOperateMaxNum + 1; i < len; i++) {
-					int start = i * batchOperateMaxNum;
-					int end = Math.min(start + batchOperateMaxNum, entitys.size());
+				for (int i = 0, len = (entitys.size() - 1) / batchOperateNum + 1; i < len; i++) {
+					int start = i * batchOperateNum;
+					int end = Math.min(start + batchOperateNum, entitys.size());
 					this.batchOperateEntity(type, em, entitys.subList(start, end));
 				}
 			}

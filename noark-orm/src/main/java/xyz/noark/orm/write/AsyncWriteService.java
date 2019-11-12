@@ -27,6 +27,15 @@ import xyz.noark.orm.EntityMapping;
 public interface AsyncWriteService {
 
 	/**
+	 * 初始化存储系统
+	 * 
+	 * @param saveInterval 定时保存间隔
+	 * @param offlineInterval 定时清理缓存
+	 * @param batchOperateNum 批量操作最大上限
+	 */
+	public void init(int saveInterval, int offlineInterval, int batchOperateNum);
+
+	/**
 	 * 插入一个实体对象.
 	 * 
 	 * @param <T> 实体对象类型
@@ -80,12 +89,4 @@ public interface AsyncWriteService {
 	 * @param playerId 玩家ID
 	 */
 	public void asyncFlushByPlayerId(Serializable playerId);
-
-	/**
-	 * 初始化存储系统
-	 * 
-	 * @param saveInterval 定时保存间隔
-	 * @param offlineInterval 定时清理缓存
-	 */
-	public void init(int saveInterval, int offlineInterval);
 }

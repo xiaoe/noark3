@@ -34,6 +34,9 @@ public class DataModular implements Modular {
 	public static final String DATA_SAVE_INTERVAL = "data.save.interval";
 	/** 服务器数据缓存间隔，单位：秒，默认值：1小时 */
 	public static final String DATA_OFFLINE_INTERVAL = "data.offline.interval";
+	/** 服务器数据每次批量操作的最大数量，默认：256 */
+	public static final String DATA_BATCH_NUM = "data.batch.num";
+
 	/** 数据存储默认开启下划线命名方式检测 */
 	public static boolean CheckUnderScoreCase = true;
 
@@ -42,6 +45,9 @@ public class DataModular implements Modular {
 	private int saveInterval = 300;
 	@Value(DataModular.DATA_OFFLINE_INTERVAL)
 	private int offlineInterval = 3600;
+	@Value(DataModular.DATA_BATCH_NUM)
+	private int batchOperateNum = 256;
+
 	@Autowired
 	private DataAccessor dataAccessor;
 	@Autowired
@@ -51,7 +57,7 @@ public class DataModular implements Modular {
 	public void init() {
 		dataAccessor.judgeAccessType();
 		logger.info("初始化数据存储模块，定时存档的时间间隔为 {}秒, 离线玩家在内存中的存活时间为 {}秒", saveInterval, offlineInterval);
-		asyncWriteService.init(saveInterval, offlineInterval);
+		asyncWriteService.init(saveInterval, offlineInterval, batchOperateNum);
 	}
 
 	@Override
