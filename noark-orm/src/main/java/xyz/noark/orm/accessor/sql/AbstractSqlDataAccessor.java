@@ -29,10 +29,12 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.DataAccessException;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.DataConstant;
+import xyz.noark.orm.DataModular;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.AbstractDataAccessor;
@@ -47,12 +49,16 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	protected final SqlExpert expert;
 	protected final DataSource dataSource;
 	/** 是否输出执行SQL日志 */
+	@Value(DataModular.DATA_SQL_LOG_ENABLE)
 	protected boolean statementExecutableSqlLogEnable = false;
 	/** 是否输出执行SQL的参数日志(上一个必需要true) */
+	@Value(DataModular.DATA_SQL_LOG_PARAMETER_ENABLE)
 	protected boolean statementParameterSetLogEnable = false;
 	/** 慢查询时间阀值(单位：毫秒),如果为0则不监控 */
+	@Value(DataModular.DATA_SLOW_QUERY_SQL_MILLIS)
 	protected int slowQuerySqlMillis = 0;
 	/** 自动删除表中多余的字段 */
+	@Value(DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN)
 	private boolean autoAlterTableDropColumn = false;
 
 	public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {

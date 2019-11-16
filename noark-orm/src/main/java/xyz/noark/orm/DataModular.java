@@ -36,6 +36,14 @@ public class DataModular implements Modular {
 	public static final String DATA_OFFLINE_INTERVAL = "data.offline.interval";
 	/** 服务器数据每次批量操作的最大数量，默认：256 */
 	public static final String DATA_BATCH_NUM = "data.batch.num";
+	/** 服务器数据存档SQL是否记录日志，默认值：false */
+	public static final String DATA_SQL_LOG_ENABLE = "data.sql.log.enable";
+	/** 服务器数据存档SQL占位符参数是否记录日志（前提取决于{@link DataModular#DATA_SQL_LOG_ENABLE}） */
+	public static final String DATA_SQL_LOG_PARAMETER_ENABLE = "data.sql.log.parameter.enable";
+	/** 服务器数据开启慢查询的时间（单位：ms）,默认为0，不开启 */
+	public static final String DATA_SLOW_QUERY_SQL_MILLIS = "data.slow.query.sql.millis";
+	/** 服务器数据是否智能删除表中多的字段，默认：false */
+	public static final String DATA_AUTO_ALTER_TABLE_DROP_COLUMN = "data.auto.alter.table.drop.column";
 
 	/** 数据存储默认开启下划线命名方式检测 */
 	public static boolean CheckUnderScoreCase = true;
