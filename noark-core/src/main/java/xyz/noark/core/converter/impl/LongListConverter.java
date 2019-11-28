@@ -39,7 +39,7 @@ public class LongListConverter extends AbstractConverter<LongList> {
 
 		String[] array = StringUtils.split(value, ",");
 		LongList result = new LongArrayList(array.length);
-		Arrays.stream(array).forEach(v -> result.add(Integer.parseInt(v)));
+		Arrays.stream(array).forEach(v -> result.add(Long.parseLong(v)));
 		return result;
 	}
 
