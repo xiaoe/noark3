@@ -41,7 +41,7 @@ class UnrealizedAdaptor extends AbstractValueAdaptor<Void> {
 	}
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, Void value, int parameterIndex) {}
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Void value, int parameterIndex) {}
 
 	@Override
 	protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {

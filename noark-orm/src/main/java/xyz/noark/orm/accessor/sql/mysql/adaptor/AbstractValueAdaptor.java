@@ -30,18 +30,19 @@ public abstract class AbstractValueAdaptor<T> {
 	@SuppressWarnings("unchecked")
 	public void parameterToPreparedStatement(EntityMapping<?> em, FieldMapping fm, PreparedStatementProxy pstmt, Object entity, int index) throws Exception {
 		T value = (T) em.getMethodAccess().invoke(entity, fm.getGetMethodIndex());
-		this.toPreparedStatement(pstmt, value, index);
+		this.toPreparedStatement(fm, pstmt, value, index);
 	}
 
 	/**
 	 * 属性转化到PreparedStatement中
 	 * 
+	 * @param fm 属性映射描述
 	 * @param pstmt PreparedStatement代理对象
 	 * @param value 值
 	 * @param parameterIndex 参数位置
 	 * @throws Exception 可能出现SQL异常
 	 */
-	protected abstract void toPreparedStatement(PreparedStatementProxy pstmt, T value, final int parameterIndex) throws Exception;
+	protected abstract void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, T value, final int parameterIndex) throws Exception;
 
 	public void resultSetToParameter(EntityMapping<?> em, FieldMapping fm, ResultSet rs, Object result) throws Exception {
 		Object value = this.toParameter(fm, rs);

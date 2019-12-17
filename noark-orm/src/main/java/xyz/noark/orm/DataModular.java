@@ -44,6 +44,8 @@ public class DataModular implements Modular {
 	public static final String DATA_SLOW_QUERY_SQL_MILLIS = "data.slow.query.sql.millis";
 	/** 服务器数据是否智能删除表中多的字段，默认：false */
 	public static final String DATA_AUTO_ALTER_TABLE_DROP_COLUMN = "data.auto.alter.table.drop.column";
+	/** 服务器数据是否智能修正文本字段的长度，默认：true */
+	public static final String DATA_AUTO_ALTER_COLUMN_LENGTH = "data.auto.alter.column.length";
 
 	/** 数据存储默认开启下划线命名方式检测 */
 	public static boolean CheckUnderScoreCase = true;

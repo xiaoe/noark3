@@ -13,15 +13,21 @@
  */
 package xyz.noark.orm.accessor.sql.mysql;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import xyz.noark.core.exception.DataException;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.AbstractSqlDataAccessor;
@@ -43,6 +49,40 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 	}
 
 	@Override
+	protected void handleDataTooLongException(EntityMapping<?> em, Map<String, Integer> columnMaxLenMap) {
+		// 修正这个字段的长度...
+		this.executeStatement((stmt) -> {
+			try (ResultSet rs = stmt.executeQuery(StringUtils.join("SELECT * FROM ", em.getTableName(), " LIMIT 0"))) {
+				final ResultSetMetaData rsmd = rs.getMetaData();
+				for (int i = 1, len = rsmd.getColumnCount(); i <= len; i++) {
+					// 字符串类型的字段，要修正长度的(只能变长，不能变短)
+					if (rsmd.getColumnType(i) == Types.VARCHAR) {
+						final String columnName = rsmd.getColumnName(i);
+						final int max = rsmd.getColumnDisplaySize(i);
+						final int length = columnMaxLenMap.getOrDefault(columnName, 0);
+						if (length > max) {
+							em.getFieldMapping().stream().filter(v -> v.getColumnName().equals(columnName)).findFirst().ifPresent(fm -> {
+								// 扩容方式，小于512的*2，大于512的+512
+								int width = 0;
+								if (length <= 512) {
+									width = length * 2;
+								} else {
+									width = length + 512;
+								}
+								fm.setWidth(width);
+								logger.warn("智能修正字段长度 column={}, before={}, after={}", columnName, max, width);
+								autoAlterTableUpdateColumn(em, fm);
+							});
+						}
+					}
+				}
+			}
+			// 随便返回一个，没有实际意义
+			return 0;
+		});
+	}
+
+	@Override
 	public <T> int insert(final EntityMapping<T> em, final T entity) {
 		class InsertPreparedStatementCallback implements PreparedStatementCallback<Integer> {
 			@Override
@@ -51,7 +91,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(new InsertPreparedStatementCallback(), expert.genInsertSql(em));
+		return execute(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entity);
 	}
 
 	@Override
@@ -66,7 +106,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(new InsertPreparedStatementCallback(), expert.genInsertSql(em));
+		return executeBatch(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entitys);
 	}
 
 	private <T> void buildInsertParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
@@ -89,7 +129,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(new DeletePreparedStatementCallback(), expert.genDeleteSql(em));
+		return execute(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), id);
 	}
 
 	@Override
@@ -104,7 +144,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(new DeletePreparedStatementCallback(), expert.genDeleteSql(em));
+		return executeBatch(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), entitys);
 	}
 
 	@Override
@@ -116,7 +156,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(new UpdatePreparedStatementCallback(), expert.genUpdateSql(em));
+		return execute(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entity);
 	}
 
 	@Override
@@ -131,7 +171,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(new UpdatePreparedStatementCallback(), expert.genUpdateSql(em));
+		return executeBatch(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entitys);
 	}
 
 	private <T> void buildUpdateParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
@@ -160,7 +200,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(new LoadPreparedStatementCallback(), expert.genSelectSql(em));
+		return execute(em, new LoadPreparedStatementCallback(), expert.genSelectSql(em), id);
 	}
 
 	@Override
@@ -175,7 +215,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(new LoadAllPreparedStatementCallback(), expert.genSelectAllSql(em));
+		return execute(em, new LoadAllPreparedStatementCallback(), expert.genSelectAllSql(em), null);
 	}
 
 	public <T> List<T> newEntityList(final EntityMapping<T> em, ResultSet rs) throws Exception {
@@ -208,7 +248,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSelectByPlayerId(em));
+		return execute(em, new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSelectByPlayerId(em), playerId);
 	}
 
 	private <T> void setPstmtParameter(EntityMapping<T> em, FieldMapping fm, PreparedStatementProxy pstmt, final T entity, final int index) throws Exception {

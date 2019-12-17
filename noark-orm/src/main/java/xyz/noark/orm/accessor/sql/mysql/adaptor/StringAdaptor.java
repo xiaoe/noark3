@@ -27,8 +27,8 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class StringAdaptor extends AbstractValueAdaptor<String> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, String value, int parameterIndex) throws Exception {
-		pstmt.setString(parameterIndex, value);
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, String value, int parameterIndex) throws Exception {
+		pstmt.setString(fm, parameterIndex, value);
 	}
 
 	@Override

@@ -46,8 +46,12 @@ import xyz.noark.orm.accessor.AbstractDataAccessor;
  * @author 小流氓(176543888@qq.com)
  */
 public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
+	/** MYSQL字段数据过长异常类名称 */
+	private static final String MYSQL_DATA_TRUNCATION_CLASS_NAME = "com.mysql.jdbc.MysqlDataTruncation";
+
 	protected final SqlExpert expert;
 	protected final DataSource dataSource;
+
 	/** 是否输出执行SQL日志 */
 	@Value(DataModular.DATA_SQL_LOG_ENABLE)
 	protected boolean statementExecutableSqlLogEnable = false;
@@ -60,6 +64,9 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	/** 自动删除表中多余的字段 */
 	@Value(DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN)
 	private boolean autoAlterTableDropColumn = false;
+	/** 自动删除表中多余的字段 */
+	@Value(DataModular.DATA_AUTO_ALTER_COLUMN_LENGTH)
+	protected boolean autoAlterColumnLength = true;
 
 	public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {
 		this.expert = expert;
@@ -95,27 +102,53 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		}
 	}
 
-	protected <T> T execute(PreparedStatementCallback<T> action, String sql) {
+	/**
+	 * 执行SQL的逻辑，只能是异常显示数据.
+	 * 
+	 * @param <T> 数据类型
+	 * @param em 实体对象描述
+	 * @param action PreparedStatement回调接口
+	 * @param sql 执行SQL
+	 * @param entity 实体对象，也可能为null，查询时还可能是条件ID
+	 * @return 执行结果
+	 */
+	protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, Object entity) {
 		long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
+		final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
 		try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-			PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable);
+			PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable, autoAlterColumnLength, columnMaxLenMap);
+
+			// 执行填充参数
 			T result = action.doInPreparedStatement(proxy);
+
+			// 记录日志
 			this.logExecutableSql(proxy, sql, startTime);
 			return result;
 		} catch (Exception e) {
+			// 尝试修复数据库字段过长的问题，自动扩容
+			// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation:
+			// Data too long for column 'json' at row 1
+			if (autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
+				synchronized (em) {
+					this.handleDataTooLongException(em, columnMaxLenMap);
+				}
+				return this.execute(em, action, sql, entity);
+			}
+
 			throw new DataAccessException(e);
 		}
 	}
 
-	protected <T> T executeBatch(PreparedStatementCallback<T> action, String sql) {
+	protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, List<?> entitys) {
 		long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
+		final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
 		// 批量执行，如果出现异常，数据将进行回滚
 		try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 			// 关闭自动提交功能
 			con.setAutoCommit(false);
 			try {
 				// 构建代理，拼接参数
-				PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable);
+				PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable, autoAlterColumnLength, columnMaxLenMap);
 				T result = action.doInPreparedStatement(proxy);
 				// 手动提交
 				con.commit();
@@ -124,6 +157,18 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 				return result;
 			} catch (SQLException e) {
 				con.rollback();
+
+				// 尝试修复数据库字段过长的问题，自动扩容
+				// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data
+				// truncation:
+				// Data too long for column 'json' at row 1
+				if (autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
+					synchronized (em) {
+						this.handleDataTooLongException(em, columnMaxLenMap);
+					}
+					return this.executeBatch(em, action, sql, entitys);
+				}
+
 				throw new DataAccessException(e);
 			} finally {
 				// 还原为自动提交
@@ -133,6 +178,14 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 			throw new DataAccessException(e);
 		}
 	}
+
+	/**
+	 * 处理数据过长的异常情况
+	 * 
+	 * @param em 实体对象描述
+	 * @param columnMaxLenMap 每个字段目前已用的最大长记录
+	 */
+	protected abstract void handleDataTooLongException(EntityMapping<?> em, Map<String, Integer> columnMaxLenMap);
 
 	private void logExecutableSql(PreparedStatementProxy statement, String sql, long startTime) {
 		// 不输出，直接忽略所有.
@@ -251,7 +304,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	}
 
 	/** 自动修正字段 */
-	private <T> void autoAlterTableUpdateColumn(EntityMapping<T> em, FieldMapping fm) {
+	protected <T> void autoAlterTableUpdateColumn(EntityMapping<T> em, FieldMapping fm) {
 		final String sql = expert.genUpdateTableColumnSql(em, fm);
 		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);
 		this.executeStatement((stmt) -> stmt.executeUpdate(sql));

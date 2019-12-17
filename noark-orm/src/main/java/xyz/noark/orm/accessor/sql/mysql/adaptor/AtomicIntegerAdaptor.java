@@ -28,7 +28,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class AtomicIntegerAdaptor extends AbstractValueAdaptor<AtomicInteger> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, AtomicInteger value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, AtomicInteger value, int parameterIndex) throws Exception {
 		pstmt.setInt(parameterIndex, value.intValue());
 	}
 

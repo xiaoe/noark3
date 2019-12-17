@@ -28,7 +28,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class AtomicLongAdaptor extends AbstractValueAdaptor<AtomicLong> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, AtomicLong value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, AtomicLong value, int parameterIndex) throws Exception {
 		pstmt.setLong(parameterIndex, value.longValue());
 	}
 

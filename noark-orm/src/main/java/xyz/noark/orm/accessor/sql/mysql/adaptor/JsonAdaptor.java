@@ -29,11 +29,11 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class JsonAdaptor extends AbstractValueAdaptor<Object> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, Object value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Object value, int parameterIndex) throws Exception {
 		if (value == null) {
-			pstmt.setString(parameterIndex, null);
+			pstmt.setString(fm, parameterIndex, null);
 		} else {
-			pstmt.setString(parameterIndex, JSON.toJSONString(value));
+			pstmt.setString(fm, parameterIndex, JSON.toJSONString(value));
 		}
 	}
 

@@ -27,7 +27,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class DoubleAdaptor extends AbstractValueAdaptor<Double> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, Double value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Double value, int parameterIndex) throws Exception {
 		pstmt.setDouble(parameterIndex, value);
 	}
 
