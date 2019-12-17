@@ -303,7 +303,13 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		});
 	}
 
-	/** 自动修正字段 */
+	/**
+	 * 自动修正字段
+	 * 
+	 * @param <T> 实体类型
+	 * @param em 实体描述对象
+	 * @param fm 实体指定属性描述对象
+	 */
 	protected <T> void autoAlterTableUpdateColumn(EntityMapping<T> em, FieldMapping fm) {
 		final String sql = expert.genUpdateTableColumnSql(em, fm);
 		logger.warn("实体类[{}]对应的数据库表结构不一致，准备自动修补表结构，SQL如下:\n{}", em.getEntityClass(), sql);
