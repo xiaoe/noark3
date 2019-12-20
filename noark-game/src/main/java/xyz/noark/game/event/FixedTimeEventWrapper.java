@@ -11,31 +11,25 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.game.event;
+package xyz.noark.game.event;
 
-import javax.annotation.PostConstruct;
-
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
-import xyz.noark.core.event.EventManager;
+import xyz.noark.core.event.FixedTimeEvent;
 
 /**
- * 联盟业务.
+ * 定时定点的事件包裹类.
  *
- * @since 3.2.6
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-@Service
-public class AllianceService {
+final class FixedTimeEventWrapper extends AbstractDelayEvent {
+	/** 事件源 */
+	private final FixedTimeEvent source;
 
-	@Autowired
-	private EventManager eventManager;
+	public FixedTimeEventWrapper(FixedTimeEvent source) {
+		this.source = source;
+	}
 
-	@PostConstruct
-	public void init() {
-		// 模拟1号玩家创建名称为天下的联盟
-		eventManager.publish(new AllianceCreateEvent(1L, "天下"));
-		// 模拟2号玩家加入名称为天下的联盟
-		eventManager.publish(new AllianceJoinEvent(2L, "天下"));
+	public FixedTimeEvent getSource() {
+		return source;
 	}
 }

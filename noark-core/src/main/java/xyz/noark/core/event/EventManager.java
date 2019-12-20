@@ -11,12 +11,45 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event.delay;
+package xyz.noark.core.event;
 
 /**
- * 延迟任务事件.
+ * 事件管理器.
  *
- * @since 3.2.6
+ * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public final class ScheduledEvent extends AbstractDelayEvent {}
+public interface EventManager {
+	/**
+	 * 发布一个事件.
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(Event event);
+
+	/**
+	 * 发布一个延迟事件.
+	 * <p>
+	 * 一定要重新HashCode和equals
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(DelayEvent event);
+
+	/**
+	 * 发布一个定时任务事件.
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(FixedTimeEvent event);
+
+	/**
+	 * 移除一个延迟事件.
+	 * <p>
+	 * 一定要重新HashCode和equals
+	 * 
+	 * @param event 事件源
+	 * @return 如果移除成功则返回true,否则返回false.
+	 */
+	public boolean remove(DelayEvent event);
+}

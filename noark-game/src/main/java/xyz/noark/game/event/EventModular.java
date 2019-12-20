@@ -16,7 +16,6 @@ package xyz.noark.game.event;
 import xyz.noark.core.Modular;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
-import xyz.noark.game.event.delay.DelayEventManager;
 
 /**
  * 事件模块.

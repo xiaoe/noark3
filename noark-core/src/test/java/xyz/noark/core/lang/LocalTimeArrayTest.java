@@ -11,31 +11,41 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.game.event;
+package xyz.noark.core.lang;
 
-import javax.annotation.PostConstruct;
+import static org.junit.Assert.assertTrue;
 
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
-import xyz.noark.core.event.EventManager;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
 
 /**
- * 联盟业务.
+ * LocalTime数组测试用例
  *
- * @since 3.2.6
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-@Service
-public class AllianceService {
+public class LocalTimeArrayTest {
 
-	@Autowired
-	private EventManager eventManager;
+	@Test
+	public void testDoNextLocalTime() {
+		List<LocalTime> times = new ArrayList<>();
+		times.add(LocalTime.of(8, 0));
+		times.add(LocalTime.of(12, 0));
+		times.add(LocalTime.of(20, 0));
+		LocalTimeArray array = new LocalTimeArray(times.toArray(new LocalTime[] {}));
 
-	@PostConstruct
-	public void init() {
-		// 模拟1号玩家创建名称为天下的联盟
-		eventManager.publish(new AllianceCreateEvent(1L, "天下"));
-		// 模拟2号玩家加入名称为天下的联盟
-		eventManager.publish(new AllianceJoinEvent(2L, "天下"));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		{
+//			LocalTime now = LocalTime.of(0, 0, 0);
+//			array.doNext(now)
+//			
+//			
+//			assertTrue("2019-12-21 10:00:00".equals(sdf.format()));
+		}
 	}
 }

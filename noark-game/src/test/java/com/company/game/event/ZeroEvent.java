@@ -13,29 +13,18 @@
  */
 package com.company.game.event;
 
-import javax.annotation.PostConstruct;
-
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
-import xyz.noark.core.event.EventManager;
+import xyz.noark.core.lang.LocalTimeArray;
+import xyz.noark.game.event.AbstractFixedTimeEvent;
 
 /**
- * 联盟业务.
+ * 0点事件.
  *
- * @since 3.2.6
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-@Service
-public class AllianceService {
+public class ZeroEvent extends AbstractFixedTimeEvent {
 
-	@Autowired
-	private EventManager eventManager;
-
-	@PostConstruct
-	public void init() {
-		// 模拟1号玩家创建名称为天下的联盟
-		eventManager.publish(new AllianceCreateEvent(1L, "天下"));
-		// 模拟2号玩家加入名称为天下的联盟
-		eventManager.publish(new AllianceJoinEvent(2L, "天下"));
+	public ZeroEvent(LocalTimeArray trigger) {
+		super(trigger);
 	}
 }
