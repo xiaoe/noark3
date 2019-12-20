@@ -13,7 +13,7 @@
  */
 package com.company.game.event;
 
-import xyz.noark.game.event.delay.AbstractDelayEvent;
+import xyz.noark.game.event.AbstractDelayEvent;
 
 /**
  * 建筑升级事件.

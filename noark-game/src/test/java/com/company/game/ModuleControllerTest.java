@@ -13,7 +13,12 @@
  */
 package com.company.game;
 
+import static xyz.noark.log.LogHelper.logger;
+
+import com.company.game.event.ZeroEvent;
+
 import xyz.noark.core.annotation.ModuleController;
+import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.PacketMapping;
 
 /**
@@ -30,4 +35,8 @@ public class ModuleControllerTest {
 		System.out.println("2222");
 	}
 
+	@EventListener
+	public void handleZeroEvent(ZeroEvent event) {
+		logger.debug("0点啦...");
+	}
 }

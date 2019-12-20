@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event.delay;
+package xyz.noark.game.event;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -19,14 +19,16 @@ import java.util.List;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
+import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.Event;
+import xyz.noark.core.event.EventManager;
+import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.exception.HackerException;
 import xyz.noark.core.ioc.manager.EventMethodManager;
 import xyz.noark.core.ioc.manager.ScheduledMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
-import xyz.noark.game.event.EventManager;
 
 /**
  * 一个提供延迟执行事件功能的实现类.
@@ -35,8 +37,8 @@ import xyz.noark.game.event.EventManager;
  * @author 小流氓(176543888@qq.com)
  */
 @Service
-public class DelayEventManager implements EventManager {
-	private static final EventMethodManager MANAGER = EventMethodManager.getInstance();
+public class DefaultEventManager implements EventManager {
+	private static final EventMethodManager EVENT_MANAGER = EventMethodManager.getInstance();
 	private static final ScheduledMethodManager SCHEDULED_MANAGER = ScheduledMethodManager.getInstance();
 	private final DelayEventThread handler = new DelayEventThread(this);
 
@@ -69,17 +71,50 @@ public class DelayEventManager implements EventManager {
 		this.notifyListeners(event);
 	}
 
+	@Override
+	public void publish(DelayEvent event) {
+		// 未配置这个结束时间，会死人的....
+		if (event.getEndTime() == null) {
+			throw new HackerException("未配置延迟事件的结束时间. class=" + event.getClass().getName());
+		}
+		handler.addDelayEvent(event);
+	}
+
+	@Override
+	public boolean remove(DelayEvent event) {
+		return handler.remove(event);
+	}
+
+	@Override
+	public void publish(FixedTimeEvent event) {
+		// 未配置触发时间，会死人的....
+		if (event.getTrigger() == null) {
+			throw new HackerException("未配置定时任务的触发时间. class=" + event.getClass().getName());
+		}
+		this.resetEndTimeAndPublish(new FixedTimeEventWrapper(event));
+	}
+
+	/**
+	 * 修正时间，进行下一次事件发布...
+	 * 
+	 * @param event 定时任务包裹对象
+	 */
+	private void resetEndTimeAndPublish(FixedTimeEventWrapper event) {
+		event.setEndTime(event.getSource().getTrigger().doNext());
+		this.publish(event);
+	}
+
 	/**
 	 * 通知监听器.
 	 * 
 	 * @param event 事件源
 	 */
 	void notifyListeners(Event event) {
-		List<EventMethodWrapper> handlers = MANAGER.getEventMethodWrappers(event.getClass());
+		List<EventMethodWrapper> handlers = EVENT_MANAGER.getEventMethodWrappers(event.getClass());
 		if (handlers.isEmpty()) {
 			// 如果有只监听了接口而无子类时，就在这里尝试重构这个子类的所对应的方法
-			synchronized (MANAGER) {
-				handlers = MANAGER.rebuildEventHandler(event.getClass());
+			synchronized (EVENT_MANAGER) {
+				handlers = EVENT_MANAGER.rebuildEventHandler(event.getClass());
 			}
 			if (handlers.isEmpty()) {
 				logger.warn("No subscription event. class={}", event.getClass());
@@ -113,17 +148,29 @@ public class DelayEventManager implements EventManager {
 		this.publish(event);
 	}
 
-	@Override
-	public void publish(DelayEvent event) {
-		// 未配置这个结束时间，会死人的....
-		if (event.getEndTime() == null) {
-			throw new HackerException("未配置延迟事件的结束时间. class=" + event.getClass().getName());
-		}
-		handler.addDelayEvent(event);
+	/**
+	 * 定时任务时间到了，通知监听器执行处理逻辑
+	 * 
+	 * @param event 事件源
+	 */
+	void notifyFixedTimeEventHandler(FixedTimeEventWrapper event) {
+		this.notifyListeners(event.getSource());
+		this.resetEndTimeAndPublish(event);
 	}
 
-	@Override
-	public boolean remove(DelayEvent event) {
-		return handler.remove(event);
+	void notifyListeners(FixedTimeEvent event) {
+		List<EventMethodWrapper> handlers = EVENT_MANAGER.getEventMethodWrappers(event.getClass());
+		if (handlers.isEmpty()) {
+			logger.warn("No subscription event. class={}", event.getClass());
+			return;
+		}
+
+		for (EventMethodWrapper handler : handlers) {
+			try {
+				threadDispatcher.dispatchFixedTimeEvent(handler, event);
+			} catch (Exception e) {
+				logger.warn("handle event exception. {}", e);
+			}
+		}
 	}
 }

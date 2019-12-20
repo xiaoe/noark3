@@ -11,31 +11,32 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.game.event;
+package xyz.noark.core.ioc.wrap.param;
 
-import javax.annotation.PostConstruct;
+import java.io.Serializable;
 
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
-import xyz.noark.core.event.EventManager;
+import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
 
 /**
- * 联盟业务.
+ * 对象参数包装类.
  *
- * @since 3.2.6
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-@Service
-public class AllianceService {
+public class ObjectParamWrapper implements ParamWrapper {
 
-	@Autowired
-	private EventManager eventManager;
+	public ObjectParamWrapper() {}
 
-	@PostConstruct
-	public void init() {
-		// 模拟1号玩家创建名称为天下的联盟
-		eventManager.publish(new AllianceCreateEvent(1L, "天下"));
-		// 模拟2号玩家加入名称为天下的联盟
-		eventManager.publish(new AllianceJoinEvent(2L, "天下"));
+	@Override
+	public Object read(Session session, NetworkPacket packet) {
+		throw new UnrealizedException("对象参数，不会走到这个逻辑.");
+	}
+
+	@Override
+	public Object read(Serializable playerId, Object object) {
+		return object;
 	}
 }

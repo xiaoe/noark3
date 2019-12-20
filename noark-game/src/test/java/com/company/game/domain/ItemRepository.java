@@ -16,6 +16,7 @@ package com.company.game.domain;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -24,11 +25,13 @@ import javax.annotation.PostConstruct;
 import com.company.game.LoginEvent;
 import com.company.game.event.BuildingUpgradeEvent;
 import com.company.game.event.TestOrderEvent;
+import com.company.game.event.ZeroEvent;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Repository;
+import xyz.noark.core.event.EventManager;
+import xyz.noark.core.lang.LocalTimeArray;
 import xyz.noark.core.util.DateUtils;
-import xyz.noark.game.event.EventManager;
 import xyz.noark.orm.repository.UniqueCacheRepository;
 
 /**
@@ -82,5 +85,12 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 			TestOrderEvent event = new TestOrderEvent();
 			eventManager.publish(event);
 		}
+
+		{
+			LocalTime now = LocalTime.now();
+			ZeroEvent event = new ZeroEvent(new LocalTimeArray(new LocalTime[] { now.plusSeconds(5), now.plusSeconds(15), now.plusSeconds(25) }));
+			eventManager.publish(event);
+		}
+
 	}
 }

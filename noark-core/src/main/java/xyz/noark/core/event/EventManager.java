@@ -11,31 +11,45 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package com.company.game.event;
-
-import javax.annotation.PostConstruct;
-
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
-import xyz.noark.core.event.EventManager;
+package xyz.noark.core.event;
 
 /**
- * 联盟业务.
+ * 事件管理器.
  *
- * @since 3.2.6
+ * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-@Service
-public class AllianceService {
+public interface EventManager {
+	/**
+	 * 发布一个事件.
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(Event event);
 
-	@Autowired
-	private EventManager eventManager;
+	/**
+	 * 发布一个延迟事件.
+	 * <p>
+	 * 一定要重新HashCode和equals
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(DelayEvent event);
 
-	@PostConstruct
-	public void init() {
-		// 模拟1号玩家创建名称为天下的联盟
-		eventManager.publish(new AllianceCreateEvent(1L, "天下"));
-		// 模拟2号玩家加入名称为天下的联盟
-		eventManager.publish(new AllianceJoinEvent(2L, "天下"));
-	}
+	/**
+	 * 发布一个定时任务事件.
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(FixedTimeEvent event);
+
+	/**
+	 * 移除一个延迟事件.
+	 * <p>
+	 * 一定要重新HashCode和equals
+	 * 
+	 * @param event 事件源
+	 * @return 如果移除成功则返回true,否则返回false.
+	 */
+	public boolean remove(DelayEvent event);
 }

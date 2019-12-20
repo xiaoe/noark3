@@ -14,12 +14,13 @@
 package xyz.noark.core.ioc.definition.method;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
+import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
-import xyz.noark.core.util.ArrayUtils;
 import xyz.noark.reflectasm.MethodAccess;
 
 /**
@@ -37,20 +38,33 @@ public class EventMethodDefinition extends SimpleMethodDefinition {
 		super(methodAccess, method);
 		this.eventListener = eventListener;
 
+		// 如果注解里没有配置，那就尝试分析参数里中的事件对象类型
 		Class<? extends Event> eventClass = eventListener.value();
 		if (eventClass == Event.class) {
 			final String className = beanDefinition.getBeanClass().getName();
-			Class<?>[] array = method.getParameterTypes();
-			if (ArrayUtils.isEmpty(array)) {
+
+			// 遍历去找事件源的类型
+			for (Parameter parameter : parameters) {
+				// 事件类型的对象
+				if (Event.class.isAssignableFrom(parameter.getType())) {
+					if (eventClass == Event.class) {
+						eventClass = (Class<? extends Event>) parameter.getType();
+					} else {
+						throw new ServerBootstrapException("事件监听处理方法，有且只能有一个事件类型的参数 class=" + className + ", method=" + method.getName());
+					}
+				}
+				// 玩家ID
+				else if (!parameter.isAnnotationPresent(PlayerId.class)) {
+					throw new ServerBootstrapException("事件监听处理方法，出现非@PlayerId非事件的参数 class=" + className + ", method=" + method.getName() + ", parameter=" + parameter.getName());
+				}
+			}
+
+			// 没配事件类型，还没参数
+			if (eventClass == Event.class) {
 				throw new ServerBootstrapException("事件监听处理方法，没有申请事件类型，也没有事件参数 class=" + className + ", method=" + method.getName());
-			} else if (array.length > 1) {
-				throw new ServerBootstrapException("事件监听处理方法，有且只能有一个参数 class=" + className + ", method=" + method.getName());
-			} else if (!Event.class.isAssignableFrom(array[0])) {
-				throw new ServerBootstrapException("事件监听处理方法，参数类型必需实现Event接口 class=" + className + ", method=" + method.getName());
-			} else {
-				eventClass = (Class<? extends Event>) array[0];
 			}
 		}
+
 		this.eventClass = eventClass;
 	}
 
