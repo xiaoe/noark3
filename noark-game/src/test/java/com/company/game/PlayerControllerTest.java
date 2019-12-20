@@ -11,31 +11,28 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package com.company.game;
 
-import xyz.noark.core.Modular;
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
+import static xyz.noark.log.LogHelper.logger;
+
+import com.company.game.event.ZeroEvent;
+
+import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.controller.EventListener;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
 
 /**
- * 事件模块.
+ * 模块入口测试.
  *
- * @since 3.0
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = Modular.EVENT_MODULAR)
-public class EventModular implements Modular {
+@Controller(threadGroup = ExecThreadGroup.PlayerThreadGroup)
+public class PlayerControllerTest {
 
-	@Autowired
-	private DefaultEventManager eventManager;
-
-	@Override
-	public void init() {
-		eventManager.init();
-	}
-
-	@Override
-	public void destroy() {
-		eventManager.destroy();
+	@EventListener
+	public void handleZeroEvent(@PlayerId Long playerId, ZeroEvent event) {
+		logger.debug("0点啦...playerId={}", playerId);
 	}
 }

@@ -37,7 +37,7 @@ import xyz.noark.core.thread.ThreadDispatcher;
  * @author 小流氓(176543888@qq.com)
  */
 @Service
-public class DelayEventManager implements EventManager {
+public class DefaultEventManager implements EventManager {
 	private static final EventMethodManager EVENT_MANAGER = EventMethodManager.getInstance();
 	private static final ScheduledMethodManager SCHEDULED_MANAGER = ScheduledMethodManager.getInstance();
 	private final DelayEventThread handler = new DelayEventThread(this);
@@ -153,9 +153,24 @@ public class DelayEventManager implements EventManager {
 	 * 
 	 * @param event 事件源
 	 */
-	public void notifyFixedTimeEventHandler(FixedTimeEventWrapper event) {
+	void notifyFixedTimeEventHandler(FixedTimeEventWrapper event) {
 		this.notifyListeners(event.getSource());
 		this.resetEndTimeAndPublish(event);
 	}
 
+	void notifyListeners(FixedTimeEvent event) {
+		List<EventMethodWrapper> handlers = EVENT_MANAGER.getEventMethodWrappers(event.getClass());
+		if (handlers.isEmpty()) {
+			logger.warn("No subscription event. class={}", event.getClass());
+			return;
+		}
+
+		for (EventMethodWrapper handler : handlers) {
+			try {
+				threadDispatcher.dispatchFixedTimeEvent(handler, event);
+			} catch (Exception e) {
+				logger.warn("handle event exception. {}", e);
+			}
+		}
+	}
 }

@@ -87,7 +87,8 @@ public class ItemRepository extends UniqueCacheRepository<Item, Integer> {
 		}
 
 		{
-			ZeroEvent event = new ZeroEvent(new LocalTimeArray(new LocalTime[] { LocalTime.of(14, 06, 00) }));
+			LocalTime now = LocalTime.now();
+			ZeroEvent event = new ZeroEvent(new LocalTimeArray(new LocalTime[] { now.plusSeconds(5), now.plusSeconds(15), now.plusSeconds(25) }));
 			eventManager.publish(event);
 		}
 

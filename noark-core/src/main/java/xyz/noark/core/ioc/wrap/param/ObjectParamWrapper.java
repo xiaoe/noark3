@@ -11,31 +11,32 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package xyz.noark.core.ioc.wrap.param;
 
-import xyz.noark.core.Modular;
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
+import java.io.Serializable;
+
+import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
 
 /**
- * 事件模块.
+ * 对象参数包装类.
  *
- * @since 3.0
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-@Component(name = Modular.EVENT_MODULAR)
-public class EventModular implements Modular {
+public class ObjectParamWrapper implements ParamWrapper {
 
-	@Autowired
-	private DefaultEventManager eventManager;
+	public ObjectParamWrapper() {}
 
 	@Override
-	public void init() {
-		eventManager.init();
+	public Object read(Session session, NetworkPacket packet) {
+		throw new UnrealizedException("对象参数，不会走到这个逻辑.");
 	}
 
 	@Override
-	public void destroy() {
-		eventManager.destroy();
+	public Object read(Serializable playerId, Object object) {
+		return object;
 	}
 }

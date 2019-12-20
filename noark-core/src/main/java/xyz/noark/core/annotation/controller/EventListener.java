@@ -20,6 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import xyz.noark.core.event.Event;
+import xyz.noark.core.event.FixedTimeEvent;
 
 /**
  * 事件监听器.
@@ -46,7 +47,8 @@ public @interface EventListener {
 	/**
 	 * 是否异步执行
 	 * <p>
-	 * 默认就是异步执行的，当需要同步时可以设计false
+	 * 默认就是异步执行的，当需要同步时可以设计false<br>
+	 * 当事件源为{@link FixedTimeEvent}类型时，同步无效
 	 * 
 	 * @return 如果为true异步执行,否则同步执行
 	 */

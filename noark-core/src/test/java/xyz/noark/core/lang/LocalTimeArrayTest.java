@@ -16,11 +16,15 @@ package xyz.noark.core.lang;
 import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
+
+import xyz.noark.core.util.DateUtils;
 
 /**
  * LocalTime数组测试用例
@@ -38,14 +42,21 @@ public class LocalTimeArrayTest {
 		times.add(LocalTime.of(20, 0));
 		LocalTimeArray array = new LocalTimeArray(times.toArray(new LocalTime[] {}));
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		// 今天的开始时间
+		final Date todayStartTime = new Date(DateUtils.toSecondsByStartOfDay(LocalDate.now()) * 1000);
 
-		{
-//			LocalTime now = LocalTime.of(0, 0, 0);
-//			array.doNext(now)
-//			
-//			
-//			assertTrue("2019-12-21 10:00:00".equals(sdf.format()));
+		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		{// 假如当前是0点，应该返回是明天早上0点
+			LocalTime now = LocalTime.of(0, 0, 0);
+			assertTrue(sdf.format(DateUtils.addHours(todayStartTime, 8)).equals(sdf.format(array.doNext(now))));
+		}
+		{// 假如当前是8点，应该是返回12点的时间
+			LocalTime now = LocalTime.of(8, 0, 0);
+			assertTrue(sdf.format(DateUtils.addHours(todayStartTime, 12)).equals(sdf.format(array.doNext(now))));
+		}
+		{// 假如当前是23点，应该返回是明天早上8点
+			LocalTime now = LocalTime.of(23, 59, 59);
+			assertTrue(sdf.format(DateUtils.addHours(todayStartTime, 32)).equals(sdf.format(array.doNext(now))));
 		}
 	}
 }

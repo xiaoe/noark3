@@ -30,10 +30,10 @@ import xyz.noark.core.event.DelayEvent;
 class DelayEventThread extends Thread {
 	private static final int SHUTDOWN_TIMEOUT = 1;
 	private static final DelayQueue<DelayEvent> QUEUE = new DelayQueue<>();
-	private final DelayEventManager eventManager;
+	private final DefaultEventManager eventManager;
 	private volatile boolean starting = true;
 
-	public DelayEventThread(DelayEventManager eventManager) {
+	public DelayEventThread(DefaultEventManager eventManager) {
 		super("delay-event");
 		this.eventManager = eventManager;
 	}
