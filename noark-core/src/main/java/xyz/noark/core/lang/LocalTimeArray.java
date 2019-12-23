@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import xyz.noark.core.util.DateUtils;
+
 /**
  * LocalTime数组.
  * <p>
@@ -45,10 +47,21 @@ public class LocalTimeArray {
 		return array;
 	}
 
+	/**
+	 * 以当前时间算，计算出下次触发时间
+	 * 
+	 * @return 下次触发时间
+	 */
 	public Date doNext() {
 		return doNext(LocalTime.now());
 	}
 
+	/**
+	 * 以指定时间算，计算出下次触发时间
+	 * 
+	 * @param now 指定时间
+	 * @return 下次触发时间
+	 */
 	public Date doNext(LocalTime now) {
 		// 计算出来最小的那个时间
 		int minSecond = MAX_SECOND_BY_DAY;
@@ -73,6 +86,51 @@ public class LocalTimeArray {
 		calendar.set(Calendar.SECOND, now.getSecond());
 		calendar.add(Calendar.SECOND, nextSecond);
 		return calendar.getTime();
+	}
+
+	/**
+	 * 计算从上次触发时间到当前时间，已触发了多少次了.
+	 * 
+	 * @param lastTriggerTime 上次触发时间
+	 * @param now 当前时间
+	 * @return 返回已触犯的次数，最小值为0
+	 */
+	public int triggerTimes(Date lastTriggerTime, Date now) {
+		// 如果刷新时间比当前时间还大，那就直接返回0
+		if (lastTriggerTime.getTime() >= now.getTime()) {
+			return 0;
+		}
+
+		final int lastTriggerSecond = DateUtils.toLocalTime(lastTriggerTime).toSecondOfDay();
+		final int nowSecond = DateUtils.toLocalTime(now).toSecondOfDay();
+		final long days = DateUtils.diffDays(now, lastTriggerTime);
+
+		int result = 0;
+
+		for (LocalTime time : array) {
+			int targetSecond = time.toSecondOfDay();
+			// 上次触发时间不是今天
+			if (days > 0) {
+				// 今天触发的次数
+				if (targetSecond <= nowSecond) {
+					result++;
+				}
+				// 最前面那天的次数
+				if (lastTriggerSecond < targetSecond) {
+					result++;
+				}
+			}
+			// 上次触发时间是今天
+			else if (lastTriggerSecond < targetSecond && targetSecond <= nowSecond) {
+				result++;
+			}
+		}
+
+		// 中间的天数要算全部
+		if (days > 1) {
+			result += (days - 1) * array.length;
+		}
+		return result;
 	}
 
 	@Override

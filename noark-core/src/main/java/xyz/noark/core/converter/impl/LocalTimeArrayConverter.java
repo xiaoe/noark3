@@ -19,6 +19,7 @@ import java.util.List;
 
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.AbstractConverter;
+import xyz.noark.core.exception.ConvertException;
 import xyz.noark.core.lang.LocalTimeArray;
 import xyz.noark.core.util.StringUtils;
 
@@ -37,7 +38,7 @@ public class LocalTimeArrayConverter extends AbstractConverter<LocalTimeArray> {
 	}
 
 	@Override
-	protected LocalTimeArray convert(String value) throws Exception {
+	public LocalTimeArray convert(String value) throws Exception {
 		String[] array = StringUtils.split(value, ",");
 		List<LocalTime> result = new ArrayList<>(array.length);
 		for (String time : array) {
@@ -47,8 +48,12 @@ public class LocalTimeArrayConverter extends AbstractConverter<LocalTimeArray> {
 				result.add(LocalTime.of(Integer.parseInt(ts[0]), Integer.parseInt(ts[1])));
 			}
 			// 如果是3个的话，就当他是时分秒
-			else {
+			else if (ts.length == 3) {
 				result.add(LocalTime.of(Integer.parseInt(ts[0]), Integer.parseInt(ts[1]), Integer.parseInt(ts[2])));
+			}
+			// 非法情况，异常提示
+			else {
+				throw new ConvertException("时间配置2位'08:00,12:00,22:00'或3位'08:00:00,12:00:00,22:00:00'");
 			}
 		}
 		return new LocalTimeArray(result.toArray(new LocalTime[] {}));
