@@ -14,6 +14,9 @@
 package xyz.noark.core.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
@@ -296,6 +299,26 @@ public class DateUtils {
 	 */
 	public static long toDays(long milliseconds) {
 		return milliseconds / (1L * MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR * HOUR_PER_DAY);
+	}
+
+	/**
+	 * Date对象转化为LocalDateTime对象
+	 * 
+	 * @param date Date对象
+	 * @return LocalDateTime对象
+	 */
+	public static LocalDateTime toLocalDateTime(Date date) {
+		return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+	}
+
+	/**
+	 * Date对象转化为LocalTime对象
+	 * 
+	 * @param date Date对象
+	 * @return LocalTime对象
+	 */
+	public static LocalTime toLocalTime(Date date) {
+		return toLocalDateTime(date).toLocalTime();
 	}
 
 	/**
