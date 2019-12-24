@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.csv;
+package xyz.noark.csv.template;
 
 import xyz.noark.core.annotation.tpl.TplAttr;
 import xyz.noark.core.annotation.tpl.TplAttrSuffix;
@@ -19,55 +19,30 @@ import xyz.noark.core.annotation.tpl.TplFile;
 import xyz.noark.core.lang.IntList;
 
 /**
- * 怪物刷新模板配置.
+ * 基础爆击配置
  *
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-@TplFile("MonsterRefresh.tpl")
-public class MonsterRefreshTemplate2 {
-	/** 郡城等级 */
-	@TplAttr(name = "Level")
-	private int level;
-	/** 服务器时长（小时） */
-	@TplAttr(name = "ServerPeriod")
-	private int serverPeriod;
-	/** 刷新半径(里) */
-	@TplAttr(name = "Range")
-	private int range;
-	/** 刷新时间(s) */
-	@TplAttr(name = "RefreshTime")
-	private int refreshTime;
+@TplFile("BaseCritical.tpl")
+public class BaseCriticalTemplate {
+	@TplAttr(name = "Fate")
+	private Integer fate;
 
-	/** 刷新怪物类型 */
-	@TplAttr(name = "MonsterType")
-	private int monsterType;
+	@TplAttr(name = "")
+	@TplAttrSuffix(start = 0, end = 150)
+	private IntList array;
 
-	/** 1级怪数量 */
-	@TplAttr(name = "Level")
-	@TplAttrSuffix(start = 1, end = 35)
-	private IntList levelNumList;
-
-	public int getLevel() {
-		return level;
+	public Integer getFate() {
+		return fate;
 	}
 
-	public int getMonsterType() {
-		return monsterType;
+	public IntList getArray() {
+		return array;
 	}
 
-	public int getServerPeriod() {
-		return serverPeriod;
-	}
-
-	public int getRange() {
-		return range;
-	}
-
-	public int getRefreshTime() {
-		return refreshTime;
-	}
-
-	public IntList getLevelNumList() {
-		return levelNumList;
+	@Override
+	public String toString() {
+		return "BaseCriticalTemplate [fate=" + fate + ", array=" + array + "]";
 	}
 }
