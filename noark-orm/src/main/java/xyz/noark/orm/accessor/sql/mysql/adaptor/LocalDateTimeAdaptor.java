@@ -33,7 +33,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class LocalDateTimeAdaptor extends AbstractValueAdaptor<LocalDateTime> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, LocalDateTime value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, LocalDateTime value, int parameterIndex) throws Exception {
 		if (value == null) {
 			pstmt.setNull(parameterIndex, Types.TIMESTAMP);
 		} else {

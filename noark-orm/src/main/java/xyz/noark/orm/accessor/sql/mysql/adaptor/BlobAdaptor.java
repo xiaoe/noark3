@@ -28,7 +28,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class BlobAdaptor extends AbstractValueAdaptor<Object> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, Object value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Object value, int parameterIndex) throws Exception {
 		if (value == null) {
 			pstmt.setNull(parameterIndex, Types.BLOB);
 		} else {

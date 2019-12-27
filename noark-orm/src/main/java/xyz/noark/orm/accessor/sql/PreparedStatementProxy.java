@@ -18,8 +18,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import xyz.noark.orm.FieldMapping;
 
 /**
  * PreparedStatement代理对象.
@@ -29,16 +32,35 @@ import java.util.List;
  */
 public class PreparedStatementProxy {
 	private final PreparedStatement pstmt;
+	private final boolean autoAlterColumnLength;
 	private final boolean statementParameterSetLogEnable;
-	private final List<Object> parameters = new ArrayList<>();
 
-	public PreparedStatementProxy(PreparedStatement pstmt, boolean statementParameterSetLogEnable) {
+	/** 批量级别的参数列表 */
+	private final List<List<Object>> batchParameterList = new LinkedList<>();
+	/** 非批量的参数列表 */
+	private List<Object> parameters = new LinkedList<>();
+	/** 记录本次存档每个字段的长度 */
+	private final Map<String, Integer> columnMaxLenMap;
+
+	public PreparedStatementProxy(PreparedStatement pstmt, boolean statementParameterSetLogEnable, boolean autoAlterColumnLength, Map<String, Integer> columnMaxLenMap) {
 		this.pstmt = pstmt;
 		this.statementParameterSetLogEnable = statementParameterSetLogEnable;
+		this.autoAlterColumnLength = autoAlterColumnLength;
+		this.columnMaxLenMap = columnMaxLenMap;
 	}
 
 	public int executeUpdate() throws SQLException {
 		return pstmt.executeUpdate();
+	}
+
+	public void addBatch() throws SQLException {
+		pstmt.addBatch();
+		batchParameterList.add(parameters);
+		this.parameters = new LinkedList<>();
+	}
+
+	public int[] executeBatch() throws SQLException {
+		return pstmt.executeBatch();
 	}
 
 	public ResultSet executeQuery() throws SQLException {
@@ -52,11 +74,16 @@ public class PreparedStatementProxy {
 		pstmt.setObject(parameterIndex, x);
 	}
 
-	public void setString(int parameterIndex, String x) throws SQLException {
+	public void setString(FieldMapping fm, int parameterIndex, String x) throws SQLException {
 		if (statementParameterSetLogEnable) {
 			parameters.add("'" + x + "'");
 		}
 		pstmt.setString(parameterIndex, x);
+
+		// 只记录字符串类型的
+		if (autoAlterColumnLength) {
+			columnMaxLenMap.put(fm.getColumnName(), x == null ? 0 : x.length());
+		}
 	}
 
 	public void setLong(int parameterIndex, Long x) throws SQLException {
@@ -110,5 +137,9 @@ public class PreparedStatementProxy {
 
 	public List<Object> getParameters() {
 		return parameters;
+	}
+
+	public List<List<Object>> getBatchParameterList() {
+		return batchParameterList;
 	}
 }

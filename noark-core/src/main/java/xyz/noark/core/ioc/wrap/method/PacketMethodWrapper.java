@@ -25,10 +25,11 @@ import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.ByteArrayParamWrapper;
+import xyz.noark.core.ioc.wrap.param.NetworkPacketParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PacketParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
 import xyz.noark.core.ioc.wrap.param.SessionParamWrapper;
-import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -75,6 +76,10 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 		else if (parameter.getType().equals(byte[].class)) {
 			this.parameters.add(new ByteArrayParamWrapper());
 		}
+		// 封包(特别情况需要这个封包里的参数，留给有需要的人吧...)
+		else if (NetworkPacket.class.isAssignableFrom(parameter.getType())) {
+			this.parameters.add(new NetworkPacketParamWrapper());
+		}
 		// 无法识别的只能依靠Session内置解码器来转化了.
 		else {
 			this.parameters.add(new PacketParamWrapper(parameter.getType()));
@@ -85,13 +90,13 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 * 分析参数.
 	 * 
 	 * @param session Session对象
-	 * @param bytes 协议封包
+	 * @param packet 封包
 	 * @return 参数列表
 	 */
-	public Object[] analysisParam(Session session, ByteArray bytes) {
+	public Object[] analysisParam(Session session, NetworkPacket packet) {
 		List<Object> args = new ArrayList<>(parameters.size());
 		for (ParamWrapper parameter : parameters) {
-			args.add(parameter.read(session, bytes));
+			args.add(parameter.read(session, packet));
 		}
 		return args.toArray();
 	}

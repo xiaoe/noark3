@@ -27,7 +27,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class FloatAdaptor extends AbstractValueAdaptor<Float> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, Float value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Float value, int parameterIndex) throws Exception {
 		pstmt.setFloat(parameterIndex, value);
 	}
 

@@ -28,7 +28,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class LongAdderAdaptor extends AbstractValueAdaptor<LongAdder> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, LongAdder value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, LongAdder value, int parameterIndex) throws Exception {
 		pstmt.setLong(parameterIndex, value.longValue());
 	}
 

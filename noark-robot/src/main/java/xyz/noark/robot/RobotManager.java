@@ -31,12 +31,12 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
+import xyz.noark.core.event.EventManager;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session.State;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.ThreadUtils;
-import xyz.noark.game.event.EventManager;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.init.SocketInitializeHandler;
 

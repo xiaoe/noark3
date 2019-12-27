@@ -64,8 +64,4 @@ public class NoarkConstant {
 	 * Banner默认图案为Noark的Logo
 	 */
 	public static final String BANNER_DEFAULT = "noark.banner";
-	/**
-	 * Banner悟空版本
-	 */
-	public static final String BANNER_WUKONG = "wukong.banner";
 }

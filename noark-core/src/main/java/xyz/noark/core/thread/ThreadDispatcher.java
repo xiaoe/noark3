@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
+import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.event.PlayerEvent;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
@@ -114,7 +115,7 @@ public class ThreadDispatcher {
 		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
-		this.dispatchPacket(session, session.getPlayerId(), packet.getIncode(), pmw, pmw.analysisParam(session, packet.getByteArray()));
+		this.dispatchPacket(session, session.getPlayerId(), packet.getIncode(), pmw, pmw.analysisParam(session, packet));
 	}
 
 	/**
@@ -199,6 +200,27 @@ public class ThreadDispatcher {
 		}
 		case ModuleThreadGroup:
 			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler, event));
+			break;
+		default:
+			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
+		}
+	}
+
+	/**
+	 * 派发定时事件任务给线程池.
+	 * 
+	 * @param handler 事件处理方法
+	 * @param event 事件对象
+	 */
+	public void dispatchFixedTimeEvent(EventMethodWrapper handler, FixedTimeEvent event) {
+		switch (handler.threadGroup()) {
+		case PlayerThreadGroup:
+			for (Serializable playerId : SessionManager.getOnlinePlayerIdList()) {
+				this.dispatchPlayerThreadHandle(null, 0, new PlayerThreadCommand(playerId, handler, handler.analysisParam(playerId, event)));
+			}
+			break;
+		case ModuleThreadGroup:
+			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler, handler.analysisParam(null, event)));
 			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());

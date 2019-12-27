@@ -39,13 +39,7 @@ public class RedisPublishReportImpl implements ReportService {
 	public void report(ReportData data) {
 		final String channel = data.channel();
 		final String json = JSON.toJSONString(data.getData());
-		// FIXME BI数据日志存档，有待优化...
 		logger.info("[BI]{}={}", channel, json);
-
-		if (redis == null) {
-			logger.warn("bi log, channel={}, data={}", channel, json);
-		} else {
-			redis.publish(channel, json);
-		}
+		redis.publish(channel, json);
 	}
 }

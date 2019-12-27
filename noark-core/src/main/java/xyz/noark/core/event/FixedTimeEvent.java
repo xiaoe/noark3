@@ -11,41 +11,21 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package xyz.noark.core.event;
 
-import xyz.noark.core.event.Event;
-import xyz.noark.game.event.delay.DelayEvent;
+import xyz.noark.core.lang.LocalTimeArray;
 
 /**
- * 事件管理器.
+ * 定时任务事件接口.
  *
- * @since 3.0
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-public interface EventManager {
+public interface FixedTimeEvent extends Event {
 	/**
-	 * 发布一个事件.
+	 * 获取定时触发的时间配置
 	 * 
-	 * @param event 事件源
+	 * @return 定时触发的时间配置
 	 */
-	public void publish(Event event);
-
-	/**
-	 * 发布一个延迟事件.
-	 * <p>
-	 * 一定要重新HashCode和equals
-	 * 
-	 * @param event 事件源
-	 */
-	public void publish(DelayEvent event);
-
-	/**
-	 * 移除一个延迟事件.
-	 * <p>
-	 * 一定要重新HashCode和equals
-	 * 
-	 * @param event 事件源
-	 * @return 如果移除成功则返回true,否则返回false.
-	 */
-	public boolean remove(DelayEvent event);
+	public LocalTimeArray getTrigger();
 }

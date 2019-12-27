@@ -30,7 +30,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class DateAdaptor extends AbstractValueAdaptor<Date> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, Date value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Date value, int parameterIndex) throws Exception {
 		if (value == null) {
 			pstmt.setNull(parameterIndex, Types.TIMESTAMP);
 		} else if (value instanceof java.util.Date) {

@@ -48,6 +48,9 @@ public class HttpServer implements TcpServer {
 	private int port = 0;
 	@Value(NetworkConstant.HTTP_SECRET_KEY)
 	private String secretKey = null;
+	/** 向内部提供HTTP服务的最大内容长度（默认：1048576=1M） */
+	@Value(NetworkConstant.HTTP_MAX_CONTENT_LENGTH)
+	private int maxContentLength = 1048576;
 
 	/**
 	 * 设置端口.
@@ -86,7 +89,7 @@ public class HttpServer implements TcpServer {
 			public void initChannel(SocketChannel ch) {
 				ChannelPipeline p = ch.pipeline();
 				p.addLast(new HttpServerCodec());
-				p.addLast(new HttpObjectAggregator(65536));
+				p.addLast(new HttpObjectAggregator(maxContentLength));
 				p.addLast(new ChunkedWriteHandler());
 				p.addLast(new HttpServerHandler(secretKey));
 			}

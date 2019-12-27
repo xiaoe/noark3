@@ -1,4 +1,4 @@
-package xyz.noark.csv;
+package xyz.noark.csv.template;
 
 import xyz.noark.core.annotation.tpl.TplAttr;
 import xyz.noark.core.annotation.tpl.TplFile;

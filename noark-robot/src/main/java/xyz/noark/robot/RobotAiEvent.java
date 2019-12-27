@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.PlayerEvent;
-import xyz.noark.game.event.delay.DelayEvent;
 
 /**
  * 机器人AI事件

@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
-import xyz.noark.game.event.EventManager;
+import xyz.noark.core.event.EventManager;
 
 /**
  * 联盟业务.

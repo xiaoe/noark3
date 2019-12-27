@@ -15,7 +15,7 @@ package xyz.noark.core.ioc.wrap;
 
 import java.io.Serializable;
 
-import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 
 /**
@@ -30,10 +30,10 @@ public interface ParamWrapper {
 	 * 解析参数对象
 	 * 
 	 * @param session Session会话
-	 * @param bytes 封包内容
+	 * @param packet 封包
 	 * @return 返回参数对象
 	 */
-	public Object read(Session session, ByteArray bytes);
+	public Object read(Session session, NetworkPacket packet);
 
 	/**
 	 * 解析参数对象

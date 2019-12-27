@@ -213,4 +213,34 @@ public class EntityMapping<T> {
 			break;
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((klass == null) ? 0 : klass.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		EntityMapping<?> other = (EntityMapping<?>) obj;
+		if (klass == null) {
+			if (other.klass != null) {
+				return false;
+			}
+		} else if (!klass.equals(other.klass)) {
+			return false;
+		}
+		return true;
+	}
 }

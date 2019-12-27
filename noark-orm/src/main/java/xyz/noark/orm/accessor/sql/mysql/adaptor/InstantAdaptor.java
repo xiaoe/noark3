@@ -30,7 +30,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 class InstantAdaptor extends AbstractValueAdaptor<Instant> {
 
 	@Override
-	protected void toPreparedStatement(PreparedStatementProxy pstmt, Instant value, int parameterIndex) throws Exception {
+	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Instant value, int parameterIndex) throws Exception {
 		if (value == null) {
 			pstmt.setNull(parameterIndex, Types.TIMESTAMP);
 		} else {

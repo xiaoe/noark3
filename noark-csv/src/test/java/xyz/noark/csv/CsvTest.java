@@ -22,6 +22,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import xyz.noark.core.converter.ConvertManager;
+import xyz.noark.csv.converter.RewardConverter;
+import xyz.noark.csv.template.BaseCriticalTemplate;
+import xyz.noark.csv.template.ItemTemplate;
+import xyz.noark.csv.template.MonsterRefreshTemplate;
+import xyz.noark.csv.template.MonsterRefreshTemplate2;
 
 /**
  * CSV测试.
@@ -30,22 +35,44 @@ import xyz.noark.core.converter.ConvertManager;
  * @author 小流氓(176543888@qq.com)
  */
 public class CsvTest {
+	private static String templatePath;
+	private static Csv csv;
 
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
+	public static void setUpBeforeClass() throws Exception {
+		ConvertManager.getInstance().register(RewardConverter.class);
+		templatePath = new File("src/test/resources/").getAbsolutePath();
+		csv = new Csv('	');
+	}
 
 	@Test
-	public void test() {
-		ConvertManager.getInstance().register(RewardConverter.class);
-		Csv csv = new Csv('	');
-		File file = new File("src/test/resources/");
-		List<ItemTemplate> ts = csv.loadAll(file.getAbsolutePath(), ItemTemplate.class);
-		assertTrue(ts.size() == 22);
+	public void testCsv() {
+		assertTrue(csv != null);
+	}
 
-		List<MonsterRefreshTemplate> templates = csv.loadAll(file.getAbsolutePath(), MonsterRefreshTemplate.class);
-		List<MonsterRefreshTemplate2> templates2 = csv.loadAll(file.getAbsolutePath(), MonsterRefreshTemplate2.class);
+	@Test
+	public void testCsvChar() {
+		assertTrue(csv != null);
+	}
+
+	@Test
+	public void testLoadAllStringClassOfT() {
+		List<ItemTemplate> ts = csv.loadAll(templatePath, ItemTemplate.class);
+		assertTrue(ts.size() == 22);
+	}
+
+	@Test
+	public void testLoadAllStringStringClassOfT() {
+		List<MonsterRefreshTemplate> templates = csv.loadAll(templatePath, MonsterRefreshTemplate.class);
+		List<MonsterRefreshTemplate2> templates2 = csv.loadAll(templatePath, MonsterRefreshTemplate2.class);
 		for (int i = 0; i < templates.size(); i++) {
 			assertTrue(templates.get(i).getLevelNumList().equals(templates2.get(i).getLevelNumList()));
 		}
+	}
+
+	@Test
+	public void test() {
+		List<BaseCriticalTemplate> templates = csv.loadAll(templatePath, BaseCriticalTemplate.class);
+		assertTrue(templates.size() == 151);
 	}
 }

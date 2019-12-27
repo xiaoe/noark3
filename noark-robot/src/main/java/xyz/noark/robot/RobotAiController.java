@@ -20,8 +20,8 @@ import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.event.EventManager;
 import xyz.noark.core.util.DateUtils;
-import xyz.noark.game.event.EventManager;
 
 /**
  * AI入口.
