@@ -21,11 +21,17 @@ package xyz.noark.game.bt;
  */
 public abstract class AbstractBehaviorNode implements BehaviorNode {
 
-	// 包装函数，防止打破调用契约
+	@Override
 	public final NodeState tick() {
+		// final 包装函数，防止打破调用契约
 		return this.update();
 	}
 
+	/**
+	 * 行为树每次更新时调用.
+	 * 
+	 * @return 返回节点行为结果
+	 */
 	public abstract NodeState update();
 
 	/**
