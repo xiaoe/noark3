@@ -18,14 +18,12 @@ import static xyz.noark.log.LogHelper.logger;
 import java.io.IOException;
 import java.lang.reflect.Parameter;
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,6 +35,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
@@ -45,6 +44,7 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
+import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.IpUtils;
 import xyz.noark.core.util.Md5Utils;
 import xyz.noark.core.util.StringUtils;
@@ -56,16 +56,17 @@ import xyz.noark.core.util.StringUtils;
  * @author 小流氓(176543888@qq.com)
  */
 public class HttpServerHandler extends ChannelInboundHandlerAdapter {
-	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 	/** 签名Key... */
 	private static final String SIGN = "sign";
 	/** 时间戳Key... */
 	private static final String TIME = "time";
 
 	private final String secretKey;
+	private final String parameterFormat;
 
-	public HttpServerHandler(String secretKey) {
+	public HttpServerHandler(String secretKey, String parameterFormat) {
 		this.secretKey = secretKey;
+		this.parameterFormat = parameterFormat;
 	}
 
 	@Override
@@ -87,59 +88,59 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	private void handleFullHttpRequest(ChannelHandlerContext ctx, FullHttpRequest request) {
-		HttpResult result = this.exec(ctx, request);
-		ByteBuf buf = Unpooled.wrappedBuffer(JSON.toJSONString(result).getBytes(DEFAULT_CHARSET));
+		final Object result = this.exec(ctx, request);
+		ByteBuf buf = Unpooled.wrappedBuffer((result instanceof byte[]) ? (byte[]) result : JSON.toJSONString(result).getBytes(CharsetUtils.CHARSET_UTF_8));
 		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
 		ctx.write(response).addListener(ChannelFutureListener.CLOSE);
 	}
 
-	private HttpResult exec(ChannelHandlerContext ctx, FullHttpRequest fhr) {
+	private Object exec(ChannelHandlerContext ctx, FullHttpRequest fhr) {
+		QueryStringDecoder decoder = new QueryStringDecoder(fhr.uri());
+		final String uri = decoder.path();
+
 		// 局域网判定
 		final String ip = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
 		if (!IpUtils.isInnerIp(ip)) {
-			logger.warn("client request's not authorized. ip={}, uri={}", ip, fhr.uri());
+			logger.warn("client request's not authorized. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
 		}
 
 		final long createTime = System.nanoTime();
-		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(fhr.uri());
+		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(uri);
 
 		// API不存在...
 		if (handler == null) {
-			logger.warn("client request's API Unrealized. ip={}, uri={}", ip, fhr.uri());
+			logger.warn("client request's API Unrealized. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.NO_API, "client request's API Unrealized.");
 		}
 
 		// 已废弃
 		if (handler.isDeprecated()) {
-			logger.warn("client request's API Deprecated. ip={}, uri={}", ip, fhr.uri());
+			logger.warn("client request's API Deprecated. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.API_DEPRECATED, "client request's API Deprecated.");
 		}
 
-		// 解析参数...
+		// 解析Http参数...
 		Map<String, String> parameters = Collections.emptyMap();
 		try {
-			final ByteBuf buf = fhr.content();
-			byte[] bs = new byte[buf.readableBytes()];
-			buf.readBytes(bs);
-			parameters = JSON.parseObject(new String(bs, DEFAULT_CHARSET), new TypeReference<Map<String, String>>() {});
+			parameters = HttpParameterParser.parse(fhr, decoder, parameterFormat);
 		} catch (Exception e) {
-			logger.warn("client request's parameters not json. ip={}, uri={}, e={}", ip, fhr.uri(), e);
+			logger.warn("client request's parameters not json. ip={}, uri={}, e={}", ip, uri, e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters not json.");
 		}
 
 		// 验证签名，如果未配置密钥，将忽略对签名的验证...
 		if (secretKey != null && !checkSign(parameters.getOrDefault(TIME, StringUtils.EMPTY), parameters.get(SIGN))) {
-			logger.warn("client request's sign failed. ip={}, uri={}", ip, fhr.uri());
+			logger.warn("client request's sign failed. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.SIGN_FAILED, "client request's sign failed.");
 		}
 
 		// 参数解析...
 		Object[] args = null;
 		try {
-			args = this.analysisParam(handler, fhr.uri(), parameters);
+			args = this.analysisParam(handler, uri, parameters);
 		} catch (Exception e) {
-			logger.warn("client request's parameters are invalid, ip={}, uri={}, e={}", ip, fhr.uri(), e);
+			logger.warn("client request's parameters are invalid, ip={}, uri={}, e={}", ip, uri, e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters are invalid, " + e.getMessage());
 		}
 
@@ -156,6 +157,10 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			// 如果返回值就是这个接口那就直接返回吧...
 			if (returnValue instanceof HttpResult) {
 				return (HttpResult) returnValue;
+			}
+			// 如果业务已处理成字节流了，那就直接返回
+			else if (returnValue instanceof byte[]) {
+				return returnValue;
 			}
 
 			HttpResult result = new HttpResult(HttpErrorCode.OK);

@@ -51,6 +51,9 @@ public class HttpServer implements TcpServer {
 	/** 向内部提供HTTP服务的最大内容长度（默认：1048576=1M） */
 	@Value(NetworkConstant.HTTP_MAX_CONTENT_LENGTH)
 	private int maxContentLength = 1048576;
+	/** 向内部提供HTTP服务的参数格式，默认 JSON */
+	@Value(NetworkConstant.HTTP_PARAMETER_FORMAT)
+	private String parameterFormat = HttpParameterParser.JSON_FORMAT;
 
 	/**
 	 * 设置端口.
@@ -91,7 +94,7 @@ public class HttpServer implements TcpServer {
 				p.addLast(new HttpServerCodec());
 				p.addLast(new HttpObjectAggregator(maxContentLength));
 				p.addLast(new ChunkedWriteHandler());
-				p.addLast(new HttpServerHandler(secretKey));
+				p.addLast(new HttpServerHandler(secretKey, parameterFormat));
 			}
 		});
 
