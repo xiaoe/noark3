@@ -48,6 +48,7 @@ import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.IpUtils;
 import xyz.noark.core.util.Md5Utils;
 import xyz.noark.core.util.StringUtils;
+import xyz.noark.network.http.HttpServletRequest.NoarkHttpServletRequest;
 
 /**
  * HTTP封包处理逻辑类.
@@ -181,33 +182,57 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			return null;
 		}
 
+		HttpServletRequest request = null;
+
 		List<Object> args = new ArrayList<>(handler.getParameters().size());
 		for (HttpParamWrapper param : handler.getParameters()) {
-			Converter<?> converter = this.getConverter(param.getParameter());
-			String data = parameters.get(param.getName());
+			// Request请求参数
+			if (HttpServletRequest.class.isAssignableFrom(param.getParameter().getType())) {
+				args.add(request = this.build(request, uri, parameters));
+			}
+			// 其他转化器参数
+			else {
+				Converter<?> converter = this.getConverter(param.getParameter());
+				String data = parameters.get(param.getName());
 
-			if (data == null) {
-				// 必选参数必需有值
-				if (param.isRequired()) {
-					throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + " is required.");
-				}
-				// 不是必选参数，那就使用默认值来转化
-				else {
-					try {
-						args.add(converter.convert(param.getParameter(), param.getDefaultValue()));
-					} catch (Exception e) {
-						throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getDefaultValue() + "-->" + converter.buildErrorMsg(), e);
+				if (data == null) {
+					// 必选参数必需有值
+					if (param.isRequired()) {
+						throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + " is required.");
 					}
-				}
-			} else {
-				try {
-					args.add(converter.convert(param.getParameter(), data));
-				} catch (Exception e) {
-					throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + "=" + data + "-->" + converter.buildErrorMsg(), e);
+					// 不是必选参数，那就使用默认值来转化
+					else {
+						try {
+							args.add(converter.convert(param.getParameter(), param.getDefaultValue()));
+						} catch (Exception e) {
+							throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getDefaultValue() + "-->" + converter.buildErrorMsg(), e);
+						}
+					}
+				} else {
+					try {
+						args.add(converter.convert(param.getParameter(), data));
+					} catch (Exception e) {
+						throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + "=" + data + "-->" + converter.buildErrorMsg(), e);
+					}
 				}
 			}
 		}
 		return args.toArray();
+	}
+
+	/**
+	 * 构建Request对象.
+	 * 
+	 * @param request 请求对象
+	 * @param uri URI
+	 * @param parameters 所有请求参数
+	 * @return Request对象
+	 */
+	private HttpServletRequest build(HttpServletRequest request, String uri, Map<String, String> parameters) {
+		if (request != null) {
+			return request;
+		}
+		return new NoarkHttpServletRequest(uri, parameters);
 	}
 
 	private Converter<?> getConverter(Parameter field) {
