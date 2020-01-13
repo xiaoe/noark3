@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.RequestParam;
-import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.reflectasm.MethodAccess;
@@ -46,9 +45,6 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 
 	private void buildParamWrapper(Parameter parameter) {
 		RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-		if (requestParam == null) {
-			throw new UnrealizedException("HTTP接口参数没有未标识@RequestParam. uri=" + uri);
-		}
 		this.parameters.add(new HttpParamWrapper(requestParam, parameter));
 	}
 

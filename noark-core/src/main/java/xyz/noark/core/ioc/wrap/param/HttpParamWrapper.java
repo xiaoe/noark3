@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.wrap.param;
 import java.lang.reflect.Parameter;
 
 import xyz.noark.core.annotation.controller.RequestParam;
+import xyz.noark.core.util.StringUtils;
 
 /**
  * HTTP接口参数包装类.
@@ -24,23 +25,38 @@ import xyz.noark.core.annotation.controller.RequestParam;
  * @author 小流氓(176543888@qq.com)
  */
 public class HttpParamWrapper {
-	private final RequestParam requestParam;
 	private final Parameter parameter;
 
+	private final boolean required;
+	private final String name;
+	private final String defaultValue;
+
 	public HttpParamWrapper(RequestParam requestParam, Parameter parameter) {
-		this.requestParam = requestParam;
 		this.parameter = parameter;
-	}
-
-	public String getName() {
-		return requestParam.name();
-	}
-
-	public RequestParam getRequestParam() {
-		return requestParam;
+		if (requestParam == null) {
+			this.required = false;
+			this.name = parameter.getName();
+			this.defaultValue = StringUtils.EMPTY;
+		} else {
+			this.name = requestParam.name();
+			this.required = requestParam.required();
+			this.defaultValue = requestParam.defaultValue();
+		}
 	}
 
 	public Parameter getParameter() {
 		return parameter;
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDefaultValue() {
+		return defaultValue;
 	}
 }

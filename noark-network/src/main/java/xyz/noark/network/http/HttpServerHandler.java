@@ -188,15 +188,15 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
 			if (data == null) {
 				// 必选参数必需有值
-				if (param.getRequestParam().required()) {
+				if (param.isRequired()) {
 					throw new ConvertException("HTTP request param error. uri=" + uri + "," + param.getName() + " is required.");
 				}
 				// 不是必选参数，那就使用默认值来转化
 				else {
 					try {
-						args.add(converter.convert(param.getParameter(), param.getRequestParam().defaultValue()));
+						args.add(converter.convert(param.getParameter(), param.getDefaultValue()));
 					} catch (Exception e) {
-						throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getRequestParam().defaultValue() + "-->" + converter.buildErrorMsg(), e);
+						throw new ConvertException("HTTP request default param error. uri=" + uri + "," + param.getName() + "=" + param.getDefaultValue() + "-->" + converter.buildErrorMsg(), e);
 					}
 				}
 			} else {
