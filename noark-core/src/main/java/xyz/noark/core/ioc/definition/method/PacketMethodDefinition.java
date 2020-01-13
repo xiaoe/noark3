@@ -13,9 +13,11 @@
  */
 package xyz.noark.core.ioc.definition.method;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
+import xyz.noark.core.annotation.controller.CommandMapping;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Session;
 import xyz.noark.reflectasm.MethodAccess;
@@ -27,29 +29,45 @@ import xyz.noark.reflectasm.MethodAccess;
  * @author 小流氓(176543888@qq.com)
  */
 public class PacketMethodDefinition extends SimpleMethodDefinition {
-	private final PacketMapping packetMapping;
 	private final Parameter[] parameters;
+	private final Serializable opcode;
+	private final boolean printLog;
+	private final boolean inner;
+	private final Session.State state;
 
 	public PacketMethodDefinition(MethodAccess methodAccess, Method method, PacketMapping packetMapping) {
 		super(methodAccess, method);
-		this.packetMapping = packetMapping;
 		this.parameters = method.getParameters();
+		this.opcode = packetMapping.opcode();
+		this.printLog = packetMapping.printLog();
+		this.inner = packetMapping.inner();
+		this.state = packetMapping.state();
 	}
 
-	public Integer getOpcode() {
-		return packetMapping.opcode();
+	public PacketMethodDefinition(MethodAccess methodAccess, Method method, CommandMapping commandMapping) {
+		super(methodAccess, method);
+		this.parameters = method.getParameters();
+		this.opcode = commandMapping.opcode();
+		this.printLog = commandMapping.printLog();
+		this.inner = commandMapping.inner();
+		this.state = commandMapping.state();
+
+	}
+
+	public Serializable getOpcode() {
+		return opcode;
 	}
 
 	public boolean isPrintLog() {
-		return packetMapping.printLog();
+		return printLog;
 	}
 
 	public boolean isInnerPacket() {
-		return packetMapping.inner();
+		return inner;
 	}
 
 	public Session.State getState() {
-		return packetMapping.state();
+		return state;
 	}
 
 	@Override

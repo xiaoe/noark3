@@ -13,6 +13,8 @@
  */
 package xyz.noark.network.codec;
 
+import java.io.Serializable;
+
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.NetworkPacket;
 
@@ -26,7 +28,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 	/** 包长 */
 	private int length;
 	/** 协议编号 */
-	private Integer opcode;
+	private Serializable opcode;
 	/** 协议内容 */
 	private ByteArray bytes;
 
@@ -36,7 +38,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 	private int checksum;
 
 	@Override
-	public Integer getOpcode() {
+	public Serializable getOpcode() {
 		return opcode;
 	}
 
@@ -67,7 +69,7 @@ public class DefaultNetworkPacket implements NetworkPacket {
 		this.checksum = checksum;
 	}
 
-	public void setOpcode(int opcode) {
+	public void setOpcode(Serializable opcode) {
 		this.opcode = opcode;
 	}
 

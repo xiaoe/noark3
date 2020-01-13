@@ -13,6 +13,8 @@
  */
 package xyz.noark.network;
 
+import java.io.Serializable;
+
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -37,7 +39,7 @@ public class WebSocketSession extends SocketSession {
 	}
 
 	@Override
-	public void sendAndClose(Integer opcode, Object protocol) {
+	public void sendAndClose(Serializable opcode, Object protocol) {
 		channel.writeAndFlush(buildFrame(buildPacket(opcode, protocol))).addListener(ChannelFutureListener.CLOSE);
 	}
 

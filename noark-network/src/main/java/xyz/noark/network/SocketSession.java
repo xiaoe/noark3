@@ -100,7 +100,7 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	}
 
 	@Override
-	public void send(Integer opcode, Object protocol) {
+	public void send(Serializable opcode, Object protocol) {
 		this.send(buildPacket(opcode, protocol));
 	}
 
@@ -136,7 +136,7 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	}
 
 	@Override
-	public void sendAndClose(Integer opcode, Object protocol) {
+	public void sendAndClose(Serializable opcode, Object protocol) {
 		channel.writeAndFlush(buildPacket(opcode, protocol)).addListener(ChannelFutureListener.CLOSE);
 	}
 
@@ -147,7 +147,7 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	 * @param protocol 协议内容
 	 * @return 封包对象
 	 */
-	protected ByteArray buildPacket(Integer opcode, Object protocol) {
+	protected ByteArray buildPacket(Serializable opcode, Object protocol) {
 		return PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocol(opcode, protocol));
 	}
 

@@ -40,7 +40,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * @author 小流氓(176543888@qq.com)
  */
 public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
-	private final Integer opcode;
+	private final Serializable opcode;
 	private final boolean inner;
 	private final Session.State state;
 	private final ArrayList<ParamWrapper> parameters;
@@ -139,7 +139,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 * 
 	 * @return 封包编号
 	 */
-	public Integer getOpcode() {
+	public Serializable getOpcode() {
 		return opcode;
 	}
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.ModuleController;
+import xyz.noark.core.annotation.controller.CommandMapping;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.HttpHandler;
@@ -78,6 +79,10 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 		// 客户端过来的协议入口.
 		if (annotationType == PacketMapping.class) {
 			pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
+		}
+		// 客户端过来的协议入口.
+		else if (annotationType == CommandMapping.class) {
+			pmds.add(new PacketMethodDefinition(methodAccess, method, CommandMapping.class.cast(annotation)));
 		}
 		// 事件监听
 		else if (annotationType == EventListener.class) {

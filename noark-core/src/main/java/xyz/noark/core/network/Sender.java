@@ -38,7 +38,7 @@ public final class Sender {
 	 * @param opcode 协议编号
 	 * @param protocol 协议对象
 	 */
-	public static void relayPacket(Integer opcode, Object protocol) {
+	public static void relayPacket(Serializable opcode, Object protocol) {
 		SessionManager.send(opcode, protocol);
 	}
 
@@ -49,7 +49,7 @@ public final class Sender {
 	 * @param opcode 协议编号
 	 * @param protocol 协议对象
 	 */
-	public static void relayPacket(Serializable playerId, Integer opcode, Object protocol) {
+	public static void relayPacket(Serializable playerId, Serializable opcode, Object protocol) {
 		SessionManager.send(opcode, protocol, playerId);
 	}
 
@@ -62,7 +62,7 @@ public final class Sender {
 	 * @param opcode 封包操作码
 	 * @param protocol 封包对象
 	 */
-	public static void relayPacket(Serializable[] playerIds, Integer opcode, Object protocol) {
+	public static void relayPacket(Serializable[] playerIds, Serializable opcode, Object protocol) {
 		if (ArrayUtils.isNotEmpty(playerIds)) {
 			SessionManager.send(opcode, protocol, playerIds);
 		}
@@ -77,7 +77,7 @@ public final class Sender {
 	 * @param opcode 协议编号
 	 * @param protocol 协议对象
 	 */
-	public static void innerRelayPacket(Serializable playerId, Integer opcode, Object protocol) {
+	public static void innerRelayPacket(Serializable playerId, Serializable opcode, Object protocol) {
 		threadDispatcher.dispatchInnerPacket(playerId, opcode, protocol);
 	}
 }

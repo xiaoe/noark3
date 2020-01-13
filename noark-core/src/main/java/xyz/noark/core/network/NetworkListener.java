@@ -63,7 +63,7 @@ public interface NetworkListener {
 	 * 处理过期或维护中的封包.
 	 * <p>
 	 * 给个提示<br>
-	 * 临时关闭参考 {@link PacketMethodManager#temporarilyClosed(Integer)}
+	 * 临时关闭参考 {@link PacketMethodManager#temporarilyClosed(Serializable)}
 	 * 
 	 * @param session Session对象
 	 * @param packet 网络封包

@@ -51,7 +51,7 @@ public class SessionManager {
 	 * @param protocol 协议对象
 	 * @param playerIds 接受人的ID列表
 	 */
-	public static void send(Integer opcode, Object protocol, Serializable... playerIds) {
+	public static void send(Serializable opcode, Object protocol, Serializable... playerIds) {
 		ByteArray packet = PacketCodecHolder.getPacketCodec().encodePacket(new NetworkProtocol(opcode, protocol));
 		// 全服发送
 		if (playerIds.length == 0) {

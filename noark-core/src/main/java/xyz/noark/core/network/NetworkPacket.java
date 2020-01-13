@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.network;
 
+import java.io.Serializable;
+
 import xyz.noark.core.lang.ByteArray;
 
 /**
@@ -35,7 +37,7 @@ public interface NetworkPacket {
 	 * 
 	 * @return 编号
 	 */
-	public Integer getOpcode();
+	public Serializable getOpcode();
 
 	/**
 	 * 封包的内容.

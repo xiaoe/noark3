@@ -15,6 +15,7 @@ package xyz.noark.core.ioc.manager;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -29,7 +30,7 @@ import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
  * @author 小流氓(176543888@qq.com)
  */
 public class PacketMethodManager {
-	private final ConcurrentMap<Integer, PacketMethodWrapper> handlers = new ConcurrentHashMap<>(2048);
+	private final ConcurrentMap<Serializable, PacketMethodWrapper> handlers = new ConcurrentHashMap<>(2048);
 	private static final PacketMethodManager INSTANCE = new PacketMethodManager();
 
 	private PacketMethodManager() {}
@@ -46,7 +47,7 @@ public class PacketMethodManager {
 		handlers.put(handler.getOpcode(), handler);
 	}
 
-	public PacketMethodWrapper getPacketMethodWrapper(Integer opcode) {
+	public PacketMethodWrapper getPacketMethodWrapper(Serializable opcode) {
 		return handlers.get(opcode);
 	}
 
@@ -59,7 +60,7 @@ public class PacketMethodManager {
 	 * @param opcode 协议编号
 	 * @return 如果关闭成功返回true,否则返回false.
 	 */
-	public boolean temporarilyClosed(Integer opcode) {
+	public boolean temporarilyClosed(Serializable opcode) {
 		PacketMethodWrapper method = this.getPacketMethodWrapper(opcode);
 		if (method == null) {
 			return false;
@@ -77,7 +78,7 @@ public class PacketMethodManager {
 	 * @param opcode 协议编号
 	 * @return 如果开启成功返回true,否则返回false.
 	 */
-	public boolean temporaryOpening(Integer opcode) {
+	public boolean temporaryOpening(Serializable opcode) {
 		PacketMethodWrapper method = this.getPacketMethodWrapper(opcode);
 		if (method == null) {
 			return false;
@@ -87,7 +88,7 @@ public class PacketMethodManager {
 	}
 
 	public void outputStatInfo() {
-		for (Map.Entry<Integer, PacketMethodWrapper> e : handlers.entrySet()) {
+		for (Map.Entry<Serializable, PacketMethodWrapper> e : handlers.entrySet()) {
 			final long num = e.getValue().getCallNum();
 			if (num > 0) {
 				logger.info("protocol stat. opcode={}, call={}", e.getKey(), num);

@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.network;
 
+import java.io.Serializable;
+
 /**
  * 网络协议.
  * <p>
@@ -22,11 +24,11 @@ package xyz.noark.core.network;
  * @author 小流氓(176543888@qq.com)
  */
 public class NetworkProtocol {
-	private final Integer opcode;
+	private final Serializable opcode;
 	private final Object protocol;
 	private int reqId;
 
-	public NetworkProtocol(Integer opcode, Object protocol) {
+	public NetworkProtocol(Serializable opcode, Object protocol) {
 		this.opcode = opcode;
 		this.protocol = protocol;
 	}
@@ -39,7 +41,7 @@ public class NetworkProtocol {
 		return reqId;
 	}
 
-	public Integer getOpcode() {
+	public Serializable getOpcode() {
 		return opcode;
 	}
 

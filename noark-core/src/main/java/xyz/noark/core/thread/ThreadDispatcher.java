@@ -125,7 +125,7 @@ public class ThreadDispatcher {
 	 * @param opcode 协议编号
 	 * @param protocol 协议内容
 	 */
-	public void dispatchInnerPacket(Serializable playerId, Integer opcode, Object protocol) {
+	public void dispatchInnerPacket(Serializable playerId, Serializable opcode, Object protocol) {
 		PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
 		if (pmw == null) {
 			logger.warn("undefined protocol, opcode={}", opcode);

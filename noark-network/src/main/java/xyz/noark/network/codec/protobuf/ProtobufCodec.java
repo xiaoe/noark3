@@ -53,7 +53,7 @@ public class ProtobufCodec extends AbstractPacketCodec {
 
 	@Override
 	public ByteArray encodePacket(NetworkProtocol networkProtocol) {
-		final int opcode = networkProtocol.getOpcode();
+		final int opcode = (Integer) networkProtocol.getOpcode();
 		if (opcode > Short.MAX_VALUE) {
 			throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
 		}

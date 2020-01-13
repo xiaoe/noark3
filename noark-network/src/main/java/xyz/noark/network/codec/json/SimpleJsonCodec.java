@@ -46,7 +46,7 @@ public class SimpleJsonCodec extends AbstractPacketCodec {
 		ImmutableByteArray byteArray = new ImmutableByteArray(bytes.length + 4);
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(byteArray)) {
 			// 写入Opcode
-			byteArrayOutputStream.writeInt(networkProtocol.getOpcode());
+			byteArrayOutputStream.writeInt((Integer)networkProtocol.getOpcode());
 			// 写入协议内容
 			byteArrayOutputStream.writeBytes(bytes);
 		}

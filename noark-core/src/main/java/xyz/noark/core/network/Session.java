@@ -50,7 +50,7 @@ public interface Session extends SessionAttrMap {
 	 * @param opcode 协议编号
 	 * @param protocol 协议对象
 	 */
-	public void send(Integer opcode, Object protocol);
+	public void send(Serializable opcode, Object protocol);
 
 	/**
 	 * 发送完成后关闭当前链接.
@@ -58,7 +58,7 @@ public interface Session extends SessionAttrMap {
 	 * @param opcode 协议编号
 	 * @param protocol 协议对象
 	 */
-	public void sendAndClose(Integer opcode, Object protocol);
+	public void sendAndClose(Serializable opcode, Object protocol);
 
 	/**
 	 * 发送一个网络封包.
