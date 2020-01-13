@@ -18,6 +18,7 @@ import static xyz.noark.log.LogHelper.logger;
 import java.io.Serializable;
 
 import xyz.noark.core.network.NetworkListener;
+import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.util.ThreadUtils;
@@ -37,18 +38,18 @@ public class AsyncTask implements Runnable {
 	private final NetworkListener networkListener;
 
 	/** 用于响应请求时 */
-	private final int reqId;
+	private final NetworkPacket packet;
 	private final Session session;
 
 	private Thread currentThread;
 	private long startExecuteTime;
 
-	public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId, int reqId, Session session) {
+	public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId, NetworkPacket packet, Session session) {
 		this.taskQueue = taskQueue;
 		this.command = command;
 		this.playerId = playerId;
-		this.reqId = reqId;
 		this.session = session;
+		this.packet = packet;
 		this.networkListener = networkListener;
 	}
 
@@ -59,11 +60,11 @@ public class AsyncTask implements Runnable {
 		this.currentThread = Thread.currentThread();
 		try {
 			// 开始处理协议，并发送结果
-			ResultHelper.trySendResult(session, reqId, command.exec());
+			ResultHelper.trySendResult(session, packet, command.exec());
 		} catch (Throwable e) {
 			logger.error("handle {} exception.{}", command.code(), e);
 			if (networkListener != null) {
-				networkListener.handleException(session, reqId, e);
+				networkListener.handleException(session, packet.getIncode(), e);
 			}
 		} finally {
 			taskQueue.complete();// 后继逻辑...

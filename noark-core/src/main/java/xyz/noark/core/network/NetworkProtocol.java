@@ -26,19 +26,12 @@ import java.io.Serializable;
 public class NetworkProtocol {
 	private final Serializable opcode;
 	private final Object protocol;
-	private int reqId;
+	// 客户端过来的封包请求
+	private NetworkPacket packet;
 
 	public NetworkProtocol(Serializable opcode, Object protocol) {
 		this.opcode = opcode;
 		this.protocol = protocol;
-	}
-
-	public void setReqId(int reqId) {
-		this.reqId = reqId;
-	}
-
-	public int getReqId() {
-		return reqId;
 	}
 
 	public Serializable getOpcode() {
@@ -47,5 +40,13 @@ public class NetworkProtocol {
 
 	public Object getProtocol() {
 		return protocol;
+	}
+
+	public NetworkPacket getPacket() {
+		return packet;
+	}
+
+	public void setPacket(NetworkPacket packet) {
+		this.packet = packet;
 	}
 }

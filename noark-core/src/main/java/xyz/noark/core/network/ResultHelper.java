@@ -13,8 +13,6 @@
  */
 package xyz.noark.core.network;
 
-import static xyz.noark.log.LogHelper.logger;
-
 /**
  * 执行结果辅助类.
  *
@@ -27,10 +25,10 @@ public class ResultHelper {
 	 * 尝试发送入口的返回值.
 	 * 
 	 * @param session Session对象
-	 * @param reqId 请求编号
+	 * @param packet 请求封包对象
 	 * @param result 协议入口返回值
 	 */
-	public static void trySendResult(Session session, int reqId, Object result) {
+	public static void trySendResult(Session session, NetworkPacket packet, Object result) {
 		// 玩家已下线也可以忽略发送...
 		if (session == null) {
 			return;
@@ -41,13 +39,9 @@ public class ResultHelper {
 			return;
 		}
 
-		// 如果是网络协议，那就直接转发...
-		if (result instanceof NetworkProtocol) {
-			NetworkProtocol networkProtocol = (NetworkProtocol) result;
-			networkProtocol.setReqId(reqId);
-			session.send(networkProtocol);
-		} else {
-			logger.warn("Controller入口返回值未实现NetworkProtocol接口，已忽略发送处理. result={}", result.getClass().getName());
-		}
+		// 如果是网络协议，那就直接转发，不是就包裹他,由封包编码器2次处理.
+		NetworkProtocol protocol = (result instanceof NetworkProtocol) ? (NetworkProtocol) result : new NetworkProtocol(null, result);
+		protocol.setPacket(packet);
+		session.send(protocol);
 	}
 }

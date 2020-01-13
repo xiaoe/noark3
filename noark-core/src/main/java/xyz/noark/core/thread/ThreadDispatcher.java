@@ -115,7 +115,7 @@ public class ThreadDispatcher {
 		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
-		this.dispatchPacket(session, session.getPlayerId(), packet.getIncode(), pmw, pmw.analysisParam(session, packet));
+		this.dispatchPacket(session, session.getPlayerId(), packet, pmw, pmw.analysisParam(session, packet));
 	}
 
 	/**
@@ -142,19 +142,19 @@ public class ThreadDispatcher {
 		pmw.incrCallNum();
 
 		// 具体分配哪个线程去执行.
-		this.dispatchPacket(null, playerId, 0, pmw, pmw.analysisParam(playerId, protocol));
+		this.dispatchPacket(null, playerId, null, pmw, pmw.analysisParam(playerId, protocol));
 	}
 
-	private void dispatchPacket(Session session, Serializable playerId, int reqId, PacketMethodWrapper pmw, Object... args) {
+	private void dispatchPacket(Session session, Serializable playerId, NetworkPacket packet, PacketMethodWrapper pmw, Object... args) {
 		switch (pmw.threadGroup()) {
 		case NettyThreadGroup:
-			this.dispatchNettyThreadHandle(session, reqId, pmw, args);
+			this.dispatchNettyThreadHandle(session, packet, pmw, args);
 			break;
 		case PlayerThreadGroup:
-			this.dispatchPlayerThreadHandle(session, reqId, new PlayerThreadCommand(playerId, pmw, args));
+			this.dispatchPlayerThreadHandle(session, packet, new PlayerThreadCommand(playerId, pmw, args));
 			break;
 		case ModuleThreadGroup:
-			this.dispatchSystemThreadHandle(session, reqId, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
+			this.dispatchSystemThreadHandle(session, packet, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
 			break;
 		case QueueThreadGroup:
 
@@ -165,20 +165,20 @@ public class ThreadDispatcher {
 	}
 
 	/** 派发给Netty线程处理的逻辑. */
-	void dispatchNettyThreadHandle(Session session, int reqId, PacketMethodWrapper protocol, Object... args) {
-		ResultHelper.trySendResult(session, reqId, protocol.invoke(args));
+	void dispatchNettyThreadHandle(Session session, NetworkPacket packet, PacketMethodWrapper protocol, Object... args) {
+		ResultHelper.trySendResult(session, packet, protocol.invoke(args));
 	}
 
 	/** 派发给系统线程处理的逻辑. */
-	void dispatchSystemThreadHandle(Session session, int reqId, SystemThreadCommand command) {
+	void dispatchSystemThreadHandle(Session session, NetworkPacket packet, SystemThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), reqId, session));
+		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
 	}
 
 	/** 派发给玩家线程处理的逻辑. */
-	void dispatchPlayerThreadHandle(Session session, int reqId, PlayerThreadCommand command) {
+	void dispatchPlayerThreadHandle(Session session, NetworkPacket packet, PlayerThreadCommand command) {
 		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), reqId, session));
+		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
 	}
 
 	/**
@@ -192,14 +192,14 @@ public class ThreadDispatcher {
 		case PlayerThreadGroup: {
 			if (event instanceof PlayerEvent) {
 				PlayerEvent e = (PlayerEvent) event;
-				this.dispatchPlayerThreadHandle(null, 0, new PlayerThreadCommand(e.getPlayerId(), handler, e));
+				this.dispatchPlayerThreadHandle(null, null, new PlayerThreadCommand(e.getPlayerId(), handler, e));
 			} else {
 				throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
 			}
 			break;
 		}
 		case ModuleThreadGroup:
-			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler, event));
+			this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler, event));
 			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
@@ -216,11 +216,11 @@ public class ThreadDispatcher {
 		switch (handler.threadGroup()) {
 		case PlayerThreadGroup:
 			for (Serializable playerId : SessionManager.getOnlinePlayerIdList()) {
-				this.dispatchPlayerThreadHandle(null, 0, new PlayerThreadCommand(playerId, handler, handler.analysisParam(playerId, event)));
+				this.dispatchPlayerThreadHandle(null, null, new PlayerThreadCommand(playerId, handler, handler.analysisParam(playerId, event)));
 			}
 			break;
 		case ModuleThreadGroup:
-			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler, handler.analysisParam(null, event)));
+			this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler, handler.analysisParam(null, event)));
 			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
@@ -235,13 +235,13 @@ public class ThreadDispatcher {
 	public void dispatchScheduled(ScheduledMethodWrapper handler) {
 		switch (handler.threadGroup()) {
 		case ModuleThreadGroup:
-			this.dispatchSystemThreadHandle(null, 0, new SystemThreadCommand(handler.getModule(), handler));
+			this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler));
 			break;
 
 		// 玩家线程组，那就是要所有在线的人都要发一条
 		case PlayerThreadGroup: {
 			for (Serializable playerId : SessionManager.getOnlinePlayerIdList()) {
-				this.dispatchPlayerThreadHandle(null, 0, new PlayerThreadCommand(playerId, handler, playerId));
+				this.dispatchPlayerThreadHandle(null, null, new PlayerThreadCommand(playerId, handler, playerId));
 			}
 			break;
 		}
