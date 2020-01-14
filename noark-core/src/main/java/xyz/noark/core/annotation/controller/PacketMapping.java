@@ -58,5 +58,5 @@ public @interface PacketMapping {
 	 * 
 	 * @return 默认为游戏中状态
 	 */
-	Session.State state() default Session.State.INGAME;
+	Session.State[] state() default Session.State.INGAME;
 }

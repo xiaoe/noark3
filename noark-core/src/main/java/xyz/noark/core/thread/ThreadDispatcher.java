@@ -106,7 +106,7 @@ public class ThreadDispatcher {
 		}
 
 		// 权限
-		if (Session.State.ALL != pmw.getState() && pmw.getState() != session.getState()) {
+		if (!pmw.isAllState() && !pmw.getStateSet().contains(session.getState())) {
 			logger.warn(" ^0^ session state error. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
 			return;
 		}

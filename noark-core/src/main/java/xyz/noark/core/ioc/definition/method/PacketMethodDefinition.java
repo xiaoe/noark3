@@ -16,6 +16,9 @@ package xyz.noark.core.ioc.definition.method;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import xyz.noark.core.annotation.controller.CommandMapping;
 import xyz.noark.core.annotation.controller.PacketMapping;
@@ -33,7 +36,7 @@ public class PacketMethodDefinition extends SimpleMethodDefinition {
 	private final Serializable opcode;
 	private final boolean printLog;
 	private final boolean inner;
-	private final Session.State state;
+	private final Set<Session.State> stateSet;
 
 	public PacketMethodDefinition(MethodAccess methodAccess, Method method, PacketMapping packetMapping) {
 		super(methodAccess, method);
@@ -41,7 +44,7 @@ public class PacketMethodDefinition extends SimpleMethodDefinition {
 		this.opcode = packetMapping.opcode();
 		this.printLog = packetMapping.printLog();
 		this.inner = packetMapping.inner();
-		this.state = packetMapping.state();
+		this.stateSet = new HashSet<>(Arrays.asList(packetMapping.state()));
 	}
 
 	public PacketMethodDefinition(MethodAccess methodAccess, Method method, CommandMapping commandMapping) {
@@ -50,8 +53,7 @@ public class PacketMethodDefinition extends SimpleMethodDefinition {
 		this.opcode = commandMapping.opcode();
 		this.printLog = commandMapping.printLog();
 		this.inner = commandMapping.inner();
-		this.state = commandMapping.state();
-
+		this.stateSet = new HashSet<>(Arrays.asList(commandMapping.state()));
 	}
 
 	public Serializable getOpcode() {
@@ -66,8 +68,8 @@ public class PacketMethodDefinition extends SimpleMethodDefinition {
 		return inner;
 	}
 
-	public Session.State getState() {
-		return state;
+	public Set<Session.State> getStateSet() {
+		return stateSet;
 	}
 
 	@Override

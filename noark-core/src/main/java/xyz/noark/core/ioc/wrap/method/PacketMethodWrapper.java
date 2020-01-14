@@ -18,6 +18,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
 
 import xyz.noark.core.annotation.PlayerId;
@@ -42,7 +43,8 @@ import xyz.noark.reflectasm.MethodAccess;
 public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private final Serializable opcode;
 	private final boolean inner;
-	private final Session.State state;
+	private final Set<Session.State> stateSet;
+	private final boolean allState;
 	private final ArrayList<ParamWrapper> parameters;
 	/** 调用总次数 */
 	private final LongAdder callNum = new LongAdder();
@@ -52,13 +54,13 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 
 	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
 		super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocol(opcode=" + md.getOpcode() + ")");
-		this.state = md.getState();
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();
 		this.printLog = md.isPrintLog();
+		this.stateSet = md.getStateSet();
+		this.allState = stateSet.contains(Session.State.ALL);
 		this.deprecated = md.isDeprecated();
 		this.parameters = new ArrayList<>(md.getParameters().length);
-
 		Arrays.stream(md.getParameters()).forEach(v -> buildParamWrapper(v));
 	}
 
@@ -155,12 +157,21 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	}
 
 	/**
+	 * 当前入口的状态是All
+	 * 
+	 * @return 状态是All
+	 */
+	public boolean isAllState() {
+		return allState;
+	}
+
+	/**
 	 * 获取当前方法在什么Session状态才可以被执行.
 	 * 
-	 * @return 可执行的Session状态
+	 * @return 可执行的Session状态集合
 	 */
-	public Session.State getState() {
-		return state;
+	public Set<Session.State> getStateSet() {
+		return stateSet;
 	}
 
 	/**
