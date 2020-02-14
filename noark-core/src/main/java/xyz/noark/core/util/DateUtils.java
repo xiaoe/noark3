@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.util;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -373,5 +374,15 @@ public class DateUtils {
 		sb.append(minute < 10 ? "0" : "").append(minute).append(":");
 		sb.append(second < 10 ? "0" : "").append(second);
 		return sb.toString();
+	}
+
+	/**
+	 * 获取指定日期的星期几属性，返回枚举结果{@code DayOfWeek}
+	 * 
+	 * @param date 指定日期
+	 * @return 每周中的第几天，不为空
+	 */
+	public static DayOfWeek getDayOfWeek(Date date) {
+		return date.toInstant().atZone(ZoneId.systemDefault()).getDayOfWeek();
 	}
 }
