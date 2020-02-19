@@ -100,7 +100,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		final String uri = decoder.path();
 
 		// 局域网判定
-		final String ip = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
+		final String ip = IpUtils.getIp(ctx.channel());
 		if (!IpUtils.isInnerIp(ip)) {
 			logger.warn("client request's not authorized. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
@@ -162,6 +162,10 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			// 如果业务已处理成字节流了，那就直接返回
 			else if (returnValue instanceof byte[]) {
 				return returnValue;
+			}
+			// 字符串
+			else if (returnValue instanceof String) {
+				return ((String) returnValue).getBytes(CharsetUtils.CHARSET_UTF_8);
 			}
 
 			HttpResult result = new HttpResult(HttpErrorCode.OK);

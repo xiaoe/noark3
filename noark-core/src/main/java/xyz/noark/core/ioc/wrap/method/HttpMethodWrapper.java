@@ -19,6 +19,7 @@ import java.util.Arrays;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.RequestParam;
+import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.reflectasm.MethodAccess;
@@ -32,6 +33,8 @@ import xyz.noark.reflectasm.MethodAccess;
 public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 	private final String uri;
 	private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
+	private final ResponseBody responseBody;
+
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
 
@@ -39,6 +42,7 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 		super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.uri() + ")");
 		this.uri = method.uri();
 		this.deprecated = method.isDeprecated();
+		this.responseBody = method.getResponseBody();
 
 		Arrays.stream(method.getParameters()).forEach(v -> buildParamWrapper(v));
 	}
@@ -58,5 +62,9 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 
 	public boolean isDeprecated() {
 		return deprecated;
+	}
+
+	public ResponseBody getResponseBody() {
+		return responseBody;
 	}
 }
