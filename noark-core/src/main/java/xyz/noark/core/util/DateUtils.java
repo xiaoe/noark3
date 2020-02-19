@@ -60,8 +60,7 @@ public class DateUtils {
 	 * </p>
 	 *
 	 * <p>
-	 * 28 Mar 2002 13:45 and 28 Mar 2002 06:01 would return true. 28 Mar 2002
-	 * 13:45 and 12 Mar 2002 13:45 would return false.
+	 * 28 Mar 2002 13:45 and 28 Mar 2002 06:01 would return true. 28 Mar 2002 13:45 and 12 Mar 2002 13:45 would return false.
 	 * </p>
 	 *
 	 * @param cal1 the first calendar, not altered, not null
@@ -126,8 +125,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of years to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of years to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -139,8 +137,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of months to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of months to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -153,8 +150,7 @@ public class DateUtils {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of weeks to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of weeks to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -167,8 +163,7 @@ public class DateUtils {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of days to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of days to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -180,8 +175,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of hours to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of hours to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -193,8 +187,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of minutes to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of minutes to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -206,8 +199,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of seconds to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of seconds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -219,8 +211,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of milliseconds to a date returning a new object. The
-	 * original {@code Date} is unchanged.
+	 * Adds a number of milliseconds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -232,8 +223,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds to a date returning a new object. The original {@code Date} is
-	 * unchanged.
+	 * Adds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param calendarField the calendar field to add to
@@ -384,5 +374,21 @@ public class DateUtils {
 	 */
 	public static DayOfWeek getDayOfWeek(Date date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).getDayOfWeek();
+	}
+
+	/**
+	 * 获取指定时间那天的开始时间
+	 * 
+	 * @param date 指定时间
+	 * @return 那天的开始时间
+	 */
+	public static Date getStartOfDay(Date date) {
+		Calendar now = Calendar.getInstance();
+		now.setTime(date);
+		now.set(Calendar.HOUR_OF_DAY, 0);
+		now.set(Calendar.MINUTE, 0);
+		now.set(Calendar.SECOND, 0);
+		now.set(Calendar.MILLISECOND, 0);
+		return now.getTime();
 	}
 }
