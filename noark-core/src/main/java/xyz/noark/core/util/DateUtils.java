@@ -59,8 +59,7 @@ public class DateUtils {
 	 * </p>
 	 *
 	 * <p>
-	 * 28 Mar 2002 13:45 and 28 Mar 2002 06:01 would return true. 28 Mar 2002
-	 * 13:45 and 12 Mar 2002 13:45 would return false.
+	 * 28 Mar 2002 13:45 and 28 Mar 2002 06:01 would return true. 28 Mar 2002 13:45 and 12 Mar 2002 13:45 would return false.
 	 * </p>
 	 *
 	 * @param cal1 the first calendar, not altered, not null
@@ -125,8 +124,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of years to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of years to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -138,8 +136,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of months to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of months to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -152,8 +149,7 @@ public class DateUtils {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of weeks to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of weeks to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -166,8 +162,7 @@ public class DateUtils {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of days to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of days to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -179,8 +174,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of hours to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of hours to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -192,8 +186,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of minutes to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of minutes to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -205,8 +198,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of seconds to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of seconds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -218,8 +210,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of milliseconds to a date returning a new object. The
-	 * original {@code Date} is unchanged.
+	 * Adds a number of milliseconds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -231,8 +222,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds to a date returning a new object. The original {@code Date} is
-	 * unchanged.
+	 * Adds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param calendarField the calendar field to add to
@@ -241,6 +231,11 @@ public class DateUtils {
 	 * @throws IllegalArgumentException if the date is null
 	 */
 	private static Date add(final Date date, final int calendarField, final int amount) {
+		// 如果加上0的话，那就是不变，不要再计算啦
+		if (amount == 0) {
+			return date;
+		}
+
 		final Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		c.add(calendarField, amount);
