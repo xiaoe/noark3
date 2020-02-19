@@ -15,6 +15,7 @@ package xyz.noark.redis;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -590,6 +591,29 @@ public class Redis {
 		try (Jedis jedis = pool.getResource()) {
 			return jedis.hmget(key, fields);
 		}
+	}
+
+	/**
+	 * 获取指定Key的哈希表中指定键所对应值的Map集合.
+	 * <p>
+	 * 事实就是对hmget的一种包装，以便调用者更方便使用，如果属性值为null，则不会加入Map集合中
+	 * 
+	 * @param key 指定Key的哈希表
+	 * @param fields 指定键列表
+	 * @return 一个包含多个给定键的关联值的Map集合
+	 */
+	public Map<String, String> hmgetAll(String key, String... fields) {
+		final Map<String, String> result = new HashMap<>(fields.length);
+		final List<String> list = hmget(key, fields);
+
+		int index = 0;
+		for (String field : fields) {
+			String value = list.get(index++);
+			if (value != null) {
+				result.put(field, value);
+			}
+		}
+		return result;
 	}
 
 	/**
