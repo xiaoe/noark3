@@ -21,6 +21,8 @@ package xyz.noark.network;
  */
 public class NetworkConstant {
 
+	/** TCP服务是否激活，默认为true */
+	public static final String TCP_ACTIVE = "network.tcp.active";
 	/** Netty监听端口 */
 	public static final String PORT = "network.port";
 	/** 网络加密，默认不加密 */

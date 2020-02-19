@@ -56,6 +56,10 @@ public class NettyServer implements TcpServer {
 	/** Work线程:CPU<=4的话CPU*2,CPU<=8的话CPU+4, 其他直接使用12 */
 	private final EventLoopGroup workGroup;
 
+	/** TCP服务是否激活，默认为true，有时候并不想开启这个TCP */
+	@Value(NetworkConstant.TCP_ACTIVE)
+	protected boolean tcpActive = true;
+
 	/** Netty监听端口 */
 	@Value(NetworkConstant.PORT)
 	protected int port = 9527;
@@ -101,27 +105,29 @@ public class NettyServer implements TcpServer {
 			bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
 		}
 
-		// http://www.jianshu.com/p/0bff7c020af2
+		if (tcpActive) {
+			// http://www.jianshu.com/p/0bff7c020af2
 
-		// Socket参数，地址复用，默认值false
-		bootstrap.option(ChannelOption.SO_REUSEADDR, true);
-		// Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝。默认值，Windows为200，其他为128。
-		bootstrap.option(ChannelOption.SO_BACKLOG, 65535);
+			// Socket参数，地址复用，默认值false
+			bootstrap.option(ChannelOption.SO_REUSEADDR, true);
+			// Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝。默认值，Windows为200，其他为128。
+			bootstrap.option(ChannelOption.SO_BACKLOG, 65535);
 
-		// TCP参数，立即发送数据，默认值为Ture（Netty默认为True而操作系统默认为False）。
-		// 该值设置Nagle算法的启用，改算法将小的碎片数据连接成更大的报文来最小化所发送的报文的数量，
-		// 如果需要发送一些较小的报文，则需要禁用该算法。Netty默认禁用该算法，从而最小化报文传输延时。
-		bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-		// Netty参数，写低水位标记，默认值32KB。当Netty的写缓冲区中的字节超过高水位之后若下降到低水位，则Channel的isWritable()返回True。
-		// Netty参数，写高水位标记，默认值64KB。如果Netty的写缓冲区中的字节超过该值，Channel的isWritable()返回False。
-		bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(defaultLowWaterMark, defaultHighWaterMark));
+			// TCP参数，立即发送数据，默认值为Ture（Netty默认为True而操作系统默认为False）。
+			// 该值设置Nagle算法的启用，改算法将小的碎片数据连接成更大的报文来最小化所发送的报文的数量，
+			// 如果需要发送一些较小的报文，则需要禁用该算法。Netty默认禁用该算法，从而最小化报文传输延时。
+			bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+			// Netty参数，写低水位标记，默认值32KB。当Netty的写缓冲区中的字节超过高水位之后若下降到低水位，则Channel的isWritable()返回True。
+			// Netty参数，写高水位标记，默认值64KB。如果Netty的写缓冲区中的字节超过该值，Channel的isWritable()返回False。
+			bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(defaultLowWaterMark, defaultHighWaterMark));
 
-		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
-			@Override
-			public void initChannel(SocketChannel ch) {
-				buildChannelPipeline(ch.pipeline());
-			}
-		});
+			bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+				@Override
+				public void initChannel(SocketChannel ch) {
+					buildChannelPipeline(ch.pipeline());
+				}
+			});
+		}
 	}
 
 	/**
@@ -149,38 +155,42 @@ public class NettyServer implements TcpServer {
 
 	@Override
 	public void startup() {
-		logger.info("game tcp server start on {}", port);
+		if (tcpActive) {
+			logger.info("game tcp server start on {}", port);
 
-		// 如果封包日志打开的话，需要桥接进Noark日志实现
-		if (logActive) {
-			InternalLoggerFactory.setDefaultFactory(NettyLoggerFactory.INSTANCE);
-		}
-
-		try {
-			bootstrap.bind(port).sync();
-			logger.info("game tcp server start is success.");
-		} catch (Exception e) {
-			// 竟然不能直接捕获此异常，有点想不明白...
-			if (e instanceof BindException) {
-				throw new ServerBootstrapException("目标端口已被占用 port=" + port, e);
+			// 如果封包日志打开的话，需要桥接进Noark日志实现
+			if (logActive) {
+				InternalLoggerFactory.setDefaultFactory(NettyLoggerFactory.INSTANCE);
 			}
-			throw new ServerBootstrapException("未知异常", e);
+
+			try {
+				bootstrap.bind(port).sync();
+				logger.info("game tcp server start is success.");
+			} catch (Exception e) {
+				// 竟然不能直接捕获此异常，有点想不明白...
+				if (e instanceof BindException) {
+					throw new ServerBootstrapException("目标端口已被占用 port=" + port, e);
+				}
+				throw new ServerBootstrapException("未知异常", e);
+			}
 		}
 	}
 
 	@Override
 	public void shutdown() {
-		Future<?> boosFuture = bossGroup.shutdownGracefully();
-		Future<?> workFuture = workGroup.shutdownGracefully();
-		try {
-			if (boosFuture.await(NetworkConstant.SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
-				logger.info("NettyBoss关闭成功.");
+		if (tcpActive) {
+			Future<?> boosFuture = bossGroup.shutdownGracefully();
+			Future<?> workFuture = workGroup.shutdownGracefully();
+			try {
+				if (boosFuture.await(NetworkConstant.SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
+					logger.info("NettyBoss关闭成功.");
+				}
+				if (workFuture.await(NetworkConstant.SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
+					logger.info("NettyWork关闭成功.");
+				}
+			} catch (InterruptedException ie) {
+				logger.error("关闭网络时发生异常.", ie);
 			}
-			if (workFuture.await(NetworkConstant.SHUTDOWN_MAX_TIME, TimeUnit.MINUTES)) {
-				logger.info("NettyWork关闭成功.");
-			}
-		} catch (InterruptedException ie) {
-			logger.error("关闭网络时发生异常.", ie);
 		}
 	}
 }
