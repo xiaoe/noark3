@@ -42,6 +42,10 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 		return httpHandler.uri();
 	}
 
+	public boolean inner() {
+		return httpHandler.inner();
+	}
+
 	@Override
 	public Parameter[] getParameters() {
 		return parameters;

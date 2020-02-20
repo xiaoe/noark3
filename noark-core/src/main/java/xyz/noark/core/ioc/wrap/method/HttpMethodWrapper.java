@@ -34,6 +34,8 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 	private final String uri;
 	private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
 	private final ResponseBody responseBody;
+	/** 是否为内部协议 */
+	private final boolean inner;
 
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
@@ -41,6 +43,7 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 	public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
 		super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.uri() + ")");
 		this.uri = method.uri();
+		this.inner = method.inner();
 		this.deprecated = method.isDeprecated();
 		this.responseBody = method.getResponseBody();
 
@@ -54,6 +57,10 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 
 	public String getUri() {
 		return uri;
+	}
+
+	public boolean isInner() {
+		return inner;
 	}
 
 	public ArrayList<HttpParamWrapper> getParameters() {

@@ -35,4 +35,9 @@ public @interface HttpHandler {
 	 * @return URI
 	 */
 	String uri();
+
+	/**
+	 * @return 如果是内部协议，此使用此属性来标识
+	 */
+	boolean inner() default true;
 }

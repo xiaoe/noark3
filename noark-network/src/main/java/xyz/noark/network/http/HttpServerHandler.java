@@ -17,7 +17,6 @@ import static xyz.noark.log.LogHelper.logger;
 
 import java.io.IOException;
 import java.lang.reflect.Parameter;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -99,25 +98,25 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		QueryStringDecoder decoder = new QueryStringDecoder(fhr.uri());
 		final String uri = decoder.path();
 
-		// 局域网判定
-		final String ip = IpUtils.getIp(ctx.channel());
-		if (!IpUtils.isInnerIp(ip)) {
-			logger.warn("client request's not authorized. ip={}, uri={}", ip, uri);
-			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
-		}
-
 		final long createTime = System.nanoTime();
 		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(uri);
+		final String ip = IpUtils.getIp(ctx.channel());
 
 		// API不存在...
 		if (handler == null) {
-			logger.warn("client request's API Unrealized. ip={}, uri={}", ip, uri);
+			logger.warn("request's API Unrealized. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.NO_API, "client request's API Unrealized.");
+		}
+
+		// 局域网判定
+		if (handler.isInner() && !IpUtils.isInnerIp(ip)) {
+			logger.warn("request's not authorized. ip={}, uri={}", ip, uri);
+			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
 		}
 
 		// 已废弃
 		if (handler.isDeprecated()) {
-			logger.warn("client request's API Deprecated. ip={}, uri={}", ip, uri);
+			logger.warn("request's API Deprecated. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.API_DEPRECATED, "client request's API Deprecated.");
 		}
 
@@ -126,13 +125,13 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		try {
 			parameters = HttpParameterParser.parse(fhr, decoder, parameterFormat);
 		} catch (Exception e) {
-			logger.warn("client request's parameters not json. ip={}, uri={}, e={}", ip, uri, e);
+			logger.warn("request's parameters not json. ip={}, uri={}, e={}", ip, uri, e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters not json.");
 		}
 
 		// 验证签名，如果未配置密钥，将忽略对签名的验证...
 		if (secretKey != null && !checkSign(parameters.getOrDefault(TIME, StringUtils.EMPTY), parameters.get(SIGN))) {
-			logger.warn("client request's sign failed. ip={}, uri={}", ip, uri);
+			logger.warn("request's sign failed. ip={}, uri={}", ip, uri);
 			return new HttpResult(HttpErrorCode.SIGN_FAILED, "client request's sign failed.");
 		}
 
@@ -141,7 +140,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		try {
 			args = this.analysisParam(handler, uri, parameters);
 		} catch (Exception e) {
-			logger.warn("client request's parameters are invalid, ip={}, uri={}, e={}", ip, uri, e);
+			logger.warn("request's parameters are invalid, ip={}, uri={}, e={}", ip, uri, e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters are invalid, " + e.getMessage());
 		}
 
