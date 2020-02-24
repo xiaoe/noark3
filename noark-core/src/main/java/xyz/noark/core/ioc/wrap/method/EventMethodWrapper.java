@@ -92,7 +92,7 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper implemen
 	public int compareTo(EventMethodWrapper o) {
 		// 相同方式，采用Order排序
 		if (async == o.isAsync()) {
-			return this.getOrder() - o.getOrder();
+			return Integer.compare(this.getOrder(), o.getOrder());
 		}
 
 		// 异步情况向后排

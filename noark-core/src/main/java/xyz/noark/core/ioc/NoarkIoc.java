@@ -78,7 +78,7 @@ public class NoarkIoc implements Ioc {
 		// 事件管理类中的事件监听扩展处理并排序
 		EventMethodManager.getInstance().listenerExtend().sort();
 		// 对自定义的注解进行排序.
-		customMethods.values().forEach(v -> v.sort((m1, m2) -> m1.getOrder() - m2.getOrder()));
+		customMethods.values().forEach(v -> v.sort((m1, m2) -> Integer.compare(m1.getOrder(), m2.getOrder())));
 
 		this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(DefaultBeanDefinition::getBeanClass, v -> v.getSingle())));
 	}
