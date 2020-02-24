@@ -24,33 +24,32 @@ import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.manager.EventMethodManager;
 
 /**
- * 
+ * Order排序测试入口...
  *
  * @since 3.3.6
  * @author 小流氓(176543888@qq.com)
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
 public class TestController {
-	@Order(1)
+	@Order(-1)
 	@EventListener
 	public void test1(TestOrderEvent event) {
 		logger.debug("test1..................................................");
 	}
 
-	@Order(2)
+	@Order(-2)
 	@EventListener
 	public void test2(TestOrderEvent event) {
 		logger.debug("test2..................................................");
 	}
 
 	@Order(3)
-	@EventListener(async = false)
+	@EventListener
 	public void test3(TestOrderEvent event) {
 		logger.debug("test3..................................................");
 	}
 
-	@Order(4)
-	@EventListener(async = false)
+	@EventListener
 	public void test4(TestOrderEvent event) {
 		logger.debug("test4..................................................");
 		System.out.println(Arrays.toString(EventMethodManager.getInstance().getEventMethodWrappers(TestOrderEvent.class).toArray()));
