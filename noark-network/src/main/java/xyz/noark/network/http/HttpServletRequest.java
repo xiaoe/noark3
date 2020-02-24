@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+
 import xyz.noark.core.exception.UnrealizedException;
 
 /**
@@ -75,6 +77,11 @@ public interface HttpServletRequest {
 		@Override
 		public Map<String, String[]> getParameterMap() {
 			throw new UnrealizedException("年后再实现");
+		}
+
+		@Override
+		public String toString() {
+			return "HttpServletRequest [uri=" + uri + ", parameters=" + JSON.toJSONString(parameters) + "]";
 		}
 	}
 }
