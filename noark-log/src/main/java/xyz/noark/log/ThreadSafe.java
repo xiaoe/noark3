@@ -13,29 +13,22 @@
  */
 package xyz.noark.log;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 日志分析测试.
+ * ThreadSafe注解表示这个类是线程安全的。
+ * <p>
+ * 当然了，这个并不代表他真的是线程安全的，要看他的具体实现，这个注解主要作用是传递给其他组件优化的一种手段。<br>
+ * 比如日志记录，有一个参数对象，标识了这个注解，那在传递时这个对象不会被提前转化为String
  *
- * @since 3.0
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-public class MessageAnalyzerTest {
-
-	@Test
-	public void testMessageAnalyzer() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("1111{}1{}{}1{}");
-		assertTrue(analyzer.getCount() == 4);
-	}
-
-	@Test
-	public void testBuild() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("xx={}");
-		StringBuilder sb = new StringBuilder();
-		analyzer.build(sb, new Object[] { 1 });
-		assertTrue("xx=1".equals(sb.toString()));
-	}
-}
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ThreadSafe {}
