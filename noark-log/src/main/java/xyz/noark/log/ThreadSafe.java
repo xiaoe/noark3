@@ -13,31 +13,22 @@
  */
 package xyz.noark.log;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * 带参数的日志信息.
+ * ThreadSafe注解表示这个类是线程安全的。
+ * <p>
+ * 当然了，这个并不代表他真的是线程安全的，要看他的具体实现，这个注解主要作用是传递给其他组件优化的一种手段。<br>
+ * 比如日志记录，有一个参数对象，标识了这个注解，那在传递时这个对象不会被提前转化为String
  *
- * @since 3.0
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-class ParameterizedMessage extends AbstractMessage {
-	private static final MessageAnalyzerManager CACHE = new MessageAnalyzerManager();
-	private final Object[] args;
-
-	ParameterizedMessage(Level level, String messagePattern, Object[] args) {
-		super(level, messagePattern);
-		this.args = this.handleArgs(args);
-	}
-
-	private Object[] handleArgs(Object[] args) {
-		// 把传递的参数处理了，把非基本数据类型提交转为String对象
-		for (int i = 0, len = args.length; i < len; i++) {
-			args[i] = MessageHelper.toString(args[i]);
-		}
-		return args;
-	}
-
-	@Override
-	protected void onBuildMessage(StringBuilder sb) {
-		CACHE.get(msg, key -> new MessageAnalyzer(key)).build(sb, args);
-	}
-}
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ThreadSafe {}
