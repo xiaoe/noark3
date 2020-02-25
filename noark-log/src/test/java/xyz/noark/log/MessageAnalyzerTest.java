@@ -35,7 +35,7 @@ public class MessageAnalyzerTest {
 	public void testBuild() {
 		MessageAnalyzer analyzer = new MessageAnalyzer("xx={}");
 		StringBuilder sb = new StringBuilder();
-		analyzer.build(sb, new Object[] { new byte[] { 1, 2 } });
-		assertTrue("xx=[1, 2]".equals(sb.toString()));
+		analyzer.build(sb, new Object[] { 1 });
+		assertTrue("xx=1".equals(sb.toString()));
 	}
 }
