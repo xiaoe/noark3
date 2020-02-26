@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 import xyz.noark.core.annotation.controller.HttpHandler;
+import xyz.noark.core.annotation.controller.PrivateApi;
+import xyz.noark.core.annotation.controller.PublicApi;
 import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.reflectasm.MethodAccess;
 
@@ -30,20 +32,20 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 	private final HttpHandler httpHandler;
 	private final Parameter[] parameters;
 	private final ResponseBody responseBody;
+	private final boolean publicApi;
+	private final boolean privateApi;
 
 	public HttpMethodDefinition(MethodAccess methodAccess, Method method, HttpHandler httpHandler) {
 		super(methodAccess, method);
 		this.httpHandler = httpHandler;
 		this.parameters = method.getParameters();
 		this.responseBody = method.getAnnotation(ResponseBody.class);
+		this.publicApi = method.isAnnotationPresent(PublicApi.class);
+		this.privateApi = method.isAnnotationPresent(PrivateApi.class);
 	}
 
 	public String uri() {
 		return httpHandler.uri();
-	}
-
-	public boolean inner() {
-		return httpHandler.inner();
 	}
 
 	@Override
@@ -53,5 +55,13 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 
 	public ResponseBody getResponseBody() {
 		return responseBody;
+	}
+
+	public boolean isPublicApi() {
+		return publicApi;
+	}
+
+	public boolean isPrivateApi() {
+		return privateApi;
 	}
 }

@@ -62,12 +62,13 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	private static final String TIME = "time";
 
 	private final String secretKey;
-	private final boolean publicActive;
+	/** 全局API访问受限状态 */
+	private final boolean accessRestricted;
 	private final String parameterFormat;
 
-	public HttpServerHandler(String secretKey, String parameterFormat, boolean publicActive) {
+	public HttpServerHandler(String secretKey, String parameterFormat, boolean accessRestricted) {
 		this.secretKey = secretKey;
-		this.publicActive = publicActive;
+		this.accessRestricted = accessRestricted;
 		this.parameterFormat = parameterFormat;
 	}
 
@@ -110,12 +111,10 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			return new HttpResult(HttpErrorCode.NO_API, "client request's API Unrealized.");
 		}
 
-		// 局域网判定
-		if (!publicActive) {
-			if (handler.isInner() && !IpUtils.isInnerIp(ip)) {
-				logger.warn("request's not authorized. ip={}, uri={}", ip, uri);
-				return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
-			}
+		// 判定局域网IP
+		if (this.isAccessRestricted(handler) && !IpUtils.isInnerIp(ip)) {
+			logger.warn("request's not authorized. ip={}, uri={}", ip, uri);
+			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
 		}
 
 		// 已废弃
@@ -181,6 +180,27 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			final long endExecuteTime = System.nanoTime();
 			logger.info("handle {},delay={} ms,exe={} ms,ip={}", handler.logCode(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, ip);
 		}
+	}
+
+	/**
+	 * 判定当前API接口是否只能使用局域网访问.
+	 * 
+	 * @param handler 接口处理器
+	 * @return 如果只能使用局域网访问返回true.
+	 */
+	private boolean isAccessRestricted(HttpMethodWrapper handler) {
+		// 访问受限 且 接口不是公开的
+		if (accessRestricted && !handler.isPublicApi()) {
+			return true;
+		}
+
+		// 访问不受限 且 接口是私有的
+		if (!accessRestricted && handler.isPrivateApi()) {
+			return true;
+		}
+
+		// 其他情况就放行吧.
+		return false;
 	}
 
 	public Object[] analysisParam(HttpMethodWrapper handler, String uri, Map<String, String> parameters) throws IOException {

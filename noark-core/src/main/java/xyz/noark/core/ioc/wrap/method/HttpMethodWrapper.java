@@ -34,16 +34,18 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 	private final String uri;
 	private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
 	private final ResponseBody responseBody;
-	/** 是否为内部协议 */
-	private final boolean inner;
-
+	/** 是否为外网就能访问的接口 */
+	private final boolean publicApi;
+	/** 是否为局域网才能访问的接口 */
+	private final boolean privateApi;
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
 
 	public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
 		super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.uri() + ")");
 		this.uri = method.uri();
-		this.inner = method.inner();
+		this.publicApi = method.isPublicApi();
+		this.privateApi = method.isPrivateApi();
 		this.deprecated = method.isDeprecated();
 		this.responseBody = method.getResponseBody();
 
@@ -59,10 +61,6 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 		return uri;
 	}
 
-	public boolean isInner() {
-		return inner;
-	}
-
 	public ArrayList<HttpParamWrapper> getParameters() {
 		return parameters;
 	}
@@ -73,5 +71,13 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 
 	public ResponseBody getResponseBody() {
 		return responseBody;
+	}
+
+	public boolean isPublicApi() {
+		return publicApi;
+	}
+
+	public boolean isPrivateApi() {
+		return privateApi;
 	}
 }

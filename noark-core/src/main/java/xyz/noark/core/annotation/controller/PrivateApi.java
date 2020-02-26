@@ -20,21 +20,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * HttpHandler注解用来标识一个HTTP请求到一个处理方法.
+ * PrivateApi注解用来标识这个HTTP请求只能使用局域网访问.
  * <p>
- * 如果激活了HTTP访问受限时(network.http.access.restricted=true)，默认访问=={@code PrivateApi}<br>
- *
- * @since 3.0
+ * 联合{@code HttpHandler}一起使用，以控制当前入口访问权限
+ * 
+ * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HttpHandler {
-	/**
-	 * 区服的URI入口
-	 * 
-	 * @return URI
-	 */
-	String uri();
-}
+public @interface PrivateApi {}
