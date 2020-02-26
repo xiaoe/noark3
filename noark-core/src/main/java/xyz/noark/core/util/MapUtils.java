@@ -24,6 +24,7 @@ import java.util.Map;
  * @author 小流氓(176543888@qq.com)
  */
 public class MapUtils {
+	private MapUtils() {}
 
 	/**
 	 * 检测集合是否为{@code null}或长度为0
@@ -85,20 +86,6 @@ public class MapUtils {
 
 		// Key不存在的情况，那就找到Key刚好小于他且是最大的那个值.
 		return map.entrySet().stream().filter(x -> x.getKey() < key).max(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getValue).orElse(null);
-	}
-
-	/**
-	 * 将第二个Map加到第一个Map上.
-	 * <p>
-	 * 建议使用{@link MapUtils#addByIntValue(Map, Map)}
-	 * 
-	 * @param <K> 键的类型
-	 * @param source 存结果的Map对象.
-	 * @param value 要加的Map对象
-	 */
-	@Deprecated
-	public static <K> void add(Map<K, Integer> source, Map<K, Integer> value) {
-		MapUtils.addByIntValue(source, value);
 	}
 
 	/**
