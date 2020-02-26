@@ -58,6 +58,7 @@ subprojects {
 	            }
 	
 				//快照版本还是内网速度快，稳定再发布正式版本给大家使用
+				//https://oss.sonatype.org/content/repositories/snapshots
 	            snapshotRepository(url: "http://192.168.51.231:8081/repository/maven-snapshots/") {
 	                authentication(userName: 'admin', password: 'admin123')
 	            }
