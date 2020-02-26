@@ -87,8 +87,8 @@ public interface NetworkListener {
 	 * 所有逻辑执行的过程中如果抛出异常就会走这里
 	 * 
 	 * @param session Session对象
-	 * @param reqId 请求编号
+	 * @param packet 请求封包
 	 * @param e 异常信息
 	 */
-	void handleException(Session session, int reqId, Throwable e);
+	void handleException(Session session, NetworkPacket packet, Throwable e);
 }
