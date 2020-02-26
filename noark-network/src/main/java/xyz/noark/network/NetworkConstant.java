@@ -61,6 +61,8 @@ public class NetworkConstant {
 	public static final String HTTP_MAX_CONTENT_LENGTH = "network.http.max.content.length";
 	/** 向内部提供HTTP服务的参数格式，默认 JSON */
 	public static final String HTTP_PARAMETER_FORMAT = "network.http.parameter.format";
+	/** 向内部提供HTTP服务是否全部对外，默认=false */
+	public static final String HTTP_PUBLIC_ACTIVE = "network.http.public.active";
 
 	// 接收流量统计相关配置--------------------------------------
 	/** 接收封包统计预警功能是否激活，默认：不启用 */

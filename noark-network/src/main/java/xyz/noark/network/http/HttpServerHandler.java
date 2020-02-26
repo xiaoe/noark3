@@ -62,10 +62,12 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	private static final String TIME = "time";
 
 	private final String secretKey;
+	private final boolean publicActive;
 	private final String parameterFormat;
 
-	public HttpServerHandler(String secretKey, String parameterFormat) {
+	public HttpServerHandler(String secretKey, String parameterFormat, boolean publicActive) {
 		this.secretKey = secretKey;
+		this.publicActive = publicActive;
 		this.parameterFormat = parameterFormat;
 	}
 
@@ -109,9 +111,11 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		}
 
 		// 局域网判定
-		if (handler.isInner() && !IpUtils.isInnerIp(ip)) {
-			logger.warn("request's not authorized. ip={}, uri={}", ip, uri);
-			return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
+		if (!publicActive) {
+			if (handler.isInner() && !IpUtils.isInnerIp(ip)) {
+				logger.warn("request's not authorized. ip={}, uri={}", ip, uri);
+				return new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "client request's not authorized.");
+			}
 		}
 
 		// 已废弃
