@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.fastjson.JSON;
 
@@ -98,10 +99,10 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	private Object exec(ChannelHandlerContext ctx, FullHttpRequest fhr) {
-		QueryStringDecoder decoder = new QueryStringDecoder(fhr.uri());
+		final long createTime = System.nanoTime();
+		final QueryStringDecoder decoder = new QueryStringDecoder(fhr.uri());
 		final String uri = decoder.path();
 
-		final long createTime = System.nanoTime();
 		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(uri);
 		final String ip = IpUtils.getIp(ctx.channel());
 
@@ -157,22 +158,23 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 				returnValue = handler.invoke(args);
 			}
 
-			// 如果返回值就是这个接口那就直接返回吧...
-			if (returnValue instanceof HttpResult) {
-				return (HttpResult) returnValue;
-			}
-			// 如果业务已处理成字节流了，那就直接返回
-			else if (returnValue instanceof byte[]) {
+			// 0. 当方法上面有写@ResponseBody时，那就直接以特定的格式写入到response的body区域<br>
+			if (Objects.nonNull(handler.getResponseBody())) {
 				return returnValue;
 			}
-			// 字符串
-			else if (returnValue instanceof String) {
-				return ((String) returnValue).getBytes(CharsetUtils.CHARSET_UTF_8);
+			// 1. 当方法上面没有写@ResponseBody时<br>
+			else {
+				// 如果返回值是HttpResult类或子类的话，那就直接以特定的格式写入到response的body区域<br>
+				if (returnValue instanceof HttpResult) {
+					return (HttpResult) returnValue;
+				}
+				// 如果返回值不是HttpResult类或子类的话，底层会将方法的返回值封装为HttpResult对象里的data属性，然后再以特定的格式写入到response的body区域<br>
+				else {
+					HttpResult result = new HttpResult(HttpErrorCode.OK);
+					result.setData(returnValue);
+					return result;
+				}
 			}
-
-			HttpResult result = new HttpResult(HttpErrorCode.OK);
-			result.setData(returnValue);
-			return result;
 		} catch (Exception e) {
 			logger.warn("server internal error, ip={}, uri={}, e={}", ip, fhr.uri(), e);
 			return new HttpResult(HttpErrorCode.INTERNAL_ERROR, "server internal error, " + e.getMessage());

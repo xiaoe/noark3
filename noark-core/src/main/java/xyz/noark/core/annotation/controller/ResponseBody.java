@@ -20,10 +20,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 如果使用@ResponseBody注释方法，Noark会将返回值绑定到传出的HTTP响应主体。
+ * 如果使用@ResponseBody注释的方法，Noark会将返回值以特定的格式写入到response的body区域。
  * <p>
- * 在执行此操作时，Noark将在幕后使用HTTP消息转换器将返回值转换为HTTP响应主体，基于请求HTTP标头中存在的Content-Type。
- *
+ * 0. 当方法上面有写@ResponseBody时，那就直接以特定的格式写入到response的body区域<br>
+ * 1. 当方法上面没有写@ResponseBody时<br>
+ * 如果返回值是HttpResult类或子类的话，那就直接以特定的格式写入到response的body区域<br>
+ * 如果返回值不是HttpResult类或子类的话，底层会将方法的返回值封装为HttpResult对象里的data属性，然后再以特定的格式写入到response的body区域<br>
+ * 
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
