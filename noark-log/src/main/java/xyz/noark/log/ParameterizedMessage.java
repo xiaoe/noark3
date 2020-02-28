@@ -31,7 +31,7 @@ class ParameterizedMessage extends AbstractMessage {
 	private Object[] handleArgs(Object[] args) {
 		// 把传递的参数处理了，把非基本数据类型提交转为String对象
 		for (int i = 0, len = args.length; i < len; i++) {
-			args[i] = MessageHelper.toString(args[i]);
+			args[i] = MessageHelper.preprocessingEnteringLogThreadBefore(args[i]);
 		}
 		return args;
 	}

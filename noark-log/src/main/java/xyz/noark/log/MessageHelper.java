@@ -15,7 +15,9 @@ package xyz.noark.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * 消息拼接辅助类.
@@ -24,38 +26,31 @@ import java.util.Arrays;
  * @author 小流氓(176543888@qq.com)
  */
 class MessageHelper {
-	static void append(StringBuilder sb, Object object) {
-		if (object == null) {
-			sb.append(object);
-		}
-		// 异常类型的输出...
-		else if (object instanceof Throwable) {
-			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
-				((Throwable) object).printStackTrace(pw);
-				sb.append("\n").append(sw.toString());
-			} catch (Exception e) {
-				sb.append(object);
-			}
-		}
+	/** 拼接时是单线程，这个不会被并发 */
+	private static final SimpleDateFormat DEFAULT_PATTERN = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-		// 默认的交给StringBuilder
-		else {
-			sb.append(object);
-		}
-	}
+	private MessageHelper() {}
 
 	/**
-	 * 预处理对象到字符串
+	 * 预处理对象到字符串.
+	 * <p>
+	 * 进入日志线程前对一些有并发风险的对象进行提前处理.
 	 * 
 	 * @param object 参数对象
 	 * @return 对象的ToString结果
 	 */
-	static Object toString(Object object) {
+	static Object preprocessingEnteringLogThreadBefore(Object object) {
 		if (object == null) {
 			return object;
 		}
-		// 基本数据类型或异常堆栈
-		else if (object instanceof Number || object instanceof Character || object instanceof Throwable || object.getClass().isAnnotationPresent(ThreadSafe.class)) {
+
+		// 基本数据类型
+		else if (object instanceof Number || object instanceof Date || object instanceof Character) {
+			return object;
+		}
+
+		// 异常堆栈 或 标识线程安全
+		else if (object instanceof Throwable || object.getClass().isAnnotationPresent(ThreadSafe.class)) {
 			return object;
 		}
 
@@ -83,6 +78,35 @@ class MessageHelper {
 		// 不是基本数据类型且没有线程安全标识需要提前转化为String文本
 		else {
 			return object.toString();
+		}
+	}
+
+	/**
+	 * 日志线程进行参数拼接工作.
+	 * 
+	 * @param sb 拼接结果对象
+	 * @param object 参数对象
+	 */
+	static void append(StringBuilder sb, Object object) {
+		if (object == null) {
+			sb.append(object);
+		}
+		// 异常类型的输出...
+		else if (object instanceof Throwable) {
+			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
+				((Throwable) object).printStackTrace(pw);
+				sb.append("\n").append(sw.toString());
+			} catch (Exception e) {
+				sb.append(object);
+			}
+		}
+		// 时间类型的，需要格式化一下
+		else if (object instanceof Date) {
+			sb.append(DEFAULT_PATTERN.format(object));
+		}
+		// 默认的交给StringBuilder
+		else {
+			sb.append(object);
 		}
 	}
 }
