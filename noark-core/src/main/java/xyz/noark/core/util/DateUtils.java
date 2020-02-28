@@ -308,6 +308,18 @@ public class DateUtils {
 	}
 
 	/**
+	 * Date对象转化为LocalDate对象。
+	 * <p>
+	 * 时间会丢掉了哈，要注意，转过去就回不来了
+	 * 
+	 * @param date Date对象
+	 * @return LocalDate对象
+	 */
+	public static LocalDate toLocalDate(Date date) {
+		return toLocalDateTime(date).toLocalDate();
+	}
+
+	/**
 	 * Date对象转化为LocalTime对象
 	 * 
 	 * @param date Date对象
@@ -315,6 +327,16 @@ public class DateUtils {
 	 */
 	public static LocalTime toLocalTime(Date date) {
 		return toLocalDateTime(date).toLocalTime();
+	}
+
+	/**
+	 * LocalDateTime对象转回Date对象.
+	 * 
+	 * @param localDateTime LocalDateTime对象
+	 * @return Date对象
+	 */
+	public static Date from(LocalDateTime localDateTime) {
+		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 	/**
