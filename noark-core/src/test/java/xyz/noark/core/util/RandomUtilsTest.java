@@ -14,11 +14,13 @@
 package xyz.noark.core.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
@@ -119,6 +121,12 @@ public class RandomUtilsTest {
 			TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
 			assertEquals(random.getId(), e.getId());
 		}
+
+		try {
+			RandomUtils.randomByWeight(data, TestData::getWeigthx);
+		} catch (Exception e) {
+			assertNotNull(e);
+		}
 	}
 
 	static class TestData {
@@ -139,6 +147,18 @@ public class RandomUtilsTest {
 
 		public void setWeight(int weight) {
 			this.weight = weight;
+		}
+
+		private AtomicBoolean flag = new AtomicBoolean(true);
+
+		public int getWeigthx() {
+			// 特别的方法，实际上不会有这样的用法.
+			if (flag.get()) {
+				flag.set(false);
+				return 1;
+			} else {
+				return -1;
+			}
 		}
 
 		@Override
