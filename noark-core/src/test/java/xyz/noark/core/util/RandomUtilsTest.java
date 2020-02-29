@@ -13,12 +13,13 @@
  */
 package xyz.noark.core.util;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -29,46 +30,95 @@ import org.junit.Test;
  */
 public class RandomUtilsTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
-
 	@Test
-	public void testNextIntInt() {
-		assertTrue(RandomUtils.nextInt(1, 2) == 1);
-		assertTrue(RandomUtils.nextInt(0, 2) >= 0);
+	public void testNextBoolean() {
+		RandomUtils.nextBoolean();
 	}
 
 	@Test
-	public void testRandomListListOfT() {
+	public void testNextIntInt() {
+		assertEquals(RandomUtils.nextInt(1), 0);
+	}
+
+	@Test
+	public void testNextIntIntInt() {
+		assertEquals(RandomUtils.nextInt(1, 2), 1);
+	}
+
+	@Test
+	public void testNextLongLong() {
+		assertEquals(RandomUtils.nextLong(1), 0L);
+	}
+
+	@Test
+	public void testNextLongLongLong() {
+		assertEquals(RandomUtils.nextLong(1, 2), 1L);
+	}
+
+	@Test
+	public void testIsSuccessFloat() {
+		assertEquals(RandomUtils.isSuccess(0F), false);
+		assertEquals(RandomUtils.isSuccess(1F), true);
+	}
+
+	@Test
+	public void testIsSuccessDouble() {
+		assertEquals(RandomUtils.isSuccess(0D), false);
+		assertEquals(RandomUtils.isSuccess(1D), true);
+	}
+
+	@Test
+	public void testIsSuccessByPercentage() {
+		assertEquals(RandomUtils.isSuccessByPercentage(0), false);
+		assertEquals(RandomUtils.isSuccessByPercentage(100), true);
+	}
+
+	@Test
+	public void testIsSuccessByPermillage() {
+		assertEquals(RandomUtils.isSuccessByPermillage(0), false);
+		assertEquals(RandomUtils.isSuccessByPermillage(1000), true);
+	}
+
+	@Test
+	public void testRandomList() {
+		Object result = null;
+		assertEquals(RandomUtils.randomList(null), result);
+
 		List<Integer> list = new ArrayList<>();
-		assertTrue(RandomUtils.randomList(list) == null);
+		assertEquals(RandomUtils.randomList(list), null);
+		assertEquals(RandomUtils.randomList(list, 0), Collections.emptyList());
+		assertEquals(RandomUtils.randomList(null, 0), Collections.emptyList());
 
 		list.add(1);
-		assertTrue(RandomUtils.randomList(list) == 1);
+		assertEquals(RandomUtils.randomList(list), Integer.valueOf(1));
+		assertEquals(RandomUtils.randomList(list, 1), Arrays.asList(1));
+
+		list.add(2);
+		assertEquals(RandomUtils.randomList(list, 1).size(), 1);
+		assertEquals(RandomUtils.randomList(list, 2).size(), 2);
 	}
 
 	@Test
 	public void testRandomByWeight() {
 		List<TestData> data = new ArrayList<>();
-		TestData e = new TestData();
-		e.setId(1);
-		e.setWeight(RandomUtils.nextInt(100));
-		data.add(e);
+		{
+			TestData e = new TestData();
+			e.setId(1);
+			e.setWeight(0);
+			data.add(e);
+			TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
+			assertEquals(random.getId(), e.getId());
+		}
 
-		TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
-		assertTrue(random.getId() == e.getId());
-	}
+		{
+			TestData e = new TestData();
+			e.setId(1);
+			e.setWeight(1);
+			data.add(e);
 
-	@Test
-	public void testRandomByWeight2() {
-		List<TestData> data = new ArrayList<>();
-		TestData e = new TestData();
-		e.setId(1);
-		e.setWeight(RandomUtils.nextInt(100));
-		data.add(e);
-
-		List<TestData> random = RandomUtils.randomByWeight(data, TestData::getWeight, 2);
-		assertTrue(random.size() == 2);
+			TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
+			assertEquals(random.getId(), e.getId());
+		}
 	}
 
 	static class TestData {

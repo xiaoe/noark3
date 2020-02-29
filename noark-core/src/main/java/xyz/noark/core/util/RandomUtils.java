@@ -30,6 +30,8 @@ import java.util.function.ToIntFunction;
  */
 public class RandomUtils {
 
+	private RandomUtils() {}
+
 	/**
 	 * 返回一个随机Boolean值.
 	 * 
