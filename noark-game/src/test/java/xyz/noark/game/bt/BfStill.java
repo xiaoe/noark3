@@ -13,25 +13,25 @@
  */
 package xyz.noark.game.bt;
 
+import xyz.noark.core.util.RandomUtils;
+
 /**
- * 行为树测试用例.
+ * 女友还在
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class BehaviorTreeTest {
-	private static final int MAX = 100;
+public class BfStill extends AbstractConditionNode {
+	private final static double RATE = 0.1;
 
-	public static void main(String[] args) {
-		// 这个就是下面链接中所设计的AI实现
-		// https://www.iteye.com/blog/fsplove520-2130309
-		BehaviorTree bt = new BehaviorTree(new Ai());
-
-		for (int i = 0; i < MAX; i++) {
-			System.out.println();
-			System.out.println();
-			System.out.println(i + "-------------------------");
-			bt.tick();
+	@Override
+	public NodeState update() {
+		if (RandomUtils.isSuccess(RATE)) {
+			System.out.println("女友已跑别人跑了");
+			return NodeState.FAILURE;
 		}
+
+		System.out.println("女友还在");
+		return NodeState.SUCCESS;
 	}
 }

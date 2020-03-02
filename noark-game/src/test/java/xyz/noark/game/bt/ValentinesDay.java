@@ -13,25 +13,27 @@
  */
 package xyz.noark.game.bt;
 
+import xyz.noark.core.util.RandomUtils;
+
 /**
- * 行为树测试用例.
+ * 是不是情人节的条件节点
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class BehaviorTreeTest {
-	private static final int MAX = 100;
+public class ValentinesDay extends AbstractConditionNode {
+	private final static double RATE = 0.51;
+	public ValentinesDay() {}
 
-	public static void main(String[] args) {
-		// 这个就是下面链接中所设计的AI实现
-		// https://www.iteye.com/blog/fsplove520-2130309
-		BehaviorTree bt = new BehaviorTree(new Ai());
-
-		for (int i = 0; i < MAX; i++) {
-			System.out.println();
-			System.out.println();
-			System.out.println(i + "-------------------------");
-			bt.tick();
+	@Override
+	public NodeState update() {
+		// 如果是情人节，就不要玩了
+		if (RandomUtils.isSuccess(RATE)) {
+			System.out.println("今天是情人节");
+			return NodeState.FAILURE;
 		}
+
+		System.out.println("今天不是情人节");
+		return NodeState.SUCCESS;
 	}
 }

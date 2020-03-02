@@ -14,24 +14,23 @@
 package xyz.noark.game.bt;
 
 /**
- * 行为树测试用例.
+ * 去花店买花
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class BehaviorTreeTest {
-	private static final int MAX = 100;
+public class GotoFlowerShopBuyFlowers extends SequenceNode {
 
-	public static void main(String[] args) {
-		// 这个就是下面链接中所设计的AI实现
-		// https://www.iteye.com/blog/fsplove520-2130309
-		BehaviorTree bt = new BehaviorTree(new Ai());
+	public GotoFlowerShopBuyFlowers() {
+		this.addChild(new BfNoFlowers());
+		this.addChild(new MeNoFlowers());
+		this.addChild(new GotoFlowerShop());
+		this.addChild(new BuyFlowers());
+	}
 
-		for (int i = 0; i < MAX; i++) {
-			System.out.println();
-			System.out.println();
-			System.out.println(i + "-------------------------");
-			bt.tick();
-		}
+	@Override
+	public NodeState update() {
+		System.out.println("去花店买花");
+		return super.update();
 	}
 }
