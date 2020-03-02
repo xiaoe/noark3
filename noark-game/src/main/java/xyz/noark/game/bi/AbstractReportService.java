@@ -11,38 +11,22 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.bi.impl;
+package xyz.noark.game.bi;
 
-import static xyz.noark.log.LogHelper.logger;
-
-import com.alibaba.fastjson.JSON;
-
-import xyz.noark.game.bi.AbstractReportService;
-import xyz.noark.game.bi.ReportData;
-import xyz.noark.game.bi.ReportService;
-import xyz.noark.redis.Redis;
+import xyz.noark.core.annotation.Value;
+import xyz.noark.game.NoarkConstant;
 
 /**
- * 利用Redis的订阅发布实现BI数据上报实现
+ * 抽象的上报服务.
  *
- * @since 3.3.3
+ * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class RedisPublishReportImpl extends AbstractReportService implements ReportService {
+public abstract class AbstractReportService {
+	/**
+	 * 游戏BI数据上报功能是否开启：默认=true
+	 */
+	@Value(NoarkConstant.BI_REPORT_ACTIVE)
+	protected boolean reportActive = true;
 
-	private final Redis redis;
-
-	public RedisPublishReportImpl(Redis redis) {
-		this.redis = redis;
-	}
-
-	@Override
-	public void report(ReportData data) {
-		if (reportActive) {
-			final String channel = data.channel();
-			final String json = JSON.toJSONString(data.getData());
-			logger.info("[BI]{}={}", channel, json);
-			redis.publish(channel, json);
-		}
-	}
 }

@@ -37,6 +37,11 @@ public class NoarkConstant {
 	public static final String CRYPTO_RSA_PUBLICKEY = "crypto.rsa.publickey";
 
 	/**
+	 * 游戏BI数据上报功能是否开启：默认=true
+	 */
+	public static final String BI_REPORT_ACTIVE = "game.bi.report.active";
+
+	/**
 	 * 当前游戏进程PID文件位置。
 	 * <p>
 	 * pid.file=/data/server01/game.pid
