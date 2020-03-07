@@ -15,6 +15,8 @@ package xyz.noark.network.init;
 
 import static xyz.noark.log.LogHelper.logger;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import xyz.noark.core.annotation.Component;
@@ -29,11 +31,11 @@ import xyz.noark.network.InitializeHandler;
 @Component(name = "<policy-file-request/>\0")
 public class PolicyFileHandler implements InitializeHandler {
 
-	private final static byte[] POLICY = "<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\"/></cross-domain-policy>\0".getBytes();
+	private final static ByteBuf POLICY = Unpooled.wrappedBuffer("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\"/></cross-domain-policy>\0".getBytes());
 
 	@Override
 	public void handle(ChannelHandlerContext ctx) {
 		ctx.writeAndFlush(POLICY).addListener(ChannelFutureListener.CLOSE);
-		logger.warn("无法访问843端口,从主端口获取安全策略文件 ip={}", ctx.channel().remoteAddress());
+		logger.debug("无法访问843端口,从主端口获取安全策略文件 ip={}", ctx.channel().remoteAddress());
 	}
 }
