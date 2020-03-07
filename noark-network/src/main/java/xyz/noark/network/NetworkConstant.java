@@ -35,6 +35,8 @@ public class NetworkConstant {
 	public static final String CHECKSUM = "network.checksum";
 	/** 网络安全之相同IP最大链接数，默认为：256 */
 	public static final String SOME_IP_MAX = "network.some.ip.max";
+	/** Socket的接头暗号是否开启，默认是开启状态 */
+	public static final String SOCKET_SIGNAL_ACTIVE = "network.socket.signal.active";
 
 	// Netty相关配置--------------------------------------
 	/** 心跳功能，默认值为0，则不生效 */

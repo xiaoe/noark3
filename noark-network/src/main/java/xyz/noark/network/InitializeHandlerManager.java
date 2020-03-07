@@ -17,7 +17,9 @@ import java.util.Map;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.network.init.IllegalRequestHandler;
+import xyz.noark.network.init.SocketInitializeHandler;
 
 /**
  * 第一个请求管理类.
@@ -27,9 +29,14 @@ import xyz.noark.network.init.IllegalRequestHandler;
  */
 @Service
 public class InitializeHandlerManager {
+	/** Socket的接头暗号是否开启，默认是开启状态 */
+	@Value(NetworkConstant.SOCKET_SIGNAL_ACTIVE)
+	private boolean signalActive = true;
 
 	@Autowired
 	private Map<String, InitializeHandler> handlers;
+	@Autowired
+	private SocketInitializeHandler socketInitializeHandler;
 
 	/**
 	 * 获取一个请求处理器.
@@ -38,6 +45,6 @@ public class InitializeHandlerManager {
 	 * @return 处理器
 	 */
 	public InitializeHandler getHandler(String request) {
-		return handlers.getOrDefault(request, new IllegalRequestHandler(request));
+		return handlers.getOrDefault(request, signalActive ? new IllegalRequestHandler(request) : socketInitializeHandler);
 	}
 }
