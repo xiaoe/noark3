@@ -93,7 +93,16 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
 	private void handleFullHttpRequest(ChannelHandlerContext ctx, FullHttpRequest request) {
 		final Object result = this.exec(ctx, request);
-		ByteBuf buf = Unpooled.wrappedBuffer((result instanceof byte[]) ? (byte[]) result : JSON.toJSONString(result).getBytes(CharsetUtils.CHARSET_UTF_8));
+
+		ByteBuf buf = null;
+		if (result instanceof byte[]) {
+			buf = Unpooled.wrappedBuffer((byte[]) result);
+		} else if (result instanceof String) {
+			buf = Unpooled.wrappedBuffer(((String) result).getBytes(CharsetUtils.CHARSET_UTF_8));
+		} else {
+			buf = Unpooled.wrappedBuffer(JSON.toJSONString(result).getBytes(CharsetUtils.CHARSET_UTF_8));
+		}
+
 		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
 		ctx.write(response).addListener(ChannelFutureListener.CLOSE);
 	}
