@@ -50,7 +50,43 @@ public class StringUtils {
 	 * 一个英文逗号字符串 {@code ","}
 	 */
 	public static final String COMMA = ",";
+	/**
+	 * 一个英文连字符字符串 {@code "-"}
+	 */
+	public static final String HYPHEN = "-";
 
+	/**
+	 * 一个英文左括号字符串 {@code "("}
+	 */
+	public static final String LPAREN = "(";
+	/**
+	 * 一个英文右括号字符串 {@code ")"}
+	 */
+	public static final String RPAREN = ")";
+	/**
+	 * 一个英文左大括号字符串 "{"
+	 */
+	public static final String LBRACE = "{";
+	/**
+	 * 一个英文右大括号字符串 "}"
+	 */
+	public static final String RBRACE = "}";
+	/**
+	 * 一个英文左中括号字符串 {@code "["}
+	 */
+	public static final String LBRACKET = "[";
+	/**
+	 * 一个英文右中括号字符串 {@code "]"}
+	 */
+	public static final String RBRACKET = "]";
+	/**
+	 * 一个英文冒号字符串 {@code ":"}
+	 */
+	public static final String COLON = ":";
+	/**
+	 * 一个英文星号字符串 {@code "*"}
+	 */
+	public static final String ASTERISK = "*";
 	/**
 	 * 一个空字符串数组.
 	 */
@@ -163,19 +199,15 @@ public class StringUtils {
 
 	/**
 	 * <p>
-	 * Splits the provided text into an array, separators specified. This is an
-	 * alternative to using StringTokenizer.
+	 * Splits the provided text into an array, separators specified. This is an alternative to using StringTokenizer.
 	 * </p>
 	 *
 	 * <p>
-	 * The separator is not included in the returned String array. Adjacent
-	 * separators are treated as one separator. For more control over the split
-	 * use the StrTokenizer class.
+	 * The separator is not included in the returned String array. Adjacent separators are treated as one separator. For more control over the split use the StrTokenizer class.
 	 * </p>
 	 *
 	 * <p>
-	 * A {@code null} input String returns {@code null}. A {@code null}
-	 * separatorChars splits on whitespace.
+	 * A {@code null} input String returns {@code null}. A {@code null} separatorChars splits on whitespace.
 	 * </p>
 	 *
 	 * <pre>
@@ -188,8 +220,7 @@ public class StringUtils {
 	 * </pre>
 	 *
 	 * @param str the String to parse, may be null
-	 * @param separatorChars the characters used as the delimiters, {@code null}
-	 *            splits on whitespace
+	 * @param separatorChars the characters used as the delimiters, {@code null} splits on whitespace
 	 * @return an array of parsed Strings, {@code null} if null String input
 	 */
 	public static String[] split(final String str, final String separatorChars) {
@@ -197,17 +228,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * Performs the logic for the {@code split} and
-	 * {@code splitPreserveAllTokens} methods that return a maximum array
-	 * length.
+	 * Performs the logic for the {@code split} and {@code splitPreserveAllTokens} methods that return a maximum array length.
 	 *
 	 * @param str the String to parse, may be {@code null}
 	 * @param separatorChars the separate character
-	 * @param max the maximum number of elements to include in the array. A zero
-	 *            or negative value implies no limit.
-	 * @param preserveAllTokens if {@code true}, adjacent separators are treated
-	 *            as empty token separators; if {@code false}, adjacent
-	 *            separators are treated as one separator.
+	 * @param max the maximum number of elements to include in the array. A zero or negative value implies no limit.
+	 * @param preserveAllTokens if {@code true}, adjacent separators are treated as empty token separators; if {@code false}, adjacent separators are treated as one separator.
 	 * @return an array of parsed Strings, {@code null} if null String input
 	 */
 	private static String[] splitWorker(final String str, final String separatorChars, final int max, final boolean preserveAllTokens) {
@@ -288,7 +314,7 @@ public class StringUtils {
 		}
 		return list.toArray(new String[list.size()]);
 	}
-
+	
 	/**
 	 * 将一个字符串由驼峰式命名变成分割符分隔单词
 	 * 
