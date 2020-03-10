@@ -72,7 +72,7 @@ public class IntRange {
 	 * @return 如果存在则返回true
 	 */
 	public boolean contains(final int element) {
-		return sectionList.stream().filter(v -> v.contains(element)).findFirst().isPresent();
+		return sectionList.stream().anyMatch(v -> v.contains(element));
 	}
 
 	/**
