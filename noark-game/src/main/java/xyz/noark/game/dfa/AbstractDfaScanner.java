@@ -112,6 +112,9 @@ abstract class AbstractDfaScanner {
 
 	/**
 	 * 大写转化为小写,全角转化为半角
+	 * 
+	 * @param src 输入源
+	 * @return 输出结果
 	 */
 	protected int charConvert(char src) {
 		int r = qj2bj(src);
