@@ -43,7 +43,7 @@ public class DfaValidScanner extends AbstractDfaScanner {
 	 * 
 	 * @param sensitivewords 敏感词库
 	 */
-	public DfaValidScanner(List<DfaValidWord> sensitivewords) {
+	public DfaValidScanner(List<? extends DfaValidWord> sensitivewords) {
 		this(" `~!1@2#3$4%5^6&7*8(9)0_-+={[}]|\\:;\"'<,>.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz", sensitivewords);
 	}
 
@@ -53,7 +53,7 @@ public class DfaValidScanner extends AbstractDfaScanner {
 	 * @param symbols 分隔停顿符
 	 * @param sensitivewords 敏感词列表
 	 */
-	public DfaValidScanner(String symbols, List<DfaValidWord> sensitivewords) {
+	public DfaValidScanner(String symbols, List<? extends DfaValidWord> sensitivewords) {
 		super(new HashSet<>(symbols.length()), new HashMap<>(sensitivewords.size()));
 		this.initSeparatesSymbol(symbols);
 		this.initSensitiveWords(sensitivewords);
@@ -64,7 +64,7 @@ public class DfaValidScanner extends AbstractDfaScanner {
 	 * 
 	 * @param sensitivewords 敏感词列表
 	 */
-	private void initSensitiveWords(List<DfaValidWord> sensitivewords) {
+	private void initSensitiveWords(List<? extends DfaValidWord> sensitivewords) {
 		for (DfaValidWord word : sensitivewords) {
 			if (StringUtils.isEmpty(word.text())) {
 				continue;
