@@ -13,8 +13,11 @@
  */
 package xyz.noark.game.dfa;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+
+import xyz.noark.core.lang.ValidTime;
 
 /**
  * DFA敏感词库树上的节点.
@@ -29,8 +32,10 @@ class DfaNode {
 	private List<DfaNode> subNodes;
 	/** 是否是一个敏感词最后一位，默认false */
 	private boolean last;
+	/** 敏感词生效时间 */
+	private ValidTime validTime;
 
-	public DfaNode(int value, boolean last) {
+	DfaNode(int value, boolean last) {
 		this.value = value;
 		this.last = last;
 	}
@@ -42,7 +47,7 @@ class DfaNode {
 	 * @param last 是否是一个敏感词最后一位
 	 * @return 返回这个子节点
 	 */
-	public DfaNode addIfAbsent(final int value, final boolean last) {
+	DfaNode addIfAbsent(final int value, final boolean last) {
 		if (subNodes != null) {
 			for (DfaNode subNode : subNodes) {
 				if (subNode.value == value) {
@@ -76,7 +81,7 @@ class DfaNode {
 	 * @param value 节点编码
 	 * @return 如果存在节点编码就返回此子节点，如果没有就返回null
 	 */
-	public DfaNode querySub(final int value) {
+	DfaNode querySub(final int value) {
 		if (subNodes == null) {
 			return null;
 		}
@@ -93,7 +98,7 @@ class DfaNode {
 	 * 
 	 * @return 如果是一个完整的词就返回true
 	 */
-	public boolean isLast() {
+	boolean isLast() {
 		return last;
 	}
 
@@ -104,5 +109,19 @@ class DfaNode {
 	 */
 	void setLast(boolean last) {
 		this.last = last;
+	}
+
+	void setValidTime(ValidTime validTime) {
+		this.validTime = validTime;
+	}
+
+	/**
+	 * 判定当前敏感词是否正在有效期间.
+	 * 
+	 * @param now 指定时间
+	 * @return 如果在有效期间返回true
+	 */
+	boolean isValid(LocalDateTime now) {
+		return validTime == null || validTime.isValid(now);
 	}
 }
