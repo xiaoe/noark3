@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.AbstractConverter;
 import xyz.noark.core.exception.ConvertException;
+import xyz.noark.core.util.IntUtils;
 import xyz.noark.core.util.StringUtils;
 
 /**
@@ -35,15 +36,19 @@ public class LocalTimeConverter extends AbstractConverter<LocalTime> {
 	}
 
 	@Override
-	public LocalTime convert(String value) throws Exception {
+	public LocalTime convert(String value) {
 		String[] ts = StringUtils.split(value, ":");
 		// 只有两个，那就是时分
-		if (ts.length == 2) {
+		if (ts.length == IntUtils.NUM_2) {
 			return LocalTime.of(Integer.parseInt(ts[0]), Integer.parseInt(ts[1]));
 		}
 		// 如果是3个的话，就当他是时分秒
-		else if (ts.length == 3) {
+		else if (ts.length == IntUtils.NUM_3) {
 			return LocalTime.of(Integer.parseInt(ts[0]), Integer.parseInt(ts[1]), Integer.parseInt(ts[2]));
+		}
+		// 如果是4个的话，就当他是时分秒毫
+		else if (ts.length == IntUtils.NUM_4) {
+			return LocalTime.of(Integer.parseInt(ts[0]), Integer.parseInt(ts[1]), Integer.parseInt(ts[2]), Integer.parseInt(ts[3]));
 		}
 		// 非法情况，异常提示
 		else {
