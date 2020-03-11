@@ -28,6 +28,8 @@ import xyz.noark.core.util.StringUtils;
 public class IntRange {
 	/** 区间列表 */
 	private final List<IntSection> sectionList = new LinkedList<>();
+	/** 是否匹配全部 */
+	private boolean flag = false;
 
 	public IntRange(String expression) {
 		this.analysis(expression);
@@ -39,6 +41,11 @@ public class IntRange {
 	 * @param expression 表达式
 	 */
 	private void analysis(String expression) {
+		if (StringUtils.ASTERISK.equals(expression)) {
+			this.flag = true;
+			return;
+		}
+
 		if (StringUtils.isBlank(expression)) {
 			return;
 		}
@@ -52,16 +59,25 @@ public class IntRange {
 			String[] array = StringUtils.split(x, "-");
 			// 只有一个值
 			if (array.length == 1) {
-				this.sectionList.add(new IntSection(Integer.parseInt(array[0])));
+				this.sectionList.add(new IntSection(parseInt(array[0])));
 			}
 			// 两个值，区间
 			else if (array.length == 2) {
-				this.sectionList.add(new IntSection(Integer.parseInt(array[0]), Integer.parseInt(array[1])));
+				this.sectionList.add(new IntSection(parseInt(array[0]), parseInt(array[1])));
 			}
 			// 异常情况
 			else {
 				throw new IllegalExpressionException("数字区间表达式格式错误：" + expression);
 			}
+		}
+	}
+
+	private Integer parseInt(String data) {
+		try {
+			return Integer.parseInt(data);
+		} catch (Exception e) {
+			// 有一种时间表达式里有星期的配置，需要容错处理...
+			return Integer.parseInt(data.substring(1));
 		}
 	}
 
@@ -72,7 +88,7 @@ public class IntRange {
 	 * @return 如果存在则返回true
 	 */
 	public boolean contains(final int element) {
-		return sectionList.stream().anyMatch(v -> v.contains(element));
+		return flag ? true : sectionList.stream().anyMatch(v -> v.contains(element));
 	}
 
 	/**
