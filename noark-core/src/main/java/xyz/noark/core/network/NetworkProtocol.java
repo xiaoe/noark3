@@ -26,7 +26,7 @@ import java.io.Serializable;
 public class NetworkProtocol {
 	private final Serializable opcode;
 	private final Object protocol;
-	// 客户端过来的封包请求
+	/** 客户端过来的封包请求 */
 	private NetworkPacket packet;
 
 	public NetworkProtocol(Serializable opcode, Object protocol) {
