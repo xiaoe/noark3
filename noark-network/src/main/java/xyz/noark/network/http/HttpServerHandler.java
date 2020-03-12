@@ -151,7 +151,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		// 参数解析...
 		Object[] args = null;
 		try {
-			args = this.analysisParam(handler, uri, parameters);
+			args = this.analysisParam(handler, uri, parameters, ip);
 		} catch (Exception e) {
 			logger.warn("request's parameters are invalid, ip={}, uri={}, e={}", ip, uri, e);
 			return new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "client request's parameters are invalid, " + e.getMessage());
@@ -214,7 +214,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		return false;
 	}
 
-	public Object[] analysisParam(HttpMethodWrapper handler, String uri, Map<String, String> parameters) throws IOException {
+	public Object[] analysisParam(HttpMethodWrapper handler, String uri, Map<String, String> parameters, String ip) throws IOException {
 		// 如果没有参数，返回null.
 		if (handler.getParameters().isEmpty()) {
 			return null;
@@ -226,7 +226,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		for (HttpParamWrapper param : handler.getParameters()) {
 			// Request请求参数
 			if (HttpServletRequest.class.isAssignableFrom(param.getParameter().getType())) {
-				args.add(request = this.build(request, uri, parameters));
+				args.add(request = this.build(request, uri, parameters, ip));
 			}
 			// 其他转化器参数
 			else {
@@ -264,13 +264,14 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	 * @param request 请求对象
 	 * @param uri URI
 	 * @param parameters 所有请求参数
+	 * @param ip IP
 	 * @return Request对象
 	 */
-	private HttpServletRequest build(HttpServletRequest request, String uri, Map<String, String> parameters) {
+	private HttpServletRequest build(HttpServletRequest request, String uri, Map<String, String> parameters, String ip) {
 		if (request != null) {
 			return request;
 		}
-		return new NoarkHttpServletRequest(uri, parameters);
+		return new NoarkHttpServletRequest(uri, parameters, ip);
 	}
 
 	private Converter<?> getConverter(Parameter field) {

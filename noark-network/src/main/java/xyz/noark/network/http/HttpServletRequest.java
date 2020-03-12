@@ -45,13 +45,17 @@ public interface HttpServletRequest {
 
 	public Map<String, String[]> getParameterMap();
 
+	public String getRemoteAddr();
+
 	static class NoarkHttpServletRequest implements HttpServletRequest {
 		private final String uri;
 		private final Map<String, String> parameters;
+		private final String ip;
 
-		public NoarkHttpServletRequest(String uri, Map<String, String> parameters) {
+		public NoarkHttpServletRequest(String uri, Map<String, String> parameters, String ip) {
 			this.uri = uri;
 			this.parameters = parameters;
+			this.ip = ip;
 		}
 
 		@Override
@@ -77,6 +81,11 @@ public interface HttpServletRequest {
 		@Override
 		public Map<String, String[]> getParameterMap() {
 			throw new UnrealizedException("年后再实现");
+		}
+
+		@Override
+		public String getRemoteAddr() {
+			return ip;
 		}
 
 		@Override
