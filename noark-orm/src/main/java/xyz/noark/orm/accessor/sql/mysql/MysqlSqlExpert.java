@@ -89,18 +89,15 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 			sb.append('`').append(pk.getColumnName()).append('`').append(',');
 			sb.setCharAt(sb.length() - 1, ')');
 		}
+		// 玩家ID的索引
 		if (em.getPlayerId() != null && pk != null && !em.getPlayerId().getField().equals(pk.getField())) {
 			sb.append(',').append('\n');
 			sb.append("INDEX INDEX_UD (");
 			sb.append('`').append(em.getPlayerId().getColumnName()).append('`').append(',');
 			sb.setCharAt(sb.length() - 1, ')');
 		}
-		sb.append("\n ");
-
-		// 结束表字段设置
-		sb.setCharAt(sb.length() - 1, ')');
-		// 设置特殊引擎
-		sb.append(" ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		// 结束表字段设置并设置特殊引擎
+		sb.append("\n )ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		// 表名注释
 		if (!StringUtils.isEmpty(em.getTableComment())) {
 			sb.append(" COMMENT='").append(em.getTableComment()).append("'");

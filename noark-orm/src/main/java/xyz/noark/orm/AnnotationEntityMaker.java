@@ -120,6 +120,12 @@ public class AnnotationEntityMaker {
 			// 所有字段
 			fieldInfo.add(fm);
 		}
+
+		// 没有主键也是不行的...
+		if (!hasId) {
+			throw new NoEntityException(klass.getName(), "一个实体中至少有一个@Id ≡ (^(OO)^) ≡");
+		}
+
 		em.setFieldInfo(fieldInfo);
 		return em;
 	}
