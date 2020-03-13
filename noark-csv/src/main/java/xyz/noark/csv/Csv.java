@@ -17,8 +17,6 @@ import static xyz.noark.log.LogHelper.logger;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +31,7 @@ import xyz.noark.core.exception.ConvertException;
 import xyz.noark.core.exception.TplAttrRequiredException;
 import xyz.noark.core.exception.TplConfigurationException;
 import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.lang.ResourceLoader;
 import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.FieldUtils;
@@ -47,7 +46,7 @@ import xyz.noark.core.util.StringUtils;
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class Csv {
+public class Csv extends ResourceLoader {
 	private final ConvertManager convertManager = ConvertManager.getInstance();
 	private final char separator;
 
@@ -99,7 +98,7 @@ public class Csv {
 			logger.warn("模板类正常为只读模式，不应该存在Set方法噢，class={}", klass.getName());
 		}
 
-		try (CsvReader reader = new CsvReader(separator, Files.newBufferedReader(Paths.get(templatePath, zone, file.value()), CharsetUtils.CHARSET_UTF_8))) {
+		try (CsvReader reader = new CsvReader(separator, newBufferedReader(templatePath, zone, file.value(), CharsetUtils.CHARSET_UTF_8))) {
 			/** 标题 */
 			Map<String, Integer> titles = reader.getHeaders();
 

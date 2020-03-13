@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
@@ -29,6 +28,7 @@ import org.xml.sax.SAXException;
 import xyz.noark.core.annotation.tpl.TplFile;
 import xyz.noark.core.exception.FileNotFoundException;
 import xyz.noark.core.exception.TplConfigurationException;
+import xyz.noark.core.lang.ResourceLoader;
 import xyz.noark.core.util.StringUtils;
 
 /**
@@ -39,7 +39,7 @@ import xyz.noark.core.util.StringUtils;
  * @since 3.1
  * @author 小流氓(176543888@qq.com)
  */
-public class Xml {
+public class Xml extends ResourceLoader {
 
 	/**
 	 * 根据指定类文件加载XML格式的配置.
@@ -97,7 +97,7 @@ public class Xml {
 	 * @param klass 模板类文件
 	 * @return 模板类对象的集合
 	 */
-	public static <T> List<T> loadAll(String templatePath, Class<T> klass) {
+	public <T> List<T> loadAll(String templatePath, Class<T> klass) {
 		return loadAll(templatePath, StringUtils.EMPTY, klass);
 	}
 
@@ -110,13 +110,13 @@ public class Xml {
 	 * @param klass 模板类文件
 	 * @return 模板类对象的集合
 	 */
-	public static <T> List<T> loadAll(String templatePath, String zone, Class<T> klass) {
+	public <T> List<T> loadAll(String templatePath, String zone, Class<T> klass) {
 		TplFile file = klass.getAnnotation(TplFile.class);
 		if (file == null) {
 			throw new TplConfigurationException("这不是XML格式的配置文件类:" + klass.getName());
 		}
 
-		try (InputStream is = Files.newInputStream(Paths.get(templatePath, zone, file.value()), StandardOpenOption.READ)) {
+		try (InputStream is = newInputStream(templatePath, zone, file.value())) {
 			ArrayXmlHandler<T> myHandler = new ArrayXmlHandler<>(klass, file.value());
 			SAXParserFactory.newInstance().newSAXParser().parse(is, myHandler);
 			return myHandler.getResult();

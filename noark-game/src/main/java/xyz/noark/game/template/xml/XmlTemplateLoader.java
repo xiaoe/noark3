@@ -25,17 +25,20 @@ import xyz.noark.xml.Xml;
  * @author 小流氓(176543888@qq.com)
  */
 public class XmlTemplateLoader extends AbstractTemplateLoader {
+	private final Xml xml;
 
 	public XmlTemplateLoader(String templatePath) {
 		super(templatePath);
+		this.xml = new Xml();
 	}
 
 	public XmlTemplateLoader(String templatePath, String zone) {
 		super(templatePath, zone);
+		this.xml = new Xml();
 	}
 
 	@Override
 	public <T> List<T> loadAll(Class<T> klass) {
-		return Xml.loadAll(templatePath, zone, klass);
+		return xml.loadAll(templatePath, zone, klass);
 	}
 }

@@ -13,16 +13,8 @@
  */
 package xyz.noark.game.template.json;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-
-import xyz.noark.core.annotation.tpl.TplFile;
-import xyz.noark.core.exception.TplConfigurationException;
-import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.game.template.AbstractTemplateLoader;
 
 /**
@@ -32,28 +24,16 @@ import xyz.noark.game.template.AbstractTemplateLoader;
  * @author 小流氓(176543888@qq.com)
  */
 public class JsonTemplateLoader extends AbstractTemplateLoader {
+	private final NoarkJson json;
 
 	public JsonTemplateLoader(String templatePath) {
 		super(templatePath);
+		this.json = new NoarkJson();
 	}
 
 	public JsonTemplateLoader(String templatePath, String zone) {
 		super(templatePath, zone);
-	}
-
-	@Override
-	public <T> List<T> loadAll(Class<T> klass) {
-		TplFile file = klass.getAnnotation(TplFile.class);
-		if (file == null) {
-			throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
-		}
-
-		try {
-			byte[] bytes = Files.readAllBytes(Paths.get(templatePath, zone, file.value()));
-			return JSON.parseArray(new String(bytes, CharsetUtils.CHARSET_UTF_8), klass);
-		} catch (IOException e) {
-			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
-		}
+		this.json = new NoarkJson();
 	}
 
 	/**
@@ -68,15 +48,11 @@ public class JsonTemplateLoader extends AbstractTemplateLoader {
 	 * @return 模板数据
 	 */
 	public <T> T load(Class<T> klass) {
-		TplFile file = klass.getAnnotation(TplFile.class);
-		if (file == null) {
-			throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
-		}
+		return json.load(templatePath, zone, klass);
+	}
 
-		try {
-			return JSON.parseObject(Files.readAllBytes(Paths.get(templatePath, zone, file.value())), klass);
-		} catch (IOException e) {
-			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
-		}
+	@Override
+	public <T> List<T> loadAll(Class<T> klass) {
+		return json.loadAll(templatePath, zone, klass);
 	}
 }

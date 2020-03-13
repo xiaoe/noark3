@@ -15,7 +15,6 @@ package xyz.noark.csv;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -41,7 +40,7 @@ public class CsvTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		ConvertManager.getInstance().register(RewardConverter.class);
-		templatePath = new File("src/test/resources/").getAbsolutePath();
+		templatePath = "classpath:";
 		csv = new Csv('	');
 	}
 
@@ -56,13 +55,13 @@ public class CsvTest {
 	}
 
 	@Test
-	public void testLoadAllStringClassOfT() {
+	public void testLoadAllStringClass() {
 		List<ItemTemplate> ts = csv.loadAll(templatePath, ItemTemplate.class);
 		assertTrue(ts.size() == 22);
 	}
 
 	@Test
-	public void testLoadAllStringStringClassOfT() {
+	public void testLoadAllStringStringClass() {
 		List<MonsterRefreshTemplate> templates = csv.loadAll(templatePath, MonsterRefreshTemplate.class);
 		List<MonsterRefreshTemplate2> templates2 = csv.loadAll(templatePath, MonsterRefreshTemplate2.class);
 		for (int i = 0; i < templates.size(); i++) {
