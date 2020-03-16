@@ -38,7 +38,7 @@ public class AbstractDelayEvent implements DelayEvent {
 
 	@Override
 	public int compareTo(Delayed o) {
-		return endTime.compareTo(((AbstractDelayEvent) o).getEndTime());
+		return endTime.compareTo(((DelayEvent) o).getEndTime());
 	}
 
 	@Override
