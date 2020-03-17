@@ -45,6 +45,8 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	private final boolean inner;
 	private final Set<Session.State> stateSet;
 	private final boolean allState;
+	/** 串行执行队列ID */
+	private final String queueId;
 	private final ArrayList<ParamWrapper> parameters;
 	/** 调用总次数 */
 	private final LongAdder callNum = new LongAdder();
@@ -52,7 +54,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	/** 当前方法是否已废弃使用. */
 	private boolean deprecated = false;
 
-	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass, String queueId) {
 		super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocol(opcode=" + md.getOpcode() + ")");
 		this.opcode = md.getOpcode();
 		this.inner = md.isInnerPacket();
@@ -60,6 +62,8 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 		this.stateSet = md.getStateSet();
 		this.allState = stateSet.contains(Session.State.ALL);
 		this.deprecated = md.isDeprecated();
+		this.queueId = queueId;
+
 		this.parameters = new ArrayList<>(md.getParameters().length);
 		Arrays.stream(md.getParameters()).forEach(v -> buildParamWrapper(v));
 	}
@@ -188,5 +192,14 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
 	 */
 	public long getCallNum() {
 		return callNum.longValue();
+	}
+
+	/**
+	 * 获取串型队列ID
+	 * 
+	 * @return 串型队列ID
+	 */
+	public String getQueueId() {
+		return queueId;
 	}
 }
