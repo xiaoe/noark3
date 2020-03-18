@@ -16,6 +16,7 @@ package xyz.noark.core.thread;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -26,6 +27,7 @@ import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.event.PlayerEvent;
+import xyz.noark.core.event.QueueEvent;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
@@ -36,8 +38,10 @@ import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.network.SessionAttrKey;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.command.PlayerThreadCommand;
+import xyz.noark.core.thread.command.QueueThreadCommand;
 import xyz.noark.core.thread.command.SystemThreadCommand;
 
 /**
@@ -157,11 +161,19 @@ public class ThreadDispatcher {
 			this.dispatchSystemThreadHandle(session, packet, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
 			break;
 		case QueueThreadGroup:
-
+			Object id = session.attr(SessionAttrKey.valueOf(pmw.getQueueId())).get();
+			if (Objects.nonNull(id) && id instanceof Serializable) {
+				this.dispatchHandle(session, packet, (Serializable) id, new QueueThreadCommand(playerId, pmw, args));
+			}
 			break;
 		default:
 			throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
 		}
+	}
+
+	private void dispatchHandle(Session session, NetworkPacket packet, Serializable id, QueueThreadCommand command) {
+		TaskQueue taskQueue = businessThreadPoolTaskQueue.get(id);
+		taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
 	}
 
 	/** 派发给Netty线程处理的逻辑. */
@@ -201,6 +213,14 @@ public class ThreadDispatcher {
 		case ModuleThreadGroup:
 			this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler, event));
 			break;
+		case QueueThreadGroup:
+			if (event instanceof QueueEvent) {
+				QueueEvent e = (QueueEvent) event;
+				this.dispatchHandle(null, null, ((QueueEvent) event).getId(), new QueueThreadCommand(null, handler, e));
+			} else {
+				throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
+			}
+			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
 		}
@@ -221,6 +241,14 @@ public class ThreadDispatcher {
 			break;
 		case ModuleThreadGroup:
 			this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler, handler.analysisParam(null, event)));
+			break;
+		case QueueThreadGroup:
+			if (event instanceof QueueEvent) {
+				QueueEvent e = (QueueEvent) event;
+				this.dispatchHandle(null, null, ((QueueEvent) event).getId(), new QueueThreadCommand(null, handler, e));
+			} else {
+				throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
+			}
 			break;
 		default:
 			throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());

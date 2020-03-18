@@ -136,6 +136,6 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	/** 分析一下封包处理方法. */
 	private void doAnalysisPacketHandler(NoarkIoc noarkIoc) {
 		final PacketMethodManager manager = PacketMethodManager.getInstance();
-		pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, threadGroup, controllerMasterClass)));
+		pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, threadGroup, controllerMasterClass, queueId)));
 	}
 }
