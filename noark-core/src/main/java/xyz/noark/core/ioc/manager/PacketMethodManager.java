@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.manager;
 import static xyz.noark.log.LogHelper.logger;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -87,12 +88,23 @@ public class PacketMethodManager {
 		return true;
 	}
 
-	public void outputStatInfo() {
+	/**
+	 * 输出统计信息
+	 * 
+	 * @param maxSize TopN
+	 */
+	public void outputStatInfo(int maxSize) {
+		Map<Serializable, Long> result = new HashMap<>(handlers.size());
 		for (Map.Entry<Serializable, PacketMethodWrapper> e : handlers.entrySet()) {
 			final long num = e.getValue().getCallNum();
-			if (num > 0) {
-				logger.info("protocol stat. opcode={}, call={}", e.getKey(), num);
+			if (num <= 0) {
+				continue;
 			}
+			result.put(e.getKey(), num);
 		}
+		// 排序后只输出前多少个.
+		result.entrySet().stream().sorted(Map.Entry.<Serializable, Long> comparingByValue().reversed()).limit(maxSize).forEachOrdered(e -> {
+			logger.info("protocol stat. opcode={}, call={}", e.getKey(), e.getValue());
+		});
 	}
 }

@@ -45,6 +45,7 @@ public class PacketMonitorService extends AbstractMonitorService {
 
 	@Override
 	protected void exe() throws Exception {
-		PacketMethodManager.getInstance().outputStatInfo();
+		// 输出次数最多的64个调用协议
+		PacketMethodManager.getInstance().outputStatInfo(64);
 	}
 }
