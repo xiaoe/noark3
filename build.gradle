@@ -143,7 +143,7 @@ subprojects {
 				}
 			}
 			
-			final PrintWriter printWriter = new PrintWriter(new FileWriter("$buildDir/../pom.xml"));
+			final PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream("$buildDir/../pom.xml"), "UTF-8"));
 			printWriter.format("<?xml version='1.0' encoding='UTF-8'?>%n");
 			def printer = new XmlNodePrinter(printWriter);
 			printer.preserveWhitespace = true;
