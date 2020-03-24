@@ -11,31 +11,45 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
-
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+package xyz.noark.core.event;
 
 /**
- * 日志分析测试.
+ * 事件管理器.
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)
  */
-public class MessageAnalyzerTest {
+public interface EventManager {
+	/**
+	 * 发布一个事件.
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(Event event);
 
-	@Test
-	public void testMessageAnalyzer() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("1111{}1{}{}1{}");
-		assertTrue(analyzer.getCount() == 4);
-	}
+	/**
+	 * 发布一个延迟事件.
+	 * <p>
+	 * 一定要重新HashCode和equals
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(DelayEvent event);
 
-	@Test
-	public void testBuild() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("xx={}");
-		StringBuilder sb = new StringBuilder();
-		analyzer.build(sb, new Object[] { 1 });
-		assertTrue("xx=1".equals(sb.toString()));
-	}
+	/**
+	 * 发布一个定时任务事件.
+	 * 
+	 * @param event 事件源
+	 */
+	public void publish(FixedTimeEvent event);
+
+	/**
+	 * 移除一个延迟事件.
+	 * <p>
+	 * 一定要重新HashCode和equals
+	 * 
+	 * @param event 事件源
+	 * @return 如果移除成功则返回true,否则返回false.
+	 */
+	public boolean remove(DelayEvent event);
 }

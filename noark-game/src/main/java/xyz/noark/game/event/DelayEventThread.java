@@ -11,13 +11,15 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event.delay;
+package xyz.noark.game.event;
 
 import static xyz.noark.log.LogHelper.logger;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.TimeUnit;
+
+import xyz.noark.core.event.DelayEvent;
 
 /**
  * 延迟事件处理线程.
@@ -28,10 +30,10 @@ import java.util.concurrent.TimeUnit;
 class DelayEventThread extends Thread {
 	private static final int SHUTDOWN_TIMEOUT = 1;
 	private static final DelayQueue<DelayEvent> QUEUE = new DelayQueue<>();
-	private final DelayEventManager eventManager;
+	private final DefaultEventManager eventManager;
 	private volatile boolean starting = true;
 
-	public DelayEventThread(DelayEventManager eventManager) {
+	public DelayEventThread(DefaultEventManager eventManager) {
 		super("delay-event");
 		this.eventManager = eventManager;
 	}
@@ -52,6 +54,11 @@ class DelayEventThread extends Thread {
 				// 延迟任务...
 				else if (event instanceof ScheduledEvent) {
 					eventManager.notifyScheduledHandler((ScheduledEvent) event);
+				}
+
+				// 定时任务
+				else if (event instanceof FixedTimeEventWrapper) {
+					eventManager.notifyFixedTimeEventHandler((FixedTimeEventWrapper) event);
 				}
 
 				// 延迟事件

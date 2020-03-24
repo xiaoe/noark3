@@ -11,31 +11,12 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
-
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+package xyz.noark.game.event;
 
 /**
- * 日志分析测试.
+ * 延迟任务事件.
  *
- * @since 3.0
+ * @since 3.2.6
  * @author 小流氓(176543888@qq.com)
  */
-public class MessageAnalyzerTest {
-
-	@Test
-	public void testMessageAnalyzer() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("1111{}1{}{}1{}");
-		assertTrue(analyzer.getCount() == 4);
-	}
-
-	@Test
-	public void testBuild() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("xx={}");
-		StringBuilder sb = new StringBuilder();
-		analyzer.build(sb, new Object[] { 1 });
-		assertTrue("xx=1".equals(sb.toString()));
-	}
-}
+public final class ScheduledEvent extends AbstractDelayEvent {}

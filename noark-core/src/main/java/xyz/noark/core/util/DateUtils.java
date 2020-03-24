@@ -13,7 +13,11 @@
  */
 package xyz.noark.core.util;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
@@ -56,8 +60,7 @@ public class DateUtils {
 	 * </p>
 	 *
 	 * <p>
-	 * 28 Mar 2002 13:45 and 28 Mar 2002 06:01 would return true. 28 Mar 2002
-	 * 13:45 and 12 Mar 2002 13:45 would return false.
+	 * 28 Mar 2002 13:45 and 28 Mar 2002 06:01 would return true. 28 Mar 2002 13:45 and 12 Mar 2002 13:45 would return false.
 	 * </p>
 	 *
 	 * @param cal1 the first calendar, not altered, not null
@@ -122,8 +125,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of years to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of years to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -135,8 +137,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of months to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of months to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -149,8 +150,7 @@ public class DateUtils {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of weeks to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of weeks to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -163,8 +163,7 @@ public class DateUtils {
 
 	// -----------------------------------------------------------------------
 	/**
-	 * Adds a number of days to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of days to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -176,8 +175,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of hours to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of hours to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -189,8 +187,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of minutes to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of minutes to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -202,8 +199,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of seconds to a date returning a new object. The original
-	 * {@code Date} is unchanged.
+	 * Adds a number of seconds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -215,8 +211,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds a number of milliseconds to a date returning a new object. The
-	 * original {@code Date} is unchanged.
+	 * Adds a number of milliseconds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param amount the amount to add, may be negative
@@ -228,8 +223,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * Adds to a date returning a new object. The original {@code Date} is
-	 * unchanged.
+	 * Adds to a date returning a new object. The original {@code Date} is unchanged.
 	 *
 	 * @param date the date, not null
 	 * @param calendarField the calendar field to add to
@@ -299,6 +293,26 @@ public class DateUtils {
 	}
 
 	/**
+	 * Date对象转化为LocalDateTime对象
+	 * 
+	 * @param date Date对象
+	 * @return LocalDateTime对象
+	 */
+	public static LocalDateTime toLocalDateTime(Date date) {
+		return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+	}
+
+	/**
+	 * Date对象转化为LocalTime对象
+	 * 
+	 * @param date Date对象
+	 * @return LocalTime对象
+	 */
+	public static LocalTime toLocalTime(Date date) {
+		return toLocalDateTime(date).toLocalTime();
+	}
+
+	/**
 	 * 计算两个Date对象之间相差多少秒.
 	 * 
 	 * @param date1 时间一
@@ -350,5 +364,31 @@ public class DateUtils {
 		sb.append(minute < 10 ? "0" : "").append(minute).append(":");
 		sb.append(second < 10 ? "0" : "").append(second);
 		return sb.toString();
+	}
+
+	/**
+	 * 获取指定日期的星期几属性，返回枚举结果{@code DayOfWeek}
+	 * 
+	 * @param date 指定日期
+	 * @return 每周中的第几天，不为空
+	 */
+	public static DayOfWeek getDayOfWeek(Date date) {
+		return date.toInstant().atZone(ZoneId.systemDefault()).getDayOfWeek();
+	}
+
+	/**
+	 * 获取指定时间那天的开始时间
+	 * 
+	 * @param date 指定时间
+	 * @return 那天的开始时间
+	 */
+	public static Date getStartOfDay(Date date) {
+		Calendar now = Calendar.getInstance();
+		now.setTime(date);
+		now.set(Calendar.HOUR_OF_DAY, 0);
+		now.set(Calendar.MINUTE, 0);
+		now.set(Calendar.SECOND, 0);
+		now.set(Calendar.MILLISECOND, 0);
+		return now.getTime();
 	}
 }

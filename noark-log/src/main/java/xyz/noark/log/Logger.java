@@ -16,7 +16,9 @@ package xyz.noark.log;
 /**
  * 提供一套输出日志的接口.
  * <p>
- * 使用参考{@link LogHelper}
+ * 使用参考{@link LogHelper}<br>
+ * 当调用记录方法时，非基本数据类型会被提前转化为String文本<br>
+ * 如果目标对象被标识为{@code ThreadSafe}则不会被提前转化，用于一些特别的优化情况
  *
  * @since 3.0
  * @author 小流氓(176543888@qq.com)

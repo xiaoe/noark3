@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.csv;
+package xyz.noark.csv.converter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
@@ -20,6 +20,7 @@ import java.util.Map;
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.csv.template.Reward;
 
 /**
  * 奖励转化器.

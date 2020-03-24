@@ -13,9 +13,20 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import java.io.Serializable;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.event.Event;
+import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
+import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.ioc.wrap.param.ObjectParamWrapper;
+import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
 import xyz.noark.reflectasm.MethodAccess;
 
 /**
@@ -26,6 +37,7 @@ import xyz.noark.reflectasm.MethodAccess;
  */
 public class EventMethodWrapper extends AbstractControllerMethodWrapper implements Comparable<EventMethodWrapper> {
 	private final Class<? extends Event> eventClass;
+	private final ArrayList<ParamWrapper> parameters;
 	private final boolean async;
 
 	public EventMethodWrapper(MethodAccess methodAccess, Object single, EventMethodDefinition emd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
@@ -33,6 +45,29 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper implemen
 		this.eventClass = emd.getEventClass();
 		this.printLog = emd.isPrintLog();
 		this.async = emd.isAsync();
+
+		this.parameters = new ArrayList<>(emd.getParameters().length);
+		Arrays.stream(emd.getParameters()).forEach(v -> buildParamWrapper(v));
+	}
+
+	/** 构建参数 */
+	private void buildParamWrapper(Parameter parameter) {
+		// 玩家ID
+		if (parameter.isAnnotationPresent(PlayerId.class)) {
+			this.parameters.add(new PlayerIdParamWrapper());
+		}
+		// 无法识别的就当他是一个对象
+		else {
+			this.parameters.add(new ObjectParamWrapper());
+		}
+	}
+
+	public Object[] analysisParam(Serializable playerId, FixedTimeEvent event) {
+		List<Object> args = new ArrayList<>(parameters.size());
+		for (ParamWrapper parameter : parameters) {
+			args.add(parameter.read(playerId, event));
+		}
+		return args.toArray();
 	}
 
 	public Class<? extends Event> getEventClass() {
@@ -57,7 +92,7 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper implemen
 	public int compareTo(EventMethodWrapper o) {
 		// 相同方式，采用Order排序
 		if (async == o.isAsync()) {
-			return this.getOrder() - o.getOrder();
+			return Integer.compare(this.getOrder(), o.getOrder());
 		}
 
 		// 异步情况向后排

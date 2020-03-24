@@ -11,31 +11,20 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package com.company.game.event;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import xyz.noark.core.lang.LocalTimeArray;
+import xyz.noark.game.event.AbstractFixedTimeEvent;
 
 /**
- * 日志分析测试.
+ * 0点事件.
  *
- * @since 3.0
+ * @since 3.3.9
  * @author 小流氓(176543888@qq.com)
  */
-public class MessageAnalyzerTest {
+public class ZeroEvent extends AbstractFixedTimeEvent {
 
-	@Test
-	public void testMessageAnalyzer() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("1111{}1{}{}1{}");
-		assertTrue(analyzer.getCount() == 4);
-	}
-
-	@Test
-	public void testBuild() {
-		MessageAnalyzer analyzer = new MessageAnalyzer("xx={}");
-		StringBuilder sb = new StringBuilder();
-		analyzer.build(sb, new Object[] { 1 });
-		assertTrue("xx=1".equals(sb.toString()));
+	public ZeroEvent(LocalTimeArray trigger) {
+		super(trigger);
 	}
 }

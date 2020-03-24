@@ -93,4 +93,12 @@ public class DateUtilsTest {
 		Date d1 = sdf.parse("2019-02-14 00:00:00:000");
 		assertTrue(DateUtils.toSeconds(d1) == DateUtils.toSecondsByStartOfDay(LocalDate.of(2019, 02, 14)));
 	}
+
+	@Test
+	public void testGetStartOfDay() throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		Date d1 = sdf.parse("2019-02-14 00:00:00:000");
+		Date d2 = sdf.parse("2019-02-14 01:02:03:004");
+		assertTrue(DateUtils.getStartOfDay(d1).equals(DateUtils.getStartOfDay(d2)));
+	}
 }

@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event.delay;
+package xyz.noark.game.event;
 
 import java.util.Date;
 import java.util.concurrent.Delayed;
@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Id;
+import xyz.noark.core.event.DelayEvent;
 
 /**
  * 抽象的延迟事件.

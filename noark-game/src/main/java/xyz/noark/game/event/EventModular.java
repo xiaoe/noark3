@@ -16,7 +16,6 @@ package xyz.noark.game.event;
 import xyz.noark.core.Modular;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
-import xyz.noark.game.event.delay.DelayEventManager;
 
 /**
  * 事件模块.
@@ -28,7 +27,7 @@ import xyz.noark.game.event.delay.DelayEventManager;
 public class EventModular implements Modular {
 
 	@Autowired
-	private DelayEventManager eventManager;
+	private DefaultEventManager eventManager;
 
 	@Override
 	public void init() {

@@ -13,10 +13,7 @@
  */
 package xyz.noark.log;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * 消息分析器.
@@ -68,9 +65,7 @@ class MessageAnalyzer {
 	}
 
 	/**
-	 * Returns {@code true} if the specified char and the char at
-	 * {@code curCharIndex + 1} in the specified message pattern together form a
-	 * "{}" delimiter pair, returns {@code false} otherwise.
+	 * Returns {@code true} if the specified char and the char at {@code curCharIndex + 1} in the specified message pattern together form a "{}" delimiter pair, returns {@code false} otherwise.
 	 */
 	private static boolean isDelimitPair(final char curChar, final String messagePattern, final int curCharIndex) {
 		return curChar == DELIMIT_START && messagePattern.charAt(curCharIndex + 1) == DELIMIT_STOP;
@@ -84,10 +79,10 @@ class MessageAnalyzer {
 		// 如果参数比占位符多的话，也要输出.
 		if (args.length > count) {
 			for (int i = count; i < args.length; i++) {
-				append(sb, ",{");
-				append(sb, i);
-				append(sb, "}=");
-				append(sb, args[i]);
+				MessageHelper.append(sb, ",{");
+				MessageHelper.append(sb, i);
+				MessageHelper.append(sb, "}=");
+				MessageHelper.append(sb, args[i]);
 			}
 		}
 	}
@@ -135,7 +130,7 @@ class MessageAnalyzer {
 		@Override
 		public void build(StringBuilder sb, Object[] args) {
 			if (args.length > index) {
-				append(sb, args[index]);
+				MessageHelper.append(sb, args[index]);
 			} else {
 				sb.append("{}");
 			}
@@ -147,42 +142,4 @@ class MessageAnalyzer {
 		}
 	}
 
-	private void append(StringBuilder sb, Object object) {
-		if (object == null) {
-			sb.append(object);
-		}
-		// 异常类型的输出...
-		else if (object instanceof Throwable) {
-			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
-				((Throwable) object).printStackTrace(pw);
-				sb.append("\n").append(sw.toString());
-			} catch (Exception e) {
-				sb.append(object);
-			}
-		}
-
-		// 数组类型的输出...
-		else if (object.getClass().isArray()) {
-			if (object instanceof byte[]) {
-				sb.append(Arrays.toString((byte[]) object));
-			} else if (object instanceof short[]) {
-				sb.append(Arrays.toString((short[]) object));
-			} else if (object instanceof int[]) {
-				sb.append(Arrays.toString((int[]) object));
-			} else if (object instanceof long[]) {
-				sb.append(Arrays.toString((long[]) object));
-			} else if (object instanceof float[]) {
-				sb.append(Arrays.toString((float[]) object));
-			} else if (object instanceof double[]) {
-				sb.append(Arrays.toString((double[]) object));
-			} else {
-				sb.append(Arrays.toString((Object[]) object));
-			}
-		}
-
-		// 默认的交给StringBuilder
-		else {
-			sb.append(object);
-		}
-	}
 }
