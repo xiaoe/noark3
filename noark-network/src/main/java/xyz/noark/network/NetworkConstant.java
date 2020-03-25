@@ -41,8 +41,10 @@ public class NetworkConstant {
 	// Netty相关配置--------------------------------------
 	/** 心跳功能，默认值为0，则不生效 */
 	public static final String HEARTBEAT = "network.heartbeat";
-	/** 是否为WebSocket */
+	/** WebSocket路径 */
 	public static final String WEBSOCKET_PATH = "network.websocket.path";
+	/** WebSocket接收内容最大内容长度（默认：65535=64K） */
+	public static final String WEBSOCKET_MAX_CONTENT_LENGTH = "network.websocket.max.content.length";
 	/** Netty的Work线程数 */
 	public static final String WORK_THREADS = "network.workthreads";
 	/** 网络封包日志激活 */

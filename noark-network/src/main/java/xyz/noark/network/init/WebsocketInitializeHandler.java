@@ -19,6 +19,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
@@ -39,6 +40,10 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 	/** 是否为WebSocket */
 	@Value(NetworkConstant.WEBSOCKET_PATH)
 	protected String websocketPath = "/game";
+	/** WebSocket接收内容最大内容长度（默认：65535=64K） */
+	@Value(NetworkConstant.WEBSOCKET_MAX_CONTENT_LENGTH)
+	private int maxContentLength = 65535;
+
 	@Autowired
 	private WebsocketServerHandler websocketServerHandler;
 
@@ -48,7 +53,8 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 		ChannelPipeline pipeline = ctx.pipeline();
 		pipeline.addLast(new HttpServerCodec());
 		pipeline.addLast(new ChunkedWriteHandler());
-		pipeline.addLast(new HttpObjectAggregator(65535));
+		pipeline.addLast(new HttpObjectAggregator(maxContentLength));
+		pipeline.addLast(new WebSocketFrameAggregator(maxContentLength));
 		pipeline.addLast(new WebSocketServerProtocolHandler(websocketPath));
 		pipeline.addLast(websocketServerHandler);
 	}
