@@ -424,7 +424,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 		public void run() {
 			try {
 				this.syncFlush();
-			} catch (Exception e) {// 每次保存必需保证定时器不能停了.
+			} catch (Throwable e) {// 每次保存必需保证定时器不能停了.
 				logger.error("保存个人数据时异常，playerId=" + playerId, e);
 			}
 		}
