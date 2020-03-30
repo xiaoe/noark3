@@ -13,8 +13,6 @@
  */
 package xyz.noark.core.ioc.definition;
 
-import static xyz.noark.log.LogHelper.logger;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,12 +21,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Value;
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.BeanDefinition;
 import xyz.noark.core.ioc.FieldDefinition;
 import xyz.noark.core.ioc.IocMaking;
@@ -138,9 +136,10 @@ public class DefaultBeanDefinition implements BeanDefinition {
 						this.analysisMethodByAnnotation(annotationType, annotation, method);
 					}
 				}
-				// 如果这个方法上有Override那就不警告了...
-				else if (Objects.nonNull(method.getAnnotation(Override.class))) {
-					logger.warn("重名方法 class={}, method={}", beanClass.getName(), method.getName());
+				// 如果不是Controller里的方法可不管重复提示...
+				// 由于底层使用的ASM，重名方法在调用时会有问题，所以直接约定我们的控制Bean中绝不允许重名
+				else if (this instanceof ControllerBeanDefinition) {
+					throw new ServerBootstrapException("重名方法 class=" + beanClass.getName() + ", method=" + method.getName());
 				}
 			}
 		}
