@@ -70,7 +70,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 		RemovalListener<Serializable, AsyncWriteContainer> listener = new RemovalListener<Serializable, AsyncWriteContainer>() {
 			@Override
 			public void onRemoval(Serializable key, AsyncWriteContainer value, RemovalCause cause) {
-				logger.debug("销毁{}秒都没有读写操作的异步回写容器， playerId={}", offlineInterval, key);
+				logger.info("销毁{}秒都没有读写操作的异步回写容器， playerId={}", offlineInterval, key);
 				value.syncFlush();
 				value.close();
 			}
@@ -79,7 +79,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 		CacheLoader<Serializable, AsyncWriteContainer> loader = new CacheLoader<Serializable, AsyncWriteContainer>() {
 			@Override
 			public AsyncWriteContainer load(Serializable playerId) {
-				logger.debug("创建异步回写容器， playerId={}", playerId);
+				logger.info("创建异步回写容器， playerId={}", playerId);
 				return new AsyncWriteContainer(playerId, saveInterval);
 			}
 		};
