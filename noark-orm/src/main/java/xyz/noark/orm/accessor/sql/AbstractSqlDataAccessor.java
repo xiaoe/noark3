@@ -129,10 +129,21 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 			// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation:
 			// Data too long for column 'json' at row 1
 			if (autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
-				synchronized (em) {
-					this.handleDataTooLongException(em, columnMaxLenMap);
+
+				int maxLen = 0;
+				for (Integer value : columnMaxLenMap.values()) {
+					if (value > maxLen) {
+						maxLen = value;
+					}
 				}
-				return this.execute(em, action, sql, entity);
+
+				// 如果有超出65535长度的，就不要修正啦...
+				if (maxLen <= 65530) {
+					synchronized (em) {
+						this.handleDataTooLongException(em, columnMaxLenMap);
+					}
+					return this.execute(em, action, sql, entity);
+				}
 			}
 
 			throw new DataAccessException(e);
@@ -163,10 +174,21 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 				// truncation:
 				// Data too long for column 'json' at row 1
 				if (autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
-					synchronized (em) {
-						this.handleDataTooLongException(em, columnMaxLenMap);
+
+					int maxLen = 0;
+					for (Integer value : columnMaxLenMap.values()) {
+						if (value > maxLen) {
+							maxLen = value;
+						}
 					}
-					return this.executeBatch(em, action, sql, entitys);
+
+					// 如果有超出65535长度的，就不要修正啦...
+					if (maxLen <= 65530) {
+						synchronized (em) {
+							this.handleDataTooLongException(em, columnMaxLenMap);
+						}
+						return this.executeBatch(em, action, sql, entitys);
+					}
 				}
 
 				throw new DataAccessException(e);
