@@ -21,7 +21,8 @@ package xyz.noark.orm;
  */
 public final class DataConstant {
 	/**
-	 * 字段最大宽度，正常用在字符串上，超时此值时转化为Text类型
+	 * 字段最大宽度，正常用在字符串上，超时此值时转化类型,<br>
+	 * 等于65535为Text~64kb，大于就是MEDIUMTEXT了~16M
 	 */
 	public static final int COLUMN_MAX_WIDTH = 65535;
 
@@ -29,5 +30,5 @@ public final class DataConstant {
 	 * 停止服务时存储数据最大等待时间，单位：分钟
 	 */
 	public static final int SHUTDOWN_MAX_TIME = 10;
-	
+
 }

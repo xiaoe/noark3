@@ -28,6 +28,7 @@ import javax.sql.DataSource;
 
 import xyz.noark.core.exception.DataException;
 import xyz.noark.core.util.StringUtils;
+import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.AbstractSqlDataAccessor;
@@ -69,6 +70,10 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 								} else {
 									width = length + 512;
 								}
+								// 如果扩容后这一列在65535到65535/2之间,就直接转化为Text
+								if (DataConstant.COLUMN_MAX_WIDTH > width && width > DataConstant.COLUMN_MAX_WIDTH / 2) {
+									width = DataConstant.COLUMN_MAX_WIDTH;
+								}
 								fm.setWidth(width);
 								logger.warn("智能修正字段长度 column={}, before={}, after={}", columnName, max, width);
 								autoAlterTableUpdateColumn(em, fm);
@@ -91,7 +96,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entity);
+		return execute(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entity, true);
 	}
 
 	@Override
@@ -106,7 +111,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entitys);
+		return executeBatch(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entitys, true);
 	}
 
 	private <T> void buildInsertParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
@@ -129,7 +134,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), id);
+		return execute(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), id, true);
 	}
 
 	@Override
@@ -144,7 +149,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), entitys);
+		return executeBatch(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), entitys, true);
 	}
 
 	@Override
@@ -156,7 +161,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entity);
+		return execute(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entity, true);
 	}
 
 	@Override
@@ -171,7 +176,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entitys);
+		return executeBatch(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entitys, true);
 	}
 
 	private <T> void buildUpdateParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
@@ -200,7 +205,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(em, new LoadPreparedStatementCallback(), expert.genSelectSql(em), id);
+		return execute(em, new LoadPreparedStatementCallback(), expert.genSelectSql(em), id, true);
 	}
 
 	@Override
@@ -215,7 +220,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(em, new LoadAllPreparedStatementCallback(), expert.genSelectAllSql(em), null);
+		return execute(em, new LoadAllPreparedStatementCallback(), expert.genSelectAllSql(em), null, true);
 	}
 
 	public <T> List<T> newEntityList(final EntityMapping<T> em, ResultSet rs) throws Exception {
@@ -248,7 +253,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(em, new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSelectByPlayerId(em), playerId);
+		return execute(em, new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSelectByPlayerId(em), playerId, true);
 	}
 
 	private <T> void setPstmtParameter(EntityMapping<T> em, FieldMapping fm, PreparedStatementProxy pstmt, final T entity, final int index) throws Exception {

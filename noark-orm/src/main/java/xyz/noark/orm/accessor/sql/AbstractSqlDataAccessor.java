@@ -110,9 +110,10 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	 * @param action PreparedStatement回调接口
 	 * @param sql 执行SQL
 	 * @param entity 实体对象，也可能为null，查询时还可能是条件ID
+	 * @param flag 如果遇到数据长度异常情况，是否自动扩容
 	 * @return 执行结果
 	 */
-	protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, Object entity) {
+	protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, Object entity, boolean flag) {
 		long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
 		final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
 		try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -128,29 +129,19 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 			// 尝试修复数据库字段过长的问题，自动扩容
 			// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation:
 			// Data too long for column 'json' at row 1
-			if (autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
-
-				int maxLen = 0;
-				for (Integer value : columnMaxLenMap.values()) {
-					if (value > maxLen) {
-						maxLen = value;
-					}
+			if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
+				synchronized (em) {
+					this.handleDataTooLongException(em, columnMaxLenMap);
 				}
-
-				// 如果有超出65535长度的，就不要修正啦...
-				if (maxLen <= 65530) {
-					synchronized (em) {
-						this.handleDataTooLongException(em, columnMaxLenMap);
-					}
-					return this.execute(em, action, sql, entity);
-				}
+				return this.execute(em, action, sql, entity, false);
 			}
 
+			// 不能扩容时，把异常向上抛出去...
 			throw new DataAccessException(e);
 		}
 	}
 
-	protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, List<?> entitys) {
+	protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, List<?> entitys, boolean flag) {
 		long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
 		final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
 		// 批量执行，如果出现异常，数据将进行回滚
@@ -168,29 +159,17 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 				return result;
 			} catch (SQLException e) {
 				con.rollback();
-
 				// 尝试修复数据库字段过长的问题，自动扩容
 				// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data
 				// truncation:
 				// Data too long for column 'json' at row 1
-				if (autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
-
-					int maxLen = 0;
-					for (Integer value : columnMaxLenMap.values()) {
-						if (value > maxLen) {
-							maxLen = value;
-						}
+				if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
+					synchronized (em) {
+						this.handleDataTooLongException(em, columnMaxLenMap);
 					}
-
-					// 如果有超出65535长度的，就不要修正啦...
-					if (maxLen <= 65530) {
-						synchronized (em) {
-							this.handleDataTooLongException(em, columnMaxLenMap);
-						}
-						return this.executeBatch(em, action, sql, entitys);
-					}
+					return this.executeBatch(em, action, sql, entitys, false);
 				}
-
+				// 不能扩容时，把异常向上抛出去...
 				throw new DataAccessException(e);
 			} finally {
 				// 还原为自动提交

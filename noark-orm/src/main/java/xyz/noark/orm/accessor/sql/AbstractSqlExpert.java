@@ -28,9 +28,7 @@ public abstract class AbstractSqlExpert implements SqlExpert {
 	/**
 	 * 将来有其他SQL时，如果不合适，就把此层改进为通用型，具体实现放入底层重写.
 	 * <p>
-	 * MySql参考：
-	 * http://dev.mysql.com/doc/refman/5.0/es/connector-j-reference-type-
-	 * conversions.html
+	 * MySql参考： http://dev.mysql.com/doc/refman/5.0/es/connector-j-reference-type- conversions.html
 	 * 
 	 * @param fm 属性描述对象.
 	 * @return 返回当前属性对应SQL中的类型.
@@ -44,9 +42,16 @@ public abstract class AbstractSqlExpert implements SqlExpert {
 		// 字符串类型的，过长需要换类型
 		case AsString:
 		case AsJson:
-			if (fm.getWidth() >= DataConstant.COLUMN_MAX_WIDTH) {
+			// 如果长度等于65535，那就转化为TEXT，大概就是~64K
+			if (fm.getWidth() == DataConstant.COLUMN_MAX_WIDTH) {
 				return "TEXT";
 			}
+			// 如果大于65535，那就要转化为MEDIUMTEXT，大概就是~16M
+			else if (fm.getWidth() > DataConstant.COLUMN_MAX_WIDTH) {
+				return "MEDIUMTEXT";
+			}
+
+			// 其他情况还是使用VarChar方式
 			return "VARCHAR(" + fm.getWidth() + ")";
 
 		// 日期类型的，三种，其他用不着就不实现啦.
