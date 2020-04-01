@@ -345,7 +345,7 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
 				break;
 			default:
 				// 超过这个值当Text啦，Text是不可以有默认值的.
-				if (fm.getWidth() < DataConstant.COLUMN_MAX_WIDTH) {
+				if (fm.getWidth() < DataConstant.VARCHAT_MAX_WIDTH) {
 					sb.append(" DEFAULT '").append(fm.getDefaultValue()).append("'");
 				}
 				break;

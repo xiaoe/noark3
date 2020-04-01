@@ -20,11 +20,23 @@ package xyz.noark.orm;
  * @author 小流氓(176543888@qq.com)
  */
 public final class DataConstant {
+
+	/**
+	 * 字符串字段最大宽度，10240~10K,这是一个折中值，并不是VarChar的最大长度
+	 * <p>
+	 * VARCHAR的最大长度=(最大行大小-NULL标识列占用字节数-长度标识字节数)/字符集单字符最大字节数,有余数时向下取整。 <br>
+	 * GBK：单字符最大可占用2个字节<br>
+	 * UTF8：单字符最大可占用3个字节<br>
+	 * UTF8MB4：单字符最大占4个字节<br>
+	 * https://learn.blog.csdn.net/article/details/103341778
+	 */
+	public static final int VARCHAT_MAX_WIDTH = 10240;
+
 	/**
 	 * 字段最大宽度，正常用在字符串上，超时此值时转化类型,<br>
 	 * 等于65535为Text~64kb，大于就是MEDIUMTEXT了~16M
 	 */
-	public static final int COLUMN_MAX_WIDTH = 65535;
+	public static final int TEXT_MAX_WIDTH = 65535;
 
 	/**
 	 * 停止服务时存储数据最大等待时间，单位：分钟

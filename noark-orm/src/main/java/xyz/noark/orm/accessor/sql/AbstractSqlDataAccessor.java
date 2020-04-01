@@ -320,7 +320,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	/** 如果是Text智能修补一下默认值 */
 	private <T> void tryRepairTextDefaultValue(final EntityMapping<T> em, final FieldMapping fm) {
 		// 修正Text字段的默认值.
-		if (fm.getWidth() >= DataConstant.COLUMN_MAX_WIDTH && fm.hasDefaultValue()) {
+		if (fm.getWidth() >= DataConstant.VARCHAT_MAX_WIDTH && fm.hasDefaultValue()) {
 			final String sql = expert.genUpdateDefaultValueSql(em, fm);
 			logger.warn("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
 			this.executeStatement((stmt) -> stmt.executeUpdate(sql));

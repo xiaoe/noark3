@@ -57,26 +57,37 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				final ResultSetMetaData rsmd = rs.getMetaData();
 				for (int i = 1, len = rsmd.getColumnCount(); i <= len; i++) {
 					// 字符串类型的字段，要修正长度的(只能变长，不能变短)
-					if (rsmd.getColumnType(i) == Types.VARCHAR) {
+					final int columnType = rsmd.getColumnType(i);
+					if (columnType == Types.VARCHAR || columnType == Types.LONGVARCHAR) {
 						final String columnName = rsmd.getColumnName(i);
 						final int max = rsmd.getColumnDisplaySize(i);
 						final int length = columnMaxLenMap.getOrDefault(columnName, 0);
 						if (length > max) {
 							em.getFieldMapping().stream().filter(v -> v.getColumnName().equals(columnName)).findFirst().ifPresent(fm -> {
-								// 扩容方式，小于512的*2，大于512的+512
 								int width = 0;
-								if (length <= 512) {
-									width = length * 2;
-								} else {
-									width = length + 512;
+								// VARCHAR扩容方式，小于512的*2，大于512的+512
+								if (columnType == Types.VARCHAR) {
+									if (length <= 512) {
+										width = length * 2;
+									} else {
+										width = length + 512;
+									}
 								}
-								// 如果扩容后这一列在65535到65535/2之间,就直接转化为Text
-								if (DataConstant.COLUMN_MAX_WIDTH > width && width > DataConstant.COLUMN_MAX_WIDTH / 2) {
-									width = DataConstant.COLUMN_MAX_WIDTH;
+								// Text扩容方式，直接升一级
+								else if (columnType == Types.LONGVARCHAR) {
+									width = DataConstant.TEXT_MAX_WIDTH + 1;
 								}
-								fm.setWidth(width);
-								logger.warn("智能修正字段长度 column={}, before={}, after={}", columnName, max, width);
-								autoAlterTableUpdateColumn(em, fm);
+
+								// 有扩容需求
+								if (width > 0) {
+									fm.setWidth(width);
+									logger.warn("智能修正字段长度 column={}, before={}, after={}", columnName, max, width);
+									autoAlterTableUpdateColumn(em, fm);
+								}
+								// 超出了想象的情况
+								else {
+									logger.error("发现了扩容不了情况，请分析参数 columnName={}, dbMax={}, length={}", columnName, max, length);
+								}
 							});
 						}
 					}
