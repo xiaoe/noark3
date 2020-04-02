@@ -21,6 +21,7 @@ import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.util.MathUtils;
 import xyz.noark.core.util.ThreadUtils;
 
 /**
@@ -83,9 +84,9 @@ public class AsyncTask implements Runnable {
 			// 执行结束的时间
 			long endExecuteTime = System.nanoTime();
 			if (playerId == null) {
-				logger.info("handle {},delay={} ms,exec={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F);
+				logger.info("handle {},delay={} ms,exec={} ms", command.code(), formatScale(startExecuteTime - createTime), formatScale(endExecuteTime - startExecuteTime));
 			} else {
-				logger.info("handle {},delay={} ms,exec={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (endExecuteTime - startExecuteTime) / 100_0000F, playerId);
+				logger.info("handle {},delay={} ms,exec={} ms playerId={}", command.code(), formatScale(startExecuteTime - createTime), formatScale(endExecuteTime - startExecuteTime), playerId);
 			}
 		}
 	}
@@ -98,14 +99,25 @@ public class AsyncTask implements Runnable {
 	public void logExecTimeoutInfo(boolean outputStack) {
 		final long now = System.nanoTime();
 		if (playerId == null) {
-			logger.error("exec timeout {},delay={} ms,exec={} ms", command.code(), (startExecuteTime - createTime) / 100_0000F, (now - startExecuteTime) / 100_0000F);
+			logger.error("exec timeout {},delay={} ms,exec={} ms", command.code(), formatScale(startExecuteTime - createTime), formatScale(now - startExecuteTime));
 		} else {
-			logger.error("exec timeout {},delay={} ms,exec={} ms playerId={}", command.code(), (startExecuteTime - createTime) / 100_0000F, (now - startExecuteTime) / 100_0000F, playerId);
+			logger.error("exec timeout {},delay={} ms,exec={} ms playerId={}", command.code(), formatScale(startExecuteTime - createTime), formatScale(now - startExecuteTime), playerId);
 		}
 
 		// 输出当前执行线程执行堆栈信息
 		if (outputStack) {
 			logger.error(ThreadUtils.printStackTrace(currentThread));
 		}
+	}
+
+	/**
+	 * 把纳秒转化为毫秒显示（保留小数点后面两位）
+	 * 
+	 * @param nanoTime 纳秒
+	 * @return 毫秒
+	 */
+	private float formatScale(long nanoTime) {
+		// 除100W，然后格式化
+		return MathUtils.formatScale(nanoTime / 100_0000F, 2);
 	}
 }
