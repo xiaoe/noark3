@@ -32,6 +32,7 @@ import javax.sql.DataSource;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.DataAccessException;
 import xyz.noark.core.exception.DataException;
+import xyz.noark.core.util.MathUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.DataConstant;
 import xyz.noark.orm.DataModular;
@@ -198,7 +199,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		if (slowQuerySqlMillis > 0) {
 			float execTime = (System.nanoTime() - startTime) / 100_0000F;
 			if (execTime >= slowQuerySqlMillis) {
-				formattedSql.append("exec sql ").append(execTime).append(" ms.");
+				formattedSql.append("exec sql ").append(MathUtils.formatScale(execTime, 2)).append(" ms.");
 			}
 		}
 		formattedSql.append("\n").append(statementParameterSetLogEnable ? sql.replaceAll("\\?", "{}") : sql);
