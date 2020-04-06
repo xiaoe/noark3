@@ -63,7 +63,13 @@ public class AsyncTask implements Runnable {
 			// 开始处理协议，并发送结果
 			ResultHelper.trySendResult(session, packet, command.exec());
 		} catch (Throwable e) {
-			logger.error("handle {} exception.{}", command.code(), e);
+			// 记录异常信息
+			if (playerId == null) {
+				logger.error("handle {} exception.{}", command.code(), e);
+			} else {
+				logger.error("handle {} exception. playerId={}{}", command.code(), playerId, e);
+			}
+			// 额外处理逻辑
 			if (networkListener != null) {
 				networkListener.handleException(session, packet, e);
 			}
