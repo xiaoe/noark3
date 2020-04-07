@@ -107,7 +107,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entity, true);
+		return execute(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), true);
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), entitys, true);
+		return executeBatch(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), true);
 	}
 
 	private <T> void buildInsertParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
@@ -145,7 +145,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), id, true);
+		return execute(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), true);
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), entitys, true);
+		return executeBatch(em, new DeletePreparedStatementCallback(), expert.genDeleteSql(em), true);
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeUpdate();
 			}
 		}
-		return execute(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entity, true);
+		return execute(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), true);
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				return pstmt.executeBatch();
 			}
 		}
-		return executeBatch(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), entitys, true);
+		return executeBatch(em, new UpdatePreparedStatementCallback(), expert.genUpdateSql(em), true);
 	}
 
 	private <T> void buildUpdateParameter(EntityMapping<T> em, T entity, PreparedStatementProxy pstmt) throws Exception {
@@ -216,7 +216,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(em, new LoadPreparedStatementCallback(), expert.genSelectSql(em), id, true);
+		return execute(em, new LoadPreparedStatementCallback(), expert.genSelectSql(em), true);
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(em, new LoadAllPreparedStatementCallback(), expert.genSelectAllSql(em), null, true);
+		return execute(em, new LoadAllPreparedStatementCallback(), expert.genSelectAllSql(em), true);
 	}
 
 	public <T> List<T> newEntityList(final EntityMapping<T> em, ResultSet rs) throws Exception {
@@ -264,7 +264,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 				}
 			}
 		}
-		return execute(em, new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSelectByPlayerId(em), playerId, true);
+		return execute(em, new LoadByPlayerIdIdPreparedStatementCallback(), expert.genSelectByPlayerId(em), true);
 	}
 
 	private <T> void setPstmtParameter(EntityMapping<T> em, FieldMapping fm, PreparedStatementProxy pstmt, final T entity, final int index) throws Exception {

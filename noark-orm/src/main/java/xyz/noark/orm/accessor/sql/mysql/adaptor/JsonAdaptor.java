@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSON;
 
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
+import xyz.noark.orm.emoji.EmojiManager;
 
 /**
  * Json类型属性
@@ -33,13 +34,22 @@ class JsonAdaptor extends AbstractValueAdaptor<Object> {
 		if (value == null) {
 			pstmt.setString(fm, parameterIndex, null);
 		} else {
-			pstmt.setString(fm, parameterIndex, JSON.toJSONString(value));
+			String json = JSON.toJSONString(value);
+			// 如果这个属性可能包含Emoji的话，还存档不了，那要进行替换存档
+			if (fm.isEmoji()) {
+				json = EmojiManager.parseToAliases(json);
+			}
+			pstmt.setString(fm, parameterIndex, json);
 		}
 	}
 
 	@Override
 	protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
-		String str = rs.getString(fm.getColumnName());
-		return JSON.parseObject(str, fm.getFieldClass());
+		String json = rs.getString(fm.getColumnName());
+		// 如果这个属性可能包含Emoji的话，尝试转化
+		if (fm.isEmoji()) {
+			json = EmojiManager.parseToUnicode(json);
+		}
+		return JSON.parseObject(json, fm.getFieldClass());
 	}
 }

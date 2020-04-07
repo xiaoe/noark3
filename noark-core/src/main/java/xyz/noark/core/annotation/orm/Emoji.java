@@ -11,19 +11,25 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.util;
+package xyz.noark.core.annotation.orm;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Int工具类，目前只是放一些常量，用于消除P3C的警告.
- *
+ * Emoji标记表示此属性中包含了Emoji表情的话，那就进行转化存档.
+ * <p>
+ * 只会对字符串类型或Json格式的有效果<br>
+ * 运行期间如果没配置，在存档时，也会自动升级进行转化，但是此时服务器重启，已存档的将无法转化回来<br>
+ * 建议在编码时可能会有Emoji表情时添加此注解，如果确认Mysql可以存档使用全局配置关闭此功能<br>
+ * 
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class IntUtils {
-	public static final int NUM_1 = 1;
-	public static final int NUM_2 = 2;
-	public static final int NUM_3 = 3;
-	public static final int NUM_4 = 4;
-	public static final int NUM_5 = 5;
-	public static final int NUM_10 = 10;
-}
+@Documented
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Emoji {}

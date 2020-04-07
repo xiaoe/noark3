@@ -11,19 +11,39 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.util;
+package xyz.noark.orm.emoji;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
+
+import com.alibaba.fastjson.JSON;
+
+import xyz.noark.core.util.StringUtils;
 
 /**
- * Int工具类，目前只是放一些常量，用于消除P3C的警告.
+ * Emoji配置文件加载类.
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class IntUtils {
-	public static final int NUM_1 = 1;
-	public static final int NUM_2 = 2;
-	public static final int NUM_3 = 3;
-	public static final int NUM_4 = 4;
-	public static final int NUM_5 = 5;
-	public static final int NUM_10 = 10;
+class EmojiLoader {
+	/** Emoji配置文件路径 */
+	private static final String PATH = "/emoji.json.v13";
+
+	/**
+	 * 加载所有配置到内存
+	 * 
+	 * @param <T> Emoji模板配置类
+	 * @param klass Emoji模板类
+	 * @return Emoji配置列表
+	 */
+	public static <T> List<T> loadAll(Class<T> klass) {
+		try (InputStream stream = EmojiLoader.class.getResourceAsStream(PATH)) {
+			return JSON.parseArray(StringUtils.readString(stream), klass);
+		} catch (IOException e) {
+			return Collections.emptyList();
+		}
+	}
 }

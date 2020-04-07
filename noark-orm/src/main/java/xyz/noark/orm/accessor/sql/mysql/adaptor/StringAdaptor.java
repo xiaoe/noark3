@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
+import xyz.noark.orm.emoji.EmojiManager;
 
 /**
  * String类型属性
@@ -28,11 +29,20 @@ class StringAdaptor extends AbstractValueAdaptor<String> {
 
 	@Override
 	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, String value, int parameterIndex) throws Exception {
+		// 如果这个属性可能包含Emoji的话，还存档不了，那要进行替换存档
+		if (fm.isEmoji()) {
+			value = EmojiManager.parseToAliases(value);
+		}
 		pstmt.setString(fm, parameterIndex, value);
 	}
 
 	@Override
 	protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
-		return rs.getString(fm.getColumnName());
+		String value = rs.getString(fm.getColumnName());
+		// 如果这个属性可能包含Emoji的话，尝试转化
+		if (fm.isEmoji()) {
+			value = EmojiManager.parseToUnicode(value);
+		}
+		return value;
 	}
 }

@@ -49,6 +49,8 @@ import xyz.noark.orm.accessor.AbstractDataAccessor;
 public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	/** MYSQL字段数据过长异常类名称 */
 	private static final String MYSQL_DATA_TRUNCATION_CLASS_NAME = "com.mysql.jdbc.MysqlDataTruncation";
+	/** MYSQL存档时字符串值不正确，基本认定为Emoji表情搞得鬼 */
+	private static final String MYSQL_DATA_INCORRECT_PREFIX = "Incorrect string value:";
 
 	protected final SqlExpert expert;
 	protected final DataSource dataSource;
@@ -65,9 +67,12 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	/** 自动删除表中多余的字段 */
 	@Value(DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN)
 	private boolean autoAlterTableDropColumn = false;
-	/** 自动删除表中多余的字段 */
+	/** 服务器数据是否智能修正文本字段的长度，默认：true */
 	@Value(DataModular.DATA_AUTO_ALTER_COLUMN_LENGTH)
 	protected boolean autoAlterColumnLength = true;
+	/** 服务器数据是否智能转化EMOJI的字段，默认：true */
+	@Value(DataModular.DATA_AUTO_ALTER_EMOJI_COLUMN)
+	protected boolean autoAlterEmojiColumn = true;
 
 	public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {
 		this.expert = expert;
@@ -110,11 +115,10 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	 * @param em 实体对象描述
 	 * @param action PreparedStatement回调接口
 	 * @param sql 执行SQL
-	 * @param entity 实体对象，也可能为null，查询时还可能是条件ID
 	 * @param flag 如果遇到数据长度异常情况，是否自动扩容
 	 * @return 执行结果
 	 */
-	protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, Object entity, boolean flag) {
+	protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {
 		long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
 		final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
 		try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -127,22 +131,16 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 			this.logExecutableSql(proxy, sql, startTime);
 			return result;
 		} catch (Exception e) {
-			// 尝试修复数据库字段过长的问题，自动扩容
-			// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation:
-			// Data too long for column 'json' at row 1
-			if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
-				synchronized (em) {
-					this.handleDataTooLongException(em, columnMaxLenMap);
-				}
-				return this.execute(em, action, sql, entity, false);
+			// 尝试修复数据存档异常
+			if (this.tryFixDataSaveException(flag, em, columnMaxLenMap, e)) {
+				return this.execute(em, action, sql, false);
 			}
-
 			// 不能扩容时，把异常向上抛出去...
 			throw new DataAccessException(e);
 		}
 	}
 
-	protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, List<?> entitys, boolean flag) {
+	protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {
 		long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
 		final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
 		// 批量执行，如果出现异常，数据将进行回滚
@@ -160,15 +158,9 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 				return result;
 			} catch (SQLException e) {
 				con.rollback();
-				// 尝试修复数据库字段过长的问题，自动扩容
-				// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data
-				// truncation:
-				// Data too long for column 'json' at row 1
-				if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
-					synchronized (em) {
-						this.handleDataTooLongException(em, columnMaxLenMap);
-					}
-					return this.executeBatch(em, action, sql, entitys, false);
+				// 尝试修复数据存档异常
+				if (this.tryFixDataSaveException(flag, em, columnMaxLenMap, e)) {
+					return this.executeBatch(em, action, sql, false);
 				}
 				// 不能扩容时，把异常向上抛出去...
 				throw new DataAccessException(e);
@@ -179,6 +171,28 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 		} catch (Exception e) {
 			throw new DataAccessException(e);
 		}
+	}
+
+	private boolean tryFixDataSaveException(boolean flag, EntityMapping<?> em, Map<String, Integer> columnMaxLenMap, Exception e) {
+		// 1.尝试修复数据库字段过长的问题，自动扩容
+		// Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation: Data too long for column 'json' at row 1
+		if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
+			synchronized (em) {
+				this.handleDataTooLongException(em, columnMaxLenMap);
+			}
+			return true;
+		}
+
+		// 2.尝试修复Emoji表情存档失败的问题
+		// java.sql.SQLException: Incorrect string value: '\xF0\x9F\x98\xA218' for column 'content' at row 1
+		if (flag && autoAlterEmojiColumn && e instanceof SQLException && e.getMessage().startsWith(MYSQL_DATA_INCORRECT_PREFIX)) {
+			synchronized (em) {
+				em.getFieldMapping().forEach(v -> v.setEmoji(true));
+			}
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

@@ -21,6 +21,7 @@ import xyz.noark.core.annotation.orm.Blob;
 import xyz.noark.core.annotation.orm.Collate;
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.CreatedDate;
+import xyz.noark.core.annotation.orm.Emoji;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.annotation.orm.Json;
 import xyz.noark.core.annotation.orm.LastModifiedDate;
@@ -55,6 +56,8 @@ public class FieldMapping {
 	private int width;
 	private final int getMethodIndex;
 	private final int setMethodIndex;
+	/** 是否有可能为Emoji */
+	private boolean emoji = false;
 
 	public FieldMapping(Field field, MethodAccess methodAccess) {
 		this.field = field;
@@ -69,6 +72,7 @@ public class FieldMapping {
 		this.json = field.getAnnotation(Json.class);
 		this.createdDate = field.getAnnotation(CreatedDate.class);
 		this.lastModifiedDate = field.getAnnotation(LastModifiedDate.class);
+		this.emoji = field.isAnnotationPresent(Emoji.class);
 
 		this.getMethodIndex = methodAccess.getIndex(FieldUtils.genGetMethodName(field));
 		this.setMethodIndex = methodAccess.getIndex(FieldUtils.genSetMethodName(field));
@@ -208,5 +212,13 @@ public class FieldMapping {
 
 	public boolean isLastModifiedDate() {
 		return lastModifiedDate != null;
+	}
+
+	public boolean isEmoji() {
+		return emoji;
+	}
+
+	public void setEmoji(boolean emoji) {
+		this.emoji = emoji;
 	}
 }

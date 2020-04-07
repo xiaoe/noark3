@@ -46,6 +46,8 @@ public class DataModular implements Modular {
 	public static final String DATA_AUTO_ALTER_TABLE_DROP_COLUMN = "data.auto.alter.table.drop.column";
 	/** 服务器数据是否智能修正文本字段的长度，默认：true */
 	public static final String DATA_AUTO_ALTER_COLUMN_LENGTH = "data.auto.alter.column.length";
+	/** 服务器数据是否智能转化EMOJI的字段，默认：true */
+	public static final String DATA_AUTO_ALTER_EMOJI_COLUMN = "data.auto.alter.emoji.column";
 
 	/** 数据存储默认开启下划线命名方式检测 */
 	public static boolean CheckUnderScoreCase = true;

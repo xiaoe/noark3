@@ -11,19 +11,29 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.util;
+package xyz.noark.orm.emoji;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
- * Int工具类，目前只是放一些常量，用于消除P3C的警告.
+ * Emoji测试用例.
  *
  * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class IntUtils {
-	public static final int NUM_1 = 1;
-	public static final int NUM_2 = 2;
-	public static final int NUM_3 = 3;
-	public static final int NUM_4 = 4;
-	public static final int NUM_5 = 5;
-	public static final int NUM_10 = 10;
+public class EmojiManagerTest {
+
+	@Test
+	public void testParseToAliases() {
+		String text = "a😃中😉文😃1😃:😃?😀";
+		assertEquals("a:smiley:中:wink:文:smiley:1:smiley:::smiley:?:grinning:", EmojiManager.parseToAliases(text));
+	}
+
+	@Test
+	public void testParseToUnicode() {
+		String text = "a:smiley:中:wink:文:smiley:1:smiley:::smiley:?:grinning:";
+		assertEquals("a😃中😉文😃1😃:😃?😀", EmojiManager.parseToUnicode(text));
+	}
 }

@@ -30,11 +30,41 @@ public class Item {
 	@Column(name = "ID")
 	private int id;
 
+	private String name;
+
+	private int templateId;
+
+	private int grinning;
+
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(int templateId) {
+		this.templateId = templateId;
+	}
+
+	public int getGrinning() {
+		return grinning;
+	}
+
+	public void setGrinning(int grinning) {
+		this.grinning = grinning;
 	}
 }
