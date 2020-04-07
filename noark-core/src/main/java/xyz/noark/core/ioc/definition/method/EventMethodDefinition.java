@@ -38,11 +38,11 @@ public class EventMethodDefinition extends SimpleMethodDefinition {
 		super(methodAccess, method);
 		this.eventListener = eventListener;
 
+		final String className = beanDefinition.getBeanClass().getName();
+
 		// 如果注解里没有配置，那就尝试分析参数里中的事件对象类型
 		Class<? extends Event> eventClass = eventListener.value();
 		if (eventClass == Event.class) {
-			final String className = beanDefinition.getBeanClass().getName();
-
 			// 遍历去找事件源的类型
 			for (Parameter parameter : parameters) {
 				// 事件类型的对象
@@ -62,6 +62,14 @@ public class EventMethodDefinition extends SimpleMethodDefinition {
 			// 没配事件类型，还没参数
 			if (eventClass == Event.class) {
 				throw new ServerBootstrapException("事件监听处理方法，没有申请事件类型，也没有事件参数 class=" + className + ", method=" + method.getName());
+			}
+		}
+		// 指定了事件类型，方法也要验证一下
+		else {
+			for (Parameter parameter : parameters) {
+				if (!Event.class.isAssignableFrom(parameter.getType()) && !parameter.isAnnotationPresent(PlayerId.class)) {
+					throw new ServerBootstrapException("事件监听处理方法，出现非@PlayerId非事件的参数 class=" + className + ", method=" + method.getName() + ", parameter=" + parameter.getName());
+				}
 			}
 		}
 
