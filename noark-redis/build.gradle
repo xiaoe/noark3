@@ -1,5 +1,5 @@
 dependencies {
-	implementation project(':noark-core')
+	implementation project(':noark-game')
 	implementation 'redis.clients:jedis:2.9.0'
 	
 	testImplementation project(':noark-benchmark')
