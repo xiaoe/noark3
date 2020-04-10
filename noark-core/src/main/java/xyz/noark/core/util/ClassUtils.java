@@ -59,6 +59,28 @@ public class ClassUtils {
 	}
 
 	/**
+	 * 根据ClassName和构造方法的参数列表来创建一个对象
+	 * 
+	 * @param <T> Class
+	 * @param className 指定类全名（包含包名称的那种）
+	 * @param parameters 参数列表
+	 * @return 指定ClassName的对象
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T newInstance(String className, Object... parameters) {
+		Class<?> klass = (Class<?>) loadClass(className);
+		try {
+			Class<?>[] parameterTypes = new Class<?>[parameters.length];
+			for (int i = 0, len = parameters.length; i < len; i++) {
+				parameterTypes[i] = parameters[i].getClass();
+			}
+			return (T) klass.getConstructor(parameterTypes).newInstance(parameters);
+		} catch (Exception e) {
+			throw new RuntimeException("无法创建实例. Class=" + klass.getName(), e);
+		}
+	}
+
+	/**
 	 * 尝试运行一个带有Main方法的类.
 	 * 
 	 * @param mainClass 带有Main方法类的名称
@@ -69,4 +91,5 @@ public class ClassUtils {
 		Method mainMethod = MethodUtils.getMethod(klass, "main", String[].class);
 		MethodUtils.invoke(null, mainMethod, new Object[] { args });
 	}
+
 }
