@@ -314,7 +314,7 @@ public class StringUtils {
 		}
 		return list.toArray(new String[list.size()]);
 	}
-	
+
 	/**
 	 * 将一个字符串由驼峰式命名变成分割符分隔单词
 	 * 
@@ -404,6 +404,27 @@ public class StringUtils {
 			result.append(str);
 		}
 		return result.toString();
+	}
+
+	/**
+	 * 拼接路径字符串.
+	 * 
+	 * @param paths 需要拼接的路径字串
+	 * @return 拼接后的路径字符串
+	 */
+	public static String pathJoin(String... paths) {
+		int len = 0;
+		for (String str : paths) {
+			len += str.length() + 1;
+		}
+		final StringBuilder sb = new StringBuilder(len);
+		for (String str : paths) {
+			sb.append(str);
+			if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '/') {
+				sb.append('/');
+			}
+		}
+		return sb.toString();
 	}
 
 	/**
