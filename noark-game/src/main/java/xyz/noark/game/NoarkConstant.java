@@ -42,6 +42,15 @@ public class NoarkConstant {
 	public static final String BI_REPORT_ACTIVE = "game.bi.report.active";
 
 	/**
+	 * 配置中心是否开启,默认为关闭状态
+	 */
+	public static final String CONFIG_ENABLED = "noark.config.enabled";
+	/**
+	 * 配置中心的配置存档路径，默认值为/noark/config/game/
+	 */
+	public static final String CONFIG_PATH = "noark.config.path";
+
+	/**
 	 * 当前游戏进程PID文件位置。
 	 * <p>
 	 * pid.file=/data/server01/game.pid

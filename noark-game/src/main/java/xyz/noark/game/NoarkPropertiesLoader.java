@@ -13,6 +13,8 @@
  */
 package xyz.noark.game;
 
+import static xyz.noark.log.LogHelper.logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,7 +25,10 @@ import java.util.Properties;
 
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.util.BooleanUtils;
+import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.StringUtils;
+import xyz.noark.game.config.ConfigCentre;
 import xyz.noark.game.crypto.StringEncryptor;
 
 /**
@@ -60,7 +65,25 @@ class NoarkPropertiesLoader {
 		else {
 			loadProperties(loader, TEST_PROPERTIES, result);
 		}
+		this.loadConfigAfter(result);
 
+		// 开启配置中心功能,才能加载配置中心里的配置(本地配置会覆盖远程配置)
+		if (BooleanUtils.toBoolean(result.get(NoarkConstant.CONFIG_ENABLED))) {
+			this.loadConfigCentre(result);
+			this.loadConfigAfter(result);
+		}
+
+		// 系统配置
+		result.put(NoarkConstant.NOARK_VERSION, Noark.getVersion());
+		return result;
+	}
+
+	/**
+	 * 加载完配置之后的逻辑，主要是对一些解密与表达式的处理
+	 * 
+	 * @param result 配置
+	 */
+	private void loadConfigAfter(HashMap<String, String> result) {
 		// 密文解密
 		final StringEncryptor encryptor = new StringEncryptor(result);
 		for (Map.Entry<String, String> e : result.entrySet()) {
@@ -71,11 +94,24 @@ class NoarkPropertiesLoader {
 		for (Map.Entry<String, String> e : result.entrySet()) {
 			e.setValue(EnvConfigHolder.fillExpression(e.getValue(), result, true));
 		}
+	}
 
-		// 系统配置
-		result.put(NoarkConstant.NOARK_VERSION, Noark.getVersion());
-
-		return result;
+	/**
+	 * 加载配置中心的配置(本地配置会覆盖远程配置)
+	 * 
+	 * @param result 本地配置
+	 */
+	private void loadConfigCentre(HashMap<String, String> result) {
+		// 开启了配置中心，那就拿着区别ID，去取配置中心的所有配置
+		String sid = result.get(NoarkConstant.SERVER_ID);
+		if (StringUtils.isEmpty(sid)) {
+			throw new ServerBootstrapException("application.properties文件中必需要配置区服ID," + NoarkConstant.SERVER_ID + "=XXX");
+		}
+		logger.info("正在启动配置中心模式 sid={}", sid);
+		// 尝试创建Redis的配置中心读取配置
+		ConfigCentre cc = ClassUtils.newInstance("xyz.noark.redis.RedisConfigContre", result);
+		// 本地配置会覆盖远程配置
+		cc.loadConfig(sid).forEach((key, value) -> result.putIfAbsent(key, value));
 	}
 
 	private void loadProperties(ClassLoader loader, String filename, HashMap<String, String> result) {

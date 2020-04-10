@@ -35,7 +35,7 @@ class NoarkInitializer {
 	 * @param args Main方法的启动参数
 	 */
 	public void init(Class<? extends ServerBootstrap> klass, String... args) {
-		// 载入配置文件...
+		// 载入配置
 		EnvConfigHolder.setProperties(this.loadProperties(args));
 
 		// 初始化日志系统
