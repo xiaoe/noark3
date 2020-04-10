@@ -13,31 +13,20 @@
  */
 package xyz.noark.redis;
 
-import static org.junit.Assert.assertNotNull;
-
 /**
- * Redis方法测试
+ * Redis相关的常理类.
  *
- * @since 3.0
+ * @since 3.4
  * @author 小流氓(176543888@qq.com)
  */
-public class RedisTest {
-	private static Redis redis;
+public class RedisConstant {
+	/** Redis实现配置中心连接地址Key,默认值为127.0.0.1 */
+	public static final String CONFIG_REDIS_HOST = "noark.config.redis.host";
+	/** Redis实现配置中心连接端口Key,默认值为6379 */
+	public static final String CONFIG_REDIS_PORT = "noark.config.redis.port";
+	/** Redis实现配置中心连接密码Key,默认没有密码 */
+	public static final String CONFIG_REDIS_PASSWORD = "noark.config.redis.password";
+	/** Redis实现配置中心连接库编号Key,默认值为0 */
+	public static final String CONFIG_REDIS_INDEX = "noark.config.redis.index";
 
-	public static void main(String[] args) {
-		redis = new Redis("192.168.51.231", 6379);
-		RedisTest.testPing();
-	}
-
-	public static void testPing() {
-		redis.ping();
-	}
-
-	public void testHgetAll() {
-		assertNotNull(redis.hgetAll("not-exist"));
-	}
-
-	public void testHkeys() {
-		assertNotNull(redis.hkeys("not-exist"));
-	}
 }
