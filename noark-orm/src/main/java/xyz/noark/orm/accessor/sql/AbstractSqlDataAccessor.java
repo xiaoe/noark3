@@ -291,13 +291,18 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 					}
 
 					// 字符串类型的字段，要修正长度的(只能变长，不能变短)
-					if (rsmd.getColumnType(index) == Types.VARCHAR) {
+					final int columnType = rsmd.getColumnType(index);
+					if (columnType == Types.VARCHAR) {
 						final int length = rsmd.getColumnDisplaySize(index);
 						if (fm.getWidth() > length) {
 							autoAlterTableUpdateColumn(em, fm);
 						} else if (fm.getWidth() < length) {
 							logger.warn("表中字段长度大于配置长度，建议手动修正! entity={},field={},length={}", em.getEntityClass().getName(), fm.getField().getName(), fm.getWidth());
 						}
+					}
+					// Integer转Long（不能Long转Integer）
+					else if (columnType == Types.INTEGER && fm.isLong()) {
+						autoAlterTableUpdateColumn(em, fm);
 					}
 				}
 
