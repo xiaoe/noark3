@@ -92,6 +92,21 @@ public class ResourceScanning {
 		}
 	}
 
+	/**
+	 * 扫描指定目录下所有资源文件.
+	 * <p>
+	 * 仅仅只是扫描文件，至于咋处理由回调方法去分析
+	 * 
+	 * @param dirs 扫描的目录
+	 * @param callback 扫描到资源后的回调接口
+	 */
+	public static void scanFile(String[] dirs, ResourceCallback callback) {
+		for (String dir : dirs) {
+			File file = new File(dir);
+			doFindFileResources(dir, file, callback);
+		}
+	}
+
 	private static void doFindJarResources(URL url, ResourceCallback callback, String rootEntryPath) throws IOException {
 		JarURLConnection jarCon = (JarURLConnection) url.openConnection();
 
@@ -108,9 +123,9 @@ public class ResourceScanning {
 	/**
 	 * 递归扫描目录文件.
 	 * 
-	 * @param packagePath
-	 * @param file
-	 * @param callback
+	 * @param packagePath 包路径
+	 * @param file 文件
+	 * @param callback 发现文件的回调接口
 	 */
 	private static void doFindFileResources(String packagePath, File file, ResourceCallback callback) {
 		String path = file.getAbsolutePath();
@@ -141,8 +156,8 @@ public class ResourceScanning {
 	/**
 	 * 查找到一个目录.
 	 * 
-	 * @param packagePath
-	 * @param dir 文件
+	 * @param packagePath 包路径
+	 * @param dir 目录
 	 * @param callback 发现文件的回调接口
 	 */
 	private static void findDir(String packagePath, File dir, ResourceCallback callback) {
