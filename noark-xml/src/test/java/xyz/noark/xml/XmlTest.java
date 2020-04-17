@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,30 +13,29 @@
  */
 package xyz.noark.xml;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Test;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * XML测试
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
  */
 public class XmlTest {
-	@Test
-	public void test() throws ParserConfigurationException, SAXException, IOException {
-		MapTemplate template = Xml.load(MapTemplate.class);
-		assertTrue(template.getId() == 10000);
-		assertTrue("中文".equals(template.getName()));
+    @Test
+    public void test() throws ParserConfigurationException, SAXException, IOException {
+        MapTemplate template = Xml.load(MapTemplate.class);
+        assertTrue(template.getId() == 10000);
+        assertTrue("中文".equals(template.getName()));
 
-		GameConfig config = Xml.load(GameConfig.class);
-		assertTrue(config.getSid() == 1);
-		assertTrue("192.168.0.92".equals(config.getRedisIp()));
-	}
+        GameConfig config = Xml.load(GameConfig.class);
+        assertTrue(config.getSid() == 1);
+        assertTrue("192.168.0.92".equals(config.getRedisIp()));
+    }
 }

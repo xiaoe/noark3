@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,64 +13,64 @@
  */
 package xyz.noark.xml;
 
+import xyz.noark.core.env.EnvConfigHolder;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import xyz.noark.core.env.EnvConfigHolder;
-
 /**
  * 一个对象数据.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
  */
 class ObjectData {
-	private final List<String> nodePaths = new LinkedList<>();
-	private final Map<String, String> data = new HashMap<>(64);
+    private final List<String> nodePaths = new LinkedList<>();
+    private final Map<String, String> data = new HashMap<>(64);
 
-	String getValue(String key) {
-		return data.get(key);
-	}
+    String getValue(String key) {
+        return data.get(key);
+    }
 
-	/**
-	 * 添加当前处理的节点.
-	 * 
-	 * @param qName 节点名称.
-	 */
-	void addHandleNode(String qName) {
-		nodePaths.add(qName);
-	}
+    /**
+     * 添加当前处理的节点.
+     *
+     * @param qName 节点名称.
+     */
+    void addHandleNode(String qName) {
+        nodePaths.add(qName);
+    }
 
-	/**
-	 * 移除当前处理的节点
-	 * 
-	 * @param qName 节点名称.
-	 */
-	void removeHandleNode(String qName) {
-		// 移除最后一个节点
-		nodePaths.remove(qName);
-	}
+    /**
+     * 移除当前处理的节点
+     *
+     * @param qName 节点名称.
+     */
+    void removeHandleNode(String qName) {
+        // 移除最后一个节点
+        nodePaths.remove(qName);
+    }
 
-	/**
-	 * 存入数据.
-	 * 
-	 * @param qName 属性名称
-	 * @param value 属性值
-	 */
-	void putAttrData(String qName, String value) {
-		StringBuilder sb = new StringBuilder(128);
-		nodePaths.forEach((v) -> sb.append(v).append('.'));
-		data.put(sb.append(qName).toString(), value);
-	}
+    /**
+     * 存入数据.
+     *
+     * @param qName 属性名称
+     * @param value 属性值
+     */
+    void putAttrData(String qName, String value) {
+        StringBuilder sb = new StringBuilder(128);
+        nodePaths.forEach((v) -> sb.append(v).append('.'));
+        data.put(sb.append(qName).toString(), value);
+    }
 
-	/**
-	 * 填充EL表达式.
-	 */
-	public void fillExpression() {
-		for (Map.Entry<String, String> e : data.entrySet()) {
-			e.setValue(EnvConfigHolder.fillExpression(e.getValue(), data, true));
-		}
-	}
+    /**
+     * 填充EL表达式.
+     */
+    public void fillExpression() {
+        for (Map.Entry<String, String> e : data.entrySet()) {
+            e.setValue(EnvConfigHolder.fillExpression(e.getValue(), data, true));
+        }
+    }
 }

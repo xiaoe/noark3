@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,41 +13,40 @@
  */
 package xyz.noark.xml;
 
+import org.xml.sax.Attributes;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * 用SAX解析XML的Handler
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
  */
 class ArrayXmlHandler<T> extends AbstractXmlHandler<T> {
-	private static final String OBJECT_NODE = "object";
-	private final List<ObjectData> datas = new ArrayList<>(1024);
+    private static final String OBJECT_NODE = "object";
+    private final List<ObjectData> dataList = new ArrayList<>(1024);
 
-	public ArrayXmlHandler(Class<T> klass, String tplFileName) {
-		super(klass, tplFileName);
-	}
+    public ArrayXmlHandler(Class<T> klass, String tplFileName) {
+        super(klass, tplFileName);
+    }
 
-	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-		// 只处理Object节点
-		if (OBJECT_NODE.equalsIgnoreCase(qName)) {
-			ObjectData data = new ObjectData();
-			for (int i = 0, len = attributes.getLength(); i < len; i++) {
-				data.putAttrData(attributes.getQName(i), attributes.getValue(i));
-			}
-			datas.add(data);
-		}
-	}
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        // 只处理Object节点
+        if (OBJECT_NODE.equalsIgnoreCase(qName)) {
+            ObjectData data = new ObjectData();
+            for (int i = 0, len = attributes.getLength(); i < len; i++) {
+                data.putAttrData(attributes.getQName(i), attributes.getValue(i));
+            }
+            dataList.add(data);
+        }
+    }
 
-	public List<T> getResult() {
-		List<T> result = new ArrayList<>(datas.size());
-		datas.forEach(v -> result.add(buildObject(v, false)));
-		return result;
-	}
+    public List<T> getResult() {
+        List<T> result = new ArrayList<>(dataList.size());
+        dataList.forEach(v -> result.add(buildObject(v, false)));
+        return result;
+    }
 }

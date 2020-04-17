@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,31 +13,31 @@
  */
 package xyz.noark.xml;
 
-import java.util.List;
-
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.game.template.AbstractTemplateLoader;
+
+import java.util.List;
 
 /**
  * XML格式的模板加载类.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 public class XmlTemplateLoader extends AbstractTemplateLoader {
-	private final Xml xml;
+    private final Xml xml;
 
-	public XmlTemplateLoader(String templatePath) {
-		super(templatePath);
-		this.xml = new Xml();
-	}
+    public XmlTemplateLoader(String templatePath) {
+        this(templatePath, StringUtils.EMPTY);
+    }
 
-	public XmlTemplateLoader(String templatePath, String zone) {
-		super(templatePath, zone);
-		this.xml = new Xml();
-	}
+    public XmlTemplateLoader(String templatePath, String zone) {
+        super(templatePath, zone);
+        this.xml = new Xml();
+    }
 
-	@Override
-	public <T> List<T> loadAll(Class<T> klass) {
-		return xml.loadAll(templatePath, zone, klass);
-	}
+    @Override
+    public <T> List<T> loadAll(Class<T> klass) {
+        return xml.loadAll(templatePath, zone, klass);
+    }
 }
