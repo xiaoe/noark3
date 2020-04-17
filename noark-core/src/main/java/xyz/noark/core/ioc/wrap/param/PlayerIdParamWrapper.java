@@ -23,7 +23,7 @@ import xyz.noark.core.network.Session;
  * 注入PlayerId.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PlayerIdParamWrapper implements ParamWrapper {
 

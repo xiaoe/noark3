@@ -23,7 +23,7 @@ import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
  * 延迟任务管理类.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ScheduledMethodManager {
 	private final Map<Long, ScheduledMethodWrapper> handlers = new ConcurrentHashMap<>(128);

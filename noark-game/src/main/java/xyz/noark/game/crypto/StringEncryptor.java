@@ -23,7 +23,7 @@ import xyz.noark.game.NoarkConstant;
  * 字符串加密器.
  *
  * @since 3.2.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class StringEncryptor {
 	/** RSA加密方案默认公钥 */

@@ -31,7 +31,7 @@ import xyz.noark.core.util.DateUtils;
  * LocalTime数组测试用例
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LocalTimeArrayTest {
 

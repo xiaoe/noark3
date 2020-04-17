@@ -22,7 +22,7 @@ import xyz.noark.core.thread.ThreadCommand;
  * 抽象的线程处理指令.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AbstractThreadCommand implements ThreadCommand {
 	private final AbstractControllerMethodWrapper method;

@@ -17,7 +17,7 @@ package xyz.noark.core.network;
  * 封包的编解码持有类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PacketCodecHolder {
 

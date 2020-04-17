@@ -25,7 +25,7 @@ import xyz.noark.orm.emoji.EmojiManager;
  * Json类型属性
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class JsonAdaptor extends AbstractValueAdaptor<Object> {
 

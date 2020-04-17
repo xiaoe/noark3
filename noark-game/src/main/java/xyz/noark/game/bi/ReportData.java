@@ -19,7 +19,7 @@ import java.util.Map;
  * 上报数据接口.
  *
  * @since 3.3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface ReportData {
 

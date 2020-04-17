@@ -19,7 +19,7 @@ package xyz.noark.core.exception;
  * 如果字符串转化成目标对象时出现的异常情况
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ConvertException extends RuntimeException {
 	private static final long serialVersionUID = -8117790927874317857L;

@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 未实现的异常，一种可能会出来，但却没有对应实现的异常.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class UnrealizedException extends RuntimeException {
 	private static final long serialVersionUID = 8947098802476902429L;

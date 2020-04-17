@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
  * 日志消息的一个抽象类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 abstract class AbstractMessage implements Message {
 	// 单线程不需要ThreadLocal来保护...

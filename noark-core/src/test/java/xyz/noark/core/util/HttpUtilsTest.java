@@ -19,7 +19,7 @@ import java.io.IOException;
  * HTTP工具测试.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpUtilsTest {
 	public static void main(String[] args) throws IOException {

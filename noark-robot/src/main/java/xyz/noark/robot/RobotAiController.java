@@ -27,7 +27,7 @@ import xyz.noark.core.util.DateUtils;
  * AI入口.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Controller(threadGroup = ExecThreadGroup.PlayerThreadGroup)
 public class RobotAiController {

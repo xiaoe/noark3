@@ -22,7 +22,7 @@ import xyz.noark.core.util.RandomUtils;
  * Emoji节点。
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class EmojiNode {
 	/** 一个Emoji配置 */

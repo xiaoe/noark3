@@ -22,7 +22,7 @@ import xyz.noark.core.network.NetworkPacket;
  * 一种默认的网络封包结构.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DefaultNetworkPacket implements NetworkPacket {
 	/** 包长 */

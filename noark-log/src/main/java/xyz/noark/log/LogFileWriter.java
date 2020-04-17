@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * 日志文件写入器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class LogFileWriter {
 	private final ScheduledFuture<?> future;

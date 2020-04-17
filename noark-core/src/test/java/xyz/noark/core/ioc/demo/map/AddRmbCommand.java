@@ -20,7 +20,7 @@ import xyz.noark.core.ioc.demo.AbstractCommand;
  * 添加RMB命令.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Component(name = { "// add rmb" })
 public class AddRmbCommand extends AbstractCommand {

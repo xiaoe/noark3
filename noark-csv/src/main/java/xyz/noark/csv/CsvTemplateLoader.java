@@ -22,7 +22,7 @@ import xyz.noark.game.template.AbstractTemplateLoader;
  * CSV格式的模板加载类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class CsvTemplateLoader extends AbstractTemplateLoader {
 	private final Csv parser;

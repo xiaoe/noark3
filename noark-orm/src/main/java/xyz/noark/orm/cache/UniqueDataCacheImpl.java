@@ -39,7 +39,7 @@ import xyz.noark.orm.repository.CacheRepository;
  * @param <K> 实体类Id
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractDataCache<T, K> {
 	/** 实体Id <==> 一个数据包装器 */

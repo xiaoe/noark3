@@ -30,7 +30,7 @@ import xyz.noark.network.codec.DefaultNetworkPacket;
  * Json封包解码器.
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class SimpleJsonCodec extends AbstractPacketCodec {
 

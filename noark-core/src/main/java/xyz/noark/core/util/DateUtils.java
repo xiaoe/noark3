@@ -27,7 +27,7 @@ import java.util.TimeZone;
  * 时间相关操作工具类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DateUtils {
 	/** 每秒有1000毫秒 */

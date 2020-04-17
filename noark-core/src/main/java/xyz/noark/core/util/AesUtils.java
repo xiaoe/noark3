@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
  * AES算法工具类
  *
  * @since 3.3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AesUtils {
 	/** 算法名称：AES */

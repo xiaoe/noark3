@@ -21,7 +21,7 @@ import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
  * 系统线程处理命令.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class SystemThreadCommand extends AbstractThreadCommand {
 	private final String module;

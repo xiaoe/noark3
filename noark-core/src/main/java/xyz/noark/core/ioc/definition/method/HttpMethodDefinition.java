@@ -26,7 +26,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * HTTP请求方法的定义.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpMethodDefinition extends SimpleMethodDefinition {
 	private final HttpHandler httpHandler;

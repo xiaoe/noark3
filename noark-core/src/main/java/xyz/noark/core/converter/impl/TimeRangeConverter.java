@@ -21,7 +21,7 @@ import xyz.noark.core.lang.TimeRange;
  * TimeRange转化器.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter(TimeRange.class)
 public class TimeRangeConverter extends AbstractConverter<TimeRange> {

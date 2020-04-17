@@ -20,7 +20,7 @@ package xyz.noark.core.lang;
  * @param <L> 左边元素的类型
  * @param <R> 右边元素的类型
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface Pair<L, R> {
 

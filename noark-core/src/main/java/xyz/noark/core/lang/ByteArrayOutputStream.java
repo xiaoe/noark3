@@ -22,7 +22,7 @@ import java.io.OutputStream;
  * 写入时，如果ByteArray接口实现自动扩容，那这个输出流就能自动扩容
  *
  * @since 3.2.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ByteArrayOutputStream extends OutputStream {
 	protected final ByteArray byteArray;

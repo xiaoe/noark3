@@ -19,7 +19,7 @@ import java.lang.management.ManagementFactory;
  * 系统相关工具类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class SystemUtils {
 

@@ -24,7 +24,7 @@ import xyz.noark.core.thread.NamedThreadFactory;
  * 监控服务管理器.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MonitorManager implements MonitorThreadPool {
 	private static final int POOL_SIZE = 1;

@@ -24,7 +24,7 @@ import xyz.noark.core.network.Session;
  * 协议编解码包装类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PacketParamWrapper implements ParamWrapper {
 	private final Class<?> klass;

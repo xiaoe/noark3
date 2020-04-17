@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
  * 提供独立监控线程池
  *
  * @since 3.3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface MonitorThreadPool {
 

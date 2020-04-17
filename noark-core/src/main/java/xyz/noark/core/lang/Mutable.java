@@ -21,7 +21,7 @@ package xyz.noark.core.lang;
  * 
  * @param <T> 包装值类型
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface Mutable<T> {
 

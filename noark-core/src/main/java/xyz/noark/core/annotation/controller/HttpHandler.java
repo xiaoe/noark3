@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * 如果激活了HTTP访问受限时(network.http.access.restricted=true)，默认访问=={@code PrivateApi}<br>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.METHOD)

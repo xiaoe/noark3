@@ -21,7 +21,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * Controller类中的可执行方法.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper {
 	/** 执行线程组 */

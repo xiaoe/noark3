@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * 监控任务执行时间，如果超时了需要强制中断这个任务
  * 
  * @since 3.3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MonitorTaskQueue extends TaskQueue {
 	/** 独立监控线程池,可能没有实现，那就会业务线程去监控 */

@@ -19,7 +19,7 @@ import xyz.noark.core.annotation.Component;
  * 组件类型的Bean定义.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ComponentBeanDefinition extends DefaultBeanDefinition {
 	private final String[] names;

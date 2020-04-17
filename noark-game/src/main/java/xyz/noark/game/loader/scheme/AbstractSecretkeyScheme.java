@@ -19,7 +19,7 @@ import xyz.noark.core.util.CharsetUtils;
  * 基于密钥的解码方案.
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 abstract class AbstractSecretkeyScheme extends AbstractScheme {
 	private final byte[] secretkey;

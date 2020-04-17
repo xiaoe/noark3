@@ -20,7 +20,7 @@ import xyz.noark.core.converter.AbstractConverter;
  * 字符串转化器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter(String.class)
 public class StringConverter extends AbstractConverter<String> {

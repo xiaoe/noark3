@@ -32,7 +32,7 @@ import xyz.noark.orm.cache.UniqueDataCacheImpl;
  * 可以理解为，一个角色只有一条记录或不属于任何角色的数据的类.<br>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class UniqueCacheRepository<T, K extends Serializable> extends AbstractCacheRepository<T, K> {
 

@@ -25,7 +25,7 @@ import java.util.stream.Stream;
  * CSV解析器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class CsvReader implements AutoCloseable {
 	/** 换行符 */

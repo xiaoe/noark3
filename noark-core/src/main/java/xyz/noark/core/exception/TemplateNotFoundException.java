@@ -19,7 +19,7 @@ import java.io.Serializable;
  * 模板对象未找到异常.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TemplateNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 3679093062272805750L;

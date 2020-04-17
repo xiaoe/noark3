@@ -22,7 +22,7 @@ import xyz.noark.core.lang.IntList;
  * 基础爆击配置
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TplFile("BaseCritical.tpl")
 public class BaseCriticalTemplate {

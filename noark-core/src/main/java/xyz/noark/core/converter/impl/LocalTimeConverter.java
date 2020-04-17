@@ -25,7 +25,7 @@ import xyz.noark.core.util.StringUtils;
  * LocalTime转化器.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter(LocalTime.class)
 public class LocalTimeConverter extends AbstractConverter<LocalTime> {

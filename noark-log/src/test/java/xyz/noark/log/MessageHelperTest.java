@@ -27,7 +27,7 @@ import org.junit.Test;
  * 消息辅助类的测试用例.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @ThreadSafe
 public class MessageHelperTest {

@@ -20,7 +20,7 @@ import java.util.HashSet;
  * Mysql关键字.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MysqlKeyword {
 	private static final HashSet<String> KEYWORD = new HashSet<>(Arrays.asList(

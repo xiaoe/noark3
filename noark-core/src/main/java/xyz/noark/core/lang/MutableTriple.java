@@ -20,7 +20,7 @@ package xyz.noark.core.lang;
  * @param <M> 中间元素的类型
  * @param <R> 右边元素的类型
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public final class MutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
 	private static final long serialVersionUID = 7749006784321924652L;

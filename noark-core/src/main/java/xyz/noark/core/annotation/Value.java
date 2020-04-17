@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * 注入配置文件中的属性.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

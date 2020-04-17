@@ -21,7 +21,7 @@ import xyz.noark.core.annotation.orm.Id;
  * 道具实体测试类.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Entity
 public class Item {

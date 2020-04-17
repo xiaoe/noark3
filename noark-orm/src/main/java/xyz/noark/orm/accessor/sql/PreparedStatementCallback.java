@@ -17,7 +17,7 @@ package xyz.noark.orm.accessor.sql;
  * PreparedStatement回调接口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @FunctionalInterface
 public interface PreparedStatementCallback<T> {

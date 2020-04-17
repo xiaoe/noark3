@@ -25,7 +25,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
  * 此版本由Caffeine缓存来实现.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TimeoutHashMap<K, V> {
 	private final LoadingCache<K, V> caches;

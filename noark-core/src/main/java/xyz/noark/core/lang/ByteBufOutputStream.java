@@ -24,7 +24,7 @@ import io.netty.buffer.ByteBuf;
  * 把Netty的ByteBuf包装成输出流，从而减少PB对象到字节数组的二次复制，方便直接写入
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ByteBufOutputStream extends OutputStream {
 	/** Netty的ByteBuf */

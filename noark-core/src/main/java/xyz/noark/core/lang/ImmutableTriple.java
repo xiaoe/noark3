@@ -17,7 +17,7 @@ package xyz.noark.core.lang;
  * 一个不可变改变三个元素组成的抽象对象实现.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ImmutableTriple<L, M, R> extends AbstractTriple<L, M, R> {
 	private static final long serialVersionUID = -6674651089600628940L;

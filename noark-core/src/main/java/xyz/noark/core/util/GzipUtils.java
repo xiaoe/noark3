@@ -23,7 +23,7 @@ import java.util.zip.GZIPOutputStream;
  * GZip压缩工具类.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class GzipUtils {
 	/**

@@ -30,7 +30,7 @@ import xyz.noark.core.annotation.tpl.TplAttr;
  * 属性工具类测试.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class FieldUtilsTest extends MethodUtilsTest {
 

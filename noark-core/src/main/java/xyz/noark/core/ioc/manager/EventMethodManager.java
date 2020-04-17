@@ -29,7 +29,7 @@ import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
  * 事件处理管理类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class EventMethodManager {
 	private final Map<Class<? extends Event>, List<EventMethodWrapper>> handlers = new ConcurrentHashMap<>();

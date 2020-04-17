@@ -23,7 +23,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * AtomicInteger类型属性
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class AtomicIntegerAdaptor extends AbstractValueAdaptor<AtomicInteger> {
 

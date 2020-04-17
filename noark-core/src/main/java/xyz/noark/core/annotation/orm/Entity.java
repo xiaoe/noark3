@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 当实体类没有此注解时会抛出 NoEntityException异常.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target({ ElementType.TYPE })
@@ -47,7 +47,7 @@ public @interface Entity {
 	 * 2.登录游戏的时候，初始化当前实体数据.<br>
 	 * 3.什么时候用，什么时候初始化当前实体数据.<br>
 	 * 
-	 * @author 小流氓(176543888@qq.com)
+	 * @author 小流氓[176543888@qq.com]
 	 */
 	public enum FetchType {
 		/**

@@ -19,7 +19,7 @@ import java.util.Date;
  * CRON表达式类型的触发器.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class CronTrigger implements DelayTrigger {
 	/** 上次执行计算时间. */

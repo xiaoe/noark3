@@ -27,7 +27,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 事件处理入口的定义.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class EventMethodDefinition extends SimpleMethodDefinition {
 	private final EventListener eventListener;

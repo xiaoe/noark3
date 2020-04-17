@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * TplFile注解标识一种模板资源文件对应的模板类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.TYPE)

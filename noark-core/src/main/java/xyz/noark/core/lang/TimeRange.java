@@ -27,7 +27,7 @@ import xyz.noark.core.converter.impl.LocalTimeSectionConverter;
  * 前4个区，都可以使用逗号和连接号来实现多段效果, 判定规则是所有段内条件都满足
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TimeRange implements ValidTime {
 	/** 年 */

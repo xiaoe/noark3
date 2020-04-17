@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * </code>
  * 
  * @since 3.2.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.TYPE)

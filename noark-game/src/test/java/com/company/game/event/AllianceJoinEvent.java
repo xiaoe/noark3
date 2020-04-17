@@ -19,7 +19,7 @@ import xyz.noark.core.event.Event;
  * 联盟加入事件.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AllianceJoinEvent implements Event, AllianceEvent {
 	private final long playerId;

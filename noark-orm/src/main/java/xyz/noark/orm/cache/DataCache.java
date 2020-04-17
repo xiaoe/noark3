@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  * 数据缓存接口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface DataCache<T, K extends Serializable> {
 

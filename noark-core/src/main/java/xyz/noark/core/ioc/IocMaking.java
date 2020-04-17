@@ -23,7 +23,7 @@ import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
  * 装配对象缓存
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IocMaking implements AutoCloseable {
 	private final IocLoader loader;

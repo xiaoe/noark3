@@ -17,7 +17,7 @@ package xyz.noark.game.bt;
  * 行为树测试用例.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class BehaviorTreeTest {
 	private static final int MAX = 100;

@@ -17,7 +17,7 @@ package xyz.noark.core.lang;
  * 平面坐标系中的一个点.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Point {
 	private final int x;

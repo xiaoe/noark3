@@ -21,7 +21,7 @@ import io.netty.channel.Channel;
  * IP相关操作工具类.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IpUtils {
 

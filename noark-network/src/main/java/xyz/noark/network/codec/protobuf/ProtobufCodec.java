@@ -39,7 +39,7 @@ import xyz.noark.network.codec.DefaultNetworkPacket;
  * ProtobufV3版本的编码解码器.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ProtobufCodec extends AbstractPacketCodec {
 	private static final ConcurrentHashMap<Class<?>, Method> CACHES = new ConcurrentHashMap<>(1024);

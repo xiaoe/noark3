@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * 目前版本支持4种类型的注入：类、接口、List、Map
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

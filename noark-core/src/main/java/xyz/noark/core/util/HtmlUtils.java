@@ -19,7 +19,7 @@ import java.util.Stack;
  * HTML工具类.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HtmlUtils {
 
@@ -114,7 +114,7 @@ public class HtmlUtils {
 	 * HTML标签.
 	 *
 	 * @since 3.4
-	 * @author 小流氓(176543888@qq.com)
+	 * @author 小流氓[176543888@qq.com]
 	 */
 	static class HtmlTag {
 		private String name;

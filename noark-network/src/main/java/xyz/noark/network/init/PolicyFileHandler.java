@@ -25,7 +25,7 @@ import xyz.noark.network.InitializeHandler;
  * Flash所需要的策略文件.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Component(name = "<policy-file-request/>\0")
 public class PolicyFileHandler implements InitializeHandler {

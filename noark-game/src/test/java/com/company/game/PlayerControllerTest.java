@@ -26,7 +26,7 @@ import xyz.noark.core.annotation.controller.ExecThreadGroup;
  * 模块入口测试.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Controller(threadGroup = ExecThreadGroup.PlayerThreadGroup)
 public class PlayerControllerTest {

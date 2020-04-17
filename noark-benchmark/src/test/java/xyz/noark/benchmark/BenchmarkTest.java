@@ -19,7 +19,7 @@ import org.junit.Test;
  * 测试用例.
  *
  * @since 2.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class BenchmarkTest {
 	private final Benchmark benchmark = new Benchmark();

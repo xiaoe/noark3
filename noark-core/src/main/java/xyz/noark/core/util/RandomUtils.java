@@ -26,7 +26,7 @@ import java.util.function.ToIntFunction;
  * 本工具类中统一以{@link ThreadLocalRandom}为基础的封装
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RandomUtils {
 

@@ -17,7 +17,7 @@ package xyz.noark.game.bt;
  * 去球场.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class GotoCourt extends AbstractActionNode {
 

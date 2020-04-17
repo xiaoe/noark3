@@ -22,7 +22,7 @@ import io.netty.util.internal.logging.InternalLogger;
  * Netty的日志实现.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class NettyLogger implements InternalLogger {
 	NettyLogger() {}

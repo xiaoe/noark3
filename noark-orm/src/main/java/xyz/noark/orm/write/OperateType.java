@@ -17,7 +17,7 @@ package xyz.noark.orm.write;
  * 对数据的操作类型.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public enum OperateType {
 	// MYSQL

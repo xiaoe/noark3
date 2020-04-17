@@ -28,7 +28,7 @@ import xyz.noark.orm.write.AsyncWriteService;
  * 一种带有缓存类型的数据存储.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRepository<T, K> implements CacheRepository<T, K> {
 	protected DataCache<T, K> dataCache;

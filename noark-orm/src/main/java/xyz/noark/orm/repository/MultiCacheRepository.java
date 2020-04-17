@@ -34,7 +34,7 @@ import xyz.noark.orm.cache.MultiDataCacheImpl;
  * @param <K> 实体类的主键
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MultiCacheRepository<T, K extends Serializable> extends AbstractCacheRepository<T, K> {
 

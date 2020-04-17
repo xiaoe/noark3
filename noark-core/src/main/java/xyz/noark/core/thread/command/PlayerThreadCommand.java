@@ -21,7 +21,7 @@ import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
  * 玩家线程处理的指令.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PlayerThreadCommand extends AbstractThreadCommand {
 	public PlayerThreadCommand(Serializable playerId, AbstractControllerMethodWrapper method, Object... args) {

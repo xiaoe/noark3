@@ -29,7 +29,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 封包处理入口的定义.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PacketMethodDefinition extends SimpleMethodDefinition {
 	private final Parameter[] parameters;

@@ -27,7 +27,7 @@ import xyz.noark.benchmark.Benchmark;
  * 字符串工具类测试用例.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class StringUtilsTest {
 	private final Benchmark benchmark = new Benchmark(1000);

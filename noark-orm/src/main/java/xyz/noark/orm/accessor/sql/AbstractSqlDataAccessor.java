@@ -44,7 +44,7 @@ import xyz.noark.orm.accessor.AbstractDataAccessor;
  * SQL存储策略入口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 	/** MYSQL字段数据过长异常类名称 */

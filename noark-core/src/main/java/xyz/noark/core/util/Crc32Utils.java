@@ -27,7 +27,7 @@ package xyz.noark.core.util;
  * 例如：代码1010111对应的多项式为x6+x4+x2+x+1， 而多项式为x5+x3+x2+x+1对应的代码101111。
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Crc32Utils {
 	private static final int TABLE[] = { 0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2,

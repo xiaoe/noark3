@@ -33,7 +33,7 @@ import xyz.noark.core.util.IpUtils;
  * Netty链接默认功能处理器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 @Sharable

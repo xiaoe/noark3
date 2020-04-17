@@ -31,7 +31,7 @@ import xyz.noark.core.exception.ServerBootstrapException;
  * 断言工具类.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AssertUtils {
 

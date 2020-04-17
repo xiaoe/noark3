@@ -24,7 +24,7 @@ import xyz.noark.benchmark.Benchmark;
  * CRC32测试.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Crc32UtilsTest {
 	private final static Benchmark BENCHMARK = new Benchmark(1000);

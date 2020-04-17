@@ -23,7 +23,7 @@ import java.util.Map;
  * 初始化日志系统与安全停止
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LogManager {
 

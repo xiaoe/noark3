@@ -25,7 +25,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
  * 主要用来缓存热点分析器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class MessageAnalyzerManager {
 	/** 1分钟 */

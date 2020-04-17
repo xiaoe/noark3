@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * Column注解标记表示所持久化属性所映射表中的字段.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target({ ElementType.FIELD })

@@ -31,7 +31,7 @@ import xyz.noark.core.lang.ValidTime;
  * 带有有效时间的DFA算法测试
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DfaValidScannerTest {
 	private DfaValidScanner scanner;

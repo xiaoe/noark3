@@ -23,7 +23,7 @@ import java.util.Date;
  * 消息拼接辅助类.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class MessageHelper {
 	/** 拼接时是单线程，这个不会被并发 */

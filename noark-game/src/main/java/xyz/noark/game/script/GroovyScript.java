@@ -17,7 +17,7 @@ package xyz.noark.game.script;
  * Groovy脚本接口.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface GroovyScript {
 

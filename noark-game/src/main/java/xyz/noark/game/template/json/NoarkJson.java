@@ -27,7 +27,7 @@ import xyz.noark.core.util.StringUtils;
  * NoarkJson，内部中转的Json辅助类.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class NoarkJson extends ResourceLoader {
 

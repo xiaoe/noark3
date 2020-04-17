@@ -27,7 +27,7 @@ import xyz.noark.orm.write.impl.DefaultAsyncWriteServiceImpl;
  * 启动配置文件.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Configuration
 public class GameServerConfiguration {

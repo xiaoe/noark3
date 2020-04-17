@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * 一条日志接口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 interface Message {
 

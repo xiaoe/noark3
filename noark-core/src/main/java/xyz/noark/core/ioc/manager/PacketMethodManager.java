@@ -28,7 +28,7 @@ import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
  * 封包方法管理类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PacketMethodManager {
 	private final ConcurrentMap<Serializable, PacketMethodWrapper> handlers = new ConcurrentHashMap<>(2048);

@@ -25,7 +25,7 @@ import xyz.noark.core.util.StringUtils;
  * FloatList转化器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter({ FloatList.class, FloatArrayList.class })
 public class FloatListConverter extends AbstractConverter<FloatList> {

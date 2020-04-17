@@ -23,7 +23,7 @@ import xyz.noark.core.lang.ValidTime;
  * DFA敏感词库树上的节点.
  * 
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class DfaNode {
 	/** 节点编码 */

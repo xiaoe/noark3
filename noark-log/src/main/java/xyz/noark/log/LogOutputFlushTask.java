@@ -17,7 +17,7 @@ package xyz.noark.log;
  * 日志输出Flush任务.
  *
  * @since 3.3.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LogOutputFlushTask implements Runnable {
 	private final LogFileWriter fileWriter;

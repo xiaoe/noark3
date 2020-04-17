@@ -54,7 +54,7 @@ import xyz.noark.network.http.HttpServletRequest.NoarkHttpServletRequest;
  * HTTP封包处理逻辑类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	/** 签名Key... */

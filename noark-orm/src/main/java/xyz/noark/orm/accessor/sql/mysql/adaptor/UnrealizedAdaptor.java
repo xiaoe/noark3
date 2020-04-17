@@ -24,7 +24,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * 一个未实现的类型
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class UnrealizedAdaptor extends AbstractValueAdaptor<Void> {
 	private static final UnrealizedAdaptor INSTANCE = new UnrealizedAdaptor();

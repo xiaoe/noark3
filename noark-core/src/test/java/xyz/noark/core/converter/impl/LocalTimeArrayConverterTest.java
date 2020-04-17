@@ -23,7 +23,7 @@ import xyz.noark.core.lang.LocalTimeArray;
  * 时间数组转化器测试用例.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LocalTimeArrayConverterTest {
 

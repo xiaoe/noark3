@@ -22,7 +22,7 @@ import xyz.noark.core.exception.IllegalExpressionException;
  * 用于括号类分隔的情况.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class BracketParser {
 	/** 表达式 */

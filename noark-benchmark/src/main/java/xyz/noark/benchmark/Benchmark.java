@@ -17,7 +17,7 @@ package xyz.noark.benchmark;
  * 性能基准测试.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Benchmark {
 	private static final int PREHEATING_TIMES = 100;

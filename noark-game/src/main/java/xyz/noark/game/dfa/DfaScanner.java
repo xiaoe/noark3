@@ -27,7 +27,7 @@ import xyz.noark.core.util.StringUtils;
  * 4、重复词<br>
  * 
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DfaScanner extends AbstractDfaScanner {
 

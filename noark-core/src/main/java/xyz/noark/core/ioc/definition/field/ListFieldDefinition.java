@@ -25,7 +25,7 @@ import xyz.noark.core.ioc.IocMaking;
  * 所有实现此接口或继承此类的都算.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ListFieldDefinition extends DefaultFieldDefinition {
 

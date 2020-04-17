@@ -27,7 +27,7 @@ import xyz.noark.core.util.StringUtils;
  * IntList转化器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter({ IntList.class, IntArrayList.class })
 public class IntListConverter extends AbstractConverter<IntList> {

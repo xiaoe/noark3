@@ -21,7 +21,7 @@ import xyz.noark.core.util.ClassUtils;
  * 机器人数据.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class RobotData {
 	private final ConcurrentHashMap<Class<? extends Object>, Object> dataMap = new ConcurrentHashMap<>();

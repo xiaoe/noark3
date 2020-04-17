@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 数值越小排序越靠前，负数也遵循这个规则
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

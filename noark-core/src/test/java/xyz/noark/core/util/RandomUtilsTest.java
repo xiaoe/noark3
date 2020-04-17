@@ -28,7 +28,7 @@ import org.junit.Test;
  * 随机工具类测试.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RandomUtilsTest {
 

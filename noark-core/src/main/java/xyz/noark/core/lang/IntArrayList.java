@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  * （此类大致上等同于 Java的List&lt;Integer&gt;类）
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IntArrayList implements IntList, RandomAccess {
 	private static final int DEFAULT_CAPACITY = 10;

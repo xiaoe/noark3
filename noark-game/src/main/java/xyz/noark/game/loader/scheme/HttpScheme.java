@@ -19,7 +19,7 @@ import xyz.noark.core.util.HttpUtils;
  * 密钥来源于HTTP.
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class HttpScheme extends AbstractSecretkeyScheme {
 	HttpScheme(int code) {

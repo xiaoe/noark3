@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * TplAttr注解用于标识模板类中的属性关系.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

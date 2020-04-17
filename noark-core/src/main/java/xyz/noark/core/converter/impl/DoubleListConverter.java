@@ -25,7 +25,7 @@ import xyz.noark.core.util.StringUtils;
  * DoubleList转化器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter({ DoubleList.class, DoubleArrayList.class })
 public class DoubleListConverter extends AbstractConverter<DoubleList> {

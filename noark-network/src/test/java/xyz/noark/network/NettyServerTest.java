@@ -23,7 +23,7 @@ import xyz.noark.benchmark.Benchmark;
  * Netty服务器测试例.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NettyServerTest {
 	private final Benchmark benchmark = new Benchmark(1);

@@ -27,7 +27,7 @@ import xyz.noark.core.ioc.manager.EventMethodManager;
  * Order排序测试入口...
  *
  * @since 3.3.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
 public class TestController {

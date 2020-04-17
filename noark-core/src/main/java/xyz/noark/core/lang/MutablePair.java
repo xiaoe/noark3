@@ -17,7 +17,7 @@ package xyz.noark.core.lang;
  * 一个可变改变两个元素组成的抽象对象实现.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public final class MutablePair<L, R> extends AbstractPair<L, R> {
 	private static final long serialVersionUID = 6743761112060610726L;

@@ -22,7 +22,7 @@ import xyz.noark.network.InitializeHandler;
  * 非法请求.
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IllegalRequestHandler implements InitializeHandler {
 	private final String request;

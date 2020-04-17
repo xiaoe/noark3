@@ -29,7 +29,7 @@ import xyz.noark.core.exception.ServerBootstrapException;
  * Class类扫描器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ResourceScanning {
 	/** URL protocol for a file in the file system: "file" */

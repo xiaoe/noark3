@@ -17,7 +17,7 @@ package xyz.noark.core.ioc.scan;
  * 扫描资源后的回调接口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface ResourceCallback {
 	/**

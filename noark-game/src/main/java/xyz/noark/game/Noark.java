@@ -23,7 +23,7 @@ import xyz.noark.game.bootstrap.ServerBootstrap;
  * </pre>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public final class Noark {
 	/** 私有化构造函数. */

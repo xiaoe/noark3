@@ -27,7 +27,7 @@ import xyz.noark.network.NetworkConstant;
  * 抽象封包检测过滤器.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractPacketCheckFilter implements PacketCheckFilter {
 

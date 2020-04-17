@@ -32,7 +32,7 @@ import xyz.noark.network.handler.WebsocketServerHandler;
  * WebSocket协议请求.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Component(name = WebsocketInitializeHandler.WEBSOCKET_NAME)
 public class WebsocketInitializeHandler extends AbstractInitializeHandler {

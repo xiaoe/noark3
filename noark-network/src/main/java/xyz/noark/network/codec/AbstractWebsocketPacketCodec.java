@@ -21,7 +21,7 @@ import xyz.noark.core.network.PacketCodec;
  * 基本Netty实现的一个抽象WebSocket编解码器
  *
  * @since 3.3.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractWebsocketPacketCodec implements PacketCodec {
 	/**

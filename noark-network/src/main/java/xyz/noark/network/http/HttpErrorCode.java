@@ -22,7 +22,7 @@ package xyz.noark.network.http;
  * ret &lt;-50: 系统内部错误，请通过企业QQ联系技术支持，调查问题原因并获得解决方案。
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpErrorCode {
 	/**

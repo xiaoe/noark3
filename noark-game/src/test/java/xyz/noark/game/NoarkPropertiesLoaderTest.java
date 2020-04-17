@@ -25,7 +25,7 @@ import xyz.noark.game.NoarkPropertiesLoader;
  * 属性配置文件加载测试.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NoarkPropertiesLoaderTest {
 

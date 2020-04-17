@@ -17,7 +17,7 @@ package xyz.noark.log;
  * 带参数的日志信息.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class ParameterizedMessage extends AbstractMessage {
 	private static final MessageAnalyzerManager CACHE = new MessageAnalyzerManager();

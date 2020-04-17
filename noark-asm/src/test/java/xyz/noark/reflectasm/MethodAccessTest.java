@@ -24,7 +24,7 @@ import xyz.noark.benchmark.Benchmark;
  * 调用方法测试用例.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MethodAccessTest {
 	private final Benchmark benchmark = new Benchmark(1);

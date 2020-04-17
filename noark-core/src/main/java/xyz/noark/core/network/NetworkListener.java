@@ -21,7 +21,7 @@ import xyz.noark.core.ioc.manager.PacketMethodManager;
  * 主要用于网络链接上的一些预处理.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface NetworkListener {
 

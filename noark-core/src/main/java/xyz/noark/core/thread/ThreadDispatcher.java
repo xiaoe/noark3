@@ -50,7 +50,7 @@ import xyz.noark.core.thread.command.SystemThreadCommand;
  * 根据opcode找到目标模块的负载均衡器，进行转发或传递给执行器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 public class ThreadDispatcher {

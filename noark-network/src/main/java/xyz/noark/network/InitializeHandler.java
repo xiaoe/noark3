@@ -23,7 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
  * WebSocket协议<br>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface InitializeHandler {
 

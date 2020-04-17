@@ -26,7 +26,7 @@ import xyz.noark.orm.repository.CacheRepository;
  * 数据缓存抽象的实现类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 abstract class AbstractDataCache<T, K extends Serializable> implements DataCache<T, K> {
 	protected final EntityMapping<T> entityMapping;

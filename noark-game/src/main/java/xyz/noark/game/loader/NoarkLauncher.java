@@ -21,7 +21,7 @@ import xyz.noark.core.util.ClassUtils;
  * 一个特殊的功能，风格参考SpringBoot，却又不完全一样...
  * 
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public final class NoarkLauncher {
 

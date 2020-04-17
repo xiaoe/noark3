@@ -31,7 +31,7 @@ import xyz.noark.core.util.DateUtils;
  * </pre>
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LocalTimeArray {
 	/** 每天最大的秒数 */

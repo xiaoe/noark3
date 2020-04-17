@@ -28,7 +28,7 @@ import xyz.noark.core.lang.PairMap;
  * 集合工具类测试
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class CollectionUtilsTest {
 	private static final int MAX = 20;

@@ -25,7 +25,7 @@ import xyz.noark.core.network.Session;
  * PacketMapping注解用来标识一个封包映射到一个处理方法.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.METHOD)

@@ -20,7 +20,7 @@ import io.netty.handler.codec.CorruptedFrameException;
  * Netty的ByteBuf工具类.
  *
  * @since 3.1.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ByteBufUtils {
 

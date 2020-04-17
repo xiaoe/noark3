@@ -19,7 +19,7 @@ import java.io.Serializable;
  * 抽象的Session实现.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractSession implements Session {
 	protected State state = State.CONNECTED;

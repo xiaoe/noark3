@@ -28,7 +28,7 @@ import xyz.noark.network.handler.SocketServerHandler;
  * Socket协议请求.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Component(name = SocketInitializeHandler.SOCKET_NAME)
 public class SocketInitializeHandler extends AbstractInitializeHandler {

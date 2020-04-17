@@ -19,7 +19,7 @@ import xyz.noark.core.exception.UnrealizedException;
  * 条件节点.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractConditionNode extends AbstractBehaviorNode {
 	@Override

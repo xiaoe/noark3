@@ -20,7 +20,7 @@ import java.util.Map;
  * Emoji管理器.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class EmojiManager {
 	/** Emoji树，用于Emoji转化为别名查询 */

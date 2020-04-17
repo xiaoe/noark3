@@ -19,7 +19,7 @@ import java.util.Collection;
  * 三个元素当键的Map.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface TripleMap<L, M, R, V> {
 

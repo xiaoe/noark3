@@ -29,7 +29,7 @@ import xyz.noark.core.lang.PairMap;
  * Collection工具类.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class CollectionUtils {
 	/**

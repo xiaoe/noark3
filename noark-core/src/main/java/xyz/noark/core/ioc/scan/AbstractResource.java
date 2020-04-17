@@ -17,7 +17,7 @@ package xyz.noark.core.ioc.scan;
  * 资源抽象类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 abstract class AbstractResource implements Resource {
 	private final String resourceName;

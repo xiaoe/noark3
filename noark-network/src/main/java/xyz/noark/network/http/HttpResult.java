@@ -19,7 +19,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  * HTTP处理结果.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpResult {
 	/** 返回编码 */

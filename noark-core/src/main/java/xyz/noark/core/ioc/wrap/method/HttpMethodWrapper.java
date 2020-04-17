@@ -28,7 +28,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 封包处理方法包装类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 	private final String uri;

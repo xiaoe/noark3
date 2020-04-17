@@ -27,7 +27,7 @@ import java.util.Optional;
  * 文件操作工具类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class FileUtils {
 	/** 可读大小的单位 */

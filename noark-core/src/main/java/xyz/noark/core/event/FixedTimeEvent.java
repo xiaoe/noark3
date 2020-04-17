@@ -19,7 +19,7 @@ import xyz.noark.core.lang.LocalTimeArray;
  * 定时任务事件接口.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface FixedTimeEvent extends Event {
 	/**

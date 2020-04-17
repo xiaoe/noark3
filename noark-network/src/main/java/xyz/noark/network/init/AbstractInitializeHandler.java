@@ -19,6 +19,6 @@ import xyz.noark.network.InitializeHandler;
  * 抽象实现的初始化协议处理器.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractInitializeHandler implements InitializeHandler {}

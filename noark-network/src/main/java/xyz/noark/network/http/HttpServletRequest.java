@@ -25,7 +25,7 @@ import xyz.noark.core.exception.UnrealizedException;
  * 构建一个请求对象，目前主要用于参数获取.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface HttpServletRequest {
 

@@ -22,7 +22,7 @@ import xyz.noark.core.annotation.orm.Entity;
  * 当实体类没有可映射的属性时也会抛出此异常.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NoEntityException extends RuntimeException {
 	private static final long serialVersionUID = -6578547540200771950L;

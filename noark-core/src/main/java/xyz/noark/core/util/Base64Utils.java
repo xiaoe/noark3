@@ -21,7 +21,7 @@ import java.util.Base64;
  * 这个工具类就是把JDK的Base64包装了一下, 因为并不是所有人都知道JDK已经有这个实现了.
  *
  * @since 3.2.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Base64Utils {
 

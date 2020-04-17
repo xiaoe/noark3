@@ -19,7 +19,7 @@ package xyz.noark.core.lang;
  * 只是一个申明此实现是一个字节数组用于传递.
  * 
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface ByteArray extends AutoCloseable {
 	/**

@@ -34,7 +34,7 @@ import xyz.noark.core.network.SessionAttrKey;
  * 机器人Session.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RobotSession extends AbstractSession {
 	protected final Channel channel;

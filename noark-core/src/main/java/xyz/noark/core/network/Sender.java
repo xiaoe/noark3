@@ -24,7 +24,7 @@ import xyz.noark.core.util.ArrayUtils;
  * 网络层的封包发送工具类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @StaticComponent
 public final class Sender {

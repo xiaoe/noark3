@@ -25,7 +25,7 @@ import xyz.noark.game.config.AbstractConfigCentre;
  * 为什么有了ZK，还有一个Redis的实现版本，配置简单嘛，依赖少，上手难度低
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RedisConfigContre extends AbstractConfigCentre {
 	private final Redis redis;

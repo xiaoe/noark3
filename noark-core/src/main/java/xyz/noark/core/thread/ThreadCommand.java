@@ -17,7 +17,7 @@ package xyz.noark.core.thread;
  * 线程指令.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface ThreadCommand {
 	/**

@@ -17,7 +17,7 @@ package xyz.noark.benchmark;
  * 性能基准测试内容回调.
  *
  * @since 2.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface BenchmarkCallback {
 

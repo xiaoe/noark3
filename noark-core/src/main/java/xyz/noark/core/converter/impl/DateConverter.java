@@ -29,7 +29,7 @@ import xyz.noark.core.exception.ConvertException;
  * Date类型的转化器.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter(Date.class)
 public class DateConverter implements Converter<Date> {

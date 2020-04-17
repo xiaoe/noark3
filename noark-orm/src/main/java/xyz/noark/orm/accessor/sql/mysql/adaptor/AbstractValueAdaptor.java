@@ -23,7 +23,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * 属性值适配转换接口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractValueAdaptor<T> {
 

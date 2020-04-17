@@ -23,7 +23,7 @@ import xyz.noark.core.util.StringUtils;
  * 一种自由编排的int类型所表示的范围集合
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IntRange {
 	/** 区间列表 */
@@ -95,7 +95,7 @@ public class IntRange {
 	 * Int数字区间.
 	 * 
 	 * @since 3.3.4
-	 * @author 小流氓(176543888@qq.com)
+	 * @author 小流氓[176543888@qq.com]
 	 */
 	private class IntSection {
 		private final int min;

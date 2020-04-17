@@ -33,7 +33,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 事件处理方法的包装类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class EventMethodWrapper extends AbstractControllerMethodWrapper implements Comparable<EventMethodWrapper> {
 	private final Class<? extends Event> eventClass;

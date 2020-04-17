@@ -24,7 +24,7 @@ import xyz.noark.core.network.Session;
  * NetworkPacket对象.
  *
  * @since 3.3.7
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NetworkPacketParamWrapper implements ParamWrapper {
 

@@ -22,7 +22,7 @@ import xyz.noark.orm.EntityMapping;
  * 异步回写服务接口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface AsyncWriteService {
 

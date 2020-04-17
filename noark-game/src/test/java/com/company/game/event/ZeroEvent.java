@@ -20,7 +20,7 @@ import xyz.noark.game.event.AbstractFixedTimeEvent;
  * 0点事件.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ZeroEvent extends AbstractFixedTimeEvent {
 

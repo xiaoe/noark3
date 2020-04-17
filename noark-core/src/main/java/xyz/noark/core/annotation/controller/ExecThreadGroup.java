@@ -17,7 +17,7 @@ package xyz.noark.core.annotation.controller;
  * 执行线程组枚举类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public enum ExecThreadGroup {
 	/**

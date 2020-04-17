@@ -17,7 +17,7 @@ package xyz.noark.core.network;
  * 封包统计数据.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PacketStatis {
 	/** 上次记录时间 */

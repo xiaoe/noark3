@@ -28,7 +28,7 @@ import xyz.noark.core.util.StringUtils;
  * Value方式注入配置参数.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ValueFieldDefinition extends DefaultFieldDefinition {
 	/** 对应配置文件中的Key... */

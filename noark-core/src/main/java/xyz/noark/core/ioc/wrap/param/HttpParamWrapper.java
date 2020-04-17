@@ -22,7 +22,7 @@ import xyz.noark.core.util.StringUtils;
  * HTTP接口参数包装类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpParamWrapper {
 	private final Parameter parameter;

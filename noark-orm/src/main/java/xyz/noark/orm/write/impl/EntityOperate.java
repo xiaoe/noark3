@@ -19,7 +19,7 @@ import xyz.noark.orm.EntityMapping;
  * 实体操作包装类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class EntityOperate<T> {
 	private String id;

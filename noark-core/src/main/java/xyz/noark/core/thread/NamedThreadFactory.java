@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 可命名的线程工厂.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NamedThreadFactory implements ThreadFactory {
 	private final AtomicInteger threadCounter = new AtomicInteger(1);

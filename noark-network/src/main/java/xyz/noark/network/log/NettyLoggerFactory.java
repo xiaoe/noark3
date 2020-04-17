@@ -20,7 +20,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
  * Netty日志工厂类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NettyLoggerFactory extends InternalLoggerFactory {
 	public static final InternalLoggerFactory INSTANCE = new NettyLoggerFactory();

@@ -22,7 +22,7 @@ import xyz.noark.core.lang.ByteArray;
  * ByteBuf的计数器加一拿出来的，使用时一定要调用关闭方法来减一，不然就会死人了噢，不了解NETTY请不要使用此类
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ByteBufWrapper implements ByteArray {
 	private final ByteBuf byteBuf;

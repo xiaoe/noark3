@@ -17,7 +17,7 @@ package xyz.noark.robot;
  * 机器人相关常理类.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RobotConstant {
 	/**

@@ -44,7 +44,7 @@ import xyz.noark.core.util.StringUtils;
  * 控制器的Bean定义描述类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ControllerBeanDefinition extends DefaultBeanDefinition {
 	/** 执行线程组 */

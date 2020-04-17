@@ -24,7 +24,7 @@ import xyz.noark.core.event.PlayerEvent;
  * 机器人AI事件
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RobotAiEvent implements DelayEvent, PlayerEvent {
 	private String playerId;

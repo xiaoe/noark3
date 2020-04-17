@@ -27,7 +27,7 @@ import xyz.noark.core.annotation.Configuration;
  * 只有当在{@link Configuration}注解所标识的类中才会生效.
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.METHOD)

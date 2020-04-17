@@ -22,7 +22,7 @@ import xyz.noark.core.exception.ServerBootstrapException;
  * 系统配置.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class EnvConfigHolder {
 

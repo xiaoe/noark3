@@ -29,7 +29,7 @@ import xyz.noark.core.util.StringUtils;
  * 这个注解所标识的类，不会被其他类所注入，只会装配此类，但不会有别的类依赖于他.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.TYPE)

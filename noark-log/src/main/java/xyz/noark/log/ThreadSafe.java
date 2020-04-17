@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 比如日志记录，有一个参数对象，标识了这个注解，那在传递时这个对象不会被提前转化为String
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.TYPE)

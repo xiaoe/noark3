@@ -24,7 +24,7 @@ import xyz.noark.core.exception.ServerBootstrapException;
  * MANIFEST文件扩展类
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NoarkManifest {
 	private static final String MANIFEST_PATH = "META-INF/MANIFEST.MF";

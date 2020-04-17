@@ -30,7 +30,7 @@ import xyz.noark.core.util.StringUtils;
  * 5、有效时间<br>
  * 
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DfaValidScanner extends AbstractDfaScanner {
 

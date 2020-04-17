@@ -25,7 +25,7 @@ import xyz.noark.network.codec.AbstractPacketCodec;
  * ProtobufV3解码器.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ProtobufLengthDecoder extends AbstractLengthDecoder {
 	private final static int PACKET_BYTE_LENGTH = 2;

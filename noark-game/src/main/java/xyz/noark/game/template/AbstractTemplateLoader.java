@@ -28,7 +28,7 @@ import xyz.noark.core.util.StringUtils;
  * 抽象实现的模板加载器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractTemplateLoader implements TemplateLoader {
 	/** 策划配置文件路径 */

@@ -21,7 +21,7 @@ import xyz.noark.core.lang.IntList;
 /**
  * 怪物刷新模板配置.
  *
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TplFile("MonsterRefresh.tpl")
 public class MonsterRefreshTemplate2 {

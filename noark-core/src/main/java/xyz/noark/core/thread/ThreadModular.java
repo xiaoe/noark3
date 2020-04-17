@@ -22,7 +22,7 @@ import xyz.noark.core.annotation.Value;
  * 线程模块.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Component(name = Modular.THREAD_MODULAR)
 public class ThreadModular implements Modular {

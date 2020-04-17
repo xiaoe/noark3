@@ -27,7 +27,7 @@ import xyz.noark.core.exception.ServerBootstrapException;
  * <p>
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IdGenerator {
 	private static final long MAX_TIMES = 1L << 18;

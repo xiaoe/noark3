@@ -20,7 +20,7 @@ package xyz.noark.game.script;
  * 脚本功能也是非常强大的，关键时刻可拯救世界，请小心使用，不然会死人了，因为他也有毁灭世界的能力...
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class GroovyScriptExecutor implements GroovyScript {
 

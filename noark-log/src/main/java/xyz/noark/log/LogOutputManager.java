@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * 日志输出管理器.
  *
  * @since 3.3.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class LogOutputManager {
 	private static final LogOutputManager INSTANCE = new LogOutputManager();

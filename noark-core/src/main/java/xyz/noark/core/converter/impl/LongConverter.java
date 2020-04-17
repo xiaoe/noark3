@@ -20,7 +20,7 @@ import xyz.noark.core.converter.AbstractConverter;
  * Long转化器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter({ long.class, Long.class })
 public class LongConverter extends AbstractConverter<Long> {

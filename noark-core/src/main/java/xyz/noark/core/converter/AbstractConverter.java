@@ -23,7 +23,7 @@ import xyz.noark.core.exception.UnrealizedException;
  * 抽象实现的转化器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractConverter<T> implements Converter<T> {
 

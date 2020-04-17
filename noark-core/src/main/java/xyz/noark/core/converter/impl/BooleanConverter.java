@@ -22,7 +22,7 @@ import xyz.noark.core.converter.AbstractConverter;
  * 常见的标识为True的标签
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter({ boolean.class, Boolean.class })
 public class BooleanConverter extends AbstractConverter<Boolean> {

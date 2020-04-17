@@ -17,7 +17,7 @@ package xyz.noark.core.util;
  * Int工具类，目前只是放一些常量，用于消除P3C的警告.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IntUtils {
 	public static final int NUM_1 = 1;

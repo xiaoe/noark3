@@ -28,7 +28,7 @@ import xyz.noark.network.codec.json.SimpleJsonCodec;
  * 一个默认的服务器启动引导类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
 

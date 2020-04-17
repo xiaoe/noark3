@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 数据异常类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DataException extends RuntimeException {
 

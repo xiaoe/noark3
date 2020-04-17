@@ -21,7 +21,7 @@ import java.util.Map;
  * Map类型的工具类.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MapUtils {
 	private MapUtils() {}

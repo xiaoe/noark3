@@ -32,7 +32,7 @@ import xyz.noark.orm.accessor.DataAccessor;
  * @param <T> 实体类型
  * @param <K> 实体的ID类型
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class OrmRepository<T, K extends Serializable> {
 	private static final AnnotationEntityMaker MAKER = new AnnotationEntityMaker();

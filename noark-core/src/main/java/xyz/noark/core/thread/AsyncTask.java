@@ -28,7 +28,7 @@ import xyz.noark.core.util.ThreadUtils;
  * 异步任务.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AsyncTask implements Runnable {
 	/** 任务创建时间 */

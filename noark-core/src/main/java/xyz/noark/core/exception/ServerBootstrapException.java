@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 服务器启动异常类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ServerBootstrapException extends RuntimeException {
 	private static final long serialVersionUID = -1979831464877053819L;

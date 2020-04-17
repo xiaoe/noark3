@@ -34,7 +34,7 @@ import xyz.noark.core.util.IpUtils;
  * 基于Netty的Channel实现的Session.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class SocketSession extends AbstractSession implements IncodeSession {
 	protected final Channel channel;

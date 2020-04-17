@@ -23,7 +23,7 @@ import xyz.noark.core.annotation.tpl.TplAttr;
  * 如果一个模板类中的一个属性，没有在模板文件出现，就会抛出此异常，主要用发现策划偷偷修改配置文件时未通知程序的问题.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TplAttrRequiredException extends RuntimeException {
 	private static final long serialVersionUID = 2133854117929964654L;

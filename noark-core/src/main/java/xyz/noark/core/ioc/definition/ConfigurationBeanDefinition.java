@@ -26,7 +26,7 @@ import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
  * 启动配置Bean的定义.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 

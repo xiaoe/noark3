@@ -17,7 +17,7 @@ package xyz.noark.game.bt;
  * 这是AI的根节点.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Ai extends SelectorNode {
 	public Ai() {

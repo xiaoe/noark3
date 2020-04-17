@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * 可配合Column一起使用. <br>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)
@@ -42,7 +42,7 @@ public @interface Json {
 	JsonStyle style() default JsonStyle.DefaultStyle;
 
 	/**
-	 * @author 小流氓(176543888@qq.com)
+	 * @author 小流氓[176543888@qq.com]
 	 */
 	public enum JsonStyle {
 		/**

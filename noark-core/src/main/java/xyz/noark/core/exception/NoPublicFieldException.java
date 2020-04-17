@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 在找不到指定Public属性时抛出.
  *
  * @since 3.3.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NoPublicFieldException extends RuntimeException {
 

@@ -27,7 +27,7 @@ import xyz.noark.core.util.StringUtils;
  * LongList转化器.
  *
  * @since 3.3.7
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter({ LongList.class, LongArrayList.class })
 public class LongListConverter extends AbstractConverter<LongList> {

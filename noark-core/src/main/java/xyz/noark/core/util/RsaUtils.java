@@ -33,7 +33,7 @@ import xyz.noark.core.lang.Pair;
  * RSA加密解密工具类.
  *
  * @since 3.2.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RsaUtils {
 

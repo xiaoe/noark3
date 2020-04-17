@@ -17,7 +17,7 @@ package xyz.noark.orm;
  * 数据存储常理类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public final class DataConstant {
 

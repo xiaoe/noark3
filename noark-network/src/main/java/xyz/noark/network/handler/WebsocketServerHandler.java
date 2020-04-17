@@ -32,7 +32,7 @@ import xyz.noark.network.codec.AbstractWebsocketPacketCodec;
  * Websocket服务器处理类.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 @Sharable

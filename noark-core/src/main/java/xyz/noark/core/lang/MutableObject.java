@@ -17,7 +17,7 @@ package xyz.noark.core.lang;
  * 一种可变Object类型的实现.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MutableObject<T> implements Mutable<T> {
 	private T value;

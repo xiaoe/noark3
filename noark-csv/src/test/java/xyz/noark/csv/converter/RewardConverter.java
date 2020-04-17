@@ -26,7 +26,7 @@ import xyz.noark.csv.template.Reward;
  * 奖励转化器.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter(Reward.class)
 public class RewardConverter implements Converter<Reward> {

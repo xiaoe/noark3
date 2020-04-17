@@ -23,7 +23,7 @@ import java.util.concurrent.Delayed;
  * <b>一定要重新HashCode和equals</b>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface DelayEvent extends Event, Delayed {
 

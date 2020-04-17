@@ -25,7 +25,7 @@ import xyz.noark.core.lang.ByteArray;
  * WebSocket的Session.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class WebSocketSession extends SocketSession {
 

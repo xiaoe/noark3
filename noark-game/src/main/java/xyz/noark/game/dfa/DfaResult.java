@@ -21,7 +21,7 @@ import java.util.List;
  * DFA算法分析结果.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class DfaResult {
 	/** 处理过的文本 */

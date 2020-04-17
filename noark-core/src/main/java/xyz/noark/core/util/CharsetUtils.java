@@ -19,7 +19,7 @@ import java.nio.charset.Charset;
  * 字符集工具类
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class CharsetUtils {
 	/** ISO-8859-1 */

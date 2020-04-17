@@ -27,7 +27,7 @@ import xyz.noark.core.annotation.orm.Table;
  * 道具表.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Entity(fetch = FetchType.START)
 @Table(name = "item")

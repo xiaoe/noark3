@@ -25,7 +25,7 @@ import xyz.noark.core.event.DelayEvent;
  * 延迟事件处理线程.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class DelayEventThread extends Thread {
 	private static final int SHUTDOWN_TIMEOUT = 1;

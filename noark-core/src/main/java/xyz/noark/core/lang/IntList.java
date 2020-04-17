@@ -21,7 +21,7 @@ import java.util.List;
  * 目前支持功能有限，需要努力补一下
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface IntList {
 

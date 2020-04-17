@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 主要用于限制相同IP最大链接数以及黑名单等功能
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IpManager {
 	/** IP统计计数 */

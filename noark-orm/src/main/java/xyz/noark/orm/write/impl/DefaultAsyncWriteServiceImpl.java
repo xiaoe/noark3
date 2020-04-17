@@ -49,7 +49,7 @@ import xyz.noark.orm.write.OperateType;
  * 回写策略的默认实现.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	@Autowired
@@ -185,7 +185,7 @@ public class DefaultAsyncWriteServiceImpl implements AsyncWriteService {
 	/**
 	 * 异步回写容器.
 	 * 
-	 * @author 小流氓(176543888@qq.com)
+	 * @author 小流氓[176543888@qq.com]
 	 */
 	private class AsyncWriteContainer implements Runnable {
 		private final Serializable playerId;

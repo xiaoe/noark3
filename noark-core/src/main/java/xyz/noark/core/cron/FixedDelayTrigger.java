@@ -21,7 +21,7 @@ import xyz.noark.core.util.DateUtils;
  * 固定速率的延迟触发器.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class FixedDelayTrigger implements DelayTrigger {
 	private final int initialDelay;

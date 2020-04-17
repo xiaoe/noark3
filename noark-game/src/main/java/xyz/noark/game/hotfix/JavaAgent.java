@@ -28,7 +28,7 @@ import java.lang.instrument.Instrumentation;
  * </pre>
  * 
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class JavaAgent {
 	public static Instrumentation INST = null;

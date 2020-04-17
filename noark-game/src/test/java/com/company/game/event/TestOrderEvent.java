@@ -19,7 +19,7 @@ import xyz.noark.core.event.Event;
  * 测试排序事件.
  *
  * @since 3.3.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TestOrderEvent implements Event {
 

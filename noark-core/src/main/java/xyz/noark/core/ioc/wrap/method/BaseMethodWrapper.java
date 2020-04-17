@@ -21,7 +21,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 一个可执行的方法.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class BaseMethodWrapper implements MethodWrapper {
 	/** 缓存那个单例对象 */

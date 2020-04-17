@@ -24,7 +24,7 @@ import java.util.Objects;
  * @param <L> 左边元素的类型
  * @param <R> 右边元素的类型
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractPair<L, R> implements Map.Entry<L, R>, Serializable, Pair<L, R> {
 	private static final long serialVersionUID = 7777506299219376932L;

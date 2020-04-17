@@ -17,7 +17,7 @@ package com.company.game.event;
  * 联盟创建事件，对于盟主也是一个加入事件.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AllianceCreateEvent extends AllianceJoinEvent {
 

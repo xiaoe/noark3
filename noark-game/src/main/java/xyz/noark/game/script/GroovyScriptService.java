@@ -22,7 +22,7 @@ import xyz.noark.core.util.ExceptionUtils;
  * 提供一套可直接执行Groovy脚本的服务类.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class GroovyScriptService {
 

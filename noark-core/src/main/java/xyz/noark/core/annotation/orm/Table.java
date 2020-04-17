@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * 前提是此类必需有@Entity注解
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target({ ElementType.TYPE })

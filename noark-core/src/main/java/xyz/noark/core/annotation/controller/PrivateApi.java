@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * 联合{@code HttpHandler}一起使用，以控制当前入口访问权限
  * 
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.METHOD)

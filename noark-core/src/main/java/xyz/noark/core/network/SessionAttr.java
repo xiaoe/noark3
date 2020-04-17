@@ -17,7 +17,7 @@ package xyz.noark.core.network;
  * Session属性值存储对象.
  *
  * @since 3.2.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class SessionAttr<T> {
 	/** 缓存的对象 */

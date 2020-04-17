@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 网络层，就是注入角色ID,等于@Autowired("playerId")
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -32,7 +32,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 实体映射描述接口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class EntityMapping<T> {
 	protected final Class<T> klass;

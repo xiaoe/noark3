@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * HTTP访问异常.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpAccessException extends RuntimeException {
 	private static final long serialVersionUID = -2161803030662179025L;

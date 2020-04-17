@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 模板配置异常.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TplConfigurationException extends RuntimeException {
 

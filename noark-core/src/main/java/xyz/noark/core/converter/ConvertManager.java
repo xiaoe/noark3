@@ -33,7 +33,7 @@ import xyz.noark.core.util.ClassUtils;
  * 内置一些系统级别的转化功能.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ConvertManager {
 	private static final ConvertManager INSTANCE = new ConvertManager();

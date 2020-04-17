@@ -23,7 +23,7 @@ import xyz.noark.network.IncodeSession;
  * 主要检测自增校验位与Checksum
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface PacketCheckFilter {
 

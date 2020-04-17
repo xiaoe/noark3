@@ -17,7 +17,7 @@ package xyz.noark.game.loader.scheme;
  * 抽象的解码方案.
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractScheme {
 	private final int code;

@@ -42,7 +42,7 @@ import xyz.noark.core.util.ClassUtils;
  * 加载IOC容器接管的Bean资源.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IocLoader {
 	private static final String PACKAGE_INFO_CLASS = "package-info.class";

@@ -17,7 +17,7 @@ package xyz.noark.core.ioc.demo;
  * 命令.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractCommand {
 

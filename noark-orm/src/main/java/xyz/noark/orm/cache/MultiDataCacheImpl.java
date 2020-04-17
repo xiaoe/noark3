@@ -43,7 +43,7 @@ import xyz.noark.orm.repository.CacheRepository;
  * @param <K> 实体类Id
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MultiDataCacheImpl<T, K extends Serializable> extends AbstractDataCache<T, K> {
 	/** 角色Id <==> 一个数据集合 */

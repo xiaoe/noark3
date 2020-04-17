@@ -17,7 +17,7 @@ package xyz.noark.core.ioc.scan;
  * Jar类型的资源.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class JarResource extends AbstractResource {
 	public JarResource(String entryPath) {

@@ -24,7 +24,7 @@ import xyz.noark.game.monitor.AbstractMonitorService;
  * 内存监控服务.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MemoryMonitorService extends AbstractMonitorService {
 

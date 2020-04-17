@@ -21,7 +21,7 @@ import java.util.List;
  * 目前支持功能有限，需要努力补一下
  * 
  * @since 3.3.7
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface LongList {
 

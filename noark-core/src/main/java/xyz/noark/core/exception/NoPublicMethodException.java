@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 在找不到指定Public方法时抛出.
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NoPublicMethodException extends RuntimeException {
 	private static final long serialVersionUID = -4256184544259394170L;

@@ -17,7 +17,7 @@ package xyz.noark.core.util;
  * 断言工具类测试用例.
  *
  * @since 3.3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AssertUtilsTest {
 	public static final int X1 = 1;

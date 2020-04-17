@@ -47,7 +47,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 默认的Bean定义描述类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DefaultBeanDefinition implements BeanDefinition {
 	private static final Set<Class<?>> IGNORE_ANNOTATION_BY_METHODS = new HashSet<>();

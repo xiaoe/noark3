@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * 第一次创建时，此值等于CreatedDate
  * 
  * @since 3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

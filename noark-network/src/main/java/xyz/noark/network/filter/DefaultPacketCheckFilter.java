@@ -21,7 +21,7 @@ import xyz.noark.network.IncodeSession;
  * 一种默认的封包检测过滤实现.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DefaultPacketCheckFilter extends AbstractPacketCheckFilter {
 

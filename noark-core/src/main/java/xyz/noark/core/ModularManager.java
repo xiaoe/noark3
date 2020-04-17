@@ -24,7 +24,7 @@ import xyz.noark.core.annotation.Service;
  * <p>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 public class ModularManager {

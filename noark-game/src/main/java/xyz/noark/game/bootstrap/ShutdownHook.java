@@ -17,7 +17,7 @@ package xyz.noark.game.bootstrap;
  * 停服信号勾子.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ShutdownHook extends Thread {
 	private final ServerBootstrap serverStartup;

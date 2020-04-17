@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * 建议在编码时可能会有Emoji表情时添加此注解，如果确认Mysql可以存档使用全局配置关闭此功能<br>
  * 
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

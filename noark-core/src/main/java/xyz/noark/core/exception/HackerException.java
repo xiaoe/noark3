@@ -19,7 +19,7 @@ import java.io.Serializable;
  * 黑客入侵异常.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HackerException extends RuntimeException {
 	private static final long serialVersionUID = -8489906161322453868L;

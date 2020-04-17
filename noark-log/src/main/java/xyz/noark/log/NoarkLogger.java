@@ -17,7 +17,7 @@ package xyz.noark.log;
  * Noark自己实现的一个Logger
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class NoarkLogger extends AbstractLogger implements Logger {
 

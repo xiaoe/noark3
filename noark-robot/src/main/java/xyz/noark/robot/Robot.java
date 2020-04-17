@@ -19,7 +19,7 @@ import xyz.noark.game.bt.BehaviorTree;
  * 机器人实体
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Robot {
 	private final String playerId;

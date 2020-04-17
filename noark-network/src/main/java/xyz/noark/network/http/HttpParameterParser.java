@@ -36,7 +36,7 @@ import xyz.noark.core.util.CollectionUtils;
  * HTTP参数解析器.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class HttpParameterParser {
 	public static final String DEFAULT_FORMAT = "default";

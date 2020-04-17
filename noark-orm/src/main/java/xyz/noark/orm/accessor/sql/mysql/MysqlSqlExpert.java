@@ -24,7 +24,7 @@ import xyz.noark.orm.accessor.sql.AbstractSqlExpert;
  * Mysql
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MysqlSqlExpert extends AbstractSqlExpert {
 

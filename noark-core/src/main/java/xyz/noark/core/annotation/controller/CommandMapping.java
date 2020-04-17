@@ -27,7 +27,7 @@ import xyz.noark.core.network.Session;
  * 区别于{@link PacketMapping}在于协议编号类型为字符串
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.METHOD)

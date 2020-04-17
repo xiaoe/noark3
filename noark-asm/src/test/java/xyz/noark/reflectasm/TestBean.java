@@ -19,7 +19,7 @@ import java.util.List;
  * 一个标准的JavaBean
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TestBean {
 	private int id;

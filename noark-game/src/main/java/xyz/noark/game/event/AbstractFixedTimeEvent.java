@@ -20,7 +20,7 @@ import xyz.noark.core.lang.LocalTimeArray;
  * 定时执行的延迟任务事件.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractFixedTimeEvent implements FixedTimeEvent {
 	/** 定时执行任务时间数组 */

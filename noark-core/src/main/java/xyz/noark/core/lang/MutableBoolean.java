@@ -19,7 +19,7 @@ package xyz.noark.core.lang;
  * 部分方法实现直接调用(JDK8)Boolean类中的静态方法
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boolean> {
 	private boolean value;

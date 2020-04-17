@@ -19,7 +19,7 @@ package xyz.noark.game.bt;
  * <b>它依次执行每个子行为，直到所有子行为执行成功或者有一个失败为止</b>
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class SequenceNode extends AbstractCompositeNode {
 

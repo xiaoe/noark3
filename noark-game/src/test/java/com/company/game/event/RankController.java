@@ -24,7 +24,7 @@ import xyz.noark.core.annotation.controller.Scheduled;
  * 排行榜入口.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
 public class RankController {

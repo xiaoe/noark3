@@ -31,7 +31,7 @@ import java.util.Set;
  * 4、重复词<br>
  * 
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 abstract class AbstractDfaScanner {
 	/** 全角对应于ASCII表的可见字符从！开始，偏移值为65281 */

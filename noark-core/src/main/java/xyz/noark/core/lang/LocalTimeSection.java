@@ -19,7 +19,7 @@ import java.time.LocalTime;
  * 时间区间.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LocalTimeSection {
 	/** 是否匹配全部 */

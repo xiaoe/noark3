@@ -21,7 +21,7 @@ import xyz.noark.orm.domain.Item;
  * 实体创建测试.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AnnotationEntityMakerTest {
 

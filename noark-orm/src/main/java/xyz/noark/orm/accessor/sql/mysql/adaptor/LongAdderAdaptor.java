@@ -23,7 +23,7 @@ import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
  * LongAdder类型属性
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class LongAdderAdaptor extends AbstractValueAdaptor<LongAdder> {
 

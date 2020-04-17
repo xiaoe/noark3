@@ -19,7 +19,7 @@ import xyz.noark.core.util.RandomUtils;
  * 女友还在
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class BfStill extends AbstractConditionNode {
 	private final static double RATE = 0.1;

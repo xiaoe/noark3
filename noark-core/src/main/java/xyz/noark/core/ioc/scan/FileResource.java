@@ -19,7 +19,7 @@ import java.io.File;
  * 文件类型的资源.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class FileResource extends AbstractResource {
 	public FileResource(String packagePath, File file) {

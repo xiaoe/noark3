@@ -21,7 +21,7 @@ import xyz.noark.orm.accessor.FieldType;
  * 属性值适配转换管理类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ValueAdaptorManager {
 	private static final EnumMap<FieldType, AbstractValueAdaptor<?>> ADAPTOR = new EnumMap<>(FieldType.class);

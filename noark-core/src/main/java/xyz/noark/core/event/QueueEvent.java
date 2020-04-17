@@ -21,7 +21,7 @@ import java.io.Serializable;
  * 队列线程处理此事件，需要实现此接口.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface QueueEvent extends Event {
 	/**

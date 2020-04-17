@@ -19,7 +19,7 @@ import java.util.Arrays;
  * 数组相关操作工具类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ArrayUtils {
 	/**

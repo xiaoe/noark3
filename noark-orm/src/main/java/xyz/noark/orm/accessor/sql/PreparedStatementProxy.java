@@ -28,7 +28,7 @@ import xyz.noark.orm.FieldMapping;
  * PreparedStatement代理对象.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PreparedStatementProxy {
 	private final PreparedStatement pstmt;

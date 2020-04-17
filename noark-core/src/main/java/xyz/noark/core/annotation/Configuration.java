@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 这种类也是只在启动时有用，相当于启动配置文件的作用.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target({ ElementType.TYPE })

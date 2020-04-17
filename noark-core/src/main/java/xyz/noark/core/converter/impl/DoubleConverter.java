@@ -20,7 +20,7 @@ import xyz.noark.core.converter.AbstractConverter;
  * Double转化器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @TemplateConverter({ Double.class, double.class })
 public class DoubleConverter extends AbstractConverter<Double> {

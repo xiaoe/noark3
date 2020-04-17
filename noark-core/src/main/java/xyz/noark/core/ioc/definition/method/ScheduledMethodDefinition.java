@@ -22,7 +22,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 延迟任务入口的定义.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ScheduledMethodDefinition extends SimpleMethodDefinition {
 	private final Scheduled scheduled;

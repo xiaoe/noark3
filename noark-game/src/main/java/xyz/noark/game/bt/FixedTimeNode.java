@@ -17,7 +17,7 @@ package xyz.noark.game.bt;
  * 一种固定时间执行的节点.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class FixedTimeNode extends AbstractDecoratorNode {
 	/** CD时间(单位：秒) */

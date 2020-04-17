@@ -21,7 +21,7 @@ import xyz.noark.core.annotation.Component;
  * HTTP服务
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Component(name = Modular.HTTP_MODULAR)
 public class HttpModular implements Modular {

@@ -24,7 +24,7 @@ import xyz.noark.game.loader.scheme.SchemeManager;
  * Noark类加载器.
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NoarkClassLoader extends ClassLoader {
 	static {

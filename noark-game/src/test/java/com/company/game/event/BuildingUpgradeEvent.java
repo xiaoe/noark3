@@ -19,7 +19,7 @@ import xyz.noark.game.event.AbstractDelayEvent;
  * 建筑升级事件.
  *
  * @since 3.2.8
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class BuildingUpgradeEvent extends AbstractDelayEvent {
 

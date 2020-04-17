@@ -21,7 +21,7 @@ import xyz.noark.game.template.AbstractTemplateLoader;
  * JSON格式的模板加载类.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class JsonTemplateLoader extends AbstractTemplateLoader {
 	private final NoarkJson json;

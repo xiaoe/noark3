@@ -24,7 +24,7 @@ import xyz.noark.network.init.WebsocketInitializeHandler;
  * 初始封包测试用例.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class InitializeHandlerManagerTest {
 

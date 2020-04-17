@@ -25,7 +25,7 @@ import xyz.noark.core.ioc.IocMaking;
  * Map类型的属性注入
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MapFieldDefinition extends DefaultFieldDefinition {
 

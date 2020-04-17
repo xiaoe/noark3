@@ -47,7 +47,7 @@ import xyz.noark.log.LogManager;
  * </pre>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractServerBootstrap implements ServerBootstrap {
 	/** IOC容器 */

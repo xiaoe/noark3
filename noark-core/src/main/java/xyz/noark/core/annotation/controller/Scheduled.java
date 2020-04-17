@@ -29,7 +29,7 @@ import xyz.noark.core.util.StringUtils;
  * 如果当前Controller线程组为玩家，当前标识的方法应该具有一个PlayerId的参数
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.METHOD)

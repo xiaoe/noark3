@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 当然了，如果你已赋值，系统并不会修改，而是直接使用你的值噢...
  * 
  * @since 3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

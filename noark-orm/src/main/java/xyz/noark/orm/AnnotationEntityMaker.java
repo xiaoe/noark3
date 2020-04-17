@@ -43,7 +43,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 实体对象解析生成器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AnnotationEntityMaker {
 	/** 所有表名 */

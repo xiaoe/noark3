@@ -24,7 +24,7 @@ import xyz.noark.core.network.Session;
  * 对象参数包装类.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ObjectParamWrapper implements ParamWrapper {
 

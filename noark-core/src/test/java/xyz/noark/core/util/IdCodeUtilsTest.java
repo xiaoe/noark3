@@ -21,7 +21,7 @@ import xyz.noark.benchmark.Benchmark;
  * ID短编码测试.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IdCodeUtilsTest {
 	private final static Benchmark BENCHMARK = new Benchmark(1000);

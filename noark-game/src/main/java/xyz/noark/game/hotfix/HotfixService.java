@@ -23,7 +23,7 @@ import java.lang.instrument.UnmodifiableClassException;
  * agent.jar 可以直接使用/noark-game/src/test/resources目录下已准备的
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HotfixService {
 

@@ -26,7 +26,7 @@ import xyz.noark.game.template.ReloadManager;
  * 抽象的机器人启动引导类
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractRobotBootstrap extends AbstractServerBootstrap {
 	protected Optional<Modular> eventModular;

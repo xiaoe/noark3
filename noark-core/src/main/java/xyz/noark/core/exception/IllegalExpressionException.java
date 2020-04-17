@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 非法表达式异常.
  *
  * @since 3.3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IllegalExpressionException extends RuntimeException {
 	private static final long serialVersionUID = -8291437036832925734L;

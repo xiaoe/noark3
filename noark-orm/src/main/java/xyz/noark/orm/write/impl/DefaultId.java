@@ -19,7 +19,7 @@ import java.io.Serializable;
  * 默认的系统ID.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DefaultId implements Serializable {
 	private static final long serialVersionUID = -6529401819014260134L;

@@ -19,7 +19,7 @@ import xyz.noark.core.lang.ValidTime;
  * 这是一种具体有效时间的敏感词接口.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface DfaValidWord {
 

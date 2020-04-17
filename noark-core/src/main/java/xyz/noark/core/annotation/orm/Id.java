@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 注意：当有Id注解时Column的unique和nullable两个属性失效
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

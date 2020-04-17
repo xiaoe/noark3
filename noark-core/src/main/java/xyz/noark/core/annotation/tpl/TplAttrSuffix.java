@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 就是为了简单那些输写了几十个TplAttr
  *
  * @since 3.3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

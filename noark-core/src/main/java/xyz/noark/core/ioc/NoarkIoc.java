@@ -34,7 +34,7 @@ import xyz.noark.core.ioc.wrap.MethodWrapper;
  * Noark-IOC的核心容器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NoarkIoc implements Ioc {
 	/** 容器中所有托管的Bean对象. */

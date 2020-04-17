@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
  * 任务处理队列.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TaskQueue {
 	private final ExecutorService threadPool;

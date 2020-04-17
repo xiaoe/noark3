@@ -21,7 +21,7 @@ package xyz.noark.log;
  * 如果目标对象被标识为{@code ThreadSafe}则不会被提前转化，用于一些特别的优化情况
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface Logger {
 

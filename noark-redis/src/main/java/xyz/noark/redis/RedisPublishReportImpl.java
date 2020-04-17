@@ -25,7 +25,7 @@ import xyz.noark.game.bi.ReportService;
  * 利用Redis的订阅发布实现BI数据上报实现
  *
  * @since 3.3.3
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RedisPublishReportImpl extends AbstractReportService implements ReportService {
 

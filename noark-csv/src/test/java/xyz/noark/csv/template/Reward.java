@@ -17,7 +17,7 @@ package xyz.noark.csv.template;
  * 奖励配置
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Reward {
 	private String code;

@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * Before注解用来标识一个方法之前还要做其他的事.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.METHOD)

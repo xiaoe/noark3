@@ -17,7 +17,7 @@ package xyz.noark.log;
  * 抽象的日志记录器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 abstract class AbstractLogger {
 	/** 日志输出管理器 */

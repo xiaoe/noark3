@@ -17,7 +17,7 @@ package xyz.noark.game.id;
  * ID生成器已达最大的
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class IdMaxSequenceException extends Exception {
 	private static final long serialVersionUID = 3566785063576933372L;

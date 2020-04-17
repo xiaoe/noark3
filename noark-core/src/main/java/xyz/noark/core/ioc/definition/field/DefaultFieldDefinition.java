@@ -25,7 +25,7 @@ import xyz.noark.core.util.FieldUtils;
  * 一个被IOC容器所管理的JavaBean定义描述类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DefaultFieldDefinition implements FieldDefinition {
 	protected final Field field;

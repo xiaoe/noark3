@@ -17,7 +17,7 @@ package xyz.noark.core.util;
  * 线程工具类.
  *
  * @since 3.2.5
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ThreadUtils {
 	/**

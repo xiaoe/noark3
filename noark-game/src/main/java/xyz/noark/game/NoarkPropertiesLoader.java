@@ -35,7 +35,7 @@ import xyz.noark.game.crypto.StringEncryptor;
  * 属性文件加载器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 class NoarkPropertiesLoader {
 	private static final String DEFAULT_PROPERTIES = "application.properties";

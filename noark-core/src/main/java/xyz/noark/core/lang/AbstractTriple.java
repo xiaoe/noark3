@@ -24,7 +24,7 @@ import java.util.Objects;
  * @param <M> 中间元素的类型
  * @param <R> 右边元素的类型
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractTriple<L, M, R> implements Serializable, Triple<L, M, R> {
 	private static final long serialVersionUID = 5742943780888927005L;

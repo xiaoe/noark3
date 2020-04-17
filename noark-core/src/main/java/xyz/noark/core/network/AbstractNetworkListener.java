@@ -19,7 +19,7 @@ package xyz.noark.core.network;
  * 就是一堆空实现，有需要你就重载...
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractNetworkListener implements NetworkListener {
 

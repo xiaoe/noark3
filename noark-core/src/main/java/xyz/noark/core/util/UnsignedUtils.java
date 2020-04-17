@@ -19,7 +19,7 @@ package xyz.noark.core.util;
  * 在Java中，不存在Unsigned无符号数据类型，但我们有工具类帮我们做一个简单的计算...
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class UnsignedUtils {
 	/**

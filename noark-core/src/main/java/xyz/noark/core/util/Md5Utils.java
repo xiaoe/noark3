@@ -19,7 +19,7 @@ import java.security.MessageDigest;
  * Md5工具类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Md5Utils {
 	private static final int STR_LENGTH = 16;

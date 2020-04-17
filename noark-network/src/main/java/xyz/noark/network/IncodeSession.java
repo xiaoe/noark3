@@ -19,7 +19,7 @@ import xyz.noark.core.network.Session;
  * 一种带有自增校验位的Session接口.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface IncodeSession extends Session {
 

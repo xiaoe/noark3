@@ -24,7 +24,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 一个简单的方法定义.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class SimpleMethodDefinition implements MethodDefinition {
 	protected final Method method;

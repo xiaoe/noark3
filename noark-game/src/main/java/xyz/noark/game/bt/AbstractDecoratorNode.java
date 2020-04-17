@@ -19,7 +19,7 @@ package xyz.noark.game.bt;
  * 这类的功能基本就是判定子节点是否执行，以及行为节点执行后的结果反馈和处理
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractDecoratorNode extends AbstractBehaviorNode {
 	/** 装饰节点只会有一个子节点 */

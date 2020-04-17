@@ -21,7 +21,7 @@ import java.io.Serializable;
  * 就是一个协议编号和一个协议对象
  * 
  * @since 3.2.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NetworkProtocol {
 	private final Serializable opcode;

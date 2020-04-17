@@ -25,7 +25,7 @@ import xyz.noark.core.event.DelayEvent;
  * 抽象的延迟事件.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class AbstractDelayEvent implements DelayEvent {
 

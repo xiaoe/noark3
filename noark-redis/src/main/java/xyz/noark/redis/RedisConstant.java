@@ -17,7 +17,7 @@ package xyz.noark.redis;
  * Redis相关的常理类.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class RedisConstant {
 	/** Redis实现配置中心连接地址Key,默认值为127.0.0.1 */

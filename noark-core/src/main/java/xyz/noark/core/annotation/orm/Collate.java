@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * <b>如果表已存在，这个属性并不能自动添加，需要修正长度来自动化表结构的变更</b>
  * 
  * @since 3.3.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.FIELD)

@@ -22,7 +22,7 @@ import java.util.Collection;
  * 仅限于策划模板配置中使用，请忽略带到ORM的实体类中
  * 
  * @since 3.3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class StringList extends ArrayList<String> {
 

@@ -24,7 +24,7 @@ import xyz.noark.core.util.StringUtils;
  * HTTP方法管理类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class HttpMethodManager {
 	private final ConcurrentMap<String, HttpMethodWrapper> handlers = new ConcurrentHashMap<>(2048);

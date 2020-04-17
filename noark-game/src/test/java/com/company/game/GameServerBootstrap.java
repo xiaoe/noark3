@@ -19,7 +19,7 @@ import xyz.noark.game.bootstrap.BaseServerBootstrap;
  * 启动引导类.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class GameServerBootstrap extends BaseServerBootstrap {
 

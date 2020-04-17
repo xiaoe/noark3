@@ -17,6 +17,6 @@ package xyz.noark.game.event;
  * 延迟任务事件.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public final class ScheduledEvent extends AbstractDelayEvent {}

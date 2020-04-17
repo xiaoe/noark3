@@ -34,7 +34,7 @@ import xyz.noark.reflectasm.MethodAccess;
  * 属性映射描述类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class FieldMapping {
 	private final Field field;

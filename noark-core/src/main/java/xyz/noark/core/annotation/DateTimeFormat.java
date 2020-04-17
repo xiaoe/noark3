@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * 提供由字符串转化日期的相关参数.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

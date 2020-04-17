@@ -19,7 +19,7 @@ import xyz.noark.core.event.FixedTimeEvent;
  * 定时定点的事件包裹类.
  *
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 final class FixedTimeEventWrapper extends AbstractDelayEvent {
 	/** 事件源 */

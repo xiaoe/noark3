@@ -26,7 +26,7 @@ import xyz.noark.network.codec.DefaultNetworkPacket;
  * 机器人客户端封包处理器.
  * 
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 @Sharable

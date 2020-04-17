@@ -19,7 +19,7 @@ import xyz.noark.core.event.Event;
  * 随意的一个事件源.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LoginEvent implements Event {
 	// 没有任何功能，只是用于测试

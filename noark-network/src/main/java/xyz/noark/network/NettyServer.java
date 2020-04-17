@@ -46,7 +46,7 @@ import xyz.noark.network.log.NettyLoggerFactory;
  * 基于Netty实现的一个网络服务.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Component(name = "NettyServer")
 public class NettyServer implements TcpServer {

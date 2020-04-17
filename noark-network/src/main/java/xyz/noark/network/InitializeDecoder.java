@@ -27,7 +27,7 @@ import xyz.noark.network.init.WebsocketInitializeHandler;
  * <b>这个功能就是用来判定实际使用什么协议.</b>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class InitializeDecoder extends ByteToMessageDecoder {
 	/** 默认暗号长度为23，为什么是23呢？你来问我啊，不问我就当你是知道的 */

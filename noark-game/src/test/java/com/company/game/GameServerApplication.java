@@ -30,7 +30,7 @@ import xyz.noark.game.Noark;
  * 一个简单的服务器启动测试入口.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
 public class GameServerApplication {

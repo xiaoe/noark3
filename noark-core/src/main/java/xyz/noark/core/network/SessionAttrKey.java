@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Session属性Key.
  *
  * @since 3.2.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public final class SessionAttrKey<T> {
 	private final String name;

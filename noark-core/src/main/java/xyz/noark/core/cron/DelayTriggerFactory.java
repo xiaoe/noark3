@@ -20,7 +20,7 @@ import xyz.noark.core.util.StringUtils;
  * 延迟触发器创建工厂.
  *
  * @since 3.2.6
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DelayTriggerFactory {
 

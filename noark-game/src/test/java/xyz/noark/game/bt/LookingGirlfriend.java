@@ -17,7 +17,7 @@ package xyz.noark.game.bt;
  * 找女友
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class LookingGirlfriend extends AbstractActionNode {
 

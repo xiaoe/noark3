@@ -34,7 +34,7 @@ import xyz.noark.core.thread.ThreadDispatcher;
  * 一个提供延迟执行事件功能的实现类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 public class DefaultEventManager implements EventManager {

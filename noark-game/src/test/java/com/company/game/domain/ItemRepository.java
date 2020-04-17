@@ -38,7 +38,7 @@ import xyz.noark.orm.repository.UniqueCacheRepository;
  * 道具实体访问类.
  *
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Repository
 public class ItemRepository extends UniqueCacheRepository<Item, Integer> {

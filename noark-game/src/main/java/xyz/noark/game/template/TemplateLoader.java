@@ -24,7 +24,7 @@ import xyz.noark.core.lang.TripleMap;
  * 模板资源加载器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface TemplateLoader {
 	/**

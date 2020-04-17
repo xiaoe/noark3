@@ -17,7 +17,7 @@ package xyz.noark.core.util;
  * 提供一些简单的PB编码相关方法.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ProtobufUtils {
 	private static final int MAX_VALUE = 0XFFFFFFFF;

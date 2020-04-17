@@ -21,7 +21,7 @@ import java.util.LinkedList;
  * 应用场景比如聊天缓存,公司动态等固定长度且频率高的队列
  * 
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class FixedLinkedList<E> extends LinkedList<E> {
 	private static final long serialVersionUID = -3640119007561657834L;

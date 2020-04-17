@@ -22,7 +22,7 @@ import java.util.function.Function;
  * 两个元素当Key的HashMap.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
 	private final HashMap<Triple<L, M, R>, V> hashmap;

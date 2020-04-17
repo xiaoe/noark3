@@ -26,7 +26,7 @@ import xyz.noark.core.util.StringUtils;
  * 利用一组数字对协议进行循环异或
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class DefaultPacketEncrypt implements PacketEncrypt {
 	/** 密钥 */

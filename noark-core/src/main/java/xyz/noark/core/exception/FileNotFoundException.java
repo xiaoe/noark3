@@ -17,7 +17,7 @@ package xyz.noark.core.exception;
  * 文件未找到异常.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class FileNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = -2875566524903223291L;

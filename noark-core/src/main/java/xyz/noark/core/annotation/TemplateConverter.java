@@ -27,7 +27,7 @@ import xyz.noark.core.converter.Converter;
  * 这个类一定要实现{@link Converter}接口.
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.TYPE)

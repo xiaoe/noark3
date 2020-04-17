@@ -25,7 +25,7 @@ import xyz.noark.network.init.SocketInitializeHandler;
  * 第一个请求管理类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 public class InitializeHandlerManager {

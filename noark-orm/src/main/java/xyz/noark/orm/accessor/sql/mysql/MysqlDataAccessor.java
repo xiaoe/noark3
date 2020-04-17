@@ -41,7 +41,7 @@ import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptorManager;
  * MySQL数据访问类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MysqlDataAccessor extends AbstractSqlDataAccessor {
 

@@ -28,7 +28,7 @@ import xyz.noark.game.monitor.AbstractMonitorService;
  * Netty堆外内存监控服务.
  *
  * @since 3.3.5
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class NettyDirectMemoryMonitorService extends AbstractMonitorService {
 	/**

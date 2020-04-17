@@ -44,7 +44,7 @@ import xyz.noark.core.util.StringUtils;
  * 这不是一个常规的CSV文件噢，他的分隔符长得好帅，由导表工具来维护他的唯一.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class Csv extends ResourceLoader {
 	private final ConvertManager convertManager = ConvertManager.getInstance();

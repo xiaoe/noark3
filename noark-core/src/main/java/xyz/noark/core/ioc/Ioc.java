@@ -19,7 +19,7 @@ package xyz.noark.core.ioc;
  * <b>我们没有要取代谁，也没有要超越谁，我们只做我们自己。</b>
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface Ioc {
 	/**

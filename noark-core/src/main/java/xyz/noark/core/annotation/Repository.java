@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * Repository注解用来标识一个数据库处理类.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Documented
 @Target(ElementType.TYPE)

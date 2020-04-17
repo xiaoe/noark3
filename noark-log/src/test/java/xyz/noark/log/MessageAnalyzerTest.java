@@ -21,7 +21,7 @@ import org.junit.Test;
  * 日志分析测试.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class MessageAnalyzerTest {
 

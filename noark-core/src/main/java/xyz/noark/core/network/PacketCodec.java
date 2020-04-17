@@ -21,7 +21,7 @@ import xyz.noark.core.lang.ByteArray;
  * 封包是最外面的那个，协议是内部那个具体对象.
  * 
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public interface PacketCodec {
 

@@ -22,7 +22,7 @@ import java.util.function.Function;
  * 两个元素当Key的HashMap.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 	private final HashMap<Pair<L, R>, V> hashmap;

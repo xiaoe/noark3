@@ -23,7 +23,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  * 抽象的封包长度解码器.
  *
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public abstract class AbstractLengthDecoder extends ByteToMessageDecoder {
 	/** 最大封包长度 */

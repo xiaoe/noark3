@@ -37,7 +37,7 @@ import xyz.noark.network.NetworkConstant;
  * HTTP服务器.
  *
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 @Service
 public class HttpServer implements TcpServer {

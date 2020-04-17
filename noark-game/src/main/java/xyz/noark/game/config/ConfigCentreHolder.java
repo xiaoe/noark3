@@ -17,7 +17,7 @@ package xyz.noark.game.config;
  * 配置中心持有类.
  *
  * @since 3.4
- * @author 小流氓(176543888@qq.com)
+ * @author 小流氓[176543888@qq.com]
  */
 public class ConfigCentreHolder {
 	private static ConfigCentre instance;
