@@ -41,7 +41,9 @@ public class HtmlUtils {
 				i = tag.getLength();
 				// 结束标签
 				if (tag.isEnd()) {
-					tag = stack.pop();
+					if (!stack.isEmpty() && stack.peek().getName().equals(tag.getName())) {
+						tag = stack.pop();
+					}
 					tag.html(sb, true);
 				}
 				// 开始标签
@@ -176,6 +178,9 @@ public class HtmlUtils {
 				if (color != null) {
 					sb.append(isEnd ? "</color>" : "<color=" + color + ">");
 				}
+				break;
+			case "br":
+				sb.append(isEnd ? "<br>" : "");
 				break;
 			default:
 				break;

@@ -27,7 +27,7 @@ public class HtmlUtilsTest {
 
 	@Test
 	public void testToUnityHtml() {
-		String xx = "<p><em><strong>加粗</strong></em><span style=\"font-size:36px\">大小<span style=\"color:#9b59b6\">颜色</span></span>哈哈哈</p>";
-		assertTrue("<i><b>加粗</b></i><size=36>大小<color=#9b59b6>颜色</color></size>哈哈哈".equals(HtmlUtils.toUnityHtml(xx)));
+		String xx = "<br/><p><em><strong>加粗</strong></em><span style=\"font-size:36px\">大小<span style=\"color:#9b59b6\">颜色</span></span>哈哈哈</p>";
+		assertTrue("<br><i><b>加粗</b></i><size=36>大小<color=#9b59b6>颜色</color></size>哈哈哈".equals(HtmlUtils.toUnityHtml(xx)));
 	}
 }
