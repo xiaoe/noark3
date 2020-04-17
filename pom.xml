@@ -4,7 +4,7 @@
   <groupId>xyz.noark</groupId>
   <artifactId>noark-parent</artifactId>
   <version>1.0</version>
-  <name>Noark</name>
+  <name>noark</name>
   <description>This is a game server framework.</description>
   <url>http://noark.xyz</url>
   <packaging>pom</packaging>
@@ -38,7 +38,6 @@
             <version>3.1.1</version>
             <configuration>
                 <encoding>UTF-8</encoding>
-                <aggregate>true</aggregate>
                 <charset>UTF-8</charset>
                 <docencoding>UTF-8</docencoding>
                 <additionalOptions>

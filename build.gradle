@@ -51,7 +51,7 @@ subprojects {
 	uploadArchives {
 	    repositories {
 	        mavenDeployer {
-	            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+	            beforeDeployment { deployment -> signing.signPom(deployment) }
 	
 	            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
 	                authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
@@ -68,7 +68,7 @@ subprojects {
 	            	artifactId project.name
 	            	version project.version
 	            	
-	                name 'Noark'
+	                name project.name
 	        		description 'This is a game server framework.'
 	        		url 'http://noark.xyz'
 	                packaging 'jar'
