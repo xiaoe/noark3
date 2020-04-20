@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,52 +13,53 @@
  */
 package xyz.noark.game.template.json;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.alibaba.fastjson.JSON;
-
 import xyz.noark.core.annotation.tpl.TplFile;
 import xyz.noark.core.exception.TplConfigurationException;
 import xyz.noark.core.lang.ResourceLoader;
 import xyz.noark.core.util.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 /**
  * NoarkJson，内部中转的Json辅助类.
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 class NoarkJson extends ResourceLoader {
 
-	<T> List<T> loadAll(String templatePath, String zone, Class<T> klass) {
-		TplFile file = klass.getAnnotation(TplFile.class);
-		if (file == null) {
-			throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
-		}
+    <T> List<T> loadAll(String templatePath, String zone, Class<T> klass) {
+        TplFile file = klass.getAnnotation(TplFile.class);
+        if (file == null) {
+            throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
+        }
 
-		try {
-			return JSON.parseArray(readString(templatePath, zone, file.value()), klass);
-		} catch (IOException e) {
-			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
-		}
-	}
+        try {
+            return JSON.parseArray(readString(templatePath, zone, file.value()), klass);
+        } catch (IOException e) {
+            throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
+        }
+    }
 
-	private String readString(String templatePath, String zone, String fileName) throws IOException {
-		return StringUtils.readString(this.newInputStream(templatePath, zone, fileName));
-	}
+    private String readString(String templatePath, String zone, String fileName) throws IOException {
+        try (InputStream is = this.newInputStream(templatePath, zone, fileName)) {
+            return StringUtils.readString(is);
+        }
+    }
 
-	<T> T load(String templatePath, String zone, Class<T> klass) {
-		TplFile file = klass.getAnnotation(TplFile.class);
-		if (file == null) {
-			throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
-		}
+    <T> T load(String templatePath, String zone, Class<T> klass) {
+        TplFile file = klass.getAnnotation(TplFile.class);
+        if (file == null) {
+            throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
+        }
 
-		try {
-			return JSON.parseObject(this.newInputStream(templatePath, zone, file.value()), klass);
-		} catch (IOException e) {
-			throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
-		}
-	}
-
+        try (InputStream is = this.newInputStream(templatePath, zone, file.value())) {
+            return JSON.parseObject(is, klass);
+        } catch (IOException e) {
+            throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
+        }
+    }
 }
