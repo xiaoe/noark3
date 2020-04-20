@@ -137,7 +137,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
             T result = action.doInPreparedStatement(proxy);
 
             // 记录日志
-            this.logExecutableSql(proxy, sql, startTime);
+            this.logExecutableSql(proxy, sql, startTime, false);
             return result;
         } catch (Exception e) {
             // 尝试修复数据存档异常
@@ -163,7 +163,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
                 // 手动提交
                 con.commit();
                 // 记录日志
-                this.logExecutableSql(proxy, sql, startTime);
+                this.logExecutableSql(proxy, sql, startTime, true);
                 return result;
             } catch (SQLException e) {
                 con.rollback();
@@ -212,7 +212,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
      */
     protected abstract void handleDataTooLongException(EntityMapping<?> em, Map<String, Integer> columnMaxLenMap);
 
-    private void logExecutableSql(PreparedStatementProxy statement, String sql, long startTime) {
+    private void logExecutableSql(PreparedStatementProxy statement, String sql, long startTime, boolean isBatch) {
         // 不输出，直接忽略所有.
         if (!statementExecutableSqlLogEnable) {
             return;
@@ -226,11 +226,18 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
             }
         }
         formattedSql.append("\n").append(statementParameterSetLogEnable ? sql.replaceAll("\\?", "{}") : sql);
-        // 参数为空，当前操作为批量执行的
-        if (statement.getParameters().isEmpty()) {
+        // 当前操作为批量执行的
+        if (isBatch) {
             logger.debug("batch start...");
-            for (List<Object> parameters : statement.getBatchParameterList()) {
-                logger.info(formattedSql.toString(), parameters.toArray());
+            // 没有参数
+            if (statement.getBatchParameterList().isEmpty()) {
+                logger.info(formattedSql.toString());
+            }
+            // 有参数
+            else {
+                for (List<Object> parameters : statement.getBatchParameterList()) {
+                    logger.info(formattedSql.toString(), parameters.toArray());
+                }
             }
             logger.debug("batch end...");
         }

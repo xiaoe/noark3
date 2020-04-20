@@ -199,48 +199,53 @@ class AsyncWriteContainer implements Runnable {
      * @param entityMap 实体集合
      */
     private <T> void autoOperateEntity(OperateType type, EntityMapping<T> em, EnumMap<OperateType, List<T>> entityMap) {
-        List<T> entitys = entityMap.getOrDefault(type, Collections.emptyList());
-        // 只有一个实体有变化
-        if (entitys.size() == 1) {
-            this.operateEntity(type, em, entitys.get(0));
+        List<T> entityList = entityMap.getOrDefault(type, Collections.emptyList());
+        // 没有数据
+        if (entityList.isEmpty()) {
+            return;
         }
-        // 批量操作
-        else {
-            // 肯定要分批存档，那还是转化为ArrayList来切割
-            if (entitys.size() > batchOperateNum) {
-                entitys = new ArrayList<>(entitys);
-            }
-            // 分批
-            for (int i = 0, len = (entitys.size() - 1) / batchOperateNum + 1; i < len; i++) {
-                int start = i * batchOperateNum;
-                int end = Math.min(start + batchOperateNum, entitys.size());
-                this.batchOperateEntity(type, em, entitys.subList(start, end));
-            }
+        
+        // 只有一个实体有变化
+        if (entityList.size() == 1) {
+            this.operateEntity(type, em, entityList.get(0));
+            return;
+        }
+
+        // 批量操作，那还是转化为ArrayList来切割
+        if (entityList.size() > batchOperateNum) {
+            entityList = new ArrayList<>(entityList);
+        }
+
+        // 分批
+        for (int i = 0, len = (entityList.size() - 1) / batchOperateNum + 1; i < len; i++) {
+            int start = i * batchOperateNum;
+            int end = Math.min(start + batchOperateNum, entityList.size());
+            this.batchOperateEntity(type, em, entityList.subList(start, end));
         }
     }
 
-    private <T> void batchOperateEntity(OperateType type, EntityMapping<T> em, List<T> entitys) {
+    private <T> void batchOperateEntity(OperateType type, EntityMapping<T> em, List<T> entityList) {
         try {
             switch (type) {
                 case INSERT:
-                    dataAccessor.batchInsert(em, entitys);
+                    dataAccessor.batchInsert(em, entityList);
                     break;
                 case DELETE:
-                    dataAccessor.batchDelete(em, entitys);
+                    dataAccessor.batchDelete(em, entityList);
                     break;
                 case UPDATE:
-                    dataAccessor.batchUpdate(em, entitys);
+                    dataAccessor.batchUpdate(em, entityList);
                     break;
                 default:
                     break;
             }
-        } catch (Exception exx) {
+        } catch (Exception e) {
+            e.printStackTrace();
             // 批量失败，那就一个一个来吧...
-            for (T entity : entitys) {
+            for (T entity : entityList) {
                 this.operateEntity(type, em, entity);
             }
         }
-
     }
 
     private <T> void operateEntity(OperateType type, EntityMapping<T> em, T entity) {
