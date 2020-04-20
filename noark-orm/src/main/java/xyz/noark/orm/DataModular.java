@@ -16,8 +16,6 @@ package xyz.noark.orm;
 import xyz.noark.core.Modular;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
-import xyz.noark.core.annotation.Value;
-import xyz.noark.core.util.ClassUtils;
 import xyz.noark.orm.write.AsyncWriteService;
 
 /**
@@ -66,26 +64,15 @@ public class DataModular implements Modular {
     public static final String DATA_AUTO_ALTER_EMOJI_COLUMN = "data.auto.alter.emoji.column";
 
     /**
-     * 服务器数据异步存档实现类. 默认值：xyz.noark.orm.write.impl.DefaultAsyncWriteServiceImpl
-     */
-    public static final String DATA_ASYNC_WRITER_SERVICE = "data.async.writer.service";
-
-    /**
      * 数据存储默认开启下划线命名方式检测
      */
     public static boolean CheckUnderScoreCase = true;
 
-    @Autowired(required = false)
+    @Autowired
     private AsyncWriteService asyncWriteService;
-    @Value(DATA_ASYNC_WRITER_SERVICE)
-    private String asyncWriterServiceClass = "xyz.noark.orm.write.impl.DefaultAsyncWriteServiceImpl";
 
     @Override
     public synchronized void init() {
-        // 如果异步回写服务没有初始化，那就使用默认的配置
-        if (asyncWriteService == null) {
-            asyncWriteService = ClassUtils.newInstance(asyncWriterServiceClass);
-        }
         asyncWriteService.init();
     }
 

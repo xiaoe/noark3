@@ -3,7 +3,6 @@ package xyz.noark.orm.write;
 import xyz.noark.core.exception.DataException;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.accessor.DataAccessor;
-import xyz.noark.orm.write.OperateType;
 import xyz.noark.orm.write.impl.EntityOperate;
 
 import java.io.Serializable;

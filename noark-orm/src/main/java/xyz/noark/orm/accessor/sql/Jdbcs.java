@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,35 +13,34 @@
  */
 package xyz.noark.orm.accessor.sql;
 
-import static xyz.noark.log.LogHelper.logger;
+import xyz.noark.core.exception.DataAccessException;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
-import javax.sql.DataSource;
-
-import xyz.noark.core.exception.DataAccessException;
+import static xyz.noark.log.LogHelper.logger;
 
 /**
  * Jdbc获取DB产品名称与版本.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class Jdbcs {
-	/**
-	 * 针对一个数据源记录一下目标版本.
-	 * 
-	 * @param ds 数据源
-	 */
-	public static void judgeAccessType(DataSource ds) {
-		try (Connection conn = ds.getConnection()) {
-			DatabaseMetaData meta = conn.getMetaData();
-			String pnm = meta.getDatabaseProductName();
-			String ver = meta.getDatabaseProductVersion();
-			logger.info("database product name:{}, version:{}", pnm, ver);
-		} catch (Exception e) {
-			throw new DataAccessException(e);
-		}
-	}
+    /**
+     * 针对一个数据源记录一下目标版本.
+     *
+     * @param ds 数据源
+     */
+    public static void judgeAccessType(DataSource ds) {
+        try (Connection conn = ds.getConnection()) {
+            DatabaseMetaData meta = conn.getMetaData();
+            String pnm = meta.getDatabaseProductName();
+            String ver = meta.getDatabaseProductVersion();
+            logger.info("database product name:{}, version:{}", pnm, ver);
+        } catch (Exception e) {
+            throw new DataAccessException(e);
+        }
+    }
 }

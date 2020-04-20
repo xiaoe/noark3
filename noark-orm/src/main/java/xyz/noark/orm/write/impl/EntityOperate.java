@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -18,82 +18,82 @@ import xyz.noark.orm.EntityMapping;
 /**
  * 实体操作包装类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class EntityOperate<T> {
-	private String id;
+    private String id;
 
-	private EntityMapping<T> em;
-	private T entity;
+    private EntityMapping<T> em;
+    private T entity;
 
-	private boolean insert = false;
-	private boolean update = false;
-	private boolean delete = false;
+    private boolean insert = false;
+    private boolean update = false;
+    private boolean delete = false;
 
-	public EntityOperate(String entityId, EntityMapping<T> em) {
-		this.em = em;
-		this.id = entityId;
-	}
+    public EntityOperate(String entityId, EntityMapping<T> em) {
+        this.em = em;
+        this.id = entityId;
+    }
 
-	private void updateEntity(T entity) {
-		this.entity = entity;
-	}
+    private void updateEntity(T entity) {
+        this.entity = entity;
+    }
 
-	public void insert(T insertEntity) {
-		if (delete) {
-			this.delete = false;
-			this.update = true;
-		} else {
-			this.insert = true;
-		}
+    public void insert(T insertEntity) {
+        if (delete) {
+            this.delete = false;
+            this.update = true;
+        } else {
+            this.insert = true;
+        }
 
-		this.updateEntity(insertEntity);
-	}
+        this.updateEntity(insertEntity);
+    }
 
-	public void update(T entity) {
-		this.update = true;
-		this.updateEntity(entity);
-	}
+    public void update(T entity) {
+        this.update = true;
+        this.updateEntity(entity);
+    }
 
-	public boolean delete(T deleteEntity) {
-		// 如果是刚插入的状态，直接返回true，由调用层删除
-		if (insert) {
-			return true;
-		}
-		this.delete = true;
-		this.updateEntity(deleteEntity);
-		return false;
-	}
+    public boolean delete(T deleteEntity) {
+        // 如果是刚插入的状态，直接返回true，由调用层删除
+        if (insert) {
+            return true;
+        }
+        this.delete = true;
+        this.updateEntity(deleteEntity);
+        return false;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public EntityMapping<T> getEntityMapping() {
-		return em;
-	}
+    public EntityMapping<T> getEntityMapping() {
+        return em;
+    }
 
-	public boolean isDelete() {
-		return delete;
-	}
+    public boolean isDelete() {
+        return delete;
+    }
 
-	public boolean isInsert() {
-		if (delete) {
-			return false;
-		}
-		return insert;
-	}
+    public boolean isInsert() {
+        if (delete) {
+            return false;
+        }
+        return insert;
+    }
 
-	public boolean isUpdate() {
-		if (delete || insert) {
-			return false;
-		}
-		return update;
-	}
+    public boolean isUpdate() {
+        if (delete || insert) {
+            return false;
+        }
+        return update;
+    }
 
-	public T getEntity() {
-		// FIXME 这里再好弄成深拷贝
-		return entity;
-	}
+    public T getEntity() {
+        // FIXME 这里再好弄成深拷贝
+        return entity;
+    }
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,37 +13,37 @@
  */
 package xyz.noark.orm.accessor.sql.mysql.adaptor;
 
-import java.util.EnumMap;
-
 import xyz.noark.orm.accessor.FieldType;
+
+import java.util.EnumMap;
 
 /**
  * 属性值适配转换管理类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class ValueAdaptorManager {
-	private static final EnumMap<FieldType, AbstractValueAdaptor<?>> ADAPTOR = new EnumMap<>(FieldType.class);
+    private static final EnumMap<FieldType, AbstractValueAdaptor<?>> ADAPTOR = new EnumMap<>(FieldType.class);
 
-	static {
-		ADAPTOR.put(FieldType.AsInteger, new IntegerAdaptor());
-		ADAPTOR.put(FieldType.AsLong, new LongAdaptor());
-		ADAPTOR.put(FieldType.AsString, new StringAdaptor());
-		ADAPTOR.put(FieldType.AsAtomicInteger, new AtomicIntegerAdaptor());
-		ADAPTOR.put(FieldType.AsAtomicLong, new AtomicLongAdaptor());
-		ADAPTOR.put(FieldType.AsLongAdder, new LongAdderAdaptor());
-		ADAPTOR.put(FieldType.AsBoolean, new BooleanAdaptor());
-		ADAPTOR.put(FieldType.AsFloat, new FloatAdaptor());
-		ADAPTOR.put(FieldType.AsDouble, new DoubleAdaptor());
-		ADAPTOR.put(FieldType.AsDate, new DateAdaptor());
-		ADAPTOR.put(FieldType.AsJson, new JsonAdaptor());
-		ADAPTOR.put(FieldType.AsLocalDateTime, new LocalDateTimeAdaptor());
-		ADAPTOR.put(FieldType.AsInstant, new InstantAdaptor());
-		ADAPTOR.put(FieldType.AsBlob, new BlobAdaptor());
-	}
+    static {
+        ADAPTOR.put(FieldType.AsInteger, new IntegerAdaptor());
+        ADAPTOR.put(FieldType.AsLong, new LongAdaptor());
+        ADAPTOR.put(FieldType.AsString, new StringAdaptor());
+        ADAPTOR.put(FieldType.AsAtomicInteger, new AtomicIntegerAdaptor());
+        ADAPTOR.put(FieldType.AsAtomicLong, new AtomicLongAdaptor());
+        ADAPTOR.put(FieldType.AsLongAdder, new LongAdderAdaptor());
+        ADAPTOR.put(FieldType.AsBoolean, new BooleanAdaptor());
+        ADAPTOR.put(FieldType.AsFloat, new FloatAdaptor());
+        ADAPTOR.put(FieldType.AsDouble, new DoubleAdaptor());
+        ADAPTOR.put(FieldType.AsDate, new DateAdaptor());
+        ADAPTOR.put(FieldType.AsJson, new JsonAdaptor());
+        ADAPTOR.put(FieldType.AsLocalDateTime, new LocalDateTimeAdaptor());
+        ADAPTOR.put(FieldType.AsInstant, new InstantAdaptor());
+        ADAPTOR.put(FieldType.AsBlob, new BlobAdaptor());
+    }
 
-	public static AbstractValueAdaptor<?> getValueAdaptor(FieldType type) {
-		return ADAPTOR.getOrDefault(type, UnrealizedAdaptor.getInstance());
-	}
+    public static AbstractValueAdaptor<?> getValueAdaptor(FieldType type) {
+        return ADAPTOR.getOrDefault(type, UnrealizedAdaptor.getInstance());
+    }
 }
