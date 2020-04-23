@@ -48,7 +48,7 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 	protected int incode = -1;
 
 	public SocketSession(Channel channel, boolean encrypt, byte[] secretKey) {
-		super(channel.id(), IpUtils.getIp(channel));
+		super(channel.id(), IpUtils.getIp(channel.remoteAddress()));
 		this.channel = channel;
 		this.attrs = new ConcurrentHashMap<>();
 		this.packetEncrypt = new DefaultPacketEncrypt(encrypt, secretKey);

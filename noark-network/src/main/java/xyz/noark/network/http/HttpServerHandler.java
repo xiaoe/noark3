@@ -113,7 +113,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 		final String uri = decoder.path();
 
 		HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(uri);
-		final String ip = IpUtils.getIp(ctx.channel());
+		final String ip = IpUtils.getIp(ctx.channel().remoteAddress());
 
 		// API不存在...
 		if (handler == null) {

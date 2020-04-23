@@ -52,7 +52,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		logger.info("发现客户端链接，channel={}", ctx.channel());
-		if (ipManager.active(IpUtils.getIp(ctx.channel())) > maxSomeIp) {
+		if (ipManager.active(IpUtils.getIp(ctx.channel().remoteAddress())) > maxSomeIp) {
 			logger.warn("同一个IP链接数超出上限 max={}", maxSomeIp);
 			ctx.channel().close();
 		}
@@ -61,7 +61,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		logger.info("客户端断开链接，channel={}", ctx.channel());
-		ipManager.inactive(IpUtils.getIp(ctx.channel()));
+		ipManager.inactive(IpUtils.getIp(ctx.channel().remoteAddress()));
 
 		Session session = SessionManager.getSession(ctx.channel().id());
 		if (session != null) {

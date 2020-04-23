@@ -18,7 +18,7 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import xyz.noark.core.util.ByteBufUtils;
+import xyz.noark.network.util.ByteBufUtils;
 import xyz.noark.network.init.WebsocketInitializeHandler;
 
 /**
