@@ -204,7 +204,7 @@ class AsyncWriteContainer implements Runnable {
         if (entityList.isEmpty()) {
             return;
         }
-        
+
         // 只有一个实体有变化
         if (entityList.size() == 1) {
             this.operateEntity(type, em, entityList.get(0));
@@ -240,7 +240,7 @@ class AsyncWriteContainer implements Runnable {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("批量存档失败，准备逐条存档 e={}", e);
             // 批量失败，那就一个一个来吧...
             for (T entity : entityList) {
                 this.operateEntity(type, em, entity);
