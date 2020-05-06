@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,12 +13,7 @@
  */
 package xyz.noark.network.codec.protobuf;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.google.protobuf.MessageLite;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -35,70 +30,74 @@ import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * ProtobufV3版本的编码解码器.
  *
- * @since 3.1
  * @author 小流氓[176543888@qq.com]
+ * @since 3.1
  */
 public class ProtobufCodec extends AbstractPacketCodec {
-	private static final ConcurrentHashMap<Class<?>, Method> CACHES = new ConcurrentHashMap<>(1024);
+    private static final ConcurrentHashMap<Class<?>, Method> CACHES = new ConcurrentHashMap<>(1024);
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T decodeProtocol(ByteArray bytes, Class<T> klass) {
-		Method method = CACHES.computeIfAbsent(klass, key -> MethodUtils.getMethod(key, "parseFrom", byte[].class));
-		return (T) MethodUtils.invoke(null, method, bytes.array());
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T decodeProtocol(ByteArray bytes, Class<T> klass) {
+        Method method = CACHES.computeIfAbsent(klass, key -> MethodUtils.getMethod(key, "parseFrom", byte[].class));
+        return (T) MethodUtils.invoke(null, method, bytes.array());
+    }
 
-	@Override
-	public ByteArray encodePacket(NetworkProtocol networkProtocol) {
-		final int opcode = (Integer) networkProtocol.getOpcode();
-		if (opcode > Short.MAX_VALUE) {
-			throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
-		}
+    @Override
+    public ByteArray encodePacket(NetworkProtocol networkProtocol) {
+        final int opcode = (Integer) networkProtocol.getOpcode();
+        if (opcode > Short.MAX_VALUE) {
+            throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
+        }
 
-		MessageLite message = null;
-		if (networkProtocol.getProtocol() instanceof MessageLite) {
-			message = (MessageLite) networkProtocol.getProtocol();
-		} else if (networkProtocol.getProtocol() instanceof MessageLite.Builder) {
-			message = ((MessageLite.Builder) networkProtocol.getProtocol()).build();
-		} else {
-			throw new UnrealizedException("illegal data type：" + networkProtocol.getProtocol().getClass());
-		}
+        MessageLite message = null;
+        if (networkProtocol.getProtocol() instanceof MessageLite) {
+            message = (MessageLite) networkProtocol.getProtocol();
+        } else if (networkProtocol.getProtocol() instanceof MessageLite.Builder) {
+            message = ((MessageLite.Builder) networkProtocol.getProtocol()).build();
+        } else {
+            throw new UnrealizedException("illegal data type：" + networkProtocol.getProtocol().getClass());
+        }
 
-		ImmutableByteArray byteArray = new ImmutableByteArray(message.getSerializedSize() + 2);
-		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(byteArray)) {
-			// 写入Opcode
-			byteArrayOutputStream.writeShortLE(opcode);
-			// 写入协议内容
-			try {
-				message.writeTo(byteArrayOutputStream);
-			} catch (IOException e) {
-				throw new DataException("PB writeTo exception", e);
-			}
-			return byteArray;
-		}
-	}
+        ImmutableByteArray byteArray = new ImmutableByteArray(message.getSerializedSize() + 2);
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(byteArray)) {
+            // 写入Opcode
+            byteArrayOutputStream.writeShortLE(opcode);
+            // 写入协议内容
+            try {
+                message.writeTo(byteArrayOutputStream);
+            } catch (IOException e) {
+                throw new DataException("PB writeTo exception", e);
+            }
+            return byteArray;
+        }
+    }
 
-	@Override
-	public MessageToByteEncoder<?> lengthEncoder() {
-		return new ProtobufLengthEncoder();
-	}
+    @Override
+    public MessageToByteEncoder<?> lengthEncoder() {
+        return new ProtobufLengthEncoder();
+    }
 
-	@Override
-	public ByteToMessageDecoder lengthDecoder() {
-		return new ProtobufLengthDecoder(this);
-	}
+    @Override
+    public ByteToMessageDecoder lengthDecoder() {
+        return new ProtobufLengthDecoder(this);
+    }
 
-	@Override
-	public NetworkPacket decodePacket(ByteBuf byteBuf) {
-		DefaultNetworkPacket packet = new DefaultNetworkPacket();
-		packet.setLength(byteBuf.readableBytes());
-		packet.setIncode(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
-		packet.setChecksum(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
-		packet.setOpcode(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
-		packet.setBytes(new ByteBufWrapper(byteBuf));
-		return packet;
-	}
+    @Override
+    public NetworkPacket decodePacket(ByteBuf byteBuf) {
+        DefaultNetworkPacket packet = new DefaultNetworkPacket();
+        packet.setLength(byteBuf.readableBytes());
+        packet.setIncode(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
+        packet.setChecksum(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
+        packet.setOpcode(UnsignedUtils.toUnsigned(byteBuf.readShortLE()));
+        packet.setBytes(new ByteBufWrapper(byteBuf));
+        return packet;
+    }
 }

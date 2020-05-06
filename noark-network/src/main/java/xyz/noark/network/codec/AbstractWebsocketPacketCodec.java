@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -20,15 +20,15 @@ import xyz.noark.core.network.PacketCodec;
 /**
  * 基本Netty实现的一个抽象WebSocket编解码器
  *
- * @since 3.3.6
  * @author 小流氓[176543888@qq.com]
+ * @since 3.3.6
  */
 public abstract class AbstractWebsocketPacketCodec implements PacketCodec {
-	/**
-	 * 将二进制数据转化为网络封包对象.
-	 * 
-	 * @param byteBuf 二进制数据
-	 * @return 网络封包对象
-	 */
-	public abstract NetworkPacket decodePacket(ByteBuf byteBuf);
+    /**
+     * 将二进制数据转化为网络封包对象.
+     *
+     * @param byteBuf 二进制数据
+     * @return 网络封包对象
+     */
+    public abstract NetworkPacket decodePacket(ByteBuf byteBuf);
 }

@@ -36,22 +36,16 @@ import static xyz.noark.log.LogHelper.logger;
  */
 public class EntityMapping<T> {
     protected final Class<T> klass;
-    private final MethodAccess methodAccess;
-    private final ConstructorAccess<T> constructorAccess;
-
     /**
      * 抓取策略
      */
     protected final FetchType fetchType;
+    private final MethodAccess methodAccess;
+    private final ConstructorAccess<T> constructorAccess;
     /**
      * 表名
      */
     protected String tableName;
-    /**
-     * 注释
-     */
-    private String tableComment;
-
     /**
      * 主键字段
      */
@@ -64,7 +58,6 @@ public class EntityMapping<T> {
      * 全部属性
      */
     protected List<FieldMapping> fieldInfo;
-
     /**
      * 创建时间
      */
@@ -73,6 +66,10 @@ public class EntityMapping<T> {
      * 最后修改时间
      */
     protected FieldMapping lastModifiedDate;
+    /**
+     * 注释
+     */
+    private String tableComment;
 
     public EntityMapping(Class<T> klass) {
         this.klass = klass;
@@ -90,20 +87,40 @@ public class EntityMapping<T> {
         return tableName;
     }
 
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
     public String getTableComment() {
         return tableComment;
+    }
+
+    public void setTableComment(String tableComment) {
+        this.tableComment = tableComment;
     }
 
     public FieldMapping getPrimaryId() {
         return primaryId;
     }
 
+    public void setPrimaryId(FieldMapping primaryId) {
+        this.primaryId = primaryId;
+    }
+
     public FieldMapping getPlayerId() {
         return playerId;
     }
 
+    public void setPlayerId(FieldMapping playerId) {
+        this.playerId = playerId;
+    }
+
     public List<FieldMapping> getFieldInfo() {
         return fieldInfo;
+    }
+
+    public void setFieldInfo(List<FieldMapping> fieldInfo) {
+        this.fieldInfo = fieldInfo;
     }
 
     /**
@@ -130,28 +147,8 @@ public class EntityMapping<T> {
         return klass;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public void setPrimaryId(FieldMapping primaryId) {
-        this.primaryId = primaryId;
-    }
-
-    public void setPlayerId(FieldMapping playerId) {
-        this.playerId = playerId;
-    }
-
-    public void setFieldInfo(List<FieldMapping> fieldInfo) {
-        this.fieldInfo = fieldInfo;
-    }
-
     public List<FieldMapping> getFieldMapping() {
         return fieldInfo;
-    }
-
-    public void setTableComment(String tableComment) {
-        this.tableComment = tableComment;
     }
 
     public void setCreatedDate(FieldMapping createdDate) {

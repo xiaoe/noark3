@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -18,20 +18,20 @@ import xyz.noark.core.util.RandomUtils;
 /**
  * 没带钱.
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 public class NoMoney extends AbstractConditionNode {
-	private final static double RATE = 0.1;
+    private final static double RATE = 0.1;
 
-	@Override
-	public NodeState update() {
-		if (RandomUtils.isSuccess(RATE)) {
-			System.out.println("带钱了");
-			return NodeState.FAILURE;
-		}
+    @Override
+    public NodeState update() {
+        if (RandomUtils.isSuccess(RATE)) {
+            System.out.println("带钱了");
+            return NodeState.FAILURE;
+        }
 
-		System.out.println("没带钱");
-		return NodeState.SUCCESS;
-	}
+        System.out.println("没带钱");
+        return NodeState.SUCCESS;
+    }
 }

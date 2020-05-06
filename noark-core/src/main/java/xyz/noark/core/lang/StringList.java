@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -20,21 +20,22 @@ import java.util.Collection;
  * StringList其实就是JDK的ArrayList&lt;String&gt;
  * <p>
  * 仅限于策划模板配置中使用，请忽略带到ORM的实体类中
- * 
- * @since 3.3.1
+ *
  * @author 小流氓[176543888@qq.com]
+ * @since 3.3.1
  */
 public class StringList extends ArrayList<String> {
 
-	private static final long serialVersionUID = 1462861076140500174L;
+    private static final long serialVersionUID = 1462861076140500174L;
 
-	public StringList() {}
+    public StringList() {
+    }
 
-	public StringList(int initialCapacity) {
-		super(initialCapacity);
-	}
+    public StringList(int initialCapacity) {
+        super(initialCapacity);
+    }
 
-	public StringList(Collection<String> list) {
-		super(list);
-	}
+    public StringList(Collection<String> list) {
+        super(list);
+    }
 }

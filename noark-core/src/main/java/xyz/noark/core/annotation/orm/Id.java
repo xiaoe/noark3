@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,11 +13,7 @@
  */
 package xyz.noark.core.annotation.orm;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Id标记表示此属性为表的主键字段.
@@ -25,10 +21,11 @@ import java.lang.annotation.Target;
  * 其他配置可联合Column一起使用.<br>
  * 注意：当有Id注解时Column的unique和nullable两个属性失效
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Id {}
+public @interface Id {
+}

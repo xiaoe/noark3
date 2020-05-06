@@ -27,7 +27,12 @@ class AsyncWriteContainer implements Runnable {
     private final Serializable groupId;
     private final DataAccessor dataAccessor;
     private final int batchOperateNum;
-
+    private final ReentrantLock dataUpdateLock = new ReentrantLock();
+    private final ReentrantLock dataFlushLock = new ReentrantLock();
+    /**
+     * 记录异步操作的结果，以便有需求时，操纵这个结果
+     */
+    private final ScheduledFuture<?> future;
     /**
      * 当前已修改过的数据
      */
@@ -36,13 +41,6 @@ class AsyncWriteContainer implements Runnable {
      * 最终需要保存的数据
      */
     private Map<String, EntityOperate<?>> flushOperates;
-
-    private final ReentrantLock dataUpdateLock = new ReentrantLock();
-    private final ReentrantLock dataFlushLock = new ReentrantLock();
-    /**
-     * 记录异步操作的结果，以便有需求时，操纵这个结果
-     */
-    private final ScheduledFuture<?> future;
 
     AsyncWriteContainer(Serializable groupId, int saveInterval, ScheduledExecutorService scheduledExecutorService, DataAccessor dataAccessor, int batchOperateNum) {
         this.groupId = groupId;

@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,49 +13,50 @@
  */
 package xyz.noark.game.monitor.impl;
 
-import static xyz.noark.log.LogHelper.logger;
+import xyz.noark.core.util.FileUtils;
+import xyz.noark.game.monitor.AbstractMonitorService;
 
 import java.util.concurrent.TimeUnit;
 
-import xyz.noark.core.util.FileUtils;
-import xyz.noark.game.monitor.AbstractMonitorService;
+import static xyz.noark.log.LogHelper.logger;
 
 /**
  * 内存监控服务.
  *
- * @since 3.1
  * @author 小流氓[176543888@qq.com]
+ * @since 3.1
  */
 public class MemoryMonitorService extends AbstractMonitorService {
 
-	public MemoryMonitorService() {}
+    public MemoryMonitorService() {
+    }
 
-	@Override
-	protected long getInitialDelay() {
-		return 60;
-	}
+    @Override
+    protected long getInitialDelay() {
+        return 60;
+    }
 
-	@Override
-	protected long getDelay() {
-		return 60;
-	}
+    @Override
+    protected long getDelay() {
+        return 60;
+    }
 
-	@Override
-	protected TimeUnit getUnit() {
-		return TimeUnit.SECONDS;
-	}
+    @Override
+    protected TimeUnit getUnit() {
+        return TimeUnit.SECONDS;
+    }
 
-	@Override
-	protected void exe() throws Exception {
-		Runtime runtime = Runtime.getRuntime();
-		// 最大可用内存
-		long maxMemory = runtime.maxMemory();
-		// 已分配内存
-		long totalMemory = runtime.totalMemory();
-		// 已分配内存中的剩余空间
-		long useMemory = totalMemory - runtime.freeMemory();
-		// 最大可用内存
-		long usableMemory = maxMemory - useMemory;
-		logger.info("最大堆内存={}, 已分配={}, 已使用={}, 还可用={}", FileUtils.readableFileSize(maxMemory), FileUtils.readableFileSize(totalMemory), FileUtils.readableFileSize(useMemory), FileUtils.readableFileSize(usableMemory));
-	}
+    @Override
+    protected void exe() throws Exception {
+        Runtime runtime = Runtime.getRuntime();
+        // 最大可用内存
+        long maxMemory = runtime.maxMemory();
+        // 已分配内存
+        long totalMemory = runtime.totalMemory();
+        // 已分配内存中的剩余空间
+        long useMemory = totalMemory - runtime.freeMemory();
+        // 最大可用内存
+        long usableMemory = maxMemory - useMemory;
+        logger.info("最大堆内存={}, 已分配={}, 已使用={}, 还可用={}", FileUtils.readableFileSize(maxMemory), FileUtils.readableFileSize(totalMemory), FileUtils.readableFileSize(useMemory), FileUtils.readableFileSize(usableMemory));
+    }
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -18,12 +18,12 @@ import java.io.IOException;
 /**
  * HTTP工具测试.
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 public class HttpUtilsTest {
-	public static void main(String[] args) throws IOException {
-		String html = HttpUtils.post("http://127.0.0.1:4001/root/gateway.action", "channelId=11000020&command=game@getVersionInfo&productId=701&productLineId=70&tagId=", CharsetUtils.CHARSET_ISO_8859_1);
-		System.out.println(new String(GzipUtils.uncompress(html.getBytes(CharsetUtils.CHARSET_ISO_8859_1))));
-	}
+    public static void main(String[] args) throws IOException {
+        String html = HttpUtils.post("http://127.0.0.1:4001/root/gateway.action", "channelId=11000020&command=game@getVersionInfo&productId=701&productLineId=70&tagId=", CharsetUtils.CHARSET_ISO_8859_1);
+        System.out.println(new String(GzipUtils.uncompress(html.getBytes(CharsetUtils.CHARSET_ISO_8859_1))));
+    }
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,10 +13,6 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.RequestParam;
 import xyz.noark.core.annotation.controller.ResponseBody;
@@ -24,60 +20,70 @@ import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.reflectasm.MethodAccess;
 
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * 封包处理方法包装类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
-	private final String uri;
-	private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
-	private final ResponseBody responseBody;
-	/** 是否为外网就能访问的接口 */
-	private final boolean publicApi;
-	/** 是否为局域网才能访问的接口 */
-	private final boolean privateApi;
-	/** 当前方法是否已废弃使用. */
-	private boolean deprecated = false;
+    private final String uri;
+    private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
+    private final ResponseBody responseBody;
+    /**
+     * 是否为外网就能访问的接口
+     */
+    private final boolean publicApi;
+    /**
+     * 是否为局域网才能访问的接口
+     */
+    private final boolean privateApi;
+    /**
+     * 当前方法是否已废弃使用.
+     */
+    private boolean deprecated = false;
 
-	public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-		super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.uri() + ")");
-		this.uri = method.uri();
-		this.publicApi = method.isPublicApi();
-		this.privateApi = method.isPrivateApi();
-		this.deprecated = method.isDeprecated();
-		this.responseBody = method.getResponseBody();
+    public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.uri() + ")");
+        this.uri = method.uri();
+        this.publicApi = method.isPublicApi();
+        this.privateApi = method.isPrivateApi();
+        this.deprecated = method.isDeprecated();
+        this.responseBody = method.getResponseBody();
 
-		Arrays.stream(method.getParameters()).forEach(v -> buildParamWrapper(v));
-	}
+        Arrays.stream(method.getParameters()).forEach(v -> buildParamWrapper(v));
+    }
 
-	private void buildParamWrapper(Parameter parameter) {
-		RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-		this.parameters.add(new HttpParamWrapper(requestParam, parameter));
-	}
+    private void buildParamWrapper(Parameter parameter) {
+        RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
+        this.parameters.add(new HttpParamWrapper(requestParam, parameter));
+    }
 
-	public String getUri() {
-		return uri;
-	}
+    public String getUri() {
+        return uri;
+    }
 
-	public ArrayList<HttpParamWrapper> getParameters() {
-		return parameters;
-	}
+    public ArrayList<HttpParamWrapper> getParameters() {
+        return parameters;
+    }
 
-	public boolean isDeprecated() {
-		return deprecated;
-	}
+    public boolean isDeprecated() {
+        return deprecated;
+    }
 
-	public ResponseBody getResponseBody() {
-		return responseBody;
-	}
+    public ResponseBody getResponseBody() {
+        return responseBody;
+    }
 
-	public boolean isPublicApi() {
-		return publicApi;
-	}
+    public boolean isPublicApi() {
+        return publicApi;
+    }
 
-	public boolean isPrivateApi() {
-		return privateApi;
-	}
+    public boolean isPrivateApi() {
+        return privateApi;
+    }
 }

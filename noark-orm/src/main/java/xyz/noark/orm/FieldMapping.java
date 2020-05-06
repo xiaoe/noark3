@@ -32,14 +32,11 @@ import java.lang.reflect.Type;
 public class FieldMapping {
     private final Field field;
     private final Type klass;
-    private FieldType type;
-
     private final Id id;
     private final Column column;
     private final PlayerId playerId;
     private final Json json;
     private final Collate collate;
-
     /**
      * 创建时间
      */
@@ -48,11 +45,11 @@ public class FieldMapping {
      * 最后修改时间
      */
     private final LastModifiedDate lastModifiedDate;
-
-    private String columnName;
-    private int width;
     private final int getMethodIndex;
     private final int setMethodIndex;
+    private FieldType type;
+    private String columnName;
+    private int width;
     /**
      * 是否有可能为Emoji
      */
@@ -89,20 +86,20 @@ public class FieldMapping {
         return column;
     }
 
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
-
     public String getColumnName() {
         return columnName;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
     public int getWidth() {
         return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
 
     public FieldType getType() {

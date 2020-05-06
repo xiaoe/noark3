@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -16,28 +16,32 @@ package xyz.noark.game.bt;
 /**
  * 一种固定时间执行的节点.
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 public class FixedTimeNode extends AbstractDecoratorNode {
-	/** CD时间(单位：秒) */
-	private final int cd;
-	/** 下次可执行时间 */
-	private long nextExecTime;
+    /**
+     * CD时间(单位：秒)
+     */
+    private final int cd;
+    /**
+     * 下次可执行时间
+     */
+    private long nextExecTime;
 
-	public FixedTimeNode(int cd) {
-		this.cd = cd;
-	}
+    public FixedTimeNode(int cd) {
+        this.cd = cd;
+    }
 
-	@Override
-	public NodeState update() {
-		final long now = System.currentTimeMillis();
+    @Override
+    public NodeState update() {
+        final long now = System.currentTimeMillis();
 
-		if (now >= nextExecTime) {
-			this.nextExecTime = now + cd * 1000;
-			return node.update();
-		}
+        if (now >= nextExecTime) {
+            this.nextExecTime = now + cd * 1000;
+            return node.update();
+        }
 
-		return NodeState.FAILURE;
-	}
+        return NodeState.FAILURE;
+    }
 }

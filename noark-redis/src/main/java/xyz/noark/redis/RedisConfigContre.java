@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,44 +13,44 @@
  */
 package xyz.noark.redis;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.game.config.AbstractConfigCentre;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 基于Redis实现的配置中心.
  * <p>
  * 为什么有了ZK，还有一个Redis的实现版本，配置简单嘛，依赖少，上手难度低
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 public class RedisConfigContre extends AbstractConfigCentre {
-	private final Redis redis;
+    private final Redis redis;
 
-	public RedisConfigContre(HashMap<String, String> basicConfig) {
-		super(basicConfig);
-		String host = basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_HOST, "127.0.0.1");
-		int port = Integer.parseInt(basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_PORT, "6379"));
-		String password = basicConfig.get(RedisConstant.CONFIG_REDIS_PASSWORD);
-		if (StringUtils.isBlank(password)) {
-			password = null;
-		}
-		int index = Integer.parseInt(basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_INDEX, "0"));
-		// 初始化一个Redis实例，等会去拉配置回来
-		this.redis = new Redis(host, port, password, index).ping();
-	}
+    public RedisConfigContre(HashMap<String, String> basicConfig) {
+        super(basicConfig);
+        String host = basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_HOST, "127.0.0.1");
+        int port = Integer.parseInt(basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_PORT, "6379"));
+        String password = basicConfig.get(RedisConstant.CONFIG_REDIS_PASSWORD);
+        if (StringUtils.isBlank(password)) {
+            password = null;
+        }
+        int index = Integer.parseInt(basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_INDEX, "0"));
+        // 初始化一个Redis实例，等会去拉配置回来
+        this.redis = new Redis(host, port, password, index).ping();
+    }
 
-	@Override
-	public Map<String, String> loadConfig(String sid) {
-		Map<String, String> result = new HashMap<>(32);
-		// 先要拿一个默认配置
-		result.putAll(redis.hgetAll(configPathDefault));
-		// 再取本服配置的覆盖默认配置
-		result.putAll(redis.hgetAll(StringUtils.pathJoin(configPathPrefix, sid)));
-		// 最终结果返回
-		return result;
-	}
+    @Override
+    public Map<String, String> loadConfig(String sid) {
+        Map<String, String> result = new HashMap<>(32);
+        // 先要拿一个默认配置
+        result.putAll(redis.hgetAll(configPathDefault));
+        // 再取本服配置的覆盖默认配置
+        result.putAll(redis.hgetAll(StringUtils.pathJoin(configPathPrefix, sid)));
+        // 最终结果返回
+        return result;
+    }
 }

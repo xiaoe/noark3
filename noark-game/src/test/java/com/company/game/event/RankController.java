@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,39 +13,39 @@
  */
 package com.company.game.event;
 
-import static xyz.noark.log.LogHelper.logger;
-
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.Scheduled;
 
+import static xyz.noark.log.LogHelper.logger;
+
 /**
  * 排行榜入口.
  *
- * @since 3.2.6
  * @author 小流氓[176543888@qq.com]
+ * @since 3.2.6
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
 public class RankController {
 
-	@EventListener
-	public void handleAllianceCreateEvent(AllianceEvent event) {
-		logger.info("处理联盟排行榜 新加一个联盟={}", event);
-	}
+    @EventListener
+    public void handleAllianceCreateEvent(AllianceEvent event) {
+        logger.info("处理联盟排行榜 新加一个联盟={}", event);
+    }
 
-	@EventListener
-	public void handleAllianceJoinEvent(AllianceJoinEvent event) {
-		logger.info("修正玩家联盟信息 playerId={}, allianceName={}", event.getPlayerId(), event.getAllianceName());
-	}
+    @EventListener
+    public void handleAllianceJoinEvent(AllianceJoinEvent event) {
+        logger.info("修正玩家联盟信息 playerId={}, allianceName={}", event.getPlayerId(), event.getAllianceName());
+    }
 
-	@Scheduled(cron = "0 0 0/1 * * *")
-	public void testCronScheduled() {
-		logger.debug("测试CRON表达式，testCronScheduled");
-	}
+    @Scheduled(cron = "0 0 0/1 * * *")
+    public void testCronScheduled() {
+        logger.debug("测试CRON表达式，testCronScheduled");
+    }
 
-	@Scheduled(initialDelay = 1000, fixedRate = 20000)
-	public void testFixedScheduled() {
-		logger.debug("测试定时任务，testFixedScheduled");
-	}
+    @Scheduled(initialDelay = 1000, fixedRate = 20000)
+    public void testFixedScheduled() {
+        logger.debug("测试定时任务，testFixedScheduled");
+    }
 }

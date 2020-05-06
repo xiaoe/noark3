@@ -32,11 +32,10 @@ import java.util.List;
  */
 abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRepository<T, K> implements CacheRepository<T, K> {
     protected DataCache<T, K> dataCache;
-
-    @Value(DataModular.DATA_OFFLINE_INTERVAL)
-    private int offlineInterval = 3600;
     @Autowired
     protected AsyncWriteService asyncWriteService;
+    @Value(DataModular.DATA_OFFLINE_INTERVAL)
+    private int offlineInterval = 3600;
 
     /**
      * 获取当前OrmRepository的实体类的描述对象

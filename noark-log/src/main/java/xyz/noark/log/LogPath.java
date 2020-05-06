@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -19,58 +19,58 @@ import java.time.format.DateTimeFormatter;
 /**
  * 日志存储路径.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 class LogPath {
-	private final String path;
-	private final boolean activate;
-	private DateTimeFormatter formatter = null;
-	private String prefix;
-	private String suffix;
+    private final String path;
+    private final boolean activate;
+    private DateTimeFormatter formatter = null;
+    private String prefix;
+    private String suffix;
 
-	LogPath() {
-		this(null);
-	}
+    LogPath() {
+        this(null);
+    }
 
-	LogPath(String path) {
-		this.path = path;
-		this.activate = (path == null || "".equals(path)) ? false : true;
+    LogPath(String path) {
+        this.path = path;
+        this.activate = (path == null || "".equals(path)) ? false : true;
 
-		if (activate) {
-			int start = path.indexOf("{");
-			int end = path.lastIndexOf("}");
+        if (activate) {
+            int start = path.indexOf("{");
+            int end = path.lastIndexOf("}");
 
-			// 有配置日期格式后缀
-			if (start > 0 && end > start) {
-				String dateFormat = path.substring(start + 1, end);
-				this.formatter = DateTimeFormatter.ofPattern(dateFormat);
+            // 有配置日期格式后缀
+            if (start > 0 && end > start) {
+                String dateFormat = path.substring(start + 1, end);
+                this.formatter = DateTimeFormatter.ofPattern(dateFormat);
 
-				this.prefix = path.substring(0, start);
-				this.suffix = path.substring(end + 1);
-			}
-		}
-	}
+                this.prefix = path.substring(0, start);
+                this.suffix = path.substring(end + 1);
+            }
+        }
+    }
 
-	/**
-	 * 计算当前日志时间所对应的文件路径.
-	 * 
-	 * @param date 日志时间
-	 * @return 日志文件路径
-	 */
-	public String getPath(LocalDateTime date) {
-		if (formatter == null) {
-			return path;
-		}
-		return new StringBuilder(path.length()).append(prefix).append(date.format(formatter)).append(suffix).toString();
-	}
+    /**
+     * 计算当前日志时间所对应的文件路径.
+     *
+     * @param date 日志时间
+     * @return 日志文件路径
+     */
+    public String getPath(LocalDateTime date) {
+        if (formatter == null) {
+            return path;
+        }
+        return new StringBuilder(path.length()).append(prefix).append(date.format(formatter)).append(suffix).toString();
+    }
 
-	/**
-	 * 日志存储文件功能是否激活.
-	 * 
-	 * @return 日志存储文件功能是否激活
-	 */
-	public boolean isActivate() {
-		return activate;
-	}
+    /**
+     * 日志存储文件功能是否激活.
+     *
+     * @return 日志存储文件功能是否激活
+     */
+    public boolean isActivate() {
+        return activate;
+    }
 }

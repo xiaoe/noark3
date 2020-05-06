@@ -1,5 +1,5 @@
 dependencies {
-	compile project(':noark-game')
-	implementation project(':noark-network')
-	testImplementation project(':noark-benchmark')
+    compile project(':noark-game')
+    implementation project(':noark-network')
+    testImplementation project(':noark-benchmark')
 }

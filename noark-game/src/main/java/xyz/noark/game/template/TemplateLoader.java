@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,82 +13,82 @@
  */
 package xyz.noark.game.template;
 
+import xyz.noark.core.lang.PairMap;
+import xyz.noark.core.lang.TripleMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import xyz.noark.core.lang.PairMap;
-import xyz.noark.core.lang.TripleMap;
-
 /**
  * 模板资源加载器.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public interface TemplateLoader {
-	/**
-	 * 加载模板数据.
-	 * 
-	 * <pre>
-	 * List&lt;ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class);<br>
-	 * </pre>
-	 * 
-	 * @param <T> 加载模板类类型
-	 * @param klass 模板类.
-	 * @return 模板数据集合.
-	 */
-	public <T> List<T> loadAll(Class<T> klass);
+    /**
+     * 加载模板数据.
+     *
+     * <pre>
+     * List&lt;ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class);<br>
+     * </pre>
+     *
+     * @param <T>   加载模板类类型
+     * @param klass 模板类.
+     * @return 模板数据集合.
+     */
+    public <T> List<T> loadAll(Class<T> klass);
 
-	/**
-	 * 加载模板数据.
-	 * 
-	 * <pre>
-	 * Map&lt;Integer, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId);<br>
-	 * Map&lt;String, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getName);
-	 * </pre>
-	 * 
-	 * @param <K> Map的主键
-	 * @param <T> 加载模板类类型
-	 * @param klass 模板类
-	 * @param keyMapper 主键
-	 * @return 模板数据Map集合
-	 */
-	public <K, T> Map<K, T> loadAll(Class<T> klass, Function<? super T, ? extends K> keyMapper);
+    /**
+     * 加载模板数据.
+     *
+     * <pre>
+     * Map&lt;Integer, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId);<br>
+     * Map&lt;String, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getName);
+     * </pre>
+     *
+     * @param <K>       Map的主键
+     * @param <T>       加载模板类类型
+     * @param klass     模板类
+     * @param keyMapper 主键
+     * @return 模板数据Map集合
+     */
+    public <K, T> Map<K, T> loadAll(Class<T> klass, Function<? super T, ? extends K> keyMapper);
 
-	/**
-	 * 加载模板数据.
-	 * 
-	 * <pre>
-	 * PairMap&lt;Integer, Integer, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId, ItemTemplate::getLevel);<br>
-	 * </pre>
-	 * 
-	 * @param <L> Map的主键之左边元素
-	 * @param <R> Map的主键之右边元素
-	 * @param <T> 加载模板类类型
-	 * @param klass 模板类
-	 * @param leftMapper 左边元素
-	 * @param rightMapper 右边元素
-	 * @return 模板数据Map集合
-	 */
-	public <L, R, T> PairMap<L, R, T> loadAll(Class<T> klass, Function<? super T, ? extends L> leftMapper, Function<? super T, ? extends R> rightMapper);
+    /**
+     * 加载模板数据.
+     *
+     * <pre>
+     * PairMap&lt;Integer, Integer, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId, ItemTemplate::getLevel);<br>
+     * </pre>
+     *
+     * @param <L>         Map的主键之左边元素
+     * @param <R>         Map的主键之右边元素
+     * @param <T>         加载模板类类型
+     * @param klass       模板类
+     * @param leftMapper  左边元素
+     * @param rightMapper 右边元素
+     * @return 模板数据Map集合
+     */
+    public <L, R, T> PairMap<L, R, T> loadAll(Class<T> klass, Function<? super T, ? extends L> leftMapper, Function<? super T, ? extends R> rightMapper);
 
-	/**
-	 * 加载模板数据.
-	 * 
-	 * <pre>
-	 * PairMap&lt;Integer, Integer, Integer, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId, ItemTemplate::getLevel, ItemTemplate::getStar);<br>
-	 * </pre>
-	 * 
-	 * @param <L> Map的主键之左边元素
-	 * @param <M> Map的主键之中间元素
-	 * @param <R> Map的主键之右边元素
-	 * @param <T> 加载模板类类型
-	 * @param klass 模板类
-	 * @param leftMapper 左边元素
-	 * @param middleMapper 中间元素
-	 * @param rightMapper 右边元素
-	 * @return 模板数据Map集合
-	 */
-	public <L, M, R, T> TripleMap<L, M, R, T> loadAll(Class<T> klass, Function<? super T, ? extends L> leftMapper, Function<? super T, ? extends M> middleMapper, Function<? super T, ? extends R> rightMapper);
+    /**
+     * 加载模板数据.
+     *
+     * <pre>
+     * PairMap&lt;Integer, Integer, Integer, ItemTemplate&gt; templates = templateLoader.loadAll(ItemTemplate.class, ItemTemplate::getId, ItemTemplate::getLevel, ItemTemplate::getStar);<br>
+     * </pre>
+     *
+     * @param <L>          Map的主键之左边元素
+     * @param <M>          Map的主键之中间元素
+     * @param <R>          Map的主键之右边元素
+     * @param <T>          加载模板类类型
+     * @param klass        模板类
+     * @param leftMapper   左边元素
+     * @param middleMapper 中间元素
+     * @param rightMapper  右边元素
+     * @return 模板数据Map集合
+     */
+    public <L, M, R, T> TripleMap<L, M, R, T> loadAll(Class<T> klass, Function<? super T, ? extends L> leftMapper, Function<? super T, ? extends M> middleMapper, Function<? super T, ? extends R> rightMapper);
 }

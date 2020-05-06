@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -16,28 +16,28 @@ package xyz.noark.log;
 /**
  * 带参数的日志信息.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 class ParameterizedMessage extends AbstractMessage {
-	private static final MessageAnalyzerManager CACHE = new MessageAnalyzerManager();
-	private final Object[] args;
+    private static final MessageAnalyzerManager CACHE = new MessageAnalyzerManager();
+    private final Object[] args;
 
-	ParameterizedMessage(Level level, String messagePattern, Object[] args) {
-		super(level, messagePattern);
-		this.args = this.handleArgs(args);
-	}
+    ParameterizedMessage(Level level, String messagePattern, Object[] args) {
+        super(level, messagePattern);
+        this.args = this.handleArgs(args);
+    }
 
-	private Object[] handleArgs(Object[] args) {
-		// 把传递的参数处理了，把非基本数据类型提交转为String对象
-		for (int i = 0, len = args.length; i < len; i++) {
-			args[i] = MessageHelper.preprocessingEnteringLogThreadBefore(args[i]);
-		}
-		return args;
-	}
+    private Object[] handleArgs(Object[] args) {
+        // 把传递的参数处理了，把非基本数据类型提交转为String对象
+        for (int i = 0, len = args.length; i < len; i++) {
+            args[i] = MessageHelper.preprocessingEnteringLogThreadBefore(args[i]);
+        }
+        return args;
+    }
 
-	@Override
-	protected void onBuildMessage(StringBuilder sb) {
-		CACHE.get(msg, key -> new MessageAnalyzer(key)).build(sb, args);
-	}
+    @Override
+    protected void onBuildMessage(StringBuilder sb) {
+        CACHE.get(msg, key -> new MessageAnalyzer(key)).build(sb, args);
+    }
 }

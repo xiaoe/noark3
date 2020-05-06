@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -18,15 +18,15 @@ import org.junit.Test;
 /**
  * 测试用例.
  *
- * @since 2.0
  * @author 小流氓[176543888@qq.com]
+ * @since 2.0
  */
 public class BenchmarkTest {
-	private final Benchmark benchmark = new Benchmark();
+    private final Benchmark benchmark = new Benchmark();
 
-	@Test
-	public void test() throws Exception {
-		benchmark.doSomething("string-->int:", () -> Integer.parseInt("1"));
-		benchmark.doSomething("int-->string:", () -> String.valueOf(1));
-	}
+    @Test
+    public void test() throws Exception {
+        benchmark.doSomething("string-->int:", () -> Integer.parseInt("1"));
+        benchmark.doSomething("int-->string:", () -> String.valueOf(1));
+    }
 }

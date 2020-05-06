@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,28 +13,28 @@
  */
 package xyz.noark.core.lang;
 
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * 超时功能的HashMap.
  * <p>
  * 此版本由Caffeine缓存来实现.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class TimeoutHashMap<K, V> {
-	private final LoadingCache<K, V> caches;
+    private final LoadingCache<K, V> caches;
 
-	public TimeoutHashMap(long duration, TimeUnit unit, Supplier<? extends V> loading) {
-		this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).build(key -> loading.get());
-	}
+    public TimeoutHashMap(long duration, TimeUnit unit, Supplier<? extends V> loading) {
+        this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).build(key -> loading.get());
+    }
 
-	public V get(K key) {
-		return caches.get(key);
-	}
+    public V get(K key) {
+        return caches.get(key);
+    }
 }

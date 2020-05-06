@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,51 +13,53 @@
  */
 package xyz.noark.game;
 
-import java.util.Map;
-
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.game.bootstrap.ServerBootstrap;
 import xyz.noark.log.LogManager;
 
+import java.util.Map;
+
 /**
  * Noark系统初始化.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 class NoarkInitializer {
 
-	/**
-	 * 初始化Noark.
-	 * 
-	 * @param klass 启动引导类
-	 * @param args Main方法的启动参数
-	 */
-	public void init(Class<? extends ServerBootstrap> klass, String... args) {
-		// 载入配置
-		EnvConfigHolder.setProperties(this.loadProperties(args));
+    /**
+     * 初始化Noark.
+     *
+     * @param klass 启动引导类
+     * @param args  Main方法的启动参数
+     */
+    public void init(Class<? extends ServerBootstrap> klass, String... args) {
+        // 载入配置
+        EnvConfigHolder.setProperties(this.loadProperties(args));
 
-		// 初始化日志系统
-		LogManager.init(EnvConfigHolder.getProperties());
+        // 初始化日志系统
+        LogManager.init(EnvConfigHolder.getProperties());
 
-		// 初始化启动引导程序，参考ServerBootstrap的具体实现
-		ClassUtils.newInstance(klass).start();
-	}
+        // 初始化启动引导程序，参考ServerBootstrap的具体实现
+        ClassUtils.newInstance(klass).start();
+    }
 
-	/** 根据启动参数分析加载相应的配置文件 */
-	private Map<String, String> loadProperties(String... args) {
-		// --noark.profiles.active=dev
-		String profiles = null;
-		for (String a : args) {
-			if (a.startsWith(NoarkConstant.NOARK_PROFILES_ACTIVE)) {
-				profiles = a.substring(NoarkConstant.NOARK_PROFILES_ACTIVE.length());
-				break;
-			}
-		}
+    /**
+     * 根据启动参数分析加载相应的配置文件
+     */
+    private Map<String, String> loadProperties(String... args) {
+        // --noark.profiles.active=dev
+        String profiles = null;
+        for (String a : args) {
+            if (a.startsWith(NoarkConstant.NOARK_PROFILES_ACTIVE)) {
+                profiles = a.substring(NoarkConstant.NOARK_PROFILES_ACTIVE.length());
+                break;
+            }
+        }
 
-		// 载入配置文件...
-		NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
-		return loader.loadProperties(profiles);
-	}
+        // 载入配置文件...
+        NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
+        return loader.loadProperties(profiles);
+    }
 }

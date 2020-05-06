@@ -22,8 +22,8 @@ import java.io.Serializable;
  * @since 3.0
  */
 public class DefaultId implements Serializable {
-    private static final long serialVersionUID = -6529401819014260134L;
     public static final DefaultId INSTANCE = new DefaultId();
+    private static final long serialVersionUID = -6529401819014260134L;
 
     private DefaultId() {
     }

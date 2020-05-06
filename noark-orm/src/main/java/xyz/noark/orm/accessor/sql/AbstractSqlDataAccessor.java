@@ -68,11 +68,6 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     @Value(DataModular.DATA_SLOW_QUERY_SQL_MILLIS)
     protected int slowQuerySqlMillis = 0;
     /**
-     * 自动删除表中多余的字段
-     */
-    @Value(DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN)
-    private boolean autoAlterTableDropColumn = false;
-    /**
      * 服务器数据是否智能修正文本字段的长度，默认：true
      */
     @Value(DataModular.DATA_AUTO_ALTER_COLUMN_LENGTH)
@@ -82,6 +77,11 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
      */
     @Value(DataModular.DATA_AUTO_ALTER_EMOJI_COLUMN)
     protected boolean autoAlterEmojiColumn = true;
+    /**
+     * 自动删除表中多余的字段
+     */
+    @Value(DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN)
+    private boolean autoAlterTableDropColumn = false;
 
     public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {
         this.expert = expert;

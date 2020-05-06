@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,53 +13,57 @@
  */
 package xyz.noark.network;
 
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import xyz.noark.network.util.ByteBufUtils;
 import xyz.noark.network.init.WebsocketInitializeHandler;
+import xyz.noark.network.util.ByteBufUtils;
+
+import java.util.List;
 
 /**
  * 协议初始化解码器.
  * <p>
  * <b>这个功能就是用来判定实际使用什么协议.</b>
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class InitializeDecoder extends ByteToMessageDecoder {
-	/** 默认暗号长度为23，为什么是23呢？你来问我啊，不问我就当你是知道的 */
-	private static final int MAX_LENGTH = 23;
-	/** WebSocket握手的协议前缀 */
-	private static final String WEBSOCKET_PREFIX = "GET /";
+    /**
+     * 默认暗号长度为23，为什么是23呢？你来问我啊，不问我就当你是知道的
+     */
+    private static final int MAX_LENGTH = 23;
+    /**
+     * WebSocket握手的协议前缀
+     */
+    private static final String WEBSOCKET_PREFIX = "GET /";
 
-	private final InitializeHandlerManager initializeHandlerManager;
+    private final InitializeHandlerManager initializeHandlerManager;
 
-	public InitializeDecoder(InitializeHandlerManager initializeHandlerManager) {
-		this.initializeHandlerManager = initializeHandlerManager;
-	}
+    public InitializeDecoder(InitializeHandlerManager initializeHandlerManager) {
+        this.initializeHandlerManager = initializeHandlerManager;
+    }
 
-	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		int length = in.readableBytes();
-		if (length > MAX_LENGTH) {
-			length = MAX_LENGTH;
-		}
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        int length = in.readableBytes();
+        if (length > MAX_LENGTH) {
+            length = MAX_LENGTH;
+        }
 
-		// 标记读位置...
-		in.markReaderIndex();
-		String protocol = ByteBufUtils.readString(in, length);
-		if (protocol.startsWith(WEBSOCKET_PREFIX)) {
-			in.resetReaderIndex();
-			protocol = WebsocketInitializeHandler.WEBSOCKET_NAME;
-		}
+        // 标记读位置...
+        in.markReaderIndex();
+        String protocol = ByteBufUtils.readString(in, length);
+        if (protocol.startsWith(WEBSOCKET_PREFIX)) {
+            in.resetReaderIndex();
+            protocol = WebsocketInitializeHandler.WEBSOCKET_NAME;
+        }
 
-		// 处理对应协议相关的解码器
-		initializeHandlerManager.getHandler(protocol).handle(ctx);
+        // 处理对应协议相关的解码器
+        initializeHandlerManager.getHandler(protocol).handle(ctx);
 
-		// 移除自己
-		ctx.pipeline().remove(this.getClass());
-	}
+        // 移除自己
+        ctx.pipeline().remove(this.getClass());
+    }
 }

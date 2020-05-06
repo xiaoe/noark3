@@ -24,6 +24,8 @@ import java.net.SocketAddress;
  */
 public class IpUtils {
 
+    private static final int IP_LOOP_NUM = 3;
+    private static final String LOCAL_IP = "127.0.0.1";
     /**
      * 私有IP：
      * <p>
@@ -37,8 +39,6 @@ public class IpUtils {
     private static long B_END = ipToLong("172.31.255.255");
     private static long C_BEGIN = ipToLong("192.168.0.0");
     private static long C_END = ipToLong("192.168.255.255");
-    private static final int IP_LOOP_NUM = 3;
-    private static final String LOCAL_IP = "127.0.0.1";
 
     /**
      * IP转化为Long类型的数字.

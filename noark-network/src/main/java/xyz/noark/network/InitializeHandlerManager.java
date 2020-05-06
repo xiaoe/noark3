@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,38 +13,40 @@
  */
 package xyz.noark.network;
 
-import java.util.Map;
-
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.network.init.IllegalRequestHandler;
 import xyz.noark.network.init.SocketInitializeHandler;
 
+import java.util.Map;
+
 /**
  * 第一个请求管理类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 @Service
 public class InitializeHandlerManager {
-	/** Socket的接头暗号是否开启，默认是开启状态 */
-	@Value(NetworkConstant.SOCKET_SIGNAL_ACTIVE)
-	private boolean signalActive = true;
+    /**
+     * Socket的接头暗号是否开启，默认是开启状态
+     */
+    @Value(NetworkConstant.SOCKET_SIGNAL_ACTIVE)
+    private boolean signalActive = true;
 
-	@Autowired
-	private Map<String, InitializeHandler> handlers;
-	@Autowired
-	private SocketInitializeHandler socketInitializeHandler;
+    @Autowired
+    private Map<String, InitializeHandler> handlers;
+    @Autowired
+    private SocketInitializeHandler socketInitializeHandler;
 
-	/**
-	 * 获取一个请求处理器.
-	 * 
-	 * @param request 请求标识.
-	 * @return 处理器
-	 */
-	public InitializeHandler getHandler(String request) {
-		return handlers.getOrDefault(request, signalActive ? new IllegalRequestHandler(request) : socketInitializeHandler);
-	}
+    /**
+     * 获取一个请求处理器.
+     *
+     * @param request 请求标识.
+     * @return 处理器
+     */
+    public InitializeHandler getHandler(String request) {
+        return handlers.getOrDefault(request, signalActive ? new IllegalRequestHandler(request) : socketInitializeHandler);
+    }
 }

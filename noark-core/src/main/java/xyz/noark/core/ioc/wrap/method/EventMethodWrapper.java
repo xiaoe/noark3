@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -12,12 +12,6 @@
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
 package xyz.noark.core.ioc.wrap.method;
-
-import java.io.Serializable;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
@@ -29,78 +23,86 @@ import xyz.noark.core.ioc.wrap.param.ObjectParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
 import xyz.noark.reflectasm.MethodAccess;
 
+import java.io.Serializable;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 事件处理方法的包装类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class EventMethodWrapper extends AbstractControllerMethodWrapper implements Comparable<EventMethodWrapper> {
-	private final Class<? extends Event> eventClass;
-	private final ArrayList<ParamWrapper> parameters;
-	private final boolean async;
+    private final Class<? extends Event> eventClass;
+    private final ArrayList<ParamWrapper> parameters;
+    private final boolean async;
 
-	public EventMethodWrapper(MethodAccess methodAccess, Object single, EventMethodDefinition emd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-		super(methodAccess, single, emd.getMethodIndex(), threadGroup, controllerMasterClass.getName(), emd.getOrder(), "event(" + emd.getEventClass().getSimpleName() + ")");
-		this.eventClass = emd.getEventClass();
-		this.printLog = emd.isPrintLog();
-		this.async = emd.isAsync();
+    public EventMethodWrapper(MethodAccess methodAccess, Object single, EventMethodDefinition emd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+        super(methodAccess, single, emd.getMethodIndex(), threadGroup, controllerMasterClass.getName(), emd.getOrder(), "event(" + emd.getEventClass().getSimpleName() + ")");
+        this.eventClass = emd.getEventClass();
+        this.printLog = emd.isPrintLog();
+        this.async = emd.isAsync();
 
-		this.parameters = new ArrayList<>(emd.getParameters().length);
-		Arrays.stream(emd.getParameters()).forEach(v -> buildParamWrapper(v));
-	}
+        this.parameters = new ArrayList<>(emd.getParameters().length);
+        Arrays.stream(emd.getParameters()).forEach(v -> buildParamWrapper(v));
+    }
 
-	/** 构建参数 */
-	private void buildParamWrapper(Parameter parameter) {
-		// 玩家ID
-		if (parameter.isAnnotationPresent(PlayerId.class)) {
-			this.parameters.add(new PlayerIdParamWrapper());
-		}
-		// 无法识别的就当他是一个对象
-		else {
-			this.parameters.add(new ObjectParamWrapper());
-		}
-	}
+    /**
+     * 构建参数
+     */
+    private void buildParamWrapper(Parameter parameter) {
+        // 玩家ID
+        if (parameter.isAnnotationPresent(PlayerId.class)) {
+            this.parameters.add(new PlayerIdParamWrapper());
+        }
+        // 无法识别的就当他是一个对象
+        else {
+            this.parameters.add(new ObjectParamWrapper());
+        }
+    }
 
-	public Object[] analysisParam(Serializable playerId, FixedTimeEvent event) {
-		List<Object> args = new ArrayList<>(parameters.size());
-		for (ParamWrapper parameter : parameters) {
-			args.add(parameter.read(playerId, event));
-		}
-		return args.toArray();
-	}
+    public Object[] analysisParam(Serializable playerId, FixedTimeEvent event) {
+        List<Object> args = new ArrayList<>(parameters.size());
+        for (ParamWrapper parameter : parameters) {
+            args.add(parameter.read(playerId, event));
+        }
+        return args.toArray();
+    }
 
-	public Class<? extends Event> getEventClass() {
-		return eventClass;
-	}
+    public Class<? extends Event> getEventClass() {
+        return eventClass;
+    }
 
-	public boolean isAsync() {
-		return async;
-	}
+    public boolean isAsync() {
+        return async;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
-	@Override
-	public int compareTo(EventMethodWrapper o) {
-		// 相同方式，采用Order排序
-		if (async == o.isAsync()) {
-			return Integer.compare(this.getOrder(), o.getOrder());
-		}
+    @Override
+    public int compareTo(EventMethodWrapper o) {
+        // 相同方式，采用Order排序
+        if (async == o.isAsync()) {
+            return Integer.compare(this.getOrder(), o.getOrder());
+        }
 
-		// 异步情况向后排
-		return async ? 1 : -1;
-	}
+        // 异步情况向后排
+        return async ? 1 : -1;
+    }
 
-	@Override
-	public String toString() {
-		return "EventMethodWrapper [async=" + async + ", method=" + methodAccess.getMethodNames()[methodIndex] + "]";
-	}
+    @Override
+    public String toString() {
+        return "EventMethodWrapper [async=" + async + ", method=" + methodAccess.getMethodNames()[methodIndex] + "]";
+    }
 }

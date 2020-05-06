@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,95 +13,96 @@
  */
 package xyz.noark.core.util;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import xyz.noark.core.annotation.tpl.TplAttr;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import xyz.noark.core.annotation.tpl.TplAttr;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 属性工具类测试.
  *
- * @since 3.2
  * @author 小流氓[176543888@qq.com]
+ * @since 3.2
  */
 public class FieldUtilsTest extends MethodUtilsTest {
 
-	@TplAttr(name = "name")
-	public static String name;
+    @TplAttr(name = "name")
+    public static String name;
 
-	@TplAttr(name = "test1")
-	private int test1;
+    @TplAttr(name = "test1")
+    private int test1;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+    }
 
-	@Before
-	public void setUp() throws Exception {}
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	@Test
-	public void testWriteFieldObjectStringObject() {
-		FieldUtilsTest test = new FieldUtilsTest();
-		FieldUtils.writeField(test, "test1", 1);
-		assertTrue(test.test1 == 1);
+    @Test
+    public void testWriteFieldObjectStringObject() {
+        FieldUtilsTest test = new FieldUtilsTest();
+        FieldUtils.writeField(test, "test1", 1);
+        assertTrue(test.test1 == 1);
 
-		FieldUtils.writeField(test, "test2", 2);
-		assertTrue(test.getTest2() == 2);
-	}
+        FieldUtils.writeField(test, "test2", 2);
+        assertTrue(test.getTest2() == 2);
+    }
 
-	@Test
-	public void testGenGetMethodName() {
-		assertTrue("getTest1".equals(FieldUtils.genGetMethodName(FieldUtils.getField(FieldUtilsTest.class, "test1"))));
-	}
+    @Test
+    public void testGenGetMethodName() {
+        assertTrue("getTest1".equals(FieldUtils.genGetMethodName(FieldUtils.getField(FieldUtilsTest.class, "test1"))));
+    }
 
-	@Test
-	public void testGenSetMethodName() {
-		assertTrue("setTest1".equals(FieldUtils.genSetMethodName(FieldUtils.getField(FieldUtilsTest.class, "test1"))));
-	}
+    @Test
+    public void testGenSetMethodName() {
+        assertTrue("setTest1".equals(FieldUtils.genSetMethodName(FieldUtils.getField(FieldUtilsTest.class, "test1"))));
+    }
 
-	@Test
-	public void testScanAllField() {
-		assertTrue(FieldUtils.scanAllField(FieldUtilsTest.class, Arrays.asList(TplAttr.class)).length == 1);
-	}
+    @Test
+    public void testScanAllField() {
+        assertTrue(FieldUtils.scanAllField(FieldUtilsTest.class, Arrays.asList(TplAttr.class)).length == 1);
+    }
 
-	@Test
-	public void testWriteFieldObjectFieldObject() {
-		FieldUtilsTest test = new FieldUtilsTest();
-		Field field = FieldUtils.getField(FieldUtilsTest.class, "test1");
-		FieldUtils.writeField(test, field, 2);
-		assertTrue(test.test1 == 2);
-	}
+    @Test
+    public void testWriteFieldObjectFieldObject() {
+        FieldUtilsTest test = new FieldUtilsTest();
+        Field field = FieldUtils.getField(FieldUtilsTest.class, "test1");
+        FieldUtils.writeField(test, field, 2);
+        assertTrue(test.test1 == 2);
+    }
 
-	@Test
-	public void testReadField() {
-		FieldUtilsTest test = new FieldUtilsTest();
-		assertTrue(FieldUtils.readField(test, FieldUtils.getField(FieldUtilsTest.class, "test1")).equals(0));
-	}
+    @Test
+    public void testReadField() {
+        FieldUtilsTest test = new FieldUtilsTest();
+        assertTrue(FieldUtils.readField(test, FieldUtils.getField(FieldUtilsTest.class, "test1")).equals(0));
+    }
 
-	@Test
-	public void testGetField() {
-		assertTrue(FieldUtils.getField(FieldUtilsTest.class, "test1") != null);
-		assertTrue(FieldUtils.getField(FieldUtilsTest.class, "test2") != null);
-		assertTrue(FieldUtils.getField(FieldUtilsTest.class, "testx") == null);
-	}
+    @Test
+    public void testGetField() {
+        assertTrue(FieldUtils.getField(FieldUtilsTest.class, "test1") != null);
+        assertTrue(FieldUtils.getField(FieldUtilsTest.class, "test2") != null);
+        assertTrue(FieldUtils.getField(FieldUtilsTest.class, "testx") == null);
+    }
 
-	@Test
-	public void testGetAllField() {
-		assertTrue(!FieldUtils.getAllField(FieldUtilsTest.class).isEmpty());
-	}
+    @Test
+    public void testGetAllField() {
+        assertTrue(!FieldUtils.getAllField(FieldUtilsTest.class).isEmpty());
+    }
 
-	@Test
-	public void testInjectionStaticField() {
-		Map<String, String> config = new HashMap<>(2);
-		config.put("name", "haha");
-		FieldUtils.injectionStaticField(config, FieldUtilsTest.class, String::toString);
-		assertTrue("haha".equals(FieldUtilsTest.name));
-	}
+    @Test
+    public void testInjectionStaticField() {
+        Map<String, String> config = new HashMap<>(2);
+        config.put("name", "haha");
+        FieldUtils.injectionStaticField(config, FieldUtilsTest.class, String::toString);
+        assertTrue("haha".equals(FieldUtilsTest.name));
+    }
 }

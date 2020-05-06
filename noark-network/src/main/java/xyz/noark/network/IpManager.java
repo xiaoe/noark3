@@ -21,31 +21,33 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * 主要用于限制相同IP最大链接数以及黑名单等功能
  *
- * @since 3.3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.3.4
  */
 public class IpManager {
-	/** IP统计计数 */
-	private static final Map<String, Integer> COUNTS = new ConcurrentHashMap<>();
+    /**
+     * IP统计计数
+     */
+    private static final Map<String, Integer> COUNTS = new ConcurrentHashMap<>();
 
-	/**
-	 * 新激活一个通道
-	 *
-	 * @param ip 目标IP
-	 * @return 返回这个IP已激活的IP数量
-	 */
-	public int active(String ip) {
-		return COUNTS.merge(ip, 1, Integer::sum);
-	}
+    /**
+     * 新激活一个通道
+     *
+     * @param ip 目标IP
+     * @return 返回这个IP已激活的IP数量
+     */
+    public int active(String ip) {
+        return COUNTS.merge(ip, 1, Integer::sum);
+    }
 
-	/**
-	 * 断开链接.
-	 * <p>
-	 * 释放这个IP计数
-	 *
-	 * @param ip 目标IP
-	 */
-	public void inactive(String ip) {
-		COUNTS.computeIfPresent(ip, (k, v) -> v > 1 ? v - 1 : null);
-	}
+    /**
+     * 断开链接.
+     * <p>
+     * 释放这个IP计数
+     *
+     * @param ip 目标IP
+     */
+    public void inactive(String ip) {
+        COUNTS.computeIfPresent(ip, (k, v) -> v > 1 ? v - 1 : null);
+    }
 }

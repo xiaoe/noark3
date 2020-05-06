@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,36 +13,36 @@
  */
 package xyz.noark.csv;
 
-import java.util.List;
-
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.game.template.AbstractTemplateLoader;
+
+import java.util.List;
 
 /**
  * CSV格式的模板加载类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class CsvTemplateLoader extends AbstractTemplateLoader {
-	private final Csv parser;
+    private final Csv parser;
 
-	public CsvTemplateLoader(String templatePath) {
-		super(templatePath);
-		this.parser = new Csv();
-	}
+    public CsvTemplateLoader(String templatePath) {
+        super(templatePath);
+        this.parser = new Csv();
+    }
 
-	public CsvTemplateLoader(String templatePath, char separator) {
-		this(templatePath, StringUtils.EMPTY, separator);
-	}
+    public CsvTemplateLoader(String templatePath, char separator) {
+        this(templatePath, StringUtils.EMPTY, separator);
+    }
 
-	public CsvTemplateLoader(String templatePath, String zone, char separator) {
-		super(templatePath, zone);
-		this.parser = new Csv(separator);
-	}
+    public CsvTemplateLoader(String templatePath, String zone, char separator) {
+        super(templatePath, zone);
+        this.parser = new Csv(separator);
+    }
 
-	@Override
-	public <T> List<T> loadAll(Class<T> klass) {
-		return parser.loadAll(templatePath, zone, klass);
-	}
+    @Override
+    public <T> List<T> loadAll(Class<T> klass) {
+        return parser.loadAll(templatePath, zone, klass);
+    }
 }

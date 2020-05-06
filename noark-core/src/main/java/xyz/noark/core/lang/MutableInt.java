@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -18,156 +18,157 @@ package xyz.noark.core.lang;
  * <p>
  * 部分方法实现直接调用(JDK8)Integer类中的静态方法
  *
- * @since 3.2
  * @author 小流氓[176543888@qq.com]
+ * @since 3.2
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
-	private static final long serialVersionUID = 1259910250840168103L;
-	private int value;
+    private static final long serialVersionUID = 1259910250840168103L;
+    private int value;
 
-	public MutableInt() {}
+    public MutableInt() {
+    }
 
-	public MutableInt(int value) {
-		this.value = value;
-	}
+    public MutableInt(int value) {
+        this.value = value;
+    }
 
-	public MutableInt(Number value) {
-		this(value.intValue());
-	}
+    public MutableInt(Number value) {
+        this(value.intValue());
+    }
 
-	public MutableInt(String value) {
-		this.value = Integer.parseInt(value);
-	}
+    public MutableInt(String value) {
+        this.value = Integer.parseInt(value);
+    }
 
-	@Override
-	public Integer getValue() {
-		return Integer.valueOf(value);
-	}
+    @Override
+    public Integer getValue() {
+        return Integer.valueOf(value);
+    }
 
-	@Override
-	public void setValue(Number value) {
-		this.value = value.intValue();
-	}
+    @Override
+    public void setValue(Number value) {
+        this.value = value.intValue();
+    }
 
-	/**
-	 * 设置值，在直接使用此类时，可以不用进行装箱操作
-	 * 
-	 * @param value 值
-	 */
-	public void setValue(int value) {
-		this.value = value;
-	}
+    /**
+     * 设置值，在直接使用此类时，可以不用进行装箱操作
+     *
+     * @param value 值
+     */
+    public void setValue(int value) {
+        this.value = value;
+    }
 
-	@Override
-	public int compareTo(MutableInt anotherInteger) {
-		return Integer.compare(value, anotherInteger.value);
-	}
+    @Override
+    public int compareTo(MutableInt anotherInteger) {
+        return Integer.compare(value, anotherInteger.value);
+    }
 
-	@Override
-	public int intValue() {
-		return value;
-	}
+    @Override
+    public int intValue() {
+        return value;
+    }
 
-	@Override
-	public long longValue() {
-		return value;
-	}
+    @Override
+    public long longValue() {
+        return value;
+    }
 
-	@Override
-	public float floatValue() {
-		return value;
-	}
+    @Override
+    public float floatValue() {
+        return value;
+    }
 
-	@Override
-	public double doubleValue() {
-		return value;
-	}
+    @Override
+    public double doubleValue() {
+        return value;
+    }
 
-	@Override
-	public int hashCode() {
-		return Integer.hashCode(value);
-	}
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(value);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof MutableInt) {
-			return value == ((MutableInt) obj).intValue();
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MutableInt) {
+            return value == ((MutableInt) obj).intValue();
+        }
+        return false;
+    }
 
-	@Override
-	public String toString() {
-		return Integer.toString(value);
-	}
+    @Override
+    public String toString() {
+        return Integer.toString(value);
+    }
 
-	/**
-	 * 获得当前值后进行加一操作.
-	 * <p>
-	 * i++
-	 * 
-	 * @return 获得当前值后进行加一操作
-	 */
-	public final int getAndIncrement() {
-		final int oldValue = value;
-		this.value++;
-		return oldValue;
-	}
+    /**
+     * 获得当前值后进行加一操作.
+     * <p>
+     * i++
+     *
+     * @return 获得当前值后进行加一操作
+     */
+    public final int getAndIncrement() {
+        final int oldValue = value;
+        this.value++;
+        return oldValue;
+    }
 
-	/**
-	 * 获得当前值后进行减一操作.
-	 * <p>
-	 * i--
-	 * 
-	 * @return 获得当前值后进行减一操作
-	 */
-	public final int getAndDecrement() {
-		final int oldValue = value;
-		this.value--;
-		return oldValue;
-	}
+    /**
+     * 获得当前值后进行减一操作.
+     * <p>
+     * i--
+     *
+     * @return 获得当前值后进行减一操作
+     */
+    public final int getAndDecrement() {
+        final int oldValue = value;
+        this.value--;
+        return oldValue;
+    }
 
-	/**
-	 * 获得当前值后进行加法操作.
-	 * 
-	 * @param delta 要加的值
-	 * @return 获得当前值后进行加法操作
-	 */
-	public final int getAndAdd(int delta) {
-		final int oldValue = value;
-		this.value += delta;
-		return oldValue;
-	}
+    /**
+     * 获得当前值后进行加法操作.
+     *
+     * @param delta 要加的值
+     * @return 获得当前值后进行加法操作
+     */
+    public final int getAndAdd(int delta) {
+        final int oldValue = value;
+        this.value += delta;
+        return oldValue;
+    }
 
-	/**
-	 * 先加一再获取.
-	 * <p>
-	 * ++i
-	 * 
-	 * @return 先加一再获取
-	 */
-	public final int incrementAndGet() {
-		return ++value;
-	}
+    /**
+     * 先加一再获取.
+     * <p>
+     * ++i
+     *
+     * @return 先加一再获取
+     */
+    public final int incrementAndGet() {
+        return ++value;
+    }
 
-	/**
-	 * 先减一再获取.
-	 * <p>
-	 * --i
-	 * 
-	 * @return 先减一再获取
-	 */
-	public final int decrementAndGet() {
-		return --value;
-	}
+    /**
+     * 先减一再获取.
+     * <p>
+     * --i
+     *
+     * @return 先减一再获取
+     */
+    public final int decrementAndGet() {
+        return --value;
+    }
 
-	/**
-	 * 加上指定值后再返回.
-	 * 
-	 * @param delta 指定值
-	 * @return 加上指定值后再返回
-	 */
-	public final int addAndGet(int delta) {
-		return value += delta;
-	}
+    /**
+     * 加上指定值后再返回.
+     *
+     * @param delta 指定值
+     * @return 加上指定值后再返回
+     */
+    public final int addAndGet(int delta) {
+        return value += delta;
+    }
 }

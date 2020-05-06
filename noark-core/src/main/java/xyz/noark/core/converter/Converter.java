@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -20,45 +20,45 @@ import java.util.Map;
 /**
  * 转化接口.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public interface Converter<T> {
 
-	/**
-	 * 将一个字符串转化成目标对象
-	 * 
-	 * @param field 类的属性
-	 * @param value 字符串
-	 * @return 目标对象
-	 * @throws Exception 转化字符串时可能出现不可知异常情况
-	 */
-	public T convert(Field field, String value) throws Exception;
+    /**
+     * 将一个字符串转化成目标对象
+     *
+     * @param field 类的属性
+     * @param value 字符串
+     * @return 目标对象
+     * @throws Exception 转化字符串时可能出现不可知异常情况
+     */
+    public T convert(Field field, String value) throws Exception;
 
-	/**
-	 * 将一个字符串转化成目标对象
-	 * 
-	 * @param parameter 方法的参数
-	 * @param value 字符串
-	 * @return 目标对象
-	 * @throws Exception 转化字符串时可能出现不可知异常情况
-	 */
-	public T convert(Parameter parameter, String value) throws Exception;
+    /**
+     * 将一个字符串转化成目标对象
+     *
+     * @param parameter 方法的参数
+     * @param value     字符串
+     * @return 目标对象
+     * @throws Exception 转化字符串时可能出现不可知异常情况
+     */
+    public T convert(Parameter parameter, String value) throws Exception;
 
-	/**
-	 * 将一组字符串转化为目标对象
-	 * 
-	 * @param field 类的属性
-	 * @param data 一组字符串
-	 * @return 目标对象
-	 * @throws Exception 转化字符串时可能出现不可知异常情况
-	 */
-	public T convert(Field field, Map<String, String> data) throws Exception;
+    /**
+     * 将一组字符串转化为目标对象
+     *
+     * @param field 类的属性
+     * @param data  一组字符串
+     * @return 目标对象
+     * @throws Exception 转化字符串时可能出现不可知异常情况
+     */
+    public T convert(Field field, Map<String, String> data) throws Exception;
 
-	/**
-	 * 构建错误提示.
-	 * 
-	 * @return 错误提示
-	 */
-	public String buildErrorMsg();
+    /**
+     * 构建错误提示.
+     *
+     * @return 错误提示
+     */
+    public String buildErrorMsg();
 }

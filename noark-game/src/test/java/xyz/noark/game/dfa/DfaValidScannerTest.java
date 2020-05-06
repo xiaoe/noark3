@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,77 +13,76 @@
  */
 package xyz.noark.game.dfa;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import xyz.noark.core.converter.impl.TimeRangeConverter;
+import xyz.noark.core.lang.TimeRange;
+import xyz.noark.core.lang.ValidTime;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import xyz.noark.core.converter.impl.TimeRangeConverter;
-import xyz.noark.core.lang.TimeRange;
-import xyz.noark.core.lang.ValidTime;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 带有有效时间的DFA算法测试
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 public class DfaValidScannerTest {
-	private DfaValidScanner scanner;
+    private DfaValidScanner scanner;
 
-	@Before
-	public void setUp() throws Exception {
-		TimeRangeConverter converter = new TimeRangeConverter();
-		TimeRange timeRange = converter.convert("[*][6][3-6][*][00:00-23:59:59:999]");
-		List<DfaValidWord> sensitivewords = new ArrayList<DfaValidWord>();
-		// 2019.6.3新增屏蔽词：
-		// 2019年6月3日起至2019年6月6日24点，需要单个屏蔽的敏感词：8、9、八、九、捌、玖、eight、nine、6、4、六、四、陆、肆、six、four
-		sensitivewords.add(new DfaValidWordImpl("淘宝", null));
-		sensitivewords.add(new DfaValidWordImpl("交易", null));
-		sensitivewords.add(new DfaValidWordImpl("89", timeRange));
-		sensitivewords.add(new DfaValidWordImpl("八", timeRange));
-		sensitivewords.add(new DfaValidWordImpl("九", timeRange));
-		sensitivewords.add(new DfaValidWordImpl("eight", timeRange));
-		sensitivewords.add(new DfaValidWordImpl("nine", timeRange));
-		sensitivewords.add(new DfaValidWordImpl("64", timeRange));
-		sensitivewords.add(new DfaValidWordImpl("eightnine", timeRange));
-		this.scanner = new DfaValidScanner(sensitivewords);
-	}
+    @Before
+    public void setUp() throws Exception {
+        TimeRangeConverter converter = new TimeRangeConverter();
+        TimeRange timeRange = converter.convert("[*][6][3-6][*][00:00-23:59:59:999]");
+        List<DfaValidWord> sensitivewords = new ArrayList<DfaValidWord>();
+        // 2019.6.3新增屏蔽词：
+        // 2019年6月3日起至2019年6月6日24点，需要单个屏蔽的敏感词：8、9、八、九、捌、玖、eight、nine、6、4、六、四、陆、肆、six、four
+        sensitivewords.add(new DfaValidWordImpl("淘宝", null));
+        sensitivewords.add(new DfaValidWordImpl("交易", null));
+        sensitivewords.add(new DfaValidWordImpl("89", timeRange));
+        sensitivewords.add(new DfaValidWordImpl("八", timeRange));
+        sensitivewords.add(new DfaValidWordImpl("九", timeRange));
+        sensitivewords.add(new DfaValidWordImpl("eight", timeRange));
+        sensitivewords.add(new DfaValidWordImpl("nine", timeRange));
+        sensitivewords.add(new DfaValidWordImpl("64", timeRange));
+        sensitivewords.add(new DfaValidWordImpl("eightnine", timeRange));
+        this.scanner = new DfaValidScanner(sensitivewords);
+    }
 
-	@Test
-	public void testDfaValidScannerStringListOfDfaValidWord() {
-		LocalDate today = LocalDate.now();
-		boolean isJune = today.getMonthValue() == 6;
-		boolean isDayIn36 = 3 <= today.getDayOfMonth() || today.getDayOfMonth() <= 6;
-		if (isJune && isDayIn36) {
-			assertTrue(scanner.contains("64"));
-		} else {
-			assertFalse(scanner.contains("64"));
-		}
-	}
+    @Test
+    public void testDfaValidScannerStringListOfDfaValidWord() {
+        LocalDate today = LocalDate.now();
+        boolean isJune = today.getMonthValue() == 6;
+        boolean isDayIn36 = 3 <= today.getDayOfMonth() || today.getDayOfMonth() <= 6;
+        if (isJune && isDayIn36) {
+            assertTrue(scanner.contains("64"));
+        } else {
+            assertFalse(scanner.contains("64"));
+        }
+    }
 
-	class DfaValidWordImpl implements DfaValidWord {
-		private String text;
-		private ValidTime validTime;
+    class DfaValidWordImpl implements DfaValidWord {
+        private String text;
+        private ValidTime validTime;
 
-		public DfaValidWordImpl(String text, ValidTime validTime) {
-			this.text = text;
-			this.validTime = validTime;
-		}
+        public DfaValidWordImpl(String text, ValidTime validTime) {
+            this.text = text;
+            this.validTime = validTime;
+        }
 
-		@Override
-		public String text() {
-			return text;
-		}
+        @Override
+        public String text() {
+            return text;
+        }
 
-		@Override
-		public ValidTime validTime() {
-			return validTime;
-		}
-	}
+        @Override
+        public ValidTime validTime() {
+            return validTime;
+        }
+    }
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,28 +13,28 @@
  */
 package xyz.noark.core.ioc.definition.field;
 
+import xyz.noark.core.ioc.IocMaking;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.stream.Collectors;
-
-import xyz.noark.core.ioc.IocMaking;
 
 /**
  * List类型的注入.
  * <p>
  * 所有实现此接口或继承此类的都算.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class ListFieldDefinition extends DefaultFieldDefinition {
 
-	public ListFieldDefinition(Field field, boolean required) {
-		super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0], required);
-	}
+    public ListFieldDefinition(Field field, boolean required) {
+        super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0], required);
+    }
 
-	@Override
-	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-		return making.findAllImpl(fieldClass).stream().sorted((b1, b2) -> b1.getOrder() - b2.getOrder()).map(b -> b.getSingle()).collect(Collectors.toList());
-	}
+    @Override
+    protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
+        return making.findAllImpl(fieldClass).stream().sorted((b1, b2) -> b1.getOrder() - b2.getOrder()).map(b -> b.getSingle()).collect(Collectors.toList());
+    }
 }

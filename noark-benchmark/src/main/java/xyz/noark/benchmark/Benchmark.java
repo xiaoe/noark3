@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -16,34 +16,34 @@ package xyz.noark.benchmark;
 /**
  * 性能基准测试.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class Benchmark {
-	private static final int PREHEATING_TIMES = 100;
-	private final int times;
+    private static final int PREHEATING_TIMES = 100;
+    private final int times;
 
-	public Benchmark() {
-		this(100_0000);
-	}
+    public Benchmark() {
+        this(100_0000);
+    }
 
-	public Benchmark(int times) {
-		this.times = times;
-		System.out.println("Benchmark Test times:" + times + "\n");
-	}
+    public Benchmark(int times) {
+        this.times = times;
+        System.out.println("Benchmark Test times:" + times + "\n");
+    }
 
-	public void doSomething(String name, BenchmarkCallback callback) throws Exception {
-		// 预热100次
-		for (int i = 0; i < PREHEATING_TIMES; i++) {
-			callback.doSomething();
-		}
+    public void doSomething(String name, BenchmarkCallback callback) throws Exception {
+        // 预热100次
+        for (int i = 0; i < PREHEATING_TIMES; i++) {
+            callback.doSomething();
+        }
 
-		// 计时，跑测试
-		long start = System.nanoTime();
-		for (int i = 0; i < times; i++) {
-			callback.doSomething();
-		}
-		long end = System.nanoTime();
-		System.out.println(name + "\t" + (end - start) / 100_0000f + " ms");
-	}
+        // 计时，跑测试
+        long start = System.nanoTime();
+        for (int i = 0; i < times; i++) {
+            callback.doSomething();
+        }
+        long end = System.nanoTime();
+        System.out.println(name + "\t" + (end - start) / 100_0000f + " ms");
+    }
 }

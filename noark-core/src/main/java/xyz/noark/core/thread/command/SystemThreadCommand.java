@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,29 +13,29 @@
  */
 package xyz.noark.core.thread.command;
 
-import java.io.Serializable;
-
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
+
+import java.io.Serializable;
 
 /**
  * 系统线程处理命令.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class SystemThreadCommand extends AbstractThreadCommand {
-	private final String module;
+    private final String module;
 
-	public SystemThreadCommand(String module, AbstractControllerMethodWrapper method, Object... args) {
-		this(null, module, method, args);
-	}
+    public SystemThreadCommand(String module, AbstractControllerMethodWrapper method, Object... args) {
+        this(null, module, method, args);
+    }
 
-	public SystemThreadCommand(Serializable playerId, String module, AbstractControllerMethodWrapper method, Object... args) {
-		super(method, playerId, args);
-		this.module = module;
-	}
+    public SystemThreadCommand(Serializable playerId, String module, AbstractControllerMethodWrapper method, Object... args) {
+        super(method, playerId, args);
+        this.module = module;
+    }
 
-	public String getModule() {
-		return module;
-	}
+    public String getModule() {
+        return module;
+    }
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,35 +13,34 @@
  */
 package xyz.noark.redis;
 
-import static xyz.noark.log.LogHelper.logger;
-
 import com.alibaba.fastjson.JSON;
-
 import xyz.noark.game.bi.AbstractReportService;
 import xyz.noark.game.bi.ReportData;
 import xyz.noark.game.bi.ReportService;
 
+import static xyz.noark.log.LogHelper.logger;
+
 /**
  * 利用Redis的订阅发布实现BI数据上报实现
  *
- * @since 3.3.3
  * @author 小流氓[176543888@qq.com]
+ * @since 3.3.3
  */
 public class RedisPublishReportImpl extends AbstractReportService implements ReportService {
 
-	private final Redis redis;
+    private final Redis redis;
 
-	public RedisPublishReportImpl(Redis redis) {
-		this.redis = redis;
-	}
+    public RedisPublishReportImpl(Redis redis) {
+        this.redis = redis;
+    }
 
-	@Override
-	public void report(ReportData data) {
-		if (reportActive) {
-			final String channel = data.channel();
-			final String json = JSON.toJSONString(data.getData());
-			logger.info("[BI]{}={}", channel, json);
-			redis.publish(channel, json);
-		}
-	}
+    @Override
+    public void report(ReportData data) {
+        if (reportActive) {
+            final String channel = data.channel();
+            final String json = JSON.toJSONString(data.getData());
+            logger.info("[BI]{}={}", channel, json);
+            redis.publish(channel, json);
+        }
+    }
 }

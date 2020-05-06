@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,47 +13,47 @@
  */
 package xyz.noark.core.ioc.demo;
 
-import java.util.List;
-import java.util.Map;
-
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 背包服务.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 @Service
 public class BagService {
 
-	@Autowired
-	private ItemService itemService;
-	@Autowired
-	private VipService vipService;
-	@Autowired
-	private Map<String, AbstractCommand> abstractCommands;
-	@Autowired
-	private List<VipService> commandList;
+    @Autowired
+    private ItemService itemService;
+    @Autowired
+    private VipService vipService;
+    @Autowired
+    private Map<String, AbstractCommand> abstractCommands;
+    @Autowired
+    private List<VipService> commandList;
 
-	public void test() {
-		itemService.addItem("123456");
-	}
+    public void test() {
+        itemService.addItem("123456");
+    }
 
-	public ItemService getItemService() {
-		return itemService;
-	}
+    public ItemService getItemService() {
+        return itemService;
+    }
 
-	public VipService getVipService() {
-		return vipService;
-	}
+    public VipService getVipService() {
+        return vipService;
+    }
 
-	public Map<String, AbstractCommand> getCommands() {
-		return abstractCommands;
-	}
+    public Map<String, AbstractCommand> getCommands() {
+        return abstractCommands;
+    }
 
-	public List<VipService> getCommandList() {
-		return commandList;
-	}
+    public List<VipService> getCommandList() {
+        return commandList;
+    }
 }

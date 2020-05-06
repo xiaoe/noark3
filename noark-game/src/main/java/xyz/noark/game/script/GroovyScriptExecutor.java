@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -18,16 +18,16 @@ package xyz.noark.game.script;
  * <p>
  * 游戏中可复制此类，在此类中编写，然后复制去后台脚本执行中推给各服... <br>
  * 脚本功能也是非常强大的，关键时刻可拯救世界，请小心使用，不然会死人了，因为他也有毁灭世界的能力...
- * 
- * @since 3.0
+ *
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class GroovyScriptExecutor implements GroovyScript {
 
-	@Override
-	public String execute() {
-		// 做你想做的事....
+    @Override
+    public String execute() {
+        // 做你想做的事....
 
-		return "OK";
-	}
+        return "OK";
+    }
 }

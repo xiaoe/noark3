@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,55 +13,55 @@
  */
 package xyz.noark.core.ioc.definition.method;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-
 import xyz.noark.core.annotation.controller.HttpHandler;
 import xyz.noark.core.annotation.controller.PrivateApi;
 import xyz.noark.core.annotation.controller.PublicApi;
 import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.reflectasm.MethodAccess;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+
 /**
  * HTTP请求方法的定义.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class HttpMethodDefinition extends SimpleMethodDefinition {
-	private final HttpHandler httpHandler;
-	private final Parameter[] parameters;
-	private final ResponseBody responseBody;
-	private final boolean publicApi;
-	private final boolean privateApi;
+    private final HttpHandler httpHandler;
+    private final Parameter[] parameters;
+    private final ResponseBody responseBody;
+    private final boolean publicApi;
+    private final boolean privateApi;
 
-	public HttpMethodDefinition(MethodAccess methodAccess, Method method, HttpHandler httpHandler) {
-		super(methodAccess, method);
-		this.httpHandler = httpHandler;
-		this.parameters = method.getParameters();
-		this.responseBody = method.getAnnotation(ResponseBody.class);
-		this.publicApi = method.isAnnotationPresent(PublicApi.class);
-		this.privateApi = method.isAnnotationPresent(PrivateApi.class);
-	}
+    public HttpMethodDefinition(MethodAccess methodAccess, Method method, HttpHandler httpHandler) {
+        super(methodAccess, method);
+        this.httpHandler = httpHandler;
+        this.parameters = method.getParameters();
+        this.responseBody = method.getAnnotation(ResponseBody.class);
+        this.publicApi = method.isAnnotationPresent(PublicApi.class);
+        this.privateApi = method.isAnnotationPresent(PrivateApi.class);
+    }
 
-	public String uri() {
-		return httpHandler.uri();
-	}
+    public String uri() {
+        return httpHandler.uri();
+    }
 
-	@Override
-	public Parameter[] getParameters() {
-		return parameters;
-	}
+    @Override
+    public Parameter[] getParameters() {
+        return parameters;
+    }
 
-	public ResponseBody getResponseBody() {
-		return responseBody;
-	}
+    public ResponseBody getResponseBody() {
+        return responseBody;
+    }
 
-	public boolean isPublicApi() {
-		return publicApi;
-	}
+    public boolean isPublicApi() {
+        return publicApi;
+    }
 
-	public boolean isPrivateApi() {
-		return privateApi;
-	}
+    public boolean isPrivateApi() {
+        return privateApi;
+    }
 }

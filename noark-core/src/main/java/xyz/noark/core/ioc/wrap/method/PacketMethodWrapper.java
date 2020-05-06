@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,6 +13,15 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
+import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.ioc.wrap.param.*;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
+import xyz.noark.reflectasm.MethodAccess;
+
 import java.io.Serializable;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -21,185 +30,180 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
 
-import xyz.noark.core.annotation.PlayerId;
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
-import xyz.noark.core.ioc.wrap.ParamWrapper;
-import xyz.noark.core.ioc.wrap.param.ByteArrayParamWrapper;
-import xyz.noark.core.ioc.wrap.param.NetworkPacketParamWrapper;
-import xyz.noark.core.ioc.wrap.param.PacketParamWrapper;
-import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
-import xyz.noark.core.ioc.wrap.param.SessionParamWrapper;
-import xyz.noark.core.network.NetworkPacket;
-import xyz.noark.core.network.Session;
-import xyz.noark.reflectasm.MethodAccess;
-
 /**
  * 封包处理方法包装类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
-	private final Serializable opcode;
-	private final boolean inner;
-	private final Set<Session.State> stateSet;
-	private final boolean allState;
-	/** 串行执行队列ID */
-	private final String queueId;
-	private final ArrayList<ParamWrapper> parameters;
-	/** 调用总次数 */
-	private final LongAdder callNum = new LongAdder();
+    private final Serializable opcode;
+    private final boolean inner;
+    private final Set<Session.State> stateSet;
+    private final boolean allState;
+    /**
+     * 串行执行队列ID
+     */
+    private final String queueId;
+    private final ArrayList<ParamWrapper> parameters;
+    /**
+     * 调用总次数
+     */
+    private final LongAdder callNum = new LongAdder();
 
-	/** 当前方法是否已废弃使用. */
-	private boolean deprecated = false;
+    /**
+     * 当前方法是否已废弃使用.
+     */
+    private boolean deprecated = false;
 
-	public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass, String queueId) {
-		super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocol(opcode=" + md.getOpcode() + ")");
-		this.opcode = md.getOpcode();
-		this.inner = md.isInnerPacket();
-		this.printLog = md.isPrintLog();
-		this.stateSet = md.getStateSet();
-		this.allState = stateSet.contains(Session.State.ALL);
-		this.deprecated = md.isDeprecated();
-		this.queueId = queueId;
+    public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass, String queueId) {
+        super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocol(opcode=" + md.getOpcode() + ")");
+        this.opcode = md.getOpcode();
+        this.inner = md.isInnerPacket();
+        this.printLog = md.isPrintLog();
+        this.stateSet = md.getStateSet();
+        this.allState = stateSet.contains(Session.State.ALL);
+        this.deprecated = md.isDeprecated();
+        this.queueId = queueId;
 
-		this.parameters = new ArrayList<>(md.getParameters().length);
-		Arrays.stream(md.getParameters()).forEach(v -> buildParamWrapper(v));
-	}
+        this.parameters = new ArrayList<>(md.getParameters().length);
+        Arrays.stream(md.getParameters()).forEach(v -> buildParamWrapper(v));
+    }
 
-	/** 构建参数 */
-	private void buildParamWrapper(Parameter parameter) {
-		// Session
-		if (Session.class.isAssignableFrom(parameter.getType())) {
-			this.parameters.add(new SessionParamWrapper());
-		}
-		// 玩家ID
-		else if (parameter.isAnnotationPresent(PlayerId.class)) {
-			this.parameters.add(new PlayerIdParamWrapper());
-		}
-		// byte[]
-		else if (parameter.getType().equals(byte[].class)) {
-			this.parameters.add(new ByteArrayParamWrapper());
-		}
-		// 封包(特别情况需要这个封包里的参数，留给有需要的人吧...)
-		else if (NetworkPacket.class.isAssignableFrom(parameter.getType())) {
-			this.parameters.add(new NetworkPacketParamWrapper());
-		}
-		// 无法识别的只能依靠Session内置解码器来转化了.
-		else {
-			this.parameters.add(new PacketParamWrapper(parameter.getType()));
-		}
-	}
+    /**
+     * 构建参数
+     */
+    private void buildParamWrapper(Parameter parameter) {
+        // Session
+        if (Session.class.isAssignableFrom(parameter.getType())) {
+            this.parameters.add(new SessionParamWrapper());
+        }
+        // 玩家ID
+        else if (parameter.isAnnotationPresent(PlayerId.class)) {
+            this.parameters.add(new PlayerIdParamWrapper());
+        }
+        // byte[]
+        else if (parameter.getType().equals(byte[].class)) {
+            this.parameters.add(new ByteArrayParamWrapper());
+        }
+        // 封包(特别情况需要这个封包里的参数，留给有需要的人吧...)
+        else if (NetworkPacket.class.isAssignableFrom(parameter.getType())) {
+            this.parameters.add(new NetworkPacketParamWrapper());
+        }
+        // 无法识别的只能依靠Session内置解码器来转化了.
+        else {
+            this.parameters.add(new PacketParamWrapper(parameter.getType()));
+        }
+    }
 
-	/**
-	 * 分析参数.
-	 * 
-	 * @param session Session对象
-	 * @param packet 封包
-	 * @return 参数列表
-	 */
-	public Object[] analysisParam(Session session, NetworkPacket packet) {
-		List<Object> args = new ArrayList<>(parameters.size());
-		for (ParamWrapper parameter : parameters) {
-			args.add(parameter.read(session, packet));
-		}
-		return args.toArray();
-	}
+    /**
+     * 分析参数.
+     *
+     * @param session Session对象
+     * @param packet  封包
+     * @return 参数列表
+     */
+    public Object[] analysisParam(Session session, NetworkPacket packet) {
+        List<Object> args = new ArrayList<>(parameters.size());
+        for (ParamWrapper parameter : parameters) {
+            args.add(parameter.read(session, packet));
+        }
+        return args.toArray();
+    }
 
-	/**
-	 * 分析参数.
-	 * 
-	 * @param playerId 玩家ID
-	 * @param protocol 协议对象
-	 * @return 参数列表
-	 */
-	public Object[] analysisParam(Serializable playerId, Object protocol) {
-		List<Object> args = new ArrayList<>(parameters.size());
-		for (ParamWrapper parameter : parameters) {
-			args.add(parameter.read(playerId, protocol));
-		}
-		return args.toArray();
-	}
+    /**
+     * 分析参数.
+     *
+     * @param playerId 玩家ID
+     * @param protocol 协议对象
+     * @return 参数列表
+     */
+    public Object[] analysisParam(Serializable playerId, Object protocol) {
+        List<Object> args = new ArrayList<>(parameters.size());
+        for (ParamWrapper parameter : parameters) {
+            args.add(parameter.read(playerId, protocol));
+        }
+        return args.toArray();
+    }
 
-	/**
-	 * 判定当前封包处理方法是否被废弃使用.
-	 * 
-	 * @return 如果被废弃返回true，否则返回false
-	 */
-	public boolean isDeprecated() {
-		return deprecated;
-	}
+    /**
+     * 判定当前封包处理方法是否被废弃使用.
+     *
+     * @return 如果被废弃返回true，否则返回false
+     */
+    public boolean isDeprecated() {
+        return deprecated;
+    }
 
-	/**
-	 * 设置当前封包处理方法是否被废弃使用.
-	 * 
-	 * @param deprecated 是否被废弃
-	 */
-	public void setDeprecated(boolean deprecated) {
-		this.deprecated = deprecated;
-	}
+    /**
+     * 设置当前封包处理方法是否被废弃使用.
+     *
+     * @param deprecated 是否被废弃
+     */
+    public void setDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
+    }
 
-	/**
-	 * 获取封包编号.
-	 * 
-	 * @return 封包编号
-	 */
-	public Serializable getOpcode() {
-		return opcode;
-	}
+    /**
+     * 获取封包编号.
+     *
+     * @return 封包编号
+     */
+    public Serializable getOpcode() {
+        return opcode;
+    }
 
-	/**
-	 * 是否为内部指令.
-	 * <p>
-	 * 如果是内部指令，客户端过来的封包是不可以调用此方法的.
-	 * 
-	 * @return 是否为内部指令
-	 */
-	public boolean isInner() {
-		return inner;
-	}
+    /**
+     * 是否为内部指令.
+     * <p>
+     * 如果是内部指令，客户端过来的封包是不可以调用此方法的.
+     *
+     * @return 是否为内部指令
+     */
+    public boolean isInner() {
+        return inner;
+    }
 
-	/**
-	 * 当前入口的状态是All
-	 * 
-	 * @return 状态是All
-	 */
-	public boolean isAllState() {
-		return allState;
-	}
+    /**
+     * 当前入口的状态是All
+     *
+     * @return 状态是All
+     */
+    public boolean isAllState() {
+        return allState;
+    }
 
-	/**
-	 * 获取当前方法在什么Session状态才可以被执行.
-	 * 
-	 * @return 可执行的Session状态集合
-	 */
-	public Set<Session.State> getStateSet() {
-		return stateSet;
-	}
+    /**
+     * 获取当前方法在什么Session状态才可以被执行.
+     *
+     * @return 可执行的Session状态集合
+     */
+    public Set<Session.State> getStateSet() {
+        return stateSet;
+    }
 
-	/**
-	 * 调用次数自增
-	 */
-	public void incrCallNum() {
-		callNum.increment();
-	}
+    /**
+     * 调用次数自增
+     */
+    public void incrCallNum() {
+        callNum.increment();
+    }
 
-	/**
-	 * 获取当前被调用的次数.
-	 * 
-	 * @return 调用的次数
-	 */
-	public long getCallNum() {
-		return callNum.longValue();
-	}
+    /**
+     * 获取当前被调用的次数.
+     *
+     * @return 调用的次数
+     */
+    public long getCallNum() {
+        return callNum.longValue();
+    }
 
-	/**
-	 * 获取串型队列ID
-	 * 
-	 * @return 串型队列ID
-	 */
-	public String getQueueId() {
-		return queueId;
-	}
+    /**
+     * 获取串型队列ID
+     *
+     * @return 串型队列ID
+     */
+    public String getQueueId() {
+        return queueId;
+    }
 }

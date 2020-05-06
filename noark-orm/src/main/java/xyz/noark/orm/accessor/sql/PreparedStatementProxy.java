@@ -40,13 +40,13 @@ public class PreparedStatementProxy {
      */
     private final List<List<Object>> batchParameterList = new LinkedList<>();
     /**
-     * 非批量的参数列表
-     */
-    private List<Object> parameters = new LinkedList<>();
-    /**
      * 记录本次存档每个字段的长度
      */
     private final Map<String, Integer> columnMaxLenMap;
+    /**
+     * 非批量的参数列表
+     */
+    private List<Object> parameters = new LinkedList<>();
 
     public PreparedStatementProxy(PreparedStatement pstmt, boolean statementParameterSetLogEnable, boolean autoAlterColumnLength, Map<String, Integer> columnMaxLenMap) {
         this.pstmt = pstmt;

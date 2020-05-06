@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,33 +13,33 @@
  */
 package xyz.noark.game.monitor;
 
+import xyz.noark.core.thread.MonitorThreadPool;
+import xyz.noark.core.thread.NamedThreadFactory;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import xyz.noark.core.thread.MonitorThreadPool;
-import xyz.noark.core.thread.NamedThreadFactory;
-
 /**
  * 监控服务管理器.
  *
- * @since 3.1
  * @author 小流氓[176543888@qq.com]
+ * @since 3.1
  */
 public class MonitorManager implements MonitorThreadPool {
-	private static final int POOL_SIZE = 1;
-	private final ScheduledExecutorService scheduledExecutor;
+    private static final int POOL_SIZE = 1;
+    private final ScheduledExecutorService scheduledExecutor;
 
-	public MonitorManager() {
-		this.scheduledExecutor = new ScheduledThreadPoolExecutor(POOL_SIZE, new NamedThreadFactory("monitor", false));
-	}
+    public MonitorManager() {
+        this.scheduledExecutor = new ScheduledThreadPoolExecutor(POOL_SIZE, new NamedThreadFactory("monitor", false));
+    }
 
-	@Override
-	public ExecutorService getMonitorService() {
-		return scheduledExecutor;
-	}
+    @Override
+    public ExecutorService getMonitorService() {
+        return scheduledExecutor;
+    }
 
-	public void addMonitorService(AbstractMonitorService abstractMonitorService) {
-		scheduledExecutor.scheduleWithFixedDelay(abstractMonitorService, abstractMonitorService.getInitialDelay(), abstractMonitorService.getDelay(), abstractMonitorService.getUnit());
-	}
+    public void addMonitorService(AbstractMonitorService abstractMonitorService) {
+        scheduledExecutor.scheduleWithFixedDelay(abstractMonitorService, abstractMonitorService.getInitialDelay(), abstractMonitorService.getDelay(), abstractMonitorService.getUnit());
+    }
 }

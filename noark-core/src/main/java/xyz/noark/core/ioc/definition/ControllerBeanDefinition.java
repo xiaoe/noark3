@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,18 +13,9 @@
  */
 package xyz.noark.core.ioc.definition;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.ModuleController;
-import xyz.noark.core.annotation.controller.CommandMapping;
-import xyz.noark.core.annotation.controller.EventListener;
-import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.core.annotation.controller.HttpHandler;
-import xyz.noark.core.annotation.controller.PacketMapping;
-import xyz.noark.core.annotation.controller.Scheduled;
+import xyz.noark.core.annotation.controller.*;
 import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
@@ -40,102 +31,120 @@ import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.util.StringUtils;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 /**
  * 控制器的Bean定义描述类.
  *
- * @since 3.0
  * @author 小流氓[176543888@qq.com]
+ * @since 3.0
  */
 public class ControllerBeanDefinition extends DefaultBeanDefinition {
-	/** 执行线程组 */
-	private final ExecThreadGroup threadGroup;
-	/** 控制器隶属哪个主控制器 */
-	private final Class<?> controllerMasterClass;
-	/** 串行执行队列ID */
-	private final String queueId;
+    /**
+     * 执行线程组
+     */
+    private final ExecThreadGroup threadGroup;
+    /**
+     * 控制器隶属哪个主控制器
+     */
+    private final Class<?> controllerMasterClass;
+    /**
+     * 串行执行队列ID
+     */
+    private final String queueId;
 
-	private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
-	private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
-	private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
-	private final ArrayList<ScheduledMethodDefinition> smds = new ArrayList<>();
+    private final ArrayList<PacketMethodDefinition> pmds = new ArrayList<>();
+    private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
+    private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
+    private final ArrayList<ScheduledMethodDefinition> smds = new ArrayList<>();
 
-	public ControllerBeanDefinition(Class<?> klass, Controller controller) {
-		this(klass, controller.threadGroup(), controller.value(), klass);
-	}
+    public ControllerBeanDefinition(Class<?> klass, Controller controller) {
+        this(klass, controller.threadGroup(), controller.value(), klass);
+    }
 
-	public ControllerBeanDefinition(Class<?> klass, ModuleController controller) {
-		this(klass, ExecThreadGroup.ModuleThreadGroup, StringUtils.EMPTY, controller.master());
-	}
+    public ControllerBeanDefinition(Class<?> klass, ModuleController controller) {
+        this(klass, ExecThreadGroup.ModuleThreadGroup, StringUtils.EMPTY, controller.master());
+    }
 
-	private ControllerBeanDefinition(Class<?> klass, ExecThreadGroup threadGroup, String queueId, Class<?> controllerMasterClass) {
-		super(klass);
-		this.queueId = queueId;
-		this.threadGroup = threadGroup;
-		this.controllerMasterClass = controllerMasterClass;
-	}
+    private ControllerBeanDefinition(Class<?> klass, ExecThreadGroup threadGroup, String queueId, Class<?> controllerMasterClass) {
+        super(klass);
+        this.queueId = queueId;
+        this.threadGroup = threadGroup;
+        this.controllerMasterClass = controllerMasterClass;
+    }
 
-	@Override
-	protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
-		// 客户端过来的协议入口.
-		if (annotationType == PacketMapping.class) {
-			pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
-		}
-		// 客户端过来的协议入口.
-		else if (annotationType == CommandMapping.class) {
-			pmds.add(new PacketMethodDefinition(methodAccess, method, CommandMapping.class.cast(annotation)));
-		}
-		// 事件监听
-		else if (annotationType == EventListener.class) {
-			emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation), this));
-		}
-		// HTTP服务
-		else if (annotationType == HttpHandler.class) {
-			hmds.add(new HttpMethodDefinition(methodAccess, method, HttpHandler.class.cast(annotation)));
-		}
-		// 延迟任务
-		else if (annotationType == Scheduled.class) {
-			smds.add(new ScheduledMethodDefinition(methodAccess, method, Scheduled.class.cast(annotation)));
-		}
-		// 其他的交给父类去处理
-		else {
-			super.analysisMethodByAnnotation(annotationType, annotation, method);
-		}
-	}
+    @Override
+    protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
+        // 客户端过来的协议入口.
+        if (annotationType == PacketMapping.class) {
+            pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
+        }
+        // 客户端过来的协议入口.
+        else if (annotationType == CommandMapping.class) {
+            pmds.add(new PacketMethodDefinition(methodAccess, method, CommandMapping.class.cast(annotation)));
+        }
+        // 事件监听
+        else if (annotationType == EventListener.class) {
+            emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation), this));
+        }
+        // HTTP服务
+        else if (annotationType == HttpHandler.class) {
+            hmds.add(new HttpMethodDefinition(methodAccess, method, HttpHandler.class.cast(annotation)));
+        }
+        // 延迟任务
+        else if (annotationType == Scheduled.class) {
+            smds.add(new ScheduledMethodDefinition(methodAccess, method, Scheduled.class.cast(annotation)));
+        }
+        // 其他的交给父类去处理
+        else {
+            super.analysisMethodByAnnotation(annotationType, annotation, method);
+        }
+    }
 
-	@Override
-	public void doAnalysisFunction(NoarkIoc noarkIoc) {
-		super.doAnalysisFunction(noarkIoc);
+    @Override
+    public void doAnalysisFunction(NoarkIoc noarkIoc) {
+        super.doAnalysisFunction(noarkIoc);
 
-		this.doAnalysisPacketHandler(noarkIoc);
+        this.doAnalysisPacketHandler(noarkIoc);
 
-		this.doAnalysisEventHandler(noarkIoc);
+        this.doAnalysisEventHandler(noarkIoc);
 
-		this.doAnalysisHttpHandler(noarkIoc);
+        this.doAnalysisHttpHandler(noarkIoc);
 
-		this.doAnalysisScheduledHandler(noarkIoc);
-	}
+        this.doAnalysisScheduledHandler(noarkIoc);
+    }
 
-	/** 分析延迟任务处理入口. */
-	private void doAnalysisScheduledHandler(NoarkIoc noarkIoc) {
-		final ScheduledMethodManager manager = ScheduledMethodManager.getInstance();
-		smds.forEach(smd -> manager.resetScheduledHandler(new ScheduledMethodWrapper(methodAccess, single, smd, threadGroup, controllerMasterClass)));
-	}
+    /**
+     * 分析延迟任务处理入口.
+     */
+    private void doAnalysisScheduledHandler(NoarkIoc noarkIoc) {
+        final ScheduledMethodManager manager = ScheduledMethodManager.getInstance();
+        smds.forEach(smd -> manager.resetScheduledHandler(new ScheduledMethodWrapper(methodAccess, single, smd, threadGroup, controllerMasterClass)));
+    }
 
-	/** 分析HTTP处理入口. */
-	private void doAnalysisHttpHandler(NoarkIoc noarkIoc) {
-		final HttpMethodManager manager = HttpMethodManager.getInstance();
-		hmds.forEach(hmd -> manager.resetHttpHandler(new HttpMethodWrapper(methodAccess, single, hmd, threadGroup, controllerMasterClass)));
-	}
+    /**
+     * 分析HTTP处理入口.
+     */
+    private void doAnalysisHttpHandler(NoarkIoc noarkIoc) {
+        final HttpMethodManager manager = HttpMethodManager.getInstance();
+        hmds.forEach(hmd -> manager.resetHttpHandler(new HttpMethodWrapper(methodAccess, single, hmd, threadGroup, controllerMasterClass)));
+    }
 
-	/** 分析事件处理入口. */
-	private void doAnalysisEventHandler(NoarkIoc ioc) {
-		final EventMethodManager manager = EventMethodManager.getInstance();
-		emds.forEach(emd -> manager.resetEventHandler(new EventMethodWrapper(methodAccess, single, emd, threadGroup, controllerMasterClass)));
-	}
+    /**
+     * 分析事件处理入口.
+     */
+    private void doAnalysisEventHandler(NoarkIoc ioc) {
+        final EventMethodManager manager = EventMethodManager.getInstance();
+        emds.forEach(emd -> manager.resetEventHandler(new EventMethodWrapper(methodAccess, single, emd, threadGroup, controllerMasterClass)));
+    }
 
-	/** 分析一下封包处理方法. */
-	private void doAnalysisPacketHandler(NoarkIoc noarkIoc) {
-		final PacketMethodManager manager = PacketMethodManager.getInstance();
-		pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, threadGroup, controllerMasterClass, queueId)));
-	}
+    /**
+     * 分析一下封包处理方法.
+     */
+    private void doAnalysisPacketHandler(NoarkIoc noarkIoc) {
+        final PacketMethodManager manager = PacketMethodManager.getInstance();
+        pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, threadGroup, controllerMasterClass, queueId)));
+    }
 }

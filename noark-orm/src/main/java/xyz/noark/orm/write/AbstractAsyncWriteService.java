@@ -24,11 +24,7 @@ import static xyz.noark.log.LogHelper.logger;
  * @since 3.4
  */
 public abstract class AbstractAsyncWriteService implements AsyncWriteService {
-    @Value("data.thread.pool.size")
-    private int threadPoolSize = 4;
-    @Value("data.thread.name.prefix")
-    private String threadNamePrefix = "async-write-data";
-
+    private final int offlineInterval = 3600;
     @Autowired
     protected DataAccessor dataAccessor;
     /**
@@ -45,12 +41,14 @@ public abstract class AbstractAsyncWriteService implements AsyncWriteService {
      * 这个定时任务，有空就处理一下数据保存和缓存清理功能
      */
     protected ScheduledExecutorService scheduledExecutorService;
+    @Value("data.thread.pool.size")
+    private int threadPoolSize = 4;
+    @Value("data.thread.name.prefix")
+    private String threadNamePrefix = "async-write-data";
     /**
      * 异步回写容器缓存
      */
     private LoadingCache<Serializable, AsyncWriteContainer> containers;
-
-    private final int offlineInterval = 3600;
 
     @Override
     public void init() {

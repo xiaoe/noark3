@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -16,32 +16,32 @@ package xyz.noark.core.network;
 /**
  * 执行结果辅助类.
  *
- * @since 3.2.3
  * @author 小流氓[176543888@qq.com]
+ * @since 3.2.3
  */
 public class ResultHelper {
 
-	/**
-	 * 尝试发送入口的返回值.
-	 * 
-	 * @param session Session对象
-	 * @param packet 请求封包对象
-	 * @param result 协议入口返回值
-	 */
-	public static void trySendResult(Session session, NetworkPacket packet, Object result) {
-		// 玩家已下线也可以忽略发送...
-		if (session == null) {
-			return;
-		}
+    /**
+     * 尝试发送入口的返回值.
+     *
+     * @param session Session对象
+     * @param packet  请求封包对象
+     * @param result  协议入口返回值
+     */
+    public static void trySendResult(Session session, NetworkPacket packet, Object result) {
+        // 玩家已下线也可以忽略发送...
+        if (session == null) {
+            return;
+        }
 
-		// 没有返回值，那就结束了...
-		if (result == null || result instanceof Void) {
-			return;
-		}
+        // 没有返回值，那就结束了...
+        if (result == null || result instanceof Void) {
+            return;
+        }
 
-		// 如果是网络协议，那就直接转发，不是就包裹他,由封包编码器2次处理.
-		NetworkProtocol protocol = (result instanceof NetworkProtocol) ? (NetworkProtocol) result : new NetworkProtocol(null, result);
-		protocol.setPacket(packet);
-		session.send(protocol);
-	}
+        // 如果是网络协议，那就直接转发，不是就包裹他,由封包编码器2次处理.
+        NetworkProtocol protocol = (result instanceof NetworkProtocol) ? (NetworkProtocol) result : new NetworkProtocol(null, result);
+        protocol.setPacket(packet);
+        session.send(protocol);
+    }
 }

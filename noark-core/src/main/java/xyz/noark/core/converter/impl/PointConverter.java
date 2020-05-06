@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -23,24 +23,24 @@ import xyz.noark.core.util.StringUtils;
 /**
  * Point转化器.
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 @TemplateConverter(Point.class)
 public class PointConverter extends AbstractConverter<Point> {
 
-	@Override
-	public Point convert(String value) {
-		String[] array = StringUtils.split(value, ",");
-		if (array.length == IntUtils.NUM_2) {
-			return Point.valueOf(Integer.parseInt(array[0]), Integer.parseInt(array[1]));
-		} else {
-			throw new IllegalExpressionException("坐标表达式格式错误(x,y)：" + value);
-		}
-	}
+    @Override
+    public Point convert(String value) {
+        String[] array = StringUtils.split(value, ",");
+        if (array.length == IntUtils.NUM_2) {
+            return Point.valueOf(Integer.parseInt(array[0]), Integer.parseInt(array[1]));
+        } else {
+            throw new IllegalExpressionException("坐标表达式格式错误(x,y)：" + value);
+        }
+    }
 
-	@Override
-	public String buildErrorMsg() {
-		return "不是一个Point类型的值(x,y)";
-	}
+    @Override
+    public String buildErrorMsg() {
+        return "不是一个Point类型的值(x,y)";
+    }
 }

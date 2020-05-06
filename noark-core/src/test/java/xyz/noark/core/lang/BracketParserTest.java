@@ -1,9 +1,9 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
+ *
  * 		http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
@@ -13,26 +13,26 @@
  */
 package xyz.noark.core.lang;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * 括号配置解析测试
  *
- * @since 3.4
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 public class BracketParserTest {
 
-	@Test
-	public void testReadString() {
-		BracketParser p = new BracketParser("[2020][*][11,12,15-19][w1,w3-w5][12:00-13:00]");
-		assertEquals("2020", p.readString());
-		assertEquals("*", p.readString());
-		assertEquals("11,12,15-19", p.readString());
-		assertEquals("w1,w3-w5", p.readString());
-		assertEquals("12:00-13:00", p.readString());
-	}
+    @Test
+    public void testReadString() {
+        BracketParser p = new BracketParser("[2020][*][11,12,15-19][w1,w3-w5][12:00-13:00]");
+        assertEquals("2020", p.readString());
+        assertEquals("*", p.readString());
+        assertEquals("11,12,15-19", p.readString());
+        assertEquals("w1,w3-w5", p.readString());
+        assertEquals("12:00-13:00", p.readString());
+    }
 
 }
