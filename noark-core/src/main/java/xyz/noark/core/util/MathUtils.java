@@ -236,6 +236,26 @@ public class MathUtils {
     }
 
     /**
+     * 4舍5入取整，并返回int值.
+     *
+     * @param a 一个带有小数的数值
+     * @return 返回向上取整后的int值
+     */
+    public static int roundInt(double a) {
+        return (int) Math.round(a);
+    }
+
+    /**
+     * 4舍5入取整，并返回long值.
+     *
+     * @param a 一个带有小数的数值
+     * @return 返回向上取整后的long值
+     */
+    public static long roundLong(double a) {
+        return (long) Math.round(a);
+    }
+
+    /**
      * 格式化小数位数的方法.
      * <p>
      * 采用了{@link BigDecimal#setScale(int, RoundingMode)}方式来保留小数位数<br>
