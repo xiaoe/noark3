@@ -46,7 +46,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
      */
     @Override
     public void injection(Object single, IocMaking making) {
-        String value = EnvConfigHolder.getProperties().get(key);
+        String value = EnvConfigHolder.getString(key);
         if (StringUtils.isNotEmpty(value)) {
             Converter<?> converter = ConvertManager.getInstance().getConverter(field.getType());
             if (converter != null) {

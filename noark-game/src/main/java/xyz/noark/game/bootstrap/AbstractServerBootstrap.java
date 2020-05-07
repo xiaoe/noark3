@@ -94,7 +94,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             System.out.println(this.getServerName() + " is running, interval=" + interval + " ms");
 
             if (this.showBanner()) {
-                FileUtils.getFileText(bannerFileName()).ifPresent(v -> printBanner(v));
+                FileUtils.getFileText(bannerFileName()).ifPresent(this::printBanner);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,22 +105,23 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 
     protected void onBeginStart() {
         PacketCodecHolder.setPacketCodec(getPacketCodec());
-
-        // 如果开启动了Debug模式且为Window那就要添加一个回车停服功能
-        if (SystemUtils.IS_OS_WINDOWS) {
+        // 如果开启了Debug模式，那就启动一个回车停服功能啊，不管什么系统
+        if (EnvConfigHolder.getBoolean(NoarkConstant.SERVER_DEBUG)) {
             ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(1), new NamedThreadFactory("安全停服：测试启用"));
             singleThreadPool.execute(() -> {
                 try {
-                    System.in.read();
-                } catch (IOException e) {
+                    final int read = System.in.read();
+                    logger.debug("收到信息：{}", read);
+                } catch (Exception e) {
                     logger.error("{}", e);
                 }
                 System.exit(0);
             });
+            logger.warn("已启用回车停机功能");
         }
 
         // 写入PID文件....
-        this.pidFileName = EnvConfigHolder.getProperties().get(NoarkConstant.PID_FILE);
+        this.pidFileName = EnvConfigHolder.getString(NoarkConstant.PID_FILE);
         this.createPidFile();
     }
 
@@ -193,8 +194,8 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
     protected void deletePidFile() {
         if (StringUtils.isNotEmpty(pidFileName)) {
             File pidFile = new File(pidFileName);
-            if (pidFile.exists()) {
-                pidFile.delete();
+            if (pidFile.exists() && !pidFile.delete()) {
+                logger.warn("PID文件删除失败，请手动确认并删除.");
             }
         }
     }

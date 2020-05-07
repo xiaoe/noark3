@@ -14,6 +14,7 @@
 package xyz.noark.core.env;
 
 import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.util.BooleanUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -33,6 +34,26 @@ public class EnvConfigHolder {
 
     public static Map<String, String> getProperties() {
         return properties == null ? Collections.emptyMap() : properties;
+    }
+
+    /**
+     * 根据Key值去配置中获取一个String值
+     *
+     * @param key Key值
+     * @return String值（可能会为null）
+     */
+    public static String getString(String key) {
+        return getProperties().get(key);
+    }
+
+    /**
+     * 根据Key值去配置中获取一个Boolean值
+     *
+     * @param key Key值
+     * @return Boolean值
+     */
+    public static boolean getBoolean(String key) {
+        return BooleanUtils.toBoolean(getString(key));
     }
 
     public static void setProperties(Map<String, String> properties) {
