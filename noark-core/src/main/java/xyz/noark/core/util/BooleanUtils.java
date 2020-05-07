@@ -33,7 +33,7 @@ public class BooleanUtils {
      * @see BooleanUtils#toBooleanObject(String)
      */
     public static boolean toBoolean(String str) {
-        return toBooleanObject(str) == Boolean.TRUE;
+        return Boolean.TRUE.equals(toBooleanObject(str));
     }
 
     /**
