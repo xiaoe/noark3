@@ -20,6 +20,7 @@ import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.thread.NamedThreadFactory;
+import xyz.noark.core.util.BooleanUtils;
 import xyz.noark.core.util.FileUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.core.util.SystemUtils;
@@ -105,8 +106,10 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 
     protected void onBeginStart() {
         PacketCodecHolder.setPacketCodec(getPacketCodec());
-        // 如果开启了Debug模式，那就启动一个回车停服功能啊，不管什么系统
-        if (EnvConfigHolder.getBoolean(NoarkConstant.SERVER_DEBUG)) {
+
+        // 开启停服信号功能
+        if (shutdownSignalEnabled()) {
+            logger.warn("已启用回车停机功能");
             ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(1), new NamedThreadFactory("安全停服：测试启用"));
             singleThreadPool.execute(() -> {
                 try {
@@ -117,12 +120,26 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
                 }
                 System.exit(0);
             });
-            logger.warn("已启用回车停机功能");
         }
 
         // 写入PID文件....
         this.pidFileName = EnvConfigHolder.getString(NoarkConstant.PID_FILE);
         this.createPidFile();
+    }
+
+    protected boolean shutdownSignalEnabled() {
+        // 如果开启了Debug模式，那就启动一个回车停服功能啊，不管什么系统
+        String signal = EnvConfigHolder.getString(NoarkConstant.SHUTDOWN_SIGNAL_ENABLED);
+        boolean flag;
+        // 默认情况：Window系统默开启，Linux默认关闭
+        if (StringUtils.isEmpty(signal)) {
+            flag = SystemUtils.IS_OS_WINDOWS;
+        }
+        // 如果配置了当前值，则强制使用配置值
+        else {
+            flag = BooleanUtils.toBoolean(signal);
+        }
+        return flag;
     }
 
     /**

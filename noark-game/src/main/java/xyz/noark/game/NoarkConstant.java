@@ -73,7 +73,13 @@ public class NoarkConstant {
      * 配置区服所需策划模板文件的路径
      */
     public static final String TEMPLATE_PATH = "template.path";
-
+    /**
+     * 停服信号启用，开启一个等待输入停服信息
+     * <p>
+     * 默认情况：Window系统默开启，Linux默认关闭<br>
+     * 如果配置了当前值，则强制使用配置值
+     */
+    public static final String SHUTDOWN_SIGNAL_ENABLED = "shutdown.signal.enabled";
     /**
      * Banner默认图案为Noark的Logo
      */
