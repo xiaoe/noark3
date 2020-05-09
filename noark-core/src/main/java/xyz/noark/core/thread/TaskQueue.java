@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.thread;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 
@@ -23,15 +24,32 @@ import java.util.concurrent.ExecutorService;
  * @since 3.0
  */
 public class TaskQueue {
+    /**
+     * 队列ID
+     */
+    private final Serializable id;
+    /**
+     * 执行线程池
+     */
     private final ExecutorService threadPool;
     /**
      * 任务处理队列
      */
     private LinkedList<AsyncTask> queue;
 
-    public TaskQueue(ExecutorService threadPool) {
+    public TaskQueue(Serializable id, ExecutorService threadPool) {
+        this.id = id;
         this.threadPool = threadPool;
         this.queue = new LinkedList<>();
+    }
+
+    /**
+     * 获取任务队列ID
+     *
+     * @return 队列ID
+     */
+    public Serializable getId() {
+        return id;
     }
 
     /**
@@ -46,6 +64,10 @@ public class TaskQueue {
             if (queue.size() == 1) {
                 this.exec(task);
             }
+
+            // FIXME，堆积太多给个日志......
+
+
         }
     }
 

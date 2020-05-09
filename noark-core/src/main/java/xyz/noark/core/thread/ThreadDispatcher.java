@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.thread;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
@@ -32,10 +33,7 @@ import xyz.noark.core.thread.command.SystemThreadCommand;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -66,7 +64,7 @@ public class ThreadDispatcher {
 
     public ThreadDispatcher() {
     }
-
+    
     /**
      * 初始线程调度器的配置.
      *
@@ -77,8 +75,21 @@ public class ThreadDispatcher {
      * @param outputStack      任务执行超时输出线程执行堆栈信息，默认开启
      */
     public void init(int poolSize, String threadNamePrefix, int timeout, int execTimeout, boolean outputStack) {
-        this.businessThreadPool = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new NamedThreadFactory(threadNamePrefix));
-        this.businessThreadPoolTaskQueue = new TimeoutHashMap<>(timeout, TimeUnit.MINUTES, () -> execTimeout > 0 ? new MonitorTaskQueue(monitorThreadPool, businessThreadPool, execTimeout, outputStack) : new TaskQueue(businessThreadPool));
+        BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
+        ThreadFactory threadFactory = new NamedThreadFactory(threadNamePrefix);
+        this.businessThreadPool = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, workQueue, threadFactory);
+        this.businessThreadPoolTaskQueue = new TimeoutHashMap<>(timeout, TimeUnit.MINUTES, buildLoader(execTimeout, outputStack));
+    }
+
+    private CacheLoader<Serializable, TaskQueue> buildLoader(int execTimeout, boolean outputStack) {
+        // 启动监控的任务队列
+        if (execTimeout > 0) {
+            return (id) -> new MonitorTaskQueue(id, monitorThreadPool, businessThreadPool, execTimeout, outputStack);
+        }
+        // 常规的任务队列
+        else {
+            return (id) -> new TaskQueue(id, businessThreadPool);
+        }
     }
 
     /**
@@ -171,10 +182,6 @@ public class ThreadDispatcher {
         }
     }
 
-    private void dispatchHandle(Session session, NetworkPacket packet, Serializable id, QueueThreadCommand command) {
-        TaskQueue taskQueue = businessThreadPoolTaskQueue.get(id);
-        taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
-    }
 
     /**
      * 派发给Netty线程处理的逻辑.
@@ -197,6 +204,24 @@ public class ThreadDispatcher {
     void dispatchPlayerThreadHandle(Session session, NetworkPacket packet, PlayerThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
         taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+    }
+
+    private void dispatchHandle(Session session, NetworkPacket packet, Serializable id, QueueThreadCommand command) {
+        TaskQueue taskQueue = businessThreadPoolTaskQueue.get(id);
+        taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+    }
+
+
+    /**
+     * 派发一个异步回调.
+     *
+     * @param queueId  队列ID
+     * @param callback 需要异步的逻辑
+     * @param playerId 玩家ID（可以为空）
+     */
+    void dispatchAsyncCallback(Serializable queueId, AsyncCallback callback, Serializable playerId) {
+        final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
+        taskQueue.submit(new AsyncTask(networkListener, taskQueue, new AsyncThreadCommand(callback), playerId));
     }
 
     /**

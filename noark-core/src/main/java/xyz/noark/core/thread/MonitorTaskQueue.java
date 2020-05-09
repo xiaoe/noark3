@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.thread;
 
+import java.io.Serializable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -47,8 +48,8 @@ public class MonitorTaskQueue extends TaskQueue {
 
     private int count = 0;
 
-    public MonitorTaskQueue(MonitorThreadPool monitorThreadPool, ExecutorService threadPool, int timeout, boolean outputStack) {
-        super(threadPool);
+    public MonitorTaskQueue(Serializable id, MonitorThreadPool monitorThreadPool, ExecutorService threadPool, int timeout, boolean outputStack) {
+        super(id, threadPool);
         this.timeout = timeout;
         this.outputStack = outputStack;
         this.monitorThreadPool = monitorThreadPool;

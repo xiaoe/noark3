@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.lang;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
@@ -32,6 +33,10 @@ public class TimeoutHashMap<K, V> {
 
     public TimeoutHashMap(long duration, TimeUnit unit, Supplier<? extends V> loading) {
         this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).build(key -> loading.get());
+    }
+
+    public TimeoutHashMap(long duration, TimeUnit unit, CacheLoader<? super K, V> loader) {
+        this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).build(key -> loader.load(key));
     }
 
     public V get(K key) {

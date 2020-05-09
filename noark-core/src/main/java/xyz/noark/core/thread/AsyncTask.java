@@ -49,6 +49,10 @@ public class AsyncTask implements Runnable {
     private Thread currentThread;
     private long startExecuteTime;
 
+    public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
+        this(networkListener, taskQueue, command, playerId, null, null);
+    }
+
     public AsyncTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId, NetworkPacket packet, Session session) {
         this.taskQueue = taskQueue;
         this.command = command;
@@ -62,7 +66,7 @@ public class AsyncTask implements Runnable {
     public void run() {
         // 开始执行的时间
         this.startExecuteTime = System.nanoTime();
-        this.currentThread = Thread.currentThread();
+        this.execCommandBefore();
         try {
             // 开始处理协议，并发送结果
             ResultHelper.trySendResult(session, packet, command.exec());
@@ -79,9 +83,16 @@ public class AsyncTask implements Runnable {
             }
         } finally {
             taskQueue.complete();// 后继逻辑...
-            // 执行之后
             this.execCommandAfter(startExecuteTime);
         }
+    }
+
+    /**
+     * 执行之前做一个逻辑.
+     */
+    private void execCommandBefore() {
+        this.currentThread = Thread.currentThread();
+        AsyncHelper.setTaskContext(new TaskContext(taskQueue.getId(), playerId));
     }
 
     /**
@@ -90,6 +101,8 @@ public class AsyncTask implements Runnable {
      * @param startExecuteTime 开始执行时间
      */
     private void execCommandAfter(long startExecuteTime) {
+        AsyncHelper.removeTaskContext();
+
         if (command.isPrintLog()) {
             // 执行结束的时间
             long endExecuteTime = System.nanoTime();
