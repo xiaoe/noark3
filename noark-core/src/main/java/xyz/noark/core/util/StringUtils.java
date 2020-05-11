@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -572,5 +573,59 @@ public class StringUtils {
             sb.append(array, 0, n);
         }
         return sb.toString();
+    }
+
+    /**
+     * 从左边使用空格(' ')补齐指定位位数的字符串.
+     * <pre>
+     * StringUtils.leftPad(null, *)   = null
+     * StringUtils.leftPad("", 3)     = "   "
+     * StringUtils.leftPad("bat", 3)  = "bat"
+     * StringUtils.leftPad("bat", 5)  = "  bat"
+     * StringUtils.leftPad("bat", 1)  = "bat"
+     * StringUtils.leftPad("bat", -1) = "bat"
+     * </pre>
+     *
+     * @param str  字符串
+     * @param size 补齐后的位数
+     * @return 返回补齐后的字符串{@code null}
+     */
+    public static String leftPad(final String str, final int size) {
+        return leftPad(str, size, ' ');
+    }
+
+    /**
+     * 从左边使用指定字符补齐指定位位数的字符串.
+     *
+     * <pre>
+     * StringUtils.leftPad(null, *, *)     = null
+     * StringUtils.leftPad("", 3, 'b')     = "bbb"
+     * StringUtils.leftPad("bat", 3, 'b')  = "bat"
+     * StringUtils.leftPad("bat", 5, ' ')  = "  bat"
+     * StringUtils.leftPad("bat", 1, 'b')  = "bat"
+     * StringUtils.leftPad("bat", -1, 'b') = "bat"
+     * </pre>
+     *
+     * @param str     字符串
+     * @param size    补齐后的位数
+     * @param padChar 补齐字符
+     * @return 返回补齐后的字符串{@code null}
+     */
+    public static String leftPad(final String str, final int size, final char padChar) {
+        if (str == null) {
+            return null;
+        }
+
+        // 不需要补位，那就返回原来的字符串
+        final int pads = size - str.length();
+        if (pads <= 0) {
+            return str;
+        }
+
+        // 创建返回数组，前面填充指定字符，后面复制原来的字符串
+        final char[] array = new char[size];
+        Arrays.fill(array, 0, pads, padChar);
+        System.arraycopy(str.toCharArray(), 0, array, pads, str.length());
+        return new String(array);
     }
 }

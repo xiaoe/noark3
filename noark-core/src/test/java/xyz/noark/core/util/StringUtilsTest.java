@@ -14,12 +14,8 @@
 package xyz.noark.core.util;
 
 import org.junit.Test;
-import xyz.noark.benchmark.Benchmark;
 
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -29,19 +25,6 @@ import static org.junit.Assert.assertTrue;
  * @since 3.0
  */
 public class StringUtilsTest {
-    private final Benchmark benchmark = new Benchmark(1000);
-
-    private static String join1(String delimiter, String prefix, String suffix, String... strings) {
-        StringJoiner result = new StringJoiner(delimiter, prefix, suffix);
-        for (String str : strings) {
-            result.add(str);
-        }
-        return result.toString();
-    }
-
-    private static String join2(String delimiter, String prefix, String suffix, String... strings) {
-        return Stream.of(strings).collect(Collectors.joining(delimiter, prefix, suffix));
-    }
 
     @Test
     public void testIsEmpty() {
@@ -76,30 +59,12 @@ public class StringUtilsTest {
         assertTrue(StringUtils.split("1,2,3,", ",").length == 3);
         assertTrue(StringUtils.split("1,2,3,,,", ",").length == 3);
         assertTrue(StringUtils.split("127.0.0.1", ".").length == 4);
-        assertTrue(testSplitByJdk("127.0.0.1", "\\.").length == 4);
-
-        benchmark.doSomething("Jdk:", () -> StringUtils.split("127.0.0.1", "."));
-        benchmark.doSomething("Noark:", () -> testSplitByJdk("127.0.0.1", "\\."));
     }
-
-    private String[] testSplitByJdk(String ip, String regex) {
-        return ip.split(regex);
-    }
-
+    
     @Test
     public void asciiSizeInBytes() throws Exception {
         long value = Long.MIN_VALUE;
         assertTrue(StringUtils.asciiSizeInBytes(value) == String.valueOf(value).length());
-        benchmark.doSomething("OKIO的方案:", () -> StringUtils.asciiSizeInBytes(value));
-        benchmark.doSomething("成龙的方案:", () -> String.valueOf(value).length());
-    }
-
-    @Test
-    public void test() throws Exception {
-        String[] strings = new String[]{"aaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbbbbbbbbbbb"};
-        benchmark.doSomething("join:", () -> StringUtils.build(",", "{", "}", strings));
-        benchmark.doSomething("join1:", () -> join1(",", "{", "}", strings));
-        benchmark.doSomething("join2:", () -> join2(",", "{", "}", strings));
     }
 
     @Test
@@ -107,4 +72,23 @@ public class StringUtilsTest {
         assertTrue("hahatrue,false,10000,false".equals(StringUtils.format("haha{1},{2},{0},{2}", 10000, true, false, 4)));
     }
 
+    @Test
+    public void leftPad() {
+        assertEquals(StringUtils.leftPad(null, 5), null);
+        assertEquals(StringUtils.leftPad("", 3), "   ");
+        assertEquals(StringUtils.leftPad("bat", 3), "bat");
+        assertEquals(StringUtils.leftPad("bat", 5), "  bat");
+        assertEquals(StringUtils.leftPad("bat", 1), "bat");
+        assertEquals(StringUtils.leftPad("bat", -1), "bat");
+    }
+
+    @Test
+    public void testLeftPad() {
+        assertEquals(StringUtils.leftPad(null, 1, ' '), null);
+        assertEquals(StringUtils.leftPad("", 3, 'b'), "bbb");
+        assertEquals(StringUtils.leftPad("bat", 3, 'b'), "bat");
+        assertEquals(StringUtils.leftPad("bat", 5, ' '), "  bat");
+        assertEquals(StringUtils.leftPad("bat", 1, 'b'), "bat");
+        assertEquals(StringUtils.leftPad("bat", -1, 'b'), "bat");
+    }
 }
