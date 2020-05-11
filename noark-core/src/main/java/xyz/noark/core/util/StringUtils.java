@@ -244,7 +244,7 @@ public class StringUtils {
         if (len == 0) {
             return EMPTY_STRING_ARRAY;
         }
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         int sizePlus1 = 1;
         int i = 0, start = 0;
         boolean match = false;
@@ -312,7 +312,7 @@ public class StringUtils {
         if (match || flag) {
             list.add(str.substring(start, i));
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -561,15 +561,15 @@ public class StringUtils {
     public static String readString(Reader reader) throws IOException {
         final StringBuilder sb = new StringBuilder(1024);
         // 申明一次读取缓冲区
-        final char[] cbuf = new char[256];
+        final char[] array = new char[256];
         // 这里并没有使用while(true),如果一个文本超过100W，还是放弃后面的算了
         while (sb.length() < MathUtils.MILLION) {
-            int n = reader.read(cbuf);
+            int n = reader.read(array);
             // 读结束了，就GG了
             if (n < 0) {
                 break;
             }
-            sb.append(cbuf, 0, n);
+            sb.append(array, 0, n);
         }
         return sb.toString();
     }
