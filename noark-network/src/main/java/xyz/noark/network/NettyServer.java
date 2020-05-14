@@ -78,7 +78,7 @@ public class NettyServer implements TcpServer {
      * Netty的Work线程数
      */
     @Value(NetworkConstant.WORK_THREADS)
-    protected int workthreads = 0;
+    protected int workThreads = 0;
 
     /**
      * 网络封包日志激活
@@ -107,14 +107,13 @@ public class NettyServer implements TcpServer {
 
     public NettyServer() {
         this.bootstrap = new ServerBootstrap();
+        this.bossGroup = new EpollEventLoopGroup(1);
 
-        final int nThreads = workthreads == 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workthreads;
+        final int nThreads = workThreads <= 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workThreads;
         if (epollActive && Epoll.isAvailable()) {
-            this.bossGroup = new EpollEventLoopGroup(1);
             this.workGroup = new EpollEventLoopGroup(nThreads);
             bootstrap.group(bossGroup, workGroup).channel(EpollServerSocketChannel.class);
         } else {
-            this.bossGroup = new NioEventLoopGroup(1);
             this.workGroup = new NioEventLoopGroup(nThreads);
             bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
         }
