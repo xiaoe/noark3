@@ -107,13 +107,14 @@ public class NettyServer implements TcpServer {
 
     public NettyServer() {
         this.bootstrap = new ServerBootstrap();
-        this.bossGroup = new EpollEventLoopGroup(1);
-
+        
         final int nThreads = workThreads <= 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workThreads;
         if (epollActive && Epoll.isAvailable()) {
+            this.bossGroup = new EpollEventLoopGroup(1);
             this.workGroup = new EpollEventLoopGroup(nThreads);
             bootstrap.group(bossGroup, workGroup).channel(EpollServerSocketChannel.class);
         } else {
+            this.bossGroup = new NioEventLoopGroup(1);
             this.workGroup = new NioEventLoopGroup(nThreads);
             bootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class);
         }
