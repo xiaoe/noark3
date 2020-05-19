@@ -102,4 +102,16 @@ public class ByteBufUtils {
         in.readBytes(content);
         return content;
     }
+
+    /**
+     * 计算ByteBuf的长度.
+     * <p>
+     * 如果为null，则返回0
+     *
+     * @param content ByteBuf
+     * @return 返回ByteBuf的长度
+     */
+    public static int size(ByteBuf content) {
+        return content == null ? 0 : content.readableBytes();
+    }
 }

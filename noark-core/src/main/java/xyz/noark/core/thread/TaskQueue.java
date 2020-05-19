@@ -35,7 +35,7 @@ public class TaskQueue {
     /**
      * 任务处理队列
      */
-    private LinkedList<AsyncTask> queue;
+    private LinkedList<AsyncQueueTask> queue;
 
     public TaskQueue(Serializable id, ExecutorService threadPool) {
         this.id = id;
@@ -57,7 +57,7 @@ public class TaskQueue {
      *
      * @param task 任务
      */
-    public void submit(AsyncTask task) {
+    public void submit(AsyncQueueTask task) {
         synchronized (this) {
             queue.add(task);
             // 只有一个任务，那就是刚刚加的，直接开始执行...
@@ -102,7 +102,7 @@ public class TaskQueue {
      *
      * @param task 异步任务
      */
-    protected void exec(AsyncTask task) {
+    protected void exec(AsyncQueueTask task) {
         threadPool.execute(task);
     }
 }

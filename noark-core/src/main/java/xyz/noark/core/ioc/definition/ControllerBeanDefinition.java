@@ -90,8 +90,8 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
             emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation), this));
         }
         // HTTP服务
-        else if (annotationType == HttpHandler.class) {
-            hmds.add(new HttpMethodDefinition(methodAccess, method, HttpHandler.class.cast(annotation)));
+        else if (annotationType == RequestMapping.class) {
+            hmds.add(new HttpMethodDefinition(methodAccess, method, RequestMapping.class.cast(annotation)));
         }
         // 延迟任务
         else if (annotationType == Scheduled.class) {

@@ -36,8 +36,6 @@ public class GameServerApplication {
 
     public static void main(String[] args) {
         Noark.run(GameServerBootstrap.class, args);
-        Sender.innerRelayPacket(0, 2, new Object());
-        Sender.innerRelayPacket(0, 3, new Object());
     }
 
     @PacketMapping(opcode = 3)

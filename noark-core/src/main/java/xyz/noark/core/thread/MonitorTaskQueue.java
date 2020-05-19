@@ -56,13 +56,13 @@ public class MonitorTaskQueue extends TaskQueue {
     }
 
     @Override
-    protected void exec(AsyncTask task) {
+    protected void exec(AsyncQueueTask task) {
         Future<?> future = this.getThreadPool().submit(task);
         // 执行任务提交后，再添加一个监控任务
         this.monitor(future, task);
     }
 
-    private void monitor(Future<?> future, AsyncTask task) {
+    private void monitor(Future<?> future, AsyncQueueTask task) {
         final ExecutorService monitorService = this.getExecutorService();
         if (!monitorService.isShutdown()) {
             monitorService.execute(() -> startMonitorExecTimeoutTask(future, task));
@@ -82,7 +82,7 @@ public class MonitorTaskQueue extends TaskQueue {
      * @param future 任务句柄
      * @param task   任务对象
      */
-    private void startMonitorExecTimeoutTask(Future<?> future, AsyncTask task) {
+    private void startMonitorExecTimeoutTask(Future<?> future, AsyncQueueTask task) {
         // 监控一次，计次加一
         count++;
         try {

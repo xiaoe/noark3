@@ -24,11 +24,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.network.TcpServer;
-import xyz.noark.core.thread.NamedThreadFactory;
+import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.network.NetworkConstant;
 
 import static xyz.noark.log.LogHelper.logger;
@@ -42,27 +43,22 @@ import static xyz.noark.log.LogHelper.logger;
 @Service
 public class HttpServer implements TcpServer {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-    private final EventLoopGroup workerGroup = new NioEventLoopGroup(4, new NamedThreadFactory("http"));
+    private final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
+    private final ViewResolver viewResolver = new DefaultViewResolver();
 
     @Value(NetworkConstant.HTTP_PORT)
     private int port = 0;
     @Value(NetworkConstant.HTTP_SECRET_KEY)
     private String secretKey = null;
+
+    @Autowired
+    private ThreadDispatcher threadDispatcher;
+
     /**
      * 向内部提供HTTP服务的最大内容长度（默认：1048576=1M）
      */
     @Value(NetworkConstant.HTTP_MAX_CONTENT_LENGTH)
     private int maxContentLength = 1048576;
-    /**
-     * 向内部提供HTTP服务的参数格式，默认 JSON
-     */
-    @Value(NetworkConstant.HTTP_PARAMETER_FORMAT)
-    private String parameterFormat = HttpParameterParser.JSON_FORMAT;
-    /**
-     * 向内部提供HTTP服务是否只能局域网访问，默认=true
-     */
-    @Value(NetworkConstant.HTTP_ACCESS_RESTRICTED)
-    private boolean accessRestricted = true;
 
     /**
      * 设置端口.
@@ -85,11 +81,11 @@ public class HttpServer implements TcpServer {
     @Override
     public void startup() {
         if (port <= 0) {
-            logger.debug("game http server not opened.");
+            logger.debug("http server not started.");
             return;
         }
 
-        logger.info("game http server start on {}", port);
+        logger.info("http server start on {}", port);
         ServerBootstrap bootstrap = new ServerBootstrap();
         // Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝。默认值，Windows为200，其他为128。
         bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
@@ -103,13 +99,13 @@ public class HttpServer implements TcpServer {
                 p.addLast(new HttpServerCodec());
                 p.addLast(new HttpObjectAggregator(maxContentLength));
                 p.addLast(new ChunkedWriteHandler());
-                p.addLast(new HttpServerHandler(secretKey, parameterFormat, accessRestricted));
+                p.addLast(new HttpServerHandler(threadDispatcher, viewResolver));
             }
         });
 
         try {
             bootstrap.bind(port).sync();
-            logger.info("game http server start is success.");
+            logger.info("http server start is success.");
         } catch (Exception e) {
             throw new ServerBootstrapException("目标端口已被占用 port=" + port, e);
         }

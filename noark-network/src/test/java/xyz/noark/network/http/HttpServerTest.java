@@ -28,11 +28,6 @@ import java.util.HashMap;
 public class HttpServerTest {
 
     public static void main(String[] args) {
-        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
-        HttpServer httpServer = new HttpServer();
-        httpServer.setPort(12345);
-        httpServer.setSecretKey("1dcypsz1/2jss1/2j#f00");
-        httpServer.startup();
 
         HashMap<String, String> params = new HashMap<>(16);
         params.put("time", "1533118010926");
@@ -40,6 +35,9 @@ public class HttpServerTest {
         params.put("byte", new String("pub!@~#$%^&*(\"\"::;;'')_+lic skdfsdaf ?!@#!$!@$   ".getBytes()));
 
         System.out.println();
-        HttpUtils.post("http://127.0.0.1:12345/api/hotfix/", JSON.toJSONString(params));
+        for(int i =0;i<1;i++)
+        HttpUtils.get("http://127.0.0.1:11111/test");
+
+        System.out.println();
     }
 }

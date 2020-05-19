@@ -39,7 +39,7 @@ public @interface Controller {
      *
      * @return 执行线程组.
      */
-    ExecThreadGroup threadGroup();
+    ExecThreadGroup threadGroup() default ExecThreadGroup.QueueThreadGroup;
 
     /**
      * 串行执行的队列ID

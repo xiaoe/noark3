@@ -60,7 +60,7 @@ public class AsyncHelper {
      *
      * @param callback 异步逻辑
      */
-    public static void call(AsyncCallback callback) {
+    public static void call(TaskCallback callback) {
         TaskContext context = THREAD_LOCAL.get();
         call(context.getQueueId(), callback, context.getPlayerId());
     }
@@ -71,12 +71,12 @@ public class AsyncHelper {
      * @param queueId  指定队列ID
      * @param callback 异步逻辑
      */
-    public static void call(Serializable queueId, AsyncCallback callback) {
+    public static void call(Serializable queueId, TaskCallback callback) {
         TaskContext context = THREAD_LOCAL.get();
         call(queueId, callback, context.getPlayerId());
     }
 
-    private static void call(Serializable queueId, AsyncCallback callback, Serializable playerId) {
+    private static void call(Serializable queueId, TaskCallback callback, Serializable playerId) {
         threadDispatcher.dispatchAsyncCallback(queueId, callback, playerId);
     }
 }

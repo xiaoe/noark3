@@ -15,7 +15,6 @@ package xyz.noark.network.http;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -25,6 +24,7 @@ import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.CollectionUtils;
+import xyz.noark.network.util.ByteBufUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,13 +38,11 @@ import java.util.Map;
  * @since 3.4
  */
 class HttpParameterParser {
-    public static final String DEFAULT_FORMAT = "default";
-    public static final String JSON_FORMAT = "json";
 
     private HttpParameterParser() {
     }
 
-    public static Map<String, String> parse(FullHttpRequest fhr, QueryStringDecoder decoder, String parameterFormat) throws IOException {
+    public static Map<String, String> parse(FullHttpRequest fhr, QueryStringDecoder decoder) throws IOException {
         final HttpMethod method = fhr.method();
         // GET请求
         if (HttpMethod.GET == method) {
@@ -52,7 +50,7 @@ class HttpParameterParser {
         }
         // POST请求
         else if (HttpMethod.POST == method) {
-            return parsePostRequestParm(fhr, decoder, parameterFormat);
+            return parsePostContent(fhr);
         }
         // 不支持其它方法，有需求再实现
         else {
@@ -60,20 +58,21 @@ class HttpParameterParser {
         }
     }
 
-    private static Map<String, String> parsePostRequestParm(FullHttpRequest fhr, QueryStringDecoder decoder, String parameterFormat) throws IOException {
-        // 是POST请求
-        switch (parameterFormat) {
+    private static Map<String, String> parsePostContent(FullHttpRequest fhr) throws IOException {
+        String contentType = fhr.headers().get("Content-Type");
+        switch (contentType) {
             // JSON类型的参数格式
-            case JSON_FORMAT:
-                return parseJsonParm(fhr);
+            case "application/json":
+                return parseJsonContent(fhr);
             // 默认走标准HTTP的POST参数
-            case DEFAULT_FORMAT:
+            // FIXME 其中application/from类型如有中文 或特殊符号如/ ,:,?,#,+,=等需要进行转义处理。
+            case "application/from":
             default:
-                return parsePostParm(fhr);
+                return parsePostFromContent(fhr);
         }
     }
 
-    private static Map<String, String> parsePostParm(FullHttpRequest fhr) throws IOException {
+    private static Map<String, String> parsePostFromContent(FullHttpRequest fhr) throws IOException {
         // 解析Post默认参数
         HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(fhr);
         decoder.offer(fhr);
@@ -86,10 +85,8 @@ class HttpParameterParser {
         return parmMap;
     }
 
-    private static Map<String, String> parseJsonParm(FullHttpRequest fhr) {
-        final ByteBuf buf = fhr.content();
-        byte[] bs = new byte[buf.readableBytes()];
-        buf.readBytes(bs);
+    private static Map<String, String> parseJsonContent(FullHttpRequest fhr) {
+        byte[] bs = ByteBufUtils.readBytes(fhr.content());
         return JSON.parseObject(new String(bs, CharsetUtils.CHARSET_UTF_8), new TypeReference<Map<String, String>>() {
         });
     }

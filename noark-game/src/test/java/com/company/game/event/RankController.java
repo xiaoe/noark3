@@ -39,12 +39,12 @@ public class RankController {
         logger.info("修正玩家联盟信息 playerId={}, allianceName={}", event.getPlayerId(), event.getAllianceName());
     }
 
-    @Scheduled(cron = "0 0 0/1 * * *")
+    //@Scheduled(cron = "0 0 0/1 * * *")
     public void testCronScheduled() {
         logger.debug("测试CRON表达式，testCronScheduled");
     }
 
-    @Scheduled(initialDelay = 1000, fixedRate = 20000)
+    //@Scheduled(initialDelay = 1000, fixedRate = 20000)
     public void testFixedScheduled() {
         logger.debug("测试定时任务，testFixedScheduled");
     }

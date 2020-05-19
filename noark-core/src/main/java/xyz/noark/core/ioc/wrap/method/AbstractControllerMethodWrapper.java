@@ -70,4 +70,8 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     public String logCode() {
         return logCode;
     }
+
+    public String getQueueId(){
+        return null;
+    }
 }

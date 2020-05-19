@@ -48,8 +48,8 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
     private boolean deprecated = false;
 
     public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.uri() + ")");
-        this.uri = method.uri();
+        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.path() + ")");
+        this.uri = method.path();
         this.publicApi = method.isPublicApi();
         this.privateApi = method.isPrivateApi();
         this.deprecated = method.isDeprecated();

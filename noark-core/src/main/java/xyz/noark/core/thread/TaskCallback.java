@@ -14,15 +14,15 @@
 package xyz.noark.core.thread;
 
 /**
- * 异步回调接口.
+ * 任务回调接口.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
 @FunctionalInterface
-public interface AsyncCallback {
+public interface TaskCallback {
     /**
-     * 干活...
+     * 做某事...
      */
     void doSomething();
 }

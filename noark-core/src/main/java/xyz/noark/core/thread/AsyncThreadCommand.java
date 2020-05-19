@@ -5,9 +5,9 @@ package xyz.noark.core.thread;
  * @since 3.4
  */
 public class AsyncThreadCommand implements ThreadCommand {
-    private final AsyncCallback callback;
+    private final TaskCallback callback;
 
-    public AsyncThreadCommand(AsyncCallback callback) {
+    public AsyncThreadCommand(TaskCallback callback) {
         this.callback = callback;
     }
 

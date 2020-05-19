@@ -64,7 +64,7 @@ public class ThreadDispatcher {
 
     public ThreadDispatcher() {
     }
-    
+
     /**
      * 初始线程调度器的配置.
      *
@@ -195,7 +195,7 @@ public class ThreadDispatcher {
      */
     void dispatchSystemThreadHandle(Session session, NetworkPacket packet, SystemThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-        taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
     }
 
     /**
@@ -203,12 +203,12 @@ public class ThreadDispatcher {
      */
     void dispatchPlayerThreadHandle(Session session, NetworkPacket packet, PlayerThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-        taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
     }
 
     private void dispatchHandle(Session session, NetworkPacket packet, Serializable id, QueueThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(id);
-        taskQueue.submit(new AsyncTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
     }
 
 
@@ -219,9 +219,27 @@ public class ThreadDispatcher {
      * @param callback 需要异步的逻辑
      * @param playerId 玩家ID（可以为空）
      */
-    void dispatchAsyncCallback(Serializable queueId, AsyncCallback callback, Serializable playerId) {
+    void dispatchAsyncCallback(Serializable queueId, TaskCallback callback, Serializable playerId) {
         final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
-        taskQueue.submit(new AsyncTask(networkListener, taskQueue, new AsyncThreadCommand(callback), playerId));
+        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, new AsyncThreadCommand(callback), playerId));
+    }
+
+    /**
+     * 派发一个任务。
+     *
+     * @param queueId  执行队列ID
+     * @param callback 一个任务
+     */
+    public void dispatch(Serializable queueId, TaskCallback callback) {
+        // 如果没有指定队列ID
+        if (queueId == null) {
+            businessThreadPool.execute(new AsyncTask(networkListener, callback));
+        }
+        // 有指定队列
+        else {
+            final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
+            taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, new AsyncThreadCommand(callback), null));
+        }
     }
 
     /**
