@@ -110,7 +110,7 @@ public class HttpUtils {
             // 打开和URL之间的连接
             URLConnection connection = new URL(url).openConnection();
             connection.setReadTimeout(timeout);
-            requestProperty.forEach((key, value) -> connection.setRequestProperty(key, value));
+            requestProperty.forEach(connection::setRequestProperty);
 
             // 建立实际的连接
             connection.connect();
@@ -200,7 +200,7 @@ public class HttpUtils {
 
             // 设置通用的请求属性
             connection.setReadTimeout(timeout);
-            requestProperty.forEach((key, value) -> connection.setRequestProperty(key, value));
+            requestProperty.forEach(connection::setRequestProperty);
 
             connection.setUseCaches(false);
             // 发送POST请求必须设置如下两行
@@ -226,6 +226,17 @@ public class HttpUtils {
     }
 
     /**
+     * 向指定 URL 发送POST方法的请求, 参数格式为Json
+     *
+     * @param url  发送请求的 URL
+     * @param json 请求参数
+     * @return 所代表远程资源的响应结果
+     */
+    public static String postJson(String url, String json) {
+        return post(url, json, MapUtils.of("Content-Type", "application/json"));
+    }
+
+    /**
      * 处理响应文本.
      *
      * @param connection      HTTP链接
@@ -238,7 +249,7 @@ public class HttpUtils {
 
         // Content-Encodin:gzip
         String encoding = connection.getContentEncoding();
-        if (encoding != null && GzipUtils.ENCODING_GZIP.equalsIgnoreCase(encoding)) {
+        if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(encoding)) {
             inputStream = new GZIPInputStream(inputStream);
         }
 
