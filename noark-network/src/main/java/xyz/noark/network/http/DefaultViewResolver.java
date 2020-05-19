@@ -2,6 +2,7 @@ package xyz.noark.network.http;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import xyz.noark.core.exception.ConvertException;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.network.http.exception.HandlerDeprecatedException;
 import xyz.noark.network.http.exception.NoHandlerFoundException;
@@ -62,11 +63,20 @@ public class DefaultViewResolver implements ViewResolver {
         else if (cause instanceof HandlerDeprecatedException) {
             this.handleDeprecated(response);
         }
+        // 参数解析异常
+        else if (cause instanceof ConvertException) {
+            this.handleConvertException(response);
+        }
         // 服务器内部错误.
         else {
             this.handleException(response);
             logger.debug("服务器内部错误. cause={}", cause);
         }
+    }
+
+    private void handleConvertException(HttpServletResponse response) {
+        HttpResult result = new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "request's API parameters invalid.");
+        response.send(HttpResponseStatus.OK.code(), JSON.toJSONString(result));
     }
 
     private void handleException(HttpServletResponse response) {
