@@ -25,6 +25,16 @@ import xyz.noark.reflectasm.MethodAccess;
  */
 public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper {
     /**
+     * 串型执行的队列ID.
+     */
+    protected String queueId;
+    /**
+     * 当前方法是否已废弃使用.
+     */
+    protected boolean deprecated = false;
+
+    //----------------------------------------
+    /**
      * 执行线程组
      */
     protected final ExecThreadGroup threadGroup;
@@ -46,6 +56,34 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
         this.threadGroup = threadGroup;
     }
 
+    /**
+     * 获取当前的串型执行的队列ID
+     *
+     * @return 队列ID
+     */
+    public String getQueueId() {
+        return queueId;
+    }
+
+    /**
+     * 判定当前封包处理方法是否被废弃使用.
+     *
+     * @return 如果被废弃返回true，否则返回false
+     */
+    public boolean isDeprecated() {
+        return deprecated;
+    }
+
+    /**
+     * 设置当前封包处理方法是否被废弃使用.
+     *
+     * @param deprecated 是否被废弃
+     */
+    public void setDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
+    //----------------------------------------
     public boolean isPrintLog() {
         return printLog;
     }
@@ -71,7 +109,5 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
         return logCode;
     }
 
-    public String getQueueId(){
-        return null;
-    }
+
 }

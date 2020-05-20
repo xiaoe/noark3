@@ -36,6 +36,8 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
     private final String path;
     private final Set<RequestMethod> methodSet;
     private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
+
+    
     private final ResponseBody responseBody;
     /**
      * 是否为外网就能访问的接口
@@ -45,19 +47,17 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
      * 是否为局域网才能访问的接口
      */
     private final boolean privateApi;
-    /**
-     * 当前方法是否已废弃使用.
-     */
-    private boolean deprecated = false;
 
     public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
         super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.getPath() + ")");
         this.path = method.getPath();
+        this.queueId = method.getQueueId();
         this.methodSet = method.getMethodSet();
+        this.deprecated = method.isDeprecated();
 
         this.publicApi = method.isPublicApi();
         this.privateApi = method.isPrivateApi();
-        this.deprecated = method.isDeprecated();
+
         this.responseBody = method.getResponseBody();
 
         Arrays.stream(method.getParameters()).forEach(v -> buildParamWrapper(v));
@@ -76,9 +76,6 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
         return parameters;
     }
 
-    public boolean isDeprecated() {
-        return deprecated;
-    }
 
     public ResponseBody getResponseBody() {
         return responseBody;

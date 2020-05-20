@@ -51,11 +51,6 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
      */
     private final LongAdder callNum = new LongAdder();
 
-    /**
-     * 当前方法是否已废弃使用.
-     */
-    private boolean deprecated = false;
-
     public PacketMethodWrapper(MethodAccess methodAccess, Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass, String queueId) {
         super(methodAccess, single, md.getMethodIndex(), threadGroup, controllerMasterClass.getName(), md.getOrder(), "protocol(opcode=" + md.getOpcode() + ")");
         this.opcode = md.getOpcode();
@@ -124,24 +119,6 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
             args.add(parameter.read(playerId, protocol));
         }
         return args.toArray();
-    }
-
-    /**
-     * 判定当前封包处理方法是否被废弃使用.
-     *
-     * @return 如果被废弃返回true，否则返回false
-     */
-    public boolean isDeprecated() {
-        return deprecated;
-    }
-
-    /**
-     * 设置当前封包处理方法是否被废弃使用.
-     *
-     * @param deprecated 是否被废弃
-     */
-    public void setDeprecated(boolean deprecated) {
-        this.deprecated = deprecated;
     }
 
     /**
