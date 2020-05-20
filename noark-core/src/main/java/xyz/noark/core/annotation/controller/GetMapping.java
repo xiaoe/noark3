@@ -5,17 +5,18 @@ import xyz.noark.core.util.StringUtils;
 import java.lang.annotation.*;
 
 /**
- * 注解RequestMapping的作用将HTTP请求映射到指定处理方法.
- * <p>
- * 这里区别Spring的只能在方法上定义，类上面没有实现，感觉没有必要
+ * 注解GetMapping用于将Get请求映射到指定处理方法.
+ * <p></p>
+ * 这可以理解为一个组合注解，是@RequestMapping(method = RequestMethod.GET)的缩写
  *
  * @author 小流氓[176543888@qq.com]
+ * @see RequestMapping
  * @since 3.4
  */
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequestMapping {
+public @interface GetMapping {
 
     /**
      * 映射路径.
@@ -23,16 +24,6 @@ public @interface RequestMapping {
      * @return 映射路径
      */
     String path();
-
-    /**
-     * 允许的请求方式，如果没有指定默认全部允许.
-     * <p>
-     * GET、POST、PUT、DELETE等；
-     * </p>
-     *
-     * @return 允许的请求方式
-     */
-    RequestMethod[] method() default {};
 
     /**
      * 指定串型执行的队列ID参数的名称.

@@ -92,6 +92,10 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
         // HTTP服务
         else if (annotationType == RequestMapping.class) {
             hmds.add(new HttpMethodDefinition(methodAccess, method, RequestMapping.class.cast(annotation)));
+        } else if (annotationType == GetMapping.class) {
+            hmds.add(new HttpMethodDefinition(methodAccess, method, GetMapping.class.cast(annotation)));
+        } else if (annotationType == PostMapping.class) {
+            hmds.add(new HttpMethodDefinition(methodAccess, method, PostMapping.class.cast(annotation)));
         }
         // 延迟任务
         else if (annotationType == Scheduled.class) {

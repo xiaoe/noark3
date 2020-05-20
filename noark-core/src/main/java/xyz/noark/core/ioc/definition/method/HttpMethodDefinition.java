@@ -13,14 +13,14 @@
  */
 package xyz.noark.core.ioc.definition.method;
 
-import xyz.noark.core.annotation.controller.PrivateApi;
-import xyz.noark.core.annotation.controller.PublicApi;
-import xyz.noark.core.annotation.controller.RequestMapping;
-import xyz.noark.core.annotation.controller.ResponseBody;
+import xyz.noark.core.annotation.controller.*;
 import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * HTTP请求方法的定义.
@@ -29,15 +29,34 @@ import java.lang.reflect.Parameter;
  * @since 3.0
  */
 public class HttpMethodDefinition extends SimpleMethodDefinition {
-    private final RequestMapping requestMapping;
+    private final String path;
+    private final Set<RequestMethod> methodSet;
+    private final String queueId;
+
     private final Parameter[] parameters;
     private final ResponseBody responseBody;
     private final boolean publicApi;
     private final boolean privateApi;
 
     public HttpMethodDefinition(MethodAccess methodAccess, Method method, RequestMapping requestMapping) {
+        this(methodAccess, method, requestMapping.path(), requestMapping.method(), requestMapping.queueId());
+    }
+
+    public HttpMethodDefinition(MethodAccess methodAccess, Method method, GetMapping mapping) {
+        this(methodAccess, method, mapping.path(), new RequestMethod[]{RequestMethod.GET}, mapping.queueId());
+    }
+
+    public HttpMethodDefinition(MethodAccess methodAccess, Method method, PostMapping mapping) {
+        this(methodAccess, method, mapping.path(), new RequestMethod[]{RequestMethod.POST}, mapping.queueId());
+    }
+
+    private HttpMethodDefinition(MethodAccess methodAccess, Method method, String path, RequestMethod[] methods, String queueId) {
         super(methodAccess, method);
-        this.requestMapping = requestMapping;
+
+        this.path = path;
+        this.methodSet = new HashSet<>(Arrays.asList(methods));
+        this.queueId = queueId;
+
         this.parameters = method.getParameters();
         this.responseBody = method.getAnnotation(ResponseBody.class);
         this.publicApi = method.isAnnotationPresent(PublicApi.class);
@@ -45,7 +64,7 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
     }
 
     public String path() {
-        return requestMapping.path();
+        return path;
     }
 
     @Override
