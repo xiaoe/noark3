@@ -6,8 +6,9 @@ import java.lang.annotation.*;
 
 /**
  * 注解GetMapping用于将Get请求映射到指定处理方法.
- * <p></p>
+ * <p>
  * 这可以理解为一个组合注解，是@RequestMapping(method = RequestMethod.GET)的缩写
+ * </p>
  *
  * @author 小流氓[176543888@qq.com]
  * @see RequestMapping
