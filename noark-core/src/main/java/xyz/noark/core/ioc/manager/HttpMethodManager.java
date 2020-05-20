@@ -13,12 +13,12 @@
  */
 package xyz.noark.core.ioc.manager;
 
+import xyz.noark.core.annotation.controller.RequestMethod;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.util.StringUtils;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.*;
 
 /**
  * HTTP方法管理类.
@@ -27,29 +27,50 @@ import java.util.concurrent.ConcurrentMap;
  * @since 3.0
  */
 public class HttpMethodManager {
-    private static final HttpMethodManager INSTANCE = new HttpMethodManager();
-    private final ConcurrentMap<String, HttpMethodWrapper> handlers = new ConcurrentHashMap<>(2048);
+    // 请求方式->path-->处理器
+    private static final EnumMap<RequestMethod, Map<String, HttpMethodWrapper>> handlerMap = new EnumMap<>(RequestMethod.class);
 
     private HttpMethodManager() {
     }
 
-    public static HttpMethodManager getInstance() {
-        return INSTANCE;
-    }
-
-    public void resetHttpHandler(HttpMethodWrapper handler) {
+    /**
+     * 注册HTTP请求处理器.
+     *
+     * @param handler HTTP请求处理器
+     */
+    public static void registerHandler(HttpMethodWrapper handler) {
         // URI不能有空格...
-        if (handler.getUri().indexOf(StringUtils.SPACE) != -1) {
-            throw new ServerBootstrapException("URI中发现空格：" + handler.getUri());
+        if (handler.getPath().indexOf(StringUtils.SPACE) != -1) {
+            throw new ServerBootstrapException("URI中发现空格：" + handler.getPath());
         }
-        // 重复定义的URI
-        else if (handlers.containsKey(handler.getUri())) {
-            throw new ServerBootstrapException("重复定义的URI：" + handler.getUri());
+
+        // 获取所有可访问试，如果没有那就全部可以
+        Collection<RequestMethod> methodSet = handler.getMethodSet();
+        if (methodSet.isEmpty()) {
+            methodSet = Arrays.asList(RequestMethod.values());
         }
-        handlers.put(handler.getUri(), handler);
+
+        // 所有方式都要记录
+        for (RequestMethod v : methodSet) {
+            Map<String, HttpMethodWrapper> handlers = handlerMap.computeIfAbsent(v, key -> new HashMap<>(512));
+            // 重复定义的URI
+            if (handlers.containsKey(handler.getPath())) {
+                throw new ServerBootstrapException("重复定义的URI：" + handler.getPath());
+            }
+            // 存档备用
+            handlers.put(handler.getPath(), handler);
+        }
     }
 
-    public HttpMethodWrapper getHttpHandler(String uri) {
-        return handlers.get(uri);
+    /**
+     * 获取指定访问方式的路径处理器.
+     *
+     * @param method 访问方式，GET，POST
+     * @param path   路径
+     * @return 获取指定访问方式的路径处理器
+     */
+    public static HttpMethodWrapper getHttpHandler(String method, String path) {
+        RequestMethod requestMethod = RequestMethod.valueOf(method.toUpperCase());
+        return handlerMap.getOrDefault(requestMethod, Collections.emptyMap()).get(path);
     }
 }

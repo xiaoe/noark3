@@ -14,6 +14,7 @@
 package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.annotation.controller.RequestMethod;
 import xyz.noark.core.annotation.controller.RequestParam;
 import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
@@ -23,6 +24,7 @@ import xyz.noark.reflectasm.MethodAccess;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 /**
  * 封包处理方法包装类.
@@ -31,7 +33,8 @@ import java.util.Arrays;
  * @since 3.0
  */
 public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
-    private final String uri;
+    private final String path;
+    private final Set<RequestMethod> methodSet;
     private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
     private final ResponseBody responseBody;
     /**
@@ -48,8 +51,10 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
     private boolean deprecated = false;
 
     public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.path() + ")");
-        this.uri = method.path();
+        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.getPath() + ")");
+        this.path = method.getPath();
+        this.methodSet = method.getMethodSet();
+
         this.publicApi = method.isPublicApi();
         this.privateApi = method.isPrivateApi();
         this.deprecated = method.isDeprecated();
@@ -63,8 +68,8 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
         this.parameters.add(new HttpParamWrapper(requestParam, parameter));
     }
 
-    public String getUri() {
-        return uri;
+    public String getPath() {
+        return path;
     }
 
     public ArrayList<HttpParamWrapper> getParameters() {
@@ -85,5 +90,9 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 
     public boolean isPrivateApi() {
         return privateApi;
+    }
+
+    public Set<RequestMethod> getMethodSet() {
+        return methodSet;
     }
 }

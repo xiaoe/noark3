@@ -132,8 +132,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
      * 分析HTTP处理入口.
      */
     private void doAnalysisHttpHandler(NoarkIoc noarkIoc) {
-        final HttpMethodManager manager = HttpMethodManager.getInstance();
-        hmds.forEach(hmd -> manager.resetHttpHandler(new HttpMethodWrapper(methodAccess, single, hmd, threadGroup, controllerMasterClass)));
+        hmds.forEach(hmd -> HttpMethodManager.registerHandler(new HttpMethodWrapper(methodAccess, single, hmd, threadGroup, controllerMasterClass)));
     }
 
     /**

@@ -68,7 +68,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         final String ip = IpUtils.getIp(ctx.channel().remoteAddress());
 
         // 获取URI对应的处理器
-        HttpMethodWrapper handler = HttpMethodManager.getInstance().getHttpHandler(uri);
+        HttpMethodWrapper handler = HttpMethodManager.getHttpHandler(fhr.method().toString(), uri);
 
         // 404，没有找到对应的处理器
         if (handler == null) {

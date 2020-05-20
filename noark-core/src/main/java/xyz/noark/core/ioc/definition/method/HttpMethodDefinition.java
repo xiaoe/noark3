@@ -63,10 +63,6 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
         this.privateApi = method.isAnnotationPresent(PrivateApi.class);
     }
 
-    public String path() {
-        return path;
-    }
-
     @Override
     public Parameter[] getParameters() {
         return parameters;
@@ -82,5 +78,17 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 
     public boolean isPrivateApi() {
         return privateApi;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public Set<RequestMethod> getMethodSet() {
+        return methodSet;
+    }
+
+    public String getQueueId() {
+        return queueId;
     }
 }
