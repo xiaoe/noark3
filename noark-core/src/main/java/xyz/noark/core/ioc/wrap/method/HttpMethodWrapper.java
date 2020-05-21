@@ -53,7 +53,7 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper implement
     private final boolean privateApi;
 
     public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.getPath() + ")");
+        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), null);
         this.path = method.getPath();
         // 这里的方法缓存着，拦截器里可能会有获取注解的需求
         this.method = method.getMethod();

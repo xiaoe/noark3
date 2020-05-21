@@ -86,7 +86,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         } finally {
             response.flush();
             final long endExecuteTime = System.nanoTime();
-            logger.info("handle {},delay={} ms,exe={} ms,ip={}", handler.logCode(), (startExecTime - createTime) / 100_0000F, (endExecuteTime - startExecTime) / 100_0000F, request.getRemoteAddr());
+            logger.info("handle http({}),delay={} ms,exe={} ms,ip={}", request.getUri(), (startExecTime - createTime) / 100_0000F, (endExecuteTime - startExecTime) / 100_0000F, request.getRemoteAddr());
         }
     }
 

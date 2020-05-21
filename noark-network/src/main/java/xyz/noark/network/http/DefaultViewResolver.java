@@ -24,11 +24,11 @@ public class DefaultViewResolver implements ViewResolver {
         result = this.handleResult(handler, result);
         // 返回值是字符串, 直接当成响应返回
         if (result instanceof String) {
-            response.send((String) result);
+            response.writeString((String) result);
         }
         // 当Json处理，日后再细化
         else {
-            response.send(JSON.toJSONString(result));
+            response.writeObject(result);
         }
     }
 
