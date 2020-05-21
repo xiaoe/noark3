@@ -8,7 +8,7 @@ import xyz.noark.core.util.StringUtils;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class NoHandlerFoundException extends Exception {
+public class NoHandlerFoundException extends RuntimeException {
     private final String method;
     private final String uri;
 

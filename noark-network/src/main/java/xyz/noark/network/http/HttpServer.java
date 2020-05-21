@@ -29,7 +29,6 @@ import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.network.TcpServer;
-import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.network.NetworkConstant;
 
 import static xyz.noark.log.LogHelper.logger;
@@ -44,7 +43,6 @@ import static xyz.noark.log.LogHelper.logger;
 public class HttpServer implements TcpServer {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
-    private final ViewResolver viewResolver = new DefaultViewResolver();
 
     @Value(NetworkConstant.HTTP_PORT)
     private int port = 0;
@@ -52,7 +50,7 @@ public class HttpServer implements TcpServer {
     private String secretKey = null;
 
     @Autowired
-    private ThreadDispatcher threadDispatcher;
+    private DispatcherServlet dispatcherServlet;
 
     /**
      * 向内部提供HTTP服务的最大内容长度（默认：1048576=1M）
@@ -99,7 +97,7 @@ public class HttpServer implements TcpServer {
                 p.addLast(new HttpServerCodec());
                 p.addLast(new HttpObjectAggregator(maxContentLength));
                 p.addLast(new ChunkedWriteHandler());
-                p.addLast(new HttpServerHandler(threadDispatcher, viewResolver));
+                p.addLast(dispatcherServlet);
             }
         });
 

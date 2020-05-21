@@ -10,6 +10,11 @@ public interface HttpServletResponse {
 
     void setCharacterEncoding(String utf8);
 
+    /**
+     * 设计响应编码
+     *
+     * @param status 响应编码
+     */
     void setStatus(int status);
 
     void send(int status, String msg);
@@ -20,4 +25,24 @@ public interface HttpServletResponse {
      * @param msg 响应文本
      */
     void send(String msg);
+
+
+    /**
+     * 写入一个对象，序列化方式由contentType决定.
+     *
+     * @param str 需要写入的数据
+     */
+    void writeString(String str);
+
+    /**
+     * 写入一个对象，序列化方式由contentType决定.
+     *
+     * @param o 需要写入的数据
+     */
+    void writeObject(Object o);
+
+    /**
+     * 通知客户端
+     */
+    void flush();
 }

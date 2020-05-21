@@ -19,8 +19,11 @@ import xyz.noark.core.annotation.controller.RequestParam;
 import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
+import xyz.noark.core.network.HandlerMethod;
 import xyz.noark.reflectasm.MethodAccess;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +35,13 @@ import java.util.Set;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
+public class HttpMethodWrapper extends AbstractControllerMethodWrapper implements HandlerMethod {
     private final String path;
+    private final Method method;
     private final Set<RequestMethod> methodSet;
     private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
 
-    
+
     private final ResponseBody responseBody;
     /**
      * 是否为外网就能访问的接口
@@ -51,9 +55,12 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
     public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
         super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), "http(" + method.getPath() + ")");
         this.path = method.getPath();
+        // 这里的方法缓存着，拦截器里可能会有获取注解的需求
+        this.method = method.getMethod();
         this.queueId = method.getQueueId();
         this.methodSet = method.getMethodSet();
         this.deprecated = method.isDeprecated();
+
 
         this.publicApi = method.isPublicApi();
         this.privateApi = method.isPrivateApi();
@@ -91,5 +98,10 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper {
 
     public Set<RequestMethod> getMethodSet() {
         return methodSet;
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return method.getAnnotation(annotationClass);
     }
 }

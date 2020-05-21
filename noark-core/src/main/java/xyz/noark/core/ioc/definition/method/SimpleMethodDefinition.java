@@ -65,4 +65,13 @@ public class SimpleMethodDefinition implements MethodDefinition {
     public boolean isDeprecated() {
         return method.isAnnotationPresent(Deprecated.class);
     }
+
+    /**
+     * 获取这个JDK方法引用.
+     *
+     * @return 获取方法引用
+     */
+    public Method getMethod() {
+        return method;
+    }
 }

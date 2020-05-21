@@ -1,5 +1,6 @@
 package xyz.noark.network.http;
 
+import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -55,12 +56,27 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
         this.sendAndClose();
     }
 
+    @Override
+    public void writeString(String str) {
+        this.content = Unpooled.copiedBuffer(str, Charset.forName(charset));
+    }
+
+    @Override
+    public void writeObject(Object o) {
+        this.writeString(JSON.toJSONString(o));
+    }
+
+    @Override
+    public void flush() {
+        this.sendAndClose();
+    }
+
     private void sendAndClose() {
         FullHttpResponse response = this.createResponse();
         this.fillResponseHeaderInfo(response.headers());
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
-    
+
     /**
      * 填充头信息
      *
@@ -76,5 +92,9 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
         HttpVersion version = HttpVersion.HTTP_1_1;
         ByteBuf buf = content == null ? Unpooled.EMPTY_BUFFER : content;
         return new DefaultFullHttpResponse(version, status, buf);
+    }
+
+    public void setContent(ByteBuf content) {
+        this.content = content;
     }
 }

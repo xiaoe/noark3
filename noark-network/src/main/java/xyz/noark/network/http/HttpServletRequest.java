@@ -13,36 +13,67 @@
  */
 package xyz.noark.network.http;
 
-import com.alibaba.fastjson.JSON;
-import xyz.noark.core.exception.UnrealizedException;
-
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * 构建一个请求对象，目前主要用于参数获取.
+ * 一个请求接口.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
 public interface HttpServletRequest {
 
-    public String getUri();
+    /**
+     * 获取请求的URI
+     *
+     * @return 请求的URI
+     */
+    String getUri();
+
+    /**
+     * 获取请求的IP地址.
+     *
+     * @return IP地址
+     */
+    String getRemoteAddr();
+
+    /**
+     * 获取请求的方式.
+     * <p>比如GET,POST等等</p>
+     *
+     * @return 请求的方式
+     * @see xyz.noark.core.annotation.controller.RequestMethod
+     */
+    String getMethod();
 
     /**
      * 获取Request指定名称的参数.
      *
      * @param name 指定名称
-     * @return 指定名称的参数值
+     * @return 指定名称的参数值，参数不存在返回null
      */
-    public String getParameter(String name);
+    String getParameter(String name);
 
-    public Enumeration<String> getParameterNames();
+    /**
+     * 获取所有参数名称.
+     *
+     * @return 所有参数名称
+     */
+    Enumeration<String> getParameterNames();
 
-    public String[] getParameterValues(String name);
+    /**
+     * 根据参数名称获取对应的值数组.
+     *
+     * @param name 参数名称
+     * @return 对应的值数组
+     */
+    String[] getParameterValues(String name);
 
-    public Map<String, String[]> getParameterMap();
-
-    public String getRemoteAddr();
+    /**
+     * 获取所有参数映射关系.
+     *
+     * @return 参数映射关系
+     */
+    Map<String, String[]> getParameterMap();
 }

@@ -1,6 +1,7 @@
 package xyz.noark.network.http;
 
 import com.alibaba.fastjson.JSON;
+import io.netty.handler.codec.http.HttpMethod;
 import xyz.noark.core.exception.UnrealizedException;
 
 import java.util.Collections;
@@ -13,11 +14,13 @@ import java.util.Map;
  */
 public class NoarkHttpServletRequest implements HttpServletRequest {
     private final String uri;
+    private final String method;
     private final Map<String, String> parameters;
     private final String ip;
 
-    public NoarkHttpServletRequest(String uri, Map<String, String> parameters, String ip) {
+    public NoarkHttpServletRequest(String uri, HttpMethod method, Map<String, String> parameters, String ip) {
         this.uri = uri;
+        this.method = method.name();
         this.parameters = parameters;
         this.ip = ip;
     }
@@ -25,6 +28,11 @@ public class NoarkHttpServletRequest implements HttpServletRequest {
     @Override
     public String getUri() {
         return uri;
+    }
+
+    @Override
+    public String getMethod() {
+        return method;
     }
 
     @Override
