@@ -1109,6 +1109,24 @@ public class Redis {
     }
 
     /**
+     * 执行Lua脚本.
+     * <p>
+     * 脚本具备原子性
+     * <p>
+     * 可用版本： &gt;= 2.6.0<br>
+     *
+     * @param script 脚本
+     * @param keys   脚本里参数名称列表
+     * @param args   脚本里参数值列表
+     * @return 脚本返回值
+     */
+    public Object eval(final String script, List<String> keys, List<String> args) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.eval(script, keys, args);
+        }
+    }
+
+    /**
      * 销毁链接.
      */
     public void destory() {
