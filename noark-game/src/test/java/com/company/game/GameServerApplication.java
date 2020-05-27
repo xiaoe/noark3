@@ -14,11 +14,11 @@
 package com.company.game;
 
 import com.company.game.event.BuildingUpgradeEvent;
+import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
-import xyz.noark.core.network.Sender;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
 import xyz.noark.game.Noark;
@@ -33,6 +33,15 @@ import static xyz.noark.log.LogHelper.logger;
  */
 @Controller(threadGroup = ExecThreadGroup.ModuleThreadGroup)
 public class GameServerApplication {
+
+    @Autowired
+    private TestService testService1;
+    @Autowired
+    private TestService testService2;
+    @Autowired
+    private TestService testService3;
+    @Autowired
+    private TestService testService4;
 
     public static void main(String[] args) {
         Noark.run(GameServerBootstrap.class, args);
@@ -57,5 +66,10 @@ public class GameServerApplication {
     @EventListener(BuildingUpgradeEvent.class)
     public void handleBuildingUpgradeEvent() {
         logger.info("建筑升级时间到........");
+
+        logger.debug("testService1={}", testService1.getClass().getName());
+        logger.debug("testService2={}", testService2.getClass().getName());
+        logger.debug("testService3={}", testService3.getClass().getName());
+        logger.debug("testService4={}", testService4.getClass().getName());
     }
 }

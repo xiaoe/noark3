@@ -16,9 +16,11 @@ package xyz.noark.core.ioc.definition.field;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.FieldDefinition;
 import xyz.noark.core.ioc.IocMaking;
+import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.util.FieldUtils;
 
 import java.lang.reflect.Field;
+import java.util.Comparator;
 import java.util.Optional;
 
 /**
@@ -43,10 +45,6 @@ public class DefaultFieldDefinition implements FieldDefinition {
         this.field.setAccessible(true);
     }
 
-    public Class<?> getFieldClass() {
-        return fieldClass;
-    }
-
     @Override
     public void injection(Object single, IocMaking making) {
         FieldUtils.writeField(single, field, extractInjectionObject(making, field.getType(), field));
@@ -61,7 +59,7 @@ public class DefaultFieldDefinition implements FieldDefinition {
      * @return 需要注入的对象
      */
     protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-        Optional<Object> result = making.findAllImpl(klass).stream().map(b -> b.getSingle()).findFirst();
+        Optional<Object> result = making.findAllImpl(klass).stream().sorted(Comparator.comparingInt(DefaultBeanDefinition::getOrder)).limit(1).map(DefaultBeanDefinition::getSingle).findFirst();
         if (required) {
             return result.orElseThrow(() -> new ServerBootstrapException("Class:" + field.getDeclaringClass().getName() + ">>Field:" + field.getName() + " cannot autowired"));
         }
