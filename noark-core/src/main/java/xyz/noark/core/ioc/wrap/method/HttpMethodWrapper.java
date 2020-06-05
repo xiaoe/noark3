@@ -43,14 +43,7 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper implement
 
 
     private final ResponseBody responseBody;
-    /**
-     * 是否为外网就能访问的接口
-     */
-    private final boolean publicApi;
-    /**
-     * 是否为局域网才能访问的接口
-     */
-    private final boolean privateApi;
+
 
     public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
         super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), null);
@@ -60,10 +53,6 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper implement
         this.queueId = method.getQueueId();
         this.methodSet = method.getMethodSet();
         this.deprecated = method.isDeprecated();
-
-
-        this.publicApi = method.isPublicApi();
-        this.privateApi = method.isPrivateApi();
 
         this.responseBody = method.getResponseBody();
 
@@ -83,17 +72,8 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper implement
         return parameters;
     }
 
-
     public ResponseBody getResponseBody() {
         return responseBody;
-    }
-
-    public boolean isPublicApi() {
-        return publicApi;
-    }
-
-    public boolean isPrivateApi() {
-        return privateApi;
     }
 
     public Set<RequestMethod> getMethodSet() {

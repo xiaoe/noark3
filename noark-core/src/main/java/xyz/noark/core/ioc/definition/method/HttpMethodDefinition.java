@@ -35,8 +35,6 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 
     private final Parameter[] parameters;
     private final ResponseBody responseBody;
-    private final boolean publicApi;
-    private final boolean privateApi;
 
     public HttpMethodDefinition(MethodAccess methodAccess, Method method, RequestMapping requestMapping) {
         this(methodAccess, method, requestMapping.path(), requestMapping.method(), requestMapping.queueId());
@@ -59,8 +57,6 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 
         this.parameters = method.getParameters();
         this.responseBody = method.getAnnotation(ResponseBody.class);
-        this.publicApi = method.isAnnotationPresent(PublicApi.class);
-        this.privateApi = method.isAnnotationPresent(PrivateApi.class);
     }
 
     @Override
@@ -70,14 +66,6 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 
     public ResponseBody getResponseBody() {
         return responseBody;
-    }
-
-    public boolean isPublicApi() {
-        return publicApi;
-    }
-
-    public boolean isPrivateApi() {
-        return privateApi;
     }
 
     public String getPath() {
