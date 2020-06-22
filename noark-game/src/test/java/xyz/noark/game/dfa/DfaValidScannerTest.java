@@ -39,26 +39,26 @@ public class DfaValidScannerTest {
     public void setUp() throws Exception {
         TimeRangeConverter converter = new TimeRangeConverter();
         TimeRange timeRange = converter.convert("[*][6][3-6][*][00:00-23:59:59:999]");
-        List<DfaValidWord> sensitivewords = new ArrayList<DfaValidWord>();
+        List<DfaValidWord> sensitiveWordList = new ArrayList<>();
         // 2019.6.3新增屏蔽词：
         // 2019年6月3日起至2019年6月6日24点，需要单个屏蔽的敏感词：8、9、八、九、捌、玖、eight、nine、6、4、六、四、陆、肆、six、four
-        sensitivewords.add(new DfaValidWordImpl("淘宝", null));
-        sensitivewords.add(new DfaValidWordImpl("交易", null));
-        sensitivewords.add(new DfaValidWordImpl("89", timeRange));
-        sensitivewords.add(new DfaValidWordImpl("八", timeRange));
-        sensitivewords.add(new DfaValidWordImpl("九", timeRange));
-        sensitivewords.add(new DfaValidWordImpl("eight", timeRange));
-        sensitivewords.add(new DfaValidWordImpl("nine", timeRange));
-        sensitivewords.add(new DfaValidWordImpl("64", timeRange));
-        sensitivewords.add(new DfaValidWordImpl("eightnine", timeRange));
-        this.scanner = new DfaValidScanner(sensitivewords);
+        sensitiveWordList.add(new DfaValidWordImpl("淘宝", null));
+        sensitiveWordList.add(new DfaValidWordImpl("交易", null));
+        sensitiveWordList.add(new DfaValidWordImpl("89", timeRange));
+        sensitiveWordList.add(new DfaValidWordImpl("八", timeRange));
+        sensitiveWordList.add(new DfaValidWordImpl("九", timeRange));
+        sensitiveWordList.add(new DfaValidWordImpl("eight", timeRange));
+        sensitiveWordList.add(new DfaValidWordImpl("nine", timeRange));
+        sensitiveWordList.add(new DfaValidWordImpl("64", timeRange));
+        sensitiveWordList.add(new DfaValidWordImpl("eightnine", timeRange));
+        this.scanner = new DfaValidScanner(sensitiveWordList);
     }
 
     @Test
     public void testDfaValidScannerStringListOfDfaValidWord() {
         LocalDate today = LocalDate.now();
         boolean isJune = today.getMonthValue() == 6;
-        boolean isDayIn36 = 3 <= today.getDayOfMonth() || today.getDayOfMonth() <= 6;
+        boolean isDayIn36 = 3 <= today.getDayOfMonth() && today.getDayOfMonth() <= 6;
         if (isJune && isDayIn36) {
             assertTrue(scanner.contains("64"));
         } else {
@@ -66,9 +66,9 @@ public class DfaValidScannerTest {
         }
     }
 
-    class DfaValidWordImpl implements DfaValidWord {
-        private String text;
-        private ValidTime validTime;
+    static class DfaValidWordImpl implements DfaValidWord {
+        private final String text;
+        private final ValidTime validTime;
 
         public DfaValidWordImpl(String text, ValidTime validTime) {
             this.text = text;
