@@ -23,10 +23,9 @@ import xyz.noark.core.exception.ServerBootstrapException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -123,9 +122,7 @@ public class FieldUtils {
     public static List<Field> getAllField(final Class<?> klass) {
         List<Field> result = new ArrayList<>();
         for (Class<?> target = klass; target != Object.class; target = target.getSuperclass()) {
-            for (Field field : target.getDeclaredFields()) {
-                result.add(field);
-            }
+            result.addAll(Arrays.asList(target.getDeclaredFields()));
         }
         return result;
     }
@@ -139,21 +136,21 @@ public class FieldUtils {
      */
     public static String genGetMethodName(Field field) {
         int len = field.getName().length();
+        StringBuilder sb;
         if (field.getType() == boolean.class) {
-            StringBuilder sb = new StringBuilder(len + 2);
+            sb = new StringBuilder(len + 2);
             sb.append("is").append(field.getName());
             if (Character.isLowerCase(sb.charAt(PREFIX_IS_METHOD_INDEX))) {
                 sb.setCharAt(PREFIX_IS_METHOD_INDEX, Character.toUpperCase(sb.charAt(PREFIX_IS_METHOD_INDEX)));
             }
-            return sb.toString();
         } else {
-            StringBuilder sb = new StringBuilder(len + 3);
+            sb = new StringBuilder(len + 3);
             sb.append("get").append(field.getName());
             if (Character.isLowerCase(sb.charAt(PREFIX_GET_METHOD_INDEX))) {
                 sb.setCharAt(PREFIX_GET_METHOD_INDEX, Character.toUpperCase(sb.charAt(PREFIX_GET_METHOD_INDEX)));
             }
-            return sb.toString();
         }
+        return sb.toString();
     }
 
     /**
@@ -181,9 +178,9 @@ public class FieldUtils {
      */
     public static Field[] scanAllField(final Class<?> klass, List<Class<? extends Annotation>> annotations) {
         // 为了返回是有序的添加过程，这里使用LinkedHashMap
-        Map<String, Field> fieldMap = new LinkedHashMap<String, Field>();
+        Map<String, Field> fieldMap = new LinkedHashMap<>();
         scanField(klass, fieldMap, annotations);
-        return fieldMap.values().toArray(new Field[fieldMap.size()]);
+        return fieldMap.values().toArray(new Field[0]);
     }
 
     /**
@@ -253,5 +250,21 @@ public class FieldUtils {
                 }
             }
         }
+    }
+
+    /**
+     * 获取Map类型的属性Key的Class对象.
+     *
+     * @param field Map类型的属性
+     * @return Key的Class对象
+     */
+    public static Class<?> getMapFieldKeyClass(Field field) {
+        Type genericType = field.getGenericType();
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) genericType;
+            // Key是第0位
+            return (Class<?>) pt.getActualTypeArguments()[0];
+        }
+        return Object.class;
     }
 }
