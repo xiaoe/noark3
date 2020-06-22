@@ -14,12 +14,12 @@
 package xyz.noark.core.ioc.definition.field;
 
 import xyz.noark.core.ioc.IocMaking;
+import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+import xyz.noark.core.util.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Map类型的属性注入
@@ -35,8 +35,21 @@ public class MapFieldDefinition extends DefaultFieldDefinition {
 
     @Override
     protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-        Map<String, Object> result = new HashMap<>(32, 1);
-        making.findAllImpl(fieldClass).forEach(v -> Arrays.stream(v.getNames()).forEach(n -> result.put(n, v.getSingle())));
+        List<DefaultBeanDefinition> allImpl = making.findAllImpl(fieldClass);
+        if (allImpl.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        final Map<Object, Object> result = new HashMap<>((int) (allImpl.size() / 0.75 + 1));
+        Class<?> keyClass = FieldUtils.getMapFieldKeyClass(field);
+        // Int类型的Key，使用ID
+        if (Integer.class.equals(keyClass)) {
+            allImpl.forEach(v -> Arrays.stream(v.getIds()).forEach(n -> result.put(n, v.getSingle())));
+        }
+        // 其他类型使用Name
+        else {
+            allImpl.forEach(v -> Arrays.stream(v.getNames()).forEach(n -> result.put(n, v.getSingle())));
+        }
         return result;
     }
 }

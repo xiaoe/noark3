@@ -17,6 +17,7 @@ import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.*;
 import xyz.noark.core.ioc.definition.field.DefaultFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ListFieldDefinition;
@@ -82,6 +83,17 @@ public class DefaultBeanDefinition implements BeanDefinition {
         this.analysisField();
         this.analysisMethod();
         return this;
+    }
+
+
+    /**
+     * 获取Bean的唯一ID.
+     * <p>只有@Component才会有这个配置</p>
+     *
+     * @return Bean的唯一ID
+     */
+    public int[] getIds() {
+        throw new UnrealizedException("亲，只有@Component才会有这个配置，用于Map的注入");
     }
 
     @Override

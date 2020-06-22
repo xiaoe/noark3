@@ -28,9 +28,18 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Component {
     /**
+     * 这个类的唯一ID
+     * <p>主要用于Map注入的KEY</p>
+     *
+     * @return ID
+     */
+    int[] id() default {};
+
+    /**
      * 这个类的唯一名称.
+     * <p>主要用于Map注入的KEY</p>
      *
      * @return 名称
      */
-    String[] name();
+    String[] name() default {};
 }

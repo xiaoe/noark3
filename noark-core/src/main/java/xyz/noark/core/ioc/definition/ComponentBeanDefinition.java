@@ -22,15 +22,20 @@ import xyz.noark.core.annotation.Component;
  * @since 3.0
  */
 public class ComponentBeanDefinition extends DefaultBeanDefinition {
-    private final String[] names;
+    private final Component component;
 
     public ComponentBeanDefinition(Class<?> klass, Component component) {
         super(klass);
-        this.names = component.name();
+        this.component = component;
+    }
+
+    @Override
+    public int[] getIds() {
+        return component.id();
     }
 
     @Override
     public String[] getNames() {
-        return names;
+        return component.name();
     }
 }
