@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IpWhiteList {
+public @interface IpAllowList {
 
     /**
      * 配置文件中的IP白名单的配置Key。

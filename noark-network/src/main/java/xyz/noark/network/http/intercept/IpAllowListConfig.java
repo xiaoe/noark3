@@ -7,14 +7,16 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
+ * IP允许访问的列表配置.
+ *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-class IpWhiterListConfig {
+class IpAllowListConfig {
     private static Pattern pattern = Pattern.compile("(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})");
     private final Set<String> ipList;
 
-    IpWhiterListConfig(String allowIp) {
+    IpAllowListConfig(String allowIp) {
         this.ipList = this.getAvailIpList(allowIp);
     }
 

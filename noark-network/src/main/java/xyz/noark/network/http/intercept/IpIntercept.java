@@ -1,6 +1,6 @@
 package xyz.noark.network.http.intercept;
 
-import xyz.noark.core.annotation.controller.IpWhiteList;
+import xyz.noark.core.annotation.controller.IpAllowList;
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.network.HandlerMethod;
 import xyz.noark.core.util.IpUtils;
@@ -16,15 +16,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 3.4
  */
 public class IpIntercept extends HandlerInterceptorAdapter {
-    private final Map<String, IpWhiterListConfig> cache = new ConcurrentHashMap<>();
+    private final Map<String, IpAllowListConfig> cache = new ConcurrentHashMap<>();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
         final String ip = request.getRemoteAddr();
 
-        IpWhiteList whiteList = handler.getAnnotation(IpWhiteList.class);
+        IpAllowList allowList = handler.getAnnotation(IpAllowList.class);
         // 没有任何声明，那就认为只能内网访问.
-        if (whiteList == null) {
+        if (allowList == null) {
             // 不是内网IP，结束后续
             if (!IpUtils.isInnerIp(ip)) {
                 return notAccess(response);
@@ -32,7 +32,7 @@ public class IpIntercept extends HandlerInterceptorAdapter {
         }
         // 有声明，那就要按规则判定
         else {
-            IpWhiterListConfig config = cache.computeIfAbsent(whiteList.value(), this::createIpWhiterListConfig);
+            IpAllowListConfig config = cache.computeIfAbsent(allowList.value(), this::createIpWhiterListConfig);
             if (config.notAccess(ip)) {
                 return notAccess(response);
             }
@@ -48,7 +48,7 @@ public class IpIntercept extends HandlerInterceptorAdapter {
         return false;
     }
 
-    private IpWhiterListConfig createIpWhiterListConfig(String key) {
-        return new IpWhiterListConfig(EnvConfigHolder.getString(key));
+    private IpAllowListConfig createIpWhiterListConfig(String key) {
+        return new IpAllowListConfig(EnvConfigHolder.getString(key));
     }
 }
