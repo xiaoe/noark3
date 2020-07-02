@@ -8,7 +8,7 @@
   <url>http://noark.xyz</url>
   <licenses>
     <license>
-      <name>Ä¾À¼¿íËÉĞí¿ÉÖ¤, µÚ1°æ</name>
+      <name>æœ¨å…°å®½æ¾è®¸å¯è¯, ç¬¬1ç‰ˆ</name>
       <url>http://license.coscl.org.cn/MulanPSL</url>
       <distribution>repo</distribution>
     </license>
@@ -16,7 +16,7 @@
   <developers>
     <developer>
       <id>xiaoe</id>
-      <name>Ğ¡Á÷Ã¥</name>
+      <name>å°æµæ°“</name>
       <email>176543888@qq.com</email>
       <url>http://blog.noark.xyz</url>
     </developer>
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.40</version>
+      <version>8.0.16</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
