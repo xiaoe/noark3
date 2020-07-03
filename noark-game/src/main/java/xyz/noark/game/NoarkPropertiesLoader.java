@@ -15,6 +15,7 @@ package xyz.noark.game;
 
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.lang.UnicodeInputStream;
 import xyz.noark.core.util.BooleanUtils;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.StringUtils;
@@ -116,16 +117,19 @@ class NoarkPropertiesLoader {
 
     private void loadProperties(ClassLoader loader, String filename, HashMap<String, String> result) {
         try (InputStream in = loader.getResourceAsStream(filename)) {
-            if (in != null) {
-                try (InputStreamReader isr = new InputStreamReader(in, "utf-8")) {
-                    Properties props = new Properties();
-                    props.load(isr);
-                    for (Entry<Object, Object> e : props.entrySet()) {
-                        String key = e.getKey().toString();
-                        String value = e.getValue().toString();
-                        if (result.put(key, value) != null) {
-                            System.err.println("覆盖配置 >>" + key + "=" + value);
-                        }
+            if (in == null) {
+                return;
+            }
+            // 使用UnicodeInputStream处理带有BOM的配置
+            try (UnicodeInputStream uis = new UnicodeInputStream(in, "UTF-8");
+                 InputStreamReader isr = new InputStreamReader(uis, uis.getEncoding())) {
+                Properties props = new Properties();
+                props.load(isr);
+                for (Entry<Object, Object> e : props.entrySet()) {
+                    String key = e.getKey().toString().trim();
+                    String value = e.getValue().toString();
+                    if (result.put(key, value) != null) {
+                        System.err.println("覆盖配置 >>" + key + "=" + value);
                     }
                 }
             }
