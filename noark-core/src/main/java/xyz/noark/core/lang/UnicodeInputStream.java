@@ -56,6 +56,8 @@ public class UnicodeInputStream extends InputStream {
 
     /**
      * 预处理四个字节并检查BOM标记
+     *
+     * @throws IOException 读字节时可能会抛出IO异常
      */
     protected void pretreatment() throws IOException {
         byte[] bom = new byte[BOM_SIZE];
