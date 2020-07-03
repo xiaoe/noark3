@@ -84,6 +84,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     }
 
     //----------------------------------------
+    
     public boolean isPrintLog() {
         return printLog;
     }

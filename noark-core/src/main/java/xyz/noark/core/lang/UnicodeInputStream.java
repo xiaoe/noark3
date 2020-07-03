@@ -14,6 +14,8 @@
 package xyz.noark.core.lang;
 
 
+import xyz.noark.core.util.IntUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
@@ -26,6 +28,13 @@ import java.io.PushbackInputStream;
  */
 public class UnicodeInputStream extends InputStream {
     private static final int BOM_SIZE = 4;
+    private static final byte BOM_0X00 = 0x00;
+    private static final byte BOM_0XFF = (byte) 0xFF;
+    private static final byte BOM_0XFE = (byte) 0xFE;
+    private static final byte BOM_0XEF = (byte) 0xEF;
+    private static final byte BOM_0XBB = (byte) 0xBB;
+    private static final byte BOM_0XBF = (byte) 0xBF;
+
     private final PushbackInputStream pis;
     private final String defaultEncoding;
     private String encoding;
@@ -53,27 +62,28 @@ public class UnicodeInputStream extends InputStream {
         int n, unread;
         n = pis.read(bom, 0, bom.length);
 
-        if ((bom[0] == (byte) 0x00) && (bom[1] == (byte) 0x00) && (bom[2] == (byte) 0xFE) && (bom[3] == (byte) 0xFF)) {
+        if ((bom[0] == BOM_0X00) && (bom[1] == BOM_0X00) && (bom[IntUtils.NUM_2] == BOM_0XFE) && (bom[IntUtils.NUM_3] == BOM_0XFF)) {
             encoding = "UTF-32BE";
             unread = n - 4;
-        } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE) && (bom[2] == (byte) 0x00) && (bom[3] == (byte) 0x00)) {
+        } else if ((bom[0] == BOM_0XFF) && (bom[1] == BOM_0XFE) && (bom[IntUtils.NUM_2] == BOM_0X00) && (bom[IntUtils.NUM_3] == BOM_0X00)) {
             encoding = "UTF-32LE";
             unread = n - 4;
-        } else if ((bom[0] == (byte) 0xEF) && (bom[1] == (byte) 0xBB) && (bom[2] == (byte) 0xBF)) {
+        } else if ((bom[0] == BOM_0XEF) && (bom[1] == BOM_0XBB) && (bom[IntUtils.NUM_2] == BOM_0XBF)) {
             encoding = "UTF-8";
             unread = n - 3;
-        } else if ((bom[0] == (byte) 0xFE) && (bom[1] == (byte) 0xFF)) {
+        } else if ((bom[0] == BOM_0XFE) && (bom[1] == BOM_0XFF)) {
             encoding = "UTF-16BE";
             unread = n - 2;
-        } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE)) {
+        } else if ((bom[0] == BOM_0XFF) && (bom[1] == BOM_0XFE)) {
             encoding = "UTF-16LE";
             unread = n - 2;
         } else {
             encoding = defaultEncoding;
             unread = n;
         }
-        if (unread > 0)
+        if (unread > 0) {
             pis.unread(bom, (n - unread), unread);
+        }
     }
 
     @Override

@@ -27,8 +27,10 @@ import java.util.*;
  * @since 3.0
  */
 public class HttpMethodManager {
-    // 请求方式->path-->处理器
-    private static final EnumMap<RequestMethod, Map<String, HttpMethodWrapper>> handlerMap = new EnumMap<>(RequestMethod.class);
+    /**
+     * 请求方式->path-->处理器
+     */
+    private static final EnumMap<RequestMethod, Map<String, HttpMethodWrapper>> HANDLER_MAP = new EnumMap<>(RequestMethod.class);
 
     private HttpMethodManager() {
     }
@@ -52,7 +54,7 @@ public class HttpMethodManager {
 
         // 所有方式都要记录
         for (RequestMethod v : methodSet) {
-            Map<String, HttpMethodWrapper> handlers = handlerMap.computeIfAbsent(v, key -> new HashMap<>(512));
+            Map<String, HttpMethodWrapper> handlers = HANDLER_MAP.computeIfAbsent(v, key -> new HashMap<>(512));
             // 重复定义的URI
             if (handlers.containsKey(handler.getPath())) {
                 throw new ServerBootstrapException("重复定义的URI：" + handler.getPath());
@@ -71,6 +73,6 @@ public class HttpMethodManager {
      */
     public static HttpMethodWrapper getHttpHandler(String method, String path) {
         RequestMethod requestMethod = RequestMethod.valueOf(method.toUpperCase());
-        return handlerMap.getOrDefault(requestMethod, Collections.emptyMap()).get(path);
+        return HANDLER_MAP.getOrDefault(requestMethod, Collections.emptyMap()).get(path);
     }
 }

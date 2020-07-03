@@ -62,7 +62,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
         this.queueId = queueId;
 
         this.parameters = new ArrayList<>(md.getParameters().length);
-        Arrays.stream(md.getParameters()).forEach(v -> buildParamWrapper(v));
+        Arrays.stream(md.getParameters()).forEach(this::buildParamWrapper);
     }
 
     /**
@@ -180,6 +180,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
      *
      * @return 串型队列ID
      */
+    @Override
     public String getQueueId() {
         return queueId;
     }

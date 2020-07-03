@@ -43,7 +43,7 @@ public class Md5Utils {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             messageDigest.update(source);
             byte[] tmp = messageDigest.digest();
-            char str[] = new char[16 * 2];
+            char[] str = new char[16 * 2];
             for (int i = 0, k = 0; i < STR_LENGTH; i++) {
                 byte byte0 = tmp[i];
                 str[k++] = HEX_DIGITS[byte0 >>> 4 & 0xf];
