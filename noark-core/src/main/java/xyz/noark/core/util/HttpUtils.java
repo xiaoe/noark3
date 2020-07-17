@@ -233,7 +233,19 @@ public class HttpUtils {
      * @return 所代表远程资源的响应结果
      */
     public static String postJson(String url, String json) {
-        return post(url, json, MapUtils.of("Content-Type", "application/json"));
+        return postJson(url, json, DEFAULT_TIMEOUT);
+    }
+
+    /**
+     * 向指定 URL 发送POST方法的请求, 参数格式为Json
+     *
+     * @param url     发送请求的 URL
+     * @param json    请求参数
+     * @param timeout 超时时间（单位：毫秒）
+     * @return 所代表远程资源的响应结果
+     */
+    public static String postJson(String url, String json, int timeout) {
+        return post(url, json, timeout, MapUtils.of("Content-Type", "application/json"));
     }
 
     /**
