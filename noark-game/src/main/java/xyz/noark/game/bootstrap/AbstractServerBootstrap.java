@@ -99,7 +99,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("failed to starting service:{}", this.getServerName(), e);
+            logger.error("failed to starting service:{}, exception={}", this.getServerName(), e);
             System.exit(1);
         }
     }
