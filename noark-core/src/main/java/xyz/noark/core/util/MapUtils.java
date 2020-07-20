@@ -100,7 +100,7 @@ public class MapUtils {
      */
     public static <K> void addByIntValue(Map<K, Integer> source, Map<K, Integer> value) {
         if (MapUtils.isNotEmpty(value)) {
-            value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> v1 + v2));
+            value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> MathUtils.addExact(v1, v2)));
         }
     }
 
@@ -115,7 +115,7 @@ public class MapUtils {
      */
     public static <K> void addByLongValue(Map<K, Long> source, Map<K, Long> value) {
         if (MapUtils.isNotEmpty(value)) {
-            value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> v1 + v2));
+            value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> MathUtils.addExact(v1, v2)));
         }
     }
 
