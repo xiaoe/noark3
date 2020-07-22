@@ -12,12 +12,18 @@ import xyz.noark.network.util.ByteBufUtils;
 
 import java.nio.charset.Charset;
 
+import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
+import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
+import static io.netty.handler.codec.http.HttpHeaderValues.KEEP_ALIVE;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
+
 /**
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
 public class NoarkHttpServletResponse implements HttpServletResponse {
     private final ChannelHandlerContext ctx;
+    private final boolean keepAlive;
 
     private HttpResponseStatus status = HttpResponseStatus.OK;
     // 响应的内容
@@ -25,8 +31,9 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     private String charset = CharsetUtils.UTF_8;
     private String contentType = "application/json";
 
-    public NoarkHttpServletResponse(ChannelHandlerContext ctx) {
+    public NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive) {
         this.ctx = ctx;
+        this.keepAlive = keepAlive;
     }
 
     @Override
@@ -74,7 +81,14 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     private void sendAndClose() {
         FullHttpResponse response = this.createResponse();
         this.fillResponseHeaderInfo(response.headers());
-        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+
+        if (keepAlive) {
+            response.headers().set(CONNECTION, KEEP_ALIVE);
+            ctx.writeAndFlush(response);
+        } else {
+            response.headers().set(CONNECTION, CLOSE);
+            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        }
     }
 
     /**

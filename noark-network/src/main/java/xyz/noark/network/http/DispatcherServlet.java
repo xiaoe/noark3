@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
@@ -54,13 +55,13 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         // 参数解析异常时会
-        viewResolver.resolveException(new NoarkHttpServletResponse(ctx), cause);
+        viewResolver.resolveException(new NoarkHttpServletResponse(ctx, false), cause);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest fhr) throws Exception {
         HttpServletRequest request = this.buildRequest(ctx, fhr);
-        HttpServletResponse response = new NoarkHttpServletResponse(ctx);
+        HttpServletResponse response = new NoarkHttpServletResponse(ctx, HttpUtil.isKeepAlive(fhr));
         this.doDispatch(request, response);
     }
 
