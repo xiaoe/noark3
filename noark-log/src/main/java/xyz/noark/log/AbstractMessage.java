@@ -80,7 +80,7 @@ abstract class AbstractMessage implements Message {
         DEFAULT_LOG_BUILDER.append(' ').append(level).append(" [").append(threadName).append("]");
         // Debug状态，输出线程等细节信息
         if (LogConfigurator.DEFAULT_LEVEL == Level.DEBUG) {
-            DEFAULT_LOG_BUILDER.append(" ").append(fileName).append(":").append(lineNumber);
+            DEFAULT_LOG_BUILDER.append(" [").append(fileName).append(":").append(lineNumber).append("]");
         }
         DEFAULT_LOG_BUILDER.append(" - ");
 
