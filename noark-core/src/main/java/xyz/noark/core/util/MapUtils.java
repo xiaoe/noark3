@@ -26,6 +26,22 @@ import java.util.Map;
 public class MapUtils {
     private MapUtils() {
     }
+    
+    /**
+     * 创建一个将要存放Size个KV的HashMap.
+     * <p>初始化容量=(需要存储个数 / 负载因子) + 1</p>
+     * 如果你无法确认要存多少，那就估一个值吧，估不了就直接new一个HashMap
+     *
+     * @param size 需要存储个数
+     * @param <K>  存储Key类型
+     * @param <V>  存储Value类型
+     * @return 返回一个已计算好存储容量的HashMap
+     */
+    public static <K, V> Map<K, V> newHashMap(int size) {
+        // see java.util.HashMap.putMapEntries
+        // float ft = ((float)s / loadFactor) + 1.0F;
+        return new HashMap<>((int) (size / 0.75F + 1.0F));
+    }
 
     /**
      * 检测集合是否为{@code null}或长度为0
