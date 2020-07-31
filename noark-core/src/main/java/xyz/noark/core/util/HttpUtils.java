@@ -202,26 +202,30 @@ public class HttpUtils {
             connection.setReadTimeout(timeout);
             requestProperty.forEach(connection::setRequestProperty);
 
-            connection.setUseCaches(false);
-            // 发送POST请求必须设置如下两行
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            // 建立实际的连接
-            connection.connect();
-
-            if (StringUtils.isNotEmpty(params)) {
-                // 获取URLConnection对象对应的输出流
-                try (PrintWriter out = new PrintWriter(connection.getOutputStream())) {
-                    // 发送请求参数
-                    out.print(params);
-                    // flush输出流的缓冲
-                    out.flush();
-                }
-            }
+            // 构建Post参数并发送...
+            buildPostParamsAndSend(connection, params);
 
             return handleResponseText(connection, responseCharset);
         } catch (Exception e) {
             throw new HttpAccessException(e);
+        }
+    }
+
+    static void buildPostParamsAndSend(URLConnection connection, String params) throws IOException {
+        // 发送POST请求必须设置如下两行
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setUseCaches(false);
+        connection.connect();
+
+        if (StringUtils.isNotEmpty(params)) {
+            // 获取URLConnection对象对应的输出流
+            try (PrintWriter out = new PrintWriter(connection.getOutputStream())) {
+                // 发送请求参数
+                out.print(params);
+                // flush输出流的缓冲
+                out.flush();
+            }
         }
     }
 
@@ -256,15 +260,22 @@ public class HttpUtils {
      * @return 响应文本
      * @throws IOException if an I/O error occurs whilecreating the input stream.
      */
-    private static String handleResponseText(URLConnection connection, Charset responseCharset) throws IOException {
-        InputStream inputStream = connection.getInputStream();
+    static String handleResponseText(URLConnection connection, Charset responseCharset) throws IOException {
+        try (InputStream inputStream = connection.getInputStream()) {
+            // Content-Encoding:gzip
+            String encoding = connection.getContentEncoding();
+            if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(encoding)) {
+                try (GZIPInputStream gzip = new GZIPInputStream(inputStream)) {
+                    return readResponseText(gzip, responseCharset);
+                }
+            }
 
-        // Content-Encodin:gzip
-        String encoding = connection.getContentEncoding();
-        if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(encoding)) {
-            inputStream = new GZIPInputStream(inputStream);
+            // 常规读取
+            return readResponseText(inputStream, responseCharset);
         }
+    }
 
+    private static String readResponseText(InputStream inputStream, Charset responseCharset) throws IOException {
         String result = StringUtils.readString(inputStream, responseCharset);
         logger.info(result);
         return result;

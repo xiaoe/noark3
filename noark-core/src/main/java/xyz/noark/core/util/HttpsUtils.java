@@ -17,13 +17,11 @@ import xyz.noark.core.exception.HttpAccessException;
 
 import javax.net.ssl.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Map;
@@ -84,7 +82,7 @@ public class HttpsUtils {
             HttpsURLConnection connection = createHttpsUrlConnection(url);
             connection.setRequestMethod("GET");
             connection.setReadTimeout(timeout);
-            requestProperty.forEach((key, value) -> connection.setRequestProperty(key, value));
+            requestProperty.forEach(connection::setRequestProperty);
 
             // 取出HTTP响应结果
             String result = StringUtils.readString(connection.getInputStream());
@@ -140,38 +138,38 @@ public class HttpsUtils {
      * @return URL所代表远程资源的响应结果
      */
     public static String post(String url, String params, int timeout, Map<String, String> requestProperty) {
+        return post(url, params, timeout, requestProperty, CharsetUtils.CHARSET_UTF_8);
+    }
+
+    /**
+     * 以HTTPS方式向指定 URL 发送POST方法的请求
+     *
+     * @param url             发送请求的 URL
+     * @param params          请求参数
+     * @param timeout         请求超时（单位：毫秒）
+     * @param requestProperty 请求属性
+     * @param responseCharset 响应编码（默认UTF-8）
+     * @return URL所代表远程资源的响应结果
+     */
+    public static String post(String url, String params, int timeout, Map<String, String> requestProperty, Charset responseCharset) {
         logger.info("POST: url={}, param={}", url, params);
         try {
             HttpsURLConnection connection = createHttpsUrlConnection(url);
             connection.setRequestMethod("POST");
             connection.setReadTimeout(timeout);
-            requestProperty.forEach((key, value) -> connection.setRequestProperty(key, value));
+            requestProperty.forEach(connection::setRequestProperty);
 
-            // 发送POST请求必须设置如下两行
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.connect();
+            // 构建Post参数并发送...
+            HttpUtils.buildPostParamsAndSend(connection, params);
 
-            if (StringUtils.isNotEmpty(params)) {
-                // 获取URLConnection对象对应的输出流
-                try (PrintWriter out = new PrintWriter(connection.getOutputStream())) {
-                    // 发送请求参数
-                    out.print(params);
-                    // flush输出流的缓冲
-                    out.flush();
-                }
-            }
-
-            String result = StringUtils.readString(connection.getInputStream());
-            logger.info(result);
-            return result;
-
+            return HttpUtils.handleResponseText(connection, responseCharset);
         } catch (Exception e) {
             throw new HttpAccessException(e);
         }
     }
 
-    private static HttpsURLConnection createHttpsUrlConnection(String url) throws MalformedURLException, IOException, KeyManagementException, NoSuchAlgorithmException {
+
+    private static HttpsURLConnection createHttpsUrlConnection(String url) throws IOException, KeyManagementException, NoSuchAlgorithmException {
         HttpsURLConnection connection = (HttpsURLConnection) (new URL(url)).openConnection();
         connection.setSSLSocketFactory(initSslSocketFactory(new DefaultTrustManager()));
         connection.setHostnameVerifier(new DefaultHostnameVerifier());
@@ -193,11 +191,11 @@ public class HttpsUtils {
 
     private static class DefaultTrustManager implements X509TrustManager {
         @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] chain, String authType) {
         }
 
         @Override
-        public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
         }
 
         @Override
