@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.CollectionUtils;
+import xyz.noark.core.util.MapUtils;
 import xyz.noark.network.util.ByteBufUtils;
 
 import java.io.IOException;
@@ -75,14 +76,14 @@ class HttpParameterParser {
     private static Map<String, String> parsePostFromContent(FullHttpRequest fhr) throws IOException {
         // 解析Post默认参数
         HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(fhr);
-        decoder.offer(fhr);
-        List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
-        Map<String, String> parmMap = new HashMap<>(parmList.size());
-        for (InterfaceHttpData parm : parmList) {
-            Attribute data = (Attribute) parm;
-            parmMap.put(data.getName(), data.getValue());
+        
+        List<InterfaceHttpData> parameterList = decoder.getBodyHttpDatas();
+        Map<String, String> parameterMap = MapUtils.newHashMap(parameterList.size());
+        for (InterfaceHttpData parameter : parameterList) {
+            Attribute data = (Attribute) parameter;
+            parameterMap.put(data.getName(), data.getValue());
         }
-        return parmMap;
+        return parameterMap;
     }
 
     private static Map<String, String> parseJsonContent(FullHttpRequest fhr) {
