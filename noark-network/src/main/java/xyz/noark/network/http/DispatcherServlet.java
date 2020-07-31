@@ -54,6 +54,10 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        // 忽略那些java.io.IOException: 远程主机强迫关闭了一个现有的连接
+        if (cause instanceof IOException) {
+            return;
+        }
         // 参数解析异常时会
         viewResolver.resolveException(new NoarkHttpServletResponse(ctx, false), cause);
     }
