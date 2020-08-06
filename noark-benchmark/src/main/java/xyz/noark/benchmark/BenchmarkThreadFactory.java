@@ -3,7 +3,7 @@ package xyz.noark.benchmark;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GameThreadFactory implements ThreadFactory {
+public class BenchmarkThreadFactory implements ThreadFactory {
 	private final String name;
 	private final AtomicInteger threadCounter = new AtomicInteger(0);
 
@@ -16,7 +16,7 @@ public class GameThreadFactory implements ThreadFactory {
 
 	final ThreadGroup group;
 
-	public GameThreadFactory(String name) {
+	public BenchmarkThreadFactory(String name) {
 		SecurityManager securitymanager = System.getSecurityManager();
 		this.group = securitymanager == null ? Thread.currentThread().getThreadGroup() : securitymanager.getThreadGroup();
 		this.name = name;

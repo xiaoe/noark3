@@ -53,7 +53,7 @@ public class Benchmark {
      * @param thread - 多少线程的并发
      * @param times - 循环几次*/
     public void doSomething(int thread,int times,String name,  BenchmarkCallback callback) throws Exception {
-    	ExecutorService pool = Executors.newFixedThreadPool(thread, new GameThreadFactory(name));
+    	ExecutorService pool = Executors.newFixedThreadPool(thread, new BenchmarkThreadFactory(name));
         // 预热
         for (int i = 0; i < WARM_UP_TIMES; i++) {
             callback.doSomething();
