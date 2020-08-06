@@ -13,6 +13,13 @@
  */
 package xyz.noark.benchmark;
 
+import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * 性能基准测试.
  *
@@ -20,7 +27,7 @@ package xyz.noark.benchmark;
  * @since 3.0
  */
 public class Benchmark {
-    private static final int PREHEATING_TIMES = 100;
+    private static final int WARM_UP_TIMES = 100;
     private final int times;
 
     public Benchmark() {
@@ -31,19 +38,57 @@ public class Benchmark {
         this.times = times;
         System.out.println("Benchmark Test times:" + times + "\n");
     }
-
-    public void doSomething(String name, BenchmarkCallback callback) throws Exception {
-        // 预热100次
-        for (int i = 0; i < PREHEATING_TIMES; i++) {
+    
+   /**默认接口*/
+    public void doSomething(String name,  BenchmarkCallback callback) throws Exception{
+    	this.doSomething(times,name, callback);
+    }
+    /**
+     * @param times - 循环几次*/
+    public void doSomething(int times,String name,  BenchmarkCallback callback) throws Exception{
+    	this.doSomething(1, times,name, callback);
+    }
+    
+    /**支持并发测试
+     * @param thread - 多少线程的并发
+     * @param times - 循环几次*/
+    public void doSomething(int thread,int times,String name,  BenchmarkCallback callback) throws Exception {
+    	ExecutorService pool = Executors.newFixedThreadPool(thread, new GameThreadFactory(name));
+        // 预热
+        for (int i = 0; i < WARM_UP_TIMES; i++) {
             callback.doSomething();
         }
 
         // 计时，跑测试
-        long start = System.nanoTime();
-        for (int i = 0; i < times; i++) {
-            callback.doSomething();
+        CountDownLatch latch = new CountDownLatch(times);
+        Instant startTime = Instant.now();
+        if(thread==1) {
+        	 for (int i = 0; i < times; i++) {
+                 callback.doSomething();
+             }
+        }else {
+        	for(int i = 0; i < times; i++) {
+        		pool.execute(new Runnable() {
+    				@Override
+    				public void run() {
+    					try {
+    						callback.doSomething();
+    						latch.countDown();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+    				}
+    			});
+        	}
+        	try {
+    			latch.await();
+    		} catch (InterruptedException e) {
+    			//logger.error(e.getMessage(), e);
+    		}
         }
-        long end = System.nanoTime();
-        System.out.println(name + "\t" + (end - start) / 100_0000f + " ms");
+        Instant endTime = Instant.now();
+        long interval = Duration.between(startTime, endTime).toMillis();
+        String  result=MessageFormat.format("{0},{1} - total= {2} ms,times={3}, speed= {4} ms", Thread.currentThread().getName(),name,String.valueOf(interval),String.valueOf(times),String.format("%.6f", interval*1d/times));
+        System.out.println(result);
     }
 }
