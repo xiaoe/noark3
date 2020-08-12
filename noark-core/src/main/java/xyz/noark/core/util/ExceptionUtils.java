@@ -35,4 +35,23 @@ public class ExceptionUtils {
         // 无需关闭此流，那个破方法本来就是空的
         return sw.toString();
     }
+
+    /**
+     * 获取一个异常的摘要信息.
+     * <p>如果是个空指针异常，为了返回一些有用的信息，会把异常堆栈的第一行做为摘要信息</p>
+     * 但这并不能保证所有的都有摘要信息，因为JDK有时候会优化那些频繁抛出的异常
+     *
+     * @param e 异常
+     * @return 摘要信息
+     */
+    public static String getMessage(Throwable e) {
+        String result = e.getMessage();
+        if (StringUtils.isEmpty(result)) {
+            StackTraceElement[] array = e.getStackTrace();
+            if (ArrayUtils.isNotEmpty(array)) {
+                result = array[0].toString();
+            }
+        }
+        return result;
+    }
 }
