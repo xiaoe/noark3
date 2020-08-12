@@ -40,7 +40,11 @@ public class ResultHelper {
         }
 
         // 如果是网络协议，那就直接转发，不是就包裹他,由封包编码器2次处理.
-        NetworkProtocol protocol = (result instanceof NetworkProtocol) ? (NetworkProtocol) result : new NetworkProtocol(null, result);
+        if (!(result instanceof NetworkProtocol)) {
+            // 接受的编号与发送的编号一致才能使用这个功能
+            result = new NetworkProtocol(packet.getOpcode(), result);
+        }
+        NetworkProtocol protocol = (NetworkProtocol) result;
         protocol.setPacket(packet);
         session.send(protocol);
     }
