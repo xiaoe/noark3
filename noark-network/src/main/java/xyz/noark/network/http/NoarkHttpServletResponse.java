@@ -15,7 +15,6 @@ import java.nio.charset.Charset;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
 import static io.netty.handler.codec.http.HttpHeaderValues.KEEP_ALIVE;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 
 /**
  * @author 小流氓[176543888@qq.com]
@@ -26,10 +25,17 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     private final boolean keepAlive;
 
     private HttpResponseStatus status = HttpResponseStatus.OK;
-    // 响应的内容
+    /**
+     * 响应的内容
+     */
     private ByteBuf content;
     private String charset = CharsetUtils.UTF_8;
     private String contentType = "application/json";
+
+    /**
+     * 当前Response是否已发送过了...
+     */
+    private boolean flag = false;
 
     public NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive) {
         this.ctx = ctx;
@@ -79,6 +85,11 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     }
 
     private void sendAndClose() {
+        if (flag) {
+            return;
+        }
+        flag = true;
+
         FullHttpResponse response = this.createResponse();
         this.fillResponseHeaderInfo(response.headers());
 
