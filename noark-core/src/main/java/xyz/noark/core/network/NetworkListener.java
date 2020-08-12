@@ -15,6 +15,8 @@ package xyz.noark.core.network;
 
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 
+import java.io.Serializable;
+
 /**
  * 网络监听接口.
  * <p>
