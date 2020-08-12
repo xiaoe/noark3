@@ -13,10 +13,10 @@
  */
 package xyz.noark.core.ioc.definition.method;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.controller.CommandMapping;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Session;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

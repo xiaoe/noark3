@@ -13,9 +13,9 @@
  */
 package xyz.noark.core.ioc.definition.method;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.ioc.MethodDefinition;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

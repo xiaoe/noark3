@@ -13,6 +13,7 @@
  */
 package xyz.noark.orm;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Entity;
@@ -22,7 +23,6 @@ import xyz.noark.core.exception.NoEntityException;
 import xyz.noark.core.util.FieldUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.accessor.FieldType;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

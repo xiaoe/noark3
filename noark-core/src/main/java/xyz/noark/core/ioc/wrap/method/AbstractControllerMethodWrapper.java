@@ -13,9 +13,9 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.reflectasm.MethodAccess;
 
 /**
  * Controller类中的可执行方法.
@@ -84,7 +84,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     }
 
     //----------------------------------------
-    
+
     public boolean isPrintLog() {
         return printLog;
     }

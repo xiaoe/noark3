@@ -13,12 +13,12 @@
  */
 package xyz.noark.core.ioc.definition.method;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

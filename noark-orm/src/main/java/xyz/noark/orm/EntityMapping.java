@@ -13,12 +13,12 @@
  */
 package xyz.noark.orm;
 
+import com.esotericsoftware.reflectasm.ConstructorAccess;
+import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.orm.CreatedDate;
 import xyz.noark.core.annotation.orm.Entity;
 import xyz.noark.core.annotation.orm.Entity.FetchType;
 import xyz.noark.core.annotation.orm.LastModifiedDate;
-import xyz.noark.reflectasm.ConstructorAccess;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.io.Serializable;
 import java.time.Instant;

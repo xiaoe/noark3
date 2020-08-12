@@ -24,7 +24,8 @@ import xyz.noark.csv.template.MonsterRefreshTemplate2;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * CSV测试.
@@ -37,26 +38,26 @@ public class CsvTest {
     private static Csv csv;
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() {
         ConvertManager.getInstance().register(RewardConverter.class);
         templatePath = "classpath:";
-        csv = new Csv('    ');
+        csv = new Csv('	');
     }
 
     @Test
     public void testCsv() {
-        assertTrue(csv != null);
+        assertNotNull(csv);
     }
 
     @Test
     public void testCsvChar() {
-        assertTrue(csv != null);
+        assertNotNull(csv);
     }
 
     @Test
     public void testLoadAllStringClass() {
         List<ItemTemplate> ts = csv.loadAll(templatePath, ItemTemplate.class);
-        assertTrue(ts.size() == 22);
+        assertEquals(22, ts.size());
     }
 
     @Test
@@ -64,13 +65,13 @@ public class CsvTest {
         List<MonsterRefreshTemplate> templates = csv.loadAll(templatePath, MonsterRefreshTemplate.class);
         List<MonsterRefreshTemplate2> templates2 = csv.loadAll(templatePath, MonsterRefreshTemplate2.class);
         for (int i = 0; i < templates.size(); i++) {
-            assertTrue(templates.get(i).getLevelNumList().equals(templates2.get(i).getLevelNumList()));
+            assertEquals(templates.get(i).getLevelNumList(), templates2.get(i).getLevelNumList());
         }
     }
 
     @Test
     public void test() {
         List<BaseCriticalTemplate> templates = csv.loadAll(templatePath, BaseCriticalTemplate.class);
-        assertTrue(templates.size() == 151);
+        assertEquals(151, templates.size());
     }
 }

@@ -13,9 +13,9 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.ioc.wrap.MethodWrapper;
-import xyz.noark.reflectasm.MethodAccess;
 
 /**
  * 一个可执行的方法.
