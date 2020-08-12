@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 /**
  * 性能基准测试.
  *
+ * @author 江贵龙[41157121@qq.com]
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
@@ -38,22 +39,41 @@ public class Benchmark {
         this.times = times;
         System.out.println("Benchmark Test times:" + times + "\n");
     }
-    
-   /**默认接口*/
-    public void doSomething(String name,  BenchmarkCallback callback) throws Exception{
-    	this.doSomething(times,name, callback);
-    }
+
     /**
-     * @param times - 循环几次*/
-    public void doSomething(int times,String name,  BenchmarkCallback callback) throws Exception{
-    	this.doSomething(1, times,name, callback);
+     * 单线程压测做任务接口.
+     *
+     * @param name     任务名称
+     * @param callback 任务
+     * @throws Exception 做任务的过程中可能会抛出的异常
+     */
+    public void doSomething(String name, BenchmarkCallback callback) throws Exception {
+        this.doSomething(times, name, callback);
     }
-    
-    /**支持并发测试
-     * @param thread - 多少线程的并发
-     * @param times - 循环几次*/
-    public void doSomething(int thread,int times,String name,  BenchmarkCallback callback) throws Exception {
-    	ExecutorService pool = Executors.newFixedThreadPool(thread, new BenchmarkThreadFactory(name));
+
+    /**
+     * 多线程压测做任务接口.
+     *
+     * @param times    循环几次
+     * @param name     任务名称
+     * @param callback 任务
+     * @throws Exception 做任务的过程中可能会抛出的异常
+     */
+    public void doSomething(int times, String name, BenchmarkCallback callback) throws Exception {
+        this.doSomething(1, times, name, callback);
+    }
+
+    /**
+     * 多线程并发压测做任务接口.
+     *
+     * @param thread   多少线程的并发
+     * @param times    循环几次
+     * @param name     任务名称
+     * @param callback 任务
+     * @throws Exception 做任务的过程中可能会抛出的异常
+     */
+    public void doSomething(int thread, int times, String name, BenchmarkCallback callback) throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(thread, new BenchmarkThreadFactory(name));
         // 预热
         for (int i = 0; i < WARM_UP_TIMES; i++) {
             callback.doSomething();
@@ -62,33 +82,30 @@ public class Benchmark {
         // 计时，跑测试
         CountDownLatch latch = new CountDownLatch(times);
         Instant startTime = Instant.now();
-        if(thread==1) {
-        	 for (int i = 0; i < times; i++) {
-                 callback.doSomething();
-             }
-        }else {
-        	for(int i = 0; i < times; i++) {
-        		pool.execute(new Runnable() {
-    				@Override
-    				public void run() {
-    					try {
-    						callback.doSomething();
-    						latch.countDown();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-    				}
-    			});
-        	}
-        	try {
-    			latch.await();
-    		} catch (InterruptedException e) {
-    			//logger.error(e.getMessage(), e);
-    		}
+        if (thread == 1) {
+            for (int i = 0; i < times; i++) {
+                callback.doSomething();
+            }
+        } else {
+            for (int i = 0; i < times; i++) {
+                pool.execute(() -> {
+                    try {
+                        callback.doSomething();
+                        latch.countDown();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         Instant endTime = Instant.now();
         long interval = Duration.between(startTime, endTime).toMillis();
-        String  result=MessageFormat.format("{0},{1} - total= {2} ms,times={3}, speed= {4} ms", Thread.currentThread().getName(),name,String.valueOf(interval),String.valueOf(times),String.format("%.6f", interval*1d/times));
+        String result = MessageFormat.format("{0},{1} - total= {2} ms,times={3}, speed= {4} ms", Thread.currentThread().getName(), name, String.valueOf(interval), String.valueOf(times), String.format("%.6f", interval * 1d / times));
         System.out.println(result);
     }
 }
