@@ -40,7 +40,7 @@ public class CsvTest {
     public static void setUpBeforeClass() throws Exception {
         ConvertManager.getInstance().register(RewardConverter.class);
         templatePath = "classpath:";
-        csv = new Csv('    ');
+        csv = new Csv('	');
     }
 
     @Test
