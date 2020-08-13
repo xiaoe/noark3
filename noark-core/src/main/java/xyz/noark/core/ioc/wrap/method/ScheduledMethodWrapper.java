@@ -13,11 +13,11 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.cron.DelayTrigger;
 import xyz.noark.core.cron.DelayTriggerFactory;
 import xyz.noark.core.ioc.definition.method.ScheduledMethodDefinition;
+import xyz.noark.reflectasm.MethodAccess;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;

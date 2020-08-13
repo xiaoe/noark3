@@ -13,8 +13,8 @@
  */
 package xyz.noark.core.ioc;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.Order;
+import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.reflect.Parameter;
 

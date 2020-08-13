@@ -13,7 +13,6 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.event.Event;
@@ -22,6 +21,7 @@ import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.ObjectParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
+import xyz.noark.reflectasm.MethodAccess;
 
 import java.io.Serializable;
 import java.lang.reflect.Parameter;

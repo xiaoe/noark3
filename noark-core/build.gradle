@@ -1,6 +1,5 @@
 dependencies {
-    compile group: 'org.ow2.asm', name: 'asm', version: '8.0.1'
-    compile group: 'com.esotericsoftware', name: 'reflectasm', version: '1.11.9'
+    compile project(':noark-asm')
     compile project(':noark-log')
 
     testImplementation project(':noark-benchmark')

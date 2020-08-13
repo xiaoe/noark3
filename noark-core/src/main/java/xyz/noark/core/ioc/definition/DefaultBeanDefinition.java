@@ -13,7 +13,6 @@
  */
 package xyz.noark.core.ioc.definition;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Value;
@@ -29,6 +28,7 @@ import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.FieldUtils;
 import xyz.noark.core.util.MethodUtils;
+import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

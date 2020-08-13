@@ -13,7 +13,6 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.RequestMethod;
 import xyz.noark.core.annotation.controller.RequestParam;
@@ -21,6 +20,7 @@ import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.core.network.HandlerMethod;
+import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

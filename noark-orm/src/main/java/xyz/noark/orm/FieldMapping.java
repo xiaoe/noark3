@@ -13,12 +13,12 @@
  */
 package xyz.noark.orm;
 
-import com.esotericsoftware.reflectasm.MethodAccess;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.orm.*;
 import xyz.noark.core.util.FieldUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.accessor.FieldType;
+import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
