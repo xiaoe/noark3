@@ -438,6 +438,17 @@ public class DateUtils {
     }
 
     /**
+     * 把纳秒转化为毫秒显示（保留小数点后面两位）
+     *
+     * @param nanoTime 纳秒
+     * @return 毫秒
+     */
+    public static float formatNanoTime(long nanoTime) {
+        // 除100W，然后格式化
+        return MathUtils.formatScale(nanoTime / 100_0000F, 2);
+    }
+
+    /**
      * 获取指定日期的星期几属性，返回枚举结果{@code DayOfWeek}
      *
      * @param date 指定日期

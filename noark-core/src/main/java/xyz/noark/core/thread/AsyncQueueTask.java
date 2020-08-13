@@ -17,7 +17,7 @@ import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
-import xyz.noark.core.util.MathUtils;
+import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.ThreadUtils;
 
 import java.io.Serializable;
@@ -104,12 +104,13 @@ public class AsyncQueueTask implements Runnable {
         AsyncHelper.removeTaskContext();
 
         if (command.isPrintLog()) {
-            // 执行结束的时间
-            long endExecuteTime = System.nanoTime();
+            // 延迟时间与执行时间
+            float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
+            float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
             if (playerId == null) {
-                logger.info("handle {},delay={} ms,exec={} ms", command.code(), formatScale(startExecuteTime - createTime), formatScale(endExecuteTime - startExecuteTime));
+                logger.info("handle {},delay={} ms,exec={} ms", command.code(), delay, exec);
             } else {
-                logger.info("handle {},delay={} ms,exec={} ms playerId={}", command.code(), formatScale(startExecuteTime - createTime), formatScale(endExecuteTime - startExecuteTime), playerId);
+                logger.info("handle {},delay={} ms,exec={} ms playerId={}", command.code(), delay, exec, playerId);
             }
         }
     }
@@ -120,27 +121,18 @@ public class AsyncQueueTask implements Runnable {
      * @param outputStack 是否输出执行线程当前执行堆栈信息
      */
     public void logExecTimeoutInfo(boolean outputStack) {
-        final long now = System.nanoTime();
+        // 延迟时间与执行时间
+        float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
+        float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
         if (playerId == null) {
-            logger.error("exec timeout {},delay={} ms,exec={} ms", command.code(), formatScale(startExecuteTime - createTime), formatScale(now - startExecuteTime));
+            logger.error("exec timeout {},delay={} ms,exec={} ms", command.code(), delay, exec);
         } else {
-            logger.error("exec timeout {},delay={} ms,exec={} ms playerId={}", command.code(), formatScale(startExecuteTime - createTime), formatScale(now - startExecuteTime), playerId);
+            logger.error("exec timeout {},delay={} ms,exec={} ms playerId={}", command.code(), delay, exec, playerId);
         }
 
         // 输出当前执行线程执行堆栈信息
         if (outputStack) {
             logger.error(ThreadUtils.printStackTrace(currentThread));
         }
-    }
-
-    /**
-     * 把纳秒转化为毫秒显示（保留小数点后面两位）
-     *
-     * @param nanoTime 纳秒
-     * @return 毫秒
-     */
-    private float formatScale(long nanoTime) {
-        // 除100W，然后格式化
-        return MathUtils.formatScale(nanoTime / 100_0000F, 2);
     }
 }

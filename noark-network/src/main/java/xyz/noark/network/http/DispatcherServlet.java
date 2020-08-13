@@ -17,6 +17,7 @@ import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.IpUtils;
 
 import java.io.IOException;
@@ -83,15 +84,19 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
 
     private void exec(HttpServletRequest request, HttpServletResponse response, HttpMethodWrapper handler, long createTime) {
         // 这里已非Netty线程了
-        final long startExecTime = System.nanoTime();
+        final long startExecuteTime = System.nanoTime();
         try {
             this.doAction(request, response, handler);
         } catch (Throwable e) {
             viewResolver.resolveException(response, e);
         } finally {
             response.flush();
-            final long endExecuteTime = System.nanoTime();
-            logger.info("handle http({}),delay={} ms,exe={} ms,ip={}", request.getUri(), (startExecTime - createTime) / 100_0000F, (endExecuteTime - startExecTime) / 100_0000F, request.getRemoteAddr());
+
+            // 延迟时间与执行时间
+            String ip = request.getRemoteAddr();
+            float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
+            float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
+            logger.info("handle http({}),delay={} ms,exe={} ms,ip={}", request.getUri(), delay, exec, ip);
         }
     }
 
