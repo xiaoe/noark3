@@ -1,15 +1,8 @@
 package xyz.noark.network.http;
 
-import com.alibaba.fastjson.JSON;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import xyz.noark.core.exception.ConvertException;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
-import xyz.noark.network.http.exception.HandlerDeprecatedException;
-import xyz.noark.network.http.exception.NoHandlerFoundException;
 
 import java.util.Objects;
-
-import static xyz.noark.log.LogHelper.logger;
 
 /**
  * 默认的视图解析器
@@ -51,46 +44,5 @@ public class DefaultViewResolver implements ViewResolver {
                 return result;
             }
         }
-    }
-
-    @Override
-    public void resolveException(HttpServletResponse response, Throwable cause) {
-        // 404 Handler没找到...
-        if (cause instanceof NoHandlerFoundException) {
-            this.noHandlerFound(response, (NoHandlerFoundException) cause);
-        }
-        // API已过期...
-        else if (cause instanceof HandlerDeprecatedException) {
-            this.handleDeprecated(response);
-        }
-        // 参数解析异常
-        else if (cause instanceof ConvertException) {
-            this.handleConvertException(response);
-        }
-        // 服务器内部错误.
-        else {
-            this.handleException(response);
-            logger.debug("服务器内部错误. cause={}", cause);
-        }
-    }
-
-    private void handleConvertException(HttpServletResponse response) {
-        HttpResult result = new HttpResult(HttpErrorCode.PARAMETERS_INVALID, "request's API parameters invalid.");
-        response.send(HttpResponseStatus.OK.code(), JSON.toJSONString(result));
-    }
-
-    private void handleException(HttpServletResponse response) {
-        HttpResult result = new HttpResult(HttpErrorCode.INTERNAL_ERROR, "request's API internal error.");
-        response.send(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), JSON.toJSONString(result));
-    }
-
-    private void handleDeprecated(HttpServletResponse response) {
-        HttpResult result = new HttpResult(HttpErrorCode.API_DEPRECATED, "request's API Deprecated.");
-        response.send(HttpResponseStatus.NOT_FOUND.code(), JSON.toJSONString(result));
-    }
-
-    private void noHandlerFound(HttpServletResponse response, NoHandlerFoundException exception) {
-        HttpResult result = new HttpResult(HttpErrorCode.NO_API, "request's API Unrealized.");
-        response.send(HttpResponseStatus.NOT_FOUND.code(), JSON.toJSONString(result));
     }
 }

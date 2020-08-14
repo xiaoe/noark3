@@ -1,5 +1,6 @@
 package xyz.noark.network.http.intercept;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import xyz.noark.core.annotation.controller.IpAllowList;
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.network.HandlerMethod;
@@ -44,6 +45,7 @@ public class IpIntercept extends HandlerInterceptorAdapter {
 
     private boolean notAccess(HttpServletResponse response) {
         // 不能访问，给个提示
+        response.setStatus(HttpResponseStatus.UNAUTHORIZED.code());
         response.writeObject(new HttpResult(HttpErrorCode.NOT_AUTHORIZED, "request's API not authorized."));
         return false;
     }

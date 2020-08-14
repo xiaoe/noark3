@@ -17,10 +17,12 @@ import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
 import static io.netty.handler.codec.http.HttpHeaderValues.KEEP_ALIVE;
 
 /**
+ * Noark实现的HTTP响应对象.
+ *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class NoarkHttpServletResponse implements HttpServletResponse {
+class NoarkHttpServletResponse implements HttpServletResponse {
     private final ChannelHandlerContext ctx;
     private final boolean keepAlive;
 
@@ -32,12 +34,7 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     private String charset = CharsetUtils.UTF_8;
     private String contentType = "application/json";
 
-    /**
-     * 当前Response是否已发送过了...
-     */
-    private boolean flag = false;
-
-    public NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive) {
+    NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive) {
         this.ctx = ctx;
         this.keepAlive = keepAlive;
     }
@@ -58,18 +55,6 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public void send(int status, String msg) {
-        this.setStatus(status);
-        this.send(msg);
-    }
-
-    @Override
-    public void send(String msg) {
-        this.content = Unpooled.copiedBuffer(msg, Charset.forName(charset));
-        this.sendAndClose();
-    }
-
-    @Override
     public void writeString(String str) {
         this.content = Unpooled.copiedBuffer(str, Charset.forName(charset));
     }
@@ -85,11 +70,6 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     }
 
     private void sendAndClose() {
-        if (flag) {
-            return;
-        }
-        flag = true;
-
         FullHttpResponse response = this.createResponse();
         this.fillResponseHeaderInfo(response.headers());
 
