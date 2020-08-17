@@ -154,4 +154,14 @@ public class CollectionUtils {
         }
         return sum;
     }
+
+    /**
+     * 计算一个集结大小.
+     *
+     * @param collection 一个集结
+     * @return 集结大小
+     */
+    public static int size(Collection<?> collection) {
+        return collection == null ? 0 : collection.size();
+    }
 }
