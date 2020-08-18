@@ -15,23 +15,26 @@ import java.nio.charset.Charset;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
 import static io.netty.handler.codec.http.HttpHeaderValues.KEEP_ALIVE;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 
 /**
+ * Noark实现的HTTP响应对象.
+ *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class NoarkHttpServletResponse implements HttpServletResponse {
+class NoarkHttpServletResponse implements HttpServletResponse {
     private final ChannelHandlerContext ctx;
     private final boolean keepAlive;
 
     private HttpResponseStatus status = HttpResponseStatus.OK;
-    // 响应的内容
+    /**
+     * 响应的内容
+     */
     private ByteBuf content;
     private String charset = CharsetUtils.UTF_8;
     private String contentType = "application/json";
 
-    public NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive) {
+    NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive) {
         this.ctx = ctx;
         this.keepAlive = keepAlive;
     }
@@ -49,18 +52,6 @@ public class NoarkHttpServletResponse implements HttpServletResponse {
     @Override
     public void setStatus(int status) {
         this.status = HttpResponseStatus.valueOf(status);
-    }
-
-    @Override
-    public void send(int status, String msg) {
-        this.setStatus(status);
-        this.send(msg);
-    }
-
-    @Override
-    public void send(String msg) {
-        this.content = Unpooled.copiedBuffer(msg, Charset.forName(charset));
-        this.sendAndClose();
     }
 
     @Override

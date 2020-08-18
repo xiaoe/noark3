@@ -1,1 +1,3 @@
-dependencies {}
+dependencies {
+    compile project(':noark-log')
+}

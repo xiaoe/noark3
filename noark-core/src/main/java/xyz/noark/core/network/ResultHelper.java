@@ -4,7 +4,7 @@
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
  *
- * 		http://www.noark.xyz/LICENSE
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -40,7 +40,11 @@ public class ResultHelper {
         }
 
         // 如果是网络协议，那就直接转发，不是就包裹他,由封包编码器2次处理.
-        NetworkProtocol protocol = (result instanceof NetworkProtocol) ? (NetworkProtocol) result : new NetworkProtocol(null, result);
+        if (!(result instanceof NetworkProtocol)) {
+            // 接受的编号与发送的编号一致才能使用这个功能
+            result = new NetworkProtocol(packet.getOpcode(), result);
+        }
+        NetworkProtocol protocol = (NetworkProtocol) result;
         protocol.setPacket(packet);
         session.send(protocol);
     }
