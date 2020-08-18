@@ -13,7 +13,8 @@
  */
 package xyz.noark.benchmark;
 
-import java.text.MessageFormat;
+import static xyz.noark.log.LogHelper.logger;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.CountDownLatch;
@@ -37,7 +38,7 @@ public class Benchmark {
 
     public Benchmark(int times) {
         this.times = times;
-        System.out.println("Benchmark Test times:" + times + "\n");
+        logger.debug("Benchmark Test times:{}",times);
     }
 
     /**
@@ -100,12 +101,11 @@ public class Benchmark {
             try {
                 latch.await();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+            	logger.error(e.getMessage(),e);
             }
         }
         Instant endTime = Instant.now();
         long interval = Duration.between(startTime, endTime).toMillis();
-        String result = MessageFormat.format("{0},{1} - total= {2} ms,times={3}, speed= {4} ms", Thread.currentThread().getName(), name, String.valueOf(interval), String.valueOf(times), String.format("%.6f", interval * 1d / times));
-        System.out.println(result);
+        logger.debug("{},{} - total= {} ms,times={}, speed= {} ms", Thread.currentThread().getName(), name, interval, times, String.format("%.6f", interval * 1d / times));
     }
 }
