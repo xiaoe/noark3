@@ -8,7 +8,7 @@ import xyz.noark.core.util.StringUtils;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class HandlerDeprecatedException extends Exception {
+public class HandlerDeprecatedException extends RuntimeException {
     private final String method;
     private final String uri;
 

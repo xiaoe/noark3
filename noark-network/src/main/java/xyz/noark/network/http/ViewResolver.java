@@ -11,6 +11,4 @@ import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 public interface ViewResolver {
 
     void resolveView(HttpServletRequest request, HttpServletResponse response, HttpMethodWrapper handler, Object result);
-
-    void resolveException(HttpServletResponse response, Throwable cause);
 }

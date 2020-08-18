@@ -4,7 +4,7 @@
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
  *
- * 		http://www.noark.xyz/LICENSE
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -434,13 +434,13 @@ public class StringUtils {
      * 在比较长或多的情况计算长度比StringJoiner性能好.<br>
      *
      * <pre>
-     * 	StringJoiner result = new StringJoiner(delimiter, prefix, suffix);
-     * 	for (String str : strings) {
-     * 		result.add(str);
+     *     StringJoiner result = new StringJoiner(delimiter, prefix, suffix);
+     *     for (String str : strings) {
+     *         result.add(str);
      *    }
-     * 	return result.toString();
+     *     return result.toString();
      *
-     * 	Stream.of(strings).collect(Collectors.joining(delimiter, prefix, suffix))
+     *     Stream.of(strings).collect(Collectors.joining(delimiter, prefix, suffix))
      * </pre>
      *
      * @param delimiter 分隔符

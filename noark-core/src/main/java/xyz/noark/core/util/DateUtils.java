@@ -4,7 +4,7 @@
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
  *
- * 		http://www.noark.xyz/LICENSE
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -435,6 +435,17 @@ public class DateUtils {
         sb.append(minute < 10 ? "0" : "").append(minute).append(":");
         sb.append(second < 10 ? "0" : "").append(second);
         return sb.toString();
+    }
+
+    /**
+     * 把纳秒转化为毫秒显示（保留小数点后面两位）
+     *
+     * @param nanoTime 纳秒
+     * @return 毫秒
+     */
+    public static float formatNanoTime(long nanoTime) {
+        // 除100W，然后格式化
+        return MathUtils.formatScale(nanoTime / 100_0000F, 2);
     }
 
     /**

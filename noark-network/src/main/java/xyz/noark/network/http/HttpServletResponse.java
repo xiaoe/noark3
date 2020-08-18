@@ -1,14 +1,26 @@
 package xyz.noark.network.http;
 
 /**
+ * 一个HTTP的响应对象
+ *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
 public interface HttpServletResponse {
 
-    void setContentType(String s);
+    /**
+     * 设计响应内容格式，如：application/json
+     *
+     * @param contentType 内容格式
+     */
+    void setContentType(String contentType);
 
-    void setCharacterEncoding(String utf8);
+    /**
+     * 设计响应内容编码方式，如：UTF-8
+     *
+     * @param character 编码方式
+     */
+    void setCharacterEncoding(String character);
 
     /**
      * 设计响应编码
@@ -16,16 +28,6 @@ public interface HttpServletResponse {
      * @param status 响应编码
      */
     void setStatus(int status);
-
-    void send(int status, String msg);
-
-    /**
-     * 发送响应.
-     *
-     * @param msg 响应文本
-     */
-    void send(String msg);
-
 
     /**
      * 写入一个对象，序列化方式由contentType决定.
