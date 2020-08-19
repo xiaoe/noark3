@@ -29,95 +29,84 @@ import java.util.concurrent.Executors;
  * @since 3.0
  */
 public class Benchmark {
-    private static final int WARM_UP_TIMES = 100;
-    private final int times;
+	private static final int WARM_UP_TIMES = 100;
+	private final int times;
 
-    public Benchmark() {
-        this(100_0000);
-    }
+	public Benchmark() {
+		this(100_0000);
+	}
 
-    public Benchmark(int times) {
-        this.times = times;
-        logger.debug("Benchmark Test times:{}",times);
-    }
+	public Benchmark(int times) {
+		this.times = times;
+		logger.debug("Benchmark Test times:{}", times);
+	}
 
-    /**
-     * 单线程压测做任务接口.
-     *
-     * @param name     任务名称
-     * @param callback 任务
-     * @throws Exception 做任务的过程中可能会抛出的异常
-     */
-    public void doSomething(String name, BenchmarkCallback callback) throws Exception {
-        this.doSomething(times, name, callback);
-    }
+	/**
+	 * 单线程压测做任务接口.
+	 *
+	 * @param name     任务名称
+	 * @param callback 任务
+	 * @throws Exception 做任务的过程中可能会抛出的异常
+	 */
+	public void doSomething(String name, BenchmarkCallback callback) throws Exception {
+		this.doSomething(times, name, callback);
+	}
 
-    /**
-     * 多线程压测做任务接口.
-     *
-     * @param times    循环几次
-     * @param name     任务名称
-     * @param callback 任务
-     * @throws Exception 做任务的过程中可能会抛出的异常
-     */
-    public void doSomething(int times, String name, BenchmarkCallback callback) throws Exception {
-        this.doSomething(1, times, name, callback);
-    }
+	/**
+	 * 多线程压测做任务接口.
+	 *
+	 * @param times    循环几次
+	 * @param name     任务名称
+	 * @param callback 任务
+	 * @throws Exception 做任务的过程中可能会抛出的异常
+	 */
+	public void doSomething(int times, String name, BenchmarkCallback callback) throws Exception {
+		this.doSomething(1, times, name, callback);
+	}
 
-    /**
-     * 多线程并发压测做任务接口.
-     * @param thread   多少线程的并发
-     * @param times    循环几次
-     * @param name     任务名称
-     * @param callback 任务
-     * @throws Exception 做任务的过程中可能会抛出的异常
-     */
-    public void doSomething(int thread, int times, String name, BenchmarkCallback callback) throws Exception {
-    	this.doSomething(true, thread, times, name, callback);
-    }
-    /**
-     * 多线程并发压测做任务接口.
-     * @param warmup   需要预热
-     * @param thread   多少线程的并发
-     * @param times    循环几次
-     * @param name     任务名称
-     * @param callback 任务
-     * @throws Exception 做任务的过程中可能会抛出的异常
-     */
-    public void doSomething(boolean warmup,int thread, int times, String name, BenchmarkCallback callback) throws Exception {
-        ExecutorService pool = Executors.newFixedThreadPool(thread, new BenchmarkThreadFactory(name));
-        // 预热
-        if(warmup) {
-            for (int i = 0; i < WARM_UP_TIMES; i++) {
-                callback.doSomething();
-            }
-        }
-        // 计时，跑测试
-        CountDownLatch latch = new CountDownLatch(times);
-        Instant startTime = Instant.now();
-        if (thread == 1) {
-            for (int i = 0; i < times; i++) {
-                callback.doSomething();
-            }
-        } else {
-            for (int i = 0; i < times; i++) {
-                pool.execute(() -> {
-                    try {
-                        callback.doSomething();
-                        latch.countDown();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-            	logger.error(e.getMessage(),e);
-            }
-        }
-        Instant endTime = Instant.now();
-        long interval = Duration.between(startTime, endTime).toMillis();
-        logger.debug("{},{} - total= {} ms,times={}, speed= {} ms", Thread.currentThread().getName(), name, interval, times, String.format("%.6f", interval * 1d / times));
-    }
+	/**
+	 * 多线程并发压测做任务接口.
+	 * 
+	 * @param warmup   需要预热
+	 * @param thread   多少线程的并发
+	 * @param times    循环几次
+	 * @param name     任务名称
+	 * @param callback 任务
+	 * @throws Exception 做任务的过程中可能会抛出的异常
+	 */
+	public void doSomething(int thread, int times, String name, BenchmarkCallback callback) throws Exception {
+		ExecutorService pool = Executors.newFixedThreadPool(thread, new BenchmarkThreadFactory(name));
+		// 预热
+		for (int i = 0; i < WARM_UP_TIMES; i++) {
+			callback.doSomething();
+		}
+		// 计时，跑测试
+		CountDownLatch latch = new CountDownLatch(times);
+		Instant startTime = Instant.now();
+		if (thread == 1) {
+			for (int i = 0; i < times; i++) {
+				callback.doSomething();
+			}
+		} else {
+			for (int i = 0; i < times; i++) {
+				pool.execute(() -> {
+					try {
+						callback.doSomething();
+						latch.countDown();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+			}
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		Instant endTime = Instant.now();
+		long interval = Duration.between(startTime, endTime).toMillis();
+		logger.debug("{},{} - total= {} ms,times={}, speed= {} ms", Thread.currentThread().getName(), name, interval,
+				times, String.format("%.6f", interval * 1d / times));
+	}
 }
