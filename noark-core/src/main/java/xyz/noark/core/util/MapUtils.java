@@ -26,7 +26,7 @@ import java.util.Map;
 public class MapUtils {
     private MapUtils() {
     }
-    
+
     /**
      * 创建一个将要存放Size个KV的HashMap.
      * <p>初始化容量=(需要存储个数 / 负载因子) + 1</p>
@@ -37,7 +37,7 @@ public class MapUtils {
      * @param <V>  存储Value类型
      * @return 返回一个已计算好存储容量的HashMap
      */
-    public static <K, V> Map<K, V> newHashMap(int size) {
+    public static <K, V> HashMap<K, V> newHashMap(int size) {
         // see java.util.HashMap.putMapEntries
         // float ft = ((float)s / loadFactor) + 1.0F;
         return new HashMap<>((int) (size / 0.75F + 1.0F));
