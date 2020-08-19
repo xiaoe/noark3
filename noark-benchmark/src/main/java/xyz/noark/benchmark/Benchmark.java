@@ -29,16 +29,21 @@ import java.util.concurrent.Executors;
  * @since 3.0
  */
 public class Benchmark {
-	private static final int WARM_UP_TIMES = 100;
-	private final int times;
+	private final int runTimes;
+	private final int warmupTimes;
 
 	public Benchmark() {
 		this(100_0000);
 	}
 
-	public Benchmark(int times) {
-		this.times = times;
-		logger.debug("Benchmark Test times:{}", times);
+	public Benchmark(int runTimes) {
+		this.warmupTimes=10000;
+		this.runTimes = runTimes;
+	}
+	public Benchmark(int warmupTimes,int runTimes) {
+		this.warmupTimes=warmupTimes;
+		this.runTimes = runTimes;
+		logger.debug("Benchmark init warmupTimes={},runTimes={}", warmupTimes,runTimes);
 	}
 
 	/**
@@ -49,7 +54,7 @@ public class Benchmark {
 	 * @throws Exception 做任务的过程中可能会抛出的异常
 	 */
 	public void doSomething(String name, BenchmarkCallback callback) throws Exception {
-		this.doSomething(times, name, callback);
+		this.doSomething(runTimes, name, callback);
 	}
 
 	/**
@@ -77,7 +82,7 @@ public class Benchmark {
 	public void doSomething(int thread, int times, String name, BenchmarkCallback callback) throws Exception {
 		ExecutorService pool = Executors.newFixedThreadPool(thread, new BenchmarkThreadFactory(name));
 		// 预热
-		for (int i = 0; i < WARM_UP_TIMES; i++) {
+		for (int i = 0; i < warmupTimes; i++) {
 			callback.doSomething();
 		}
 		// 计时，跑测试
