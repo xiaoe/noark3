@@ -16,10 +16,14 @@ package xyz.noark.core.ioc.definition.field;
 import xyz.noark.core.ioc.IocMaking;
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.MapUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Map类型的属性注入
@@ -40,7 +44,7 @@ public class MapFieldDefinition extends DefaultFieldDefinition {
             return Collections.emptyMap();
         }
 
-        final Map<Object, Object> result = new HashMap<>((int) (allImpl.size() / 0.75 + 1));
+        final Map<Object, Object> result = MapUtils.newHashMap(allImpl.size());
         Class<?> keyClass = FieldUtils.getMapFieldKeyClass(field);
         // Int类型的Key，使用ID
         if (Integer.class.equals(keyClass)) {
