@@ -66,7 +66,6 @@ public class Benchmark {
 
     /**
      * 多线程并发压测做任务接口.
-     *
      * @param thread   多少线程的并发
      * @param times    循环几次
      * @param name     任务名称
@@ -74,12 +73,25 @@ public class Benchmark {
      * @throws Exception 做任务的过程中可能会抛出的异常
      */
     public void doSomething(int thread, int times, String name, BenchmarkCallback callback) throws Exception {
+    	this.doSomething(true, thread, times, name, callback);
+    }
+    /**
+     * 多线程并发压测做任务接口.
+     * @param warmup   需要预热
+     * @param thread   多少线程的并发
+     * @param times    循环几次
+     * @param name     任务名称
+     * @param callback 任务
+     * @throws Exception 做任务的过程中可能会抛出的异常
+     */
+    public void doSomething(boolean warmup,int thread, int times, String name, BenchmarkCallback callback) throws Exception {
         ExecutorService pool = Executors.newFixedThreadPool(thread, new BenchmarkThreadFactory(name));
         // 预热
-        for (int i = 0; i < WARM_UP_TIMES; i++) {
-            callback.doSomething();
+        if(warmup) {
+            for (int i = 0; i < WARM_UP_TIMES; i++) {
+                callback.doSomething();
+            }
         }
-
         // 计时，跑测试
         CountDownLatch latch = new CountDownLatch(times);
         Instant startTime = Instant.now();
