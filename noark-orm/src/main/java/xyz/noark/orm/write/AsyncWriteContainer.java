@@ -1,6 +1,7 @@
 package xyz.noark.orm.write;
 
 import xyz.noark.core.exception.DataException;
+import xyz.noark.core.exception.ExceptionHelper;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.accessor.DataAccessor;
 import xyz.noark.orm.write.impl.EntityOperate;
@@ -239,6 +240,8 @@ class AsyncWriteContainer implements Runnable {
             }
         } catch (Exception e) {
             logger.debug("批量存档失败，准备逐条存档 e={}", e);
+            // 异常监控...
+            ExceptionHelper.monitor(e);
             // 批量失败，那就一个一个来吧...
             for (T entity : entityList) {
                 this.operateEntity(type, em, entity);
@@ -264,6 +267,8 @@ class AsyncWriteContainer implements Runnable {
         } catch (Exception exx) {
             logger.error("操作实体时数据异常，groupId={}{}", groupId, exx);
             logger.error("操作实体时的异常数据 entity={}", entity);
+            // 异常监控...
+            ExceptionHelper.monitor(exx);
         }
     }
 
@@ -273,6 +278,8 @@ class AsyncWriteContainer implements Runnable {
             this.syncFlush();
         } catch (Throwable e) {// 每次保存必需保证定时器不能停了.
             logger.error("保存个人数据时异常，groupId=" + groupId, e);
+            // 异常监控...
+            ExceptionHelper.monitor(e);
         }
     }
 

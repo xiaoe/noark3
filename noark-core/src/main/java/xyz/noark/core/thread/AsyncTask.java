@@ -1,7 +1,5 @@
 package xyz.noark.core.thread;
 
-import xyz.noark.core.network.NetworkListener;
-
 /**
  * 一种普通的异步任务.
  *
@@ -9,11 +7,9 @@ import xyz.noark.core.network.NetworkListener;
  * @since 3.4
  */
 public class AsyncTask implements Runnable {
-    private final NetworkListener networkListener;
     private final TaskCallback taskCallback;
 
-    public AsyncTask(NetworkListener networkListener, TaskCallback taskCallback) {
-        this.networkListener = networkListener;
+    public AsyncTask(TaskCallback taskCallback) {
         this.taskCallback = taskCallback;
     }
 

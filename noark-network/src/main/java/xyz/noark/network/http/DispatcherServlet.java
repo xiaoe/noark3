@@ -12,6 +12,7 @@ import xyz.noark.core.annotation.Service;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
+import xyz.noark.core.exception.ExceptionHelper;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
@@ -174,11 +175,6 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
     }
 
     private void processHandlerException(HttpServletRequest request, HttpServletResponse response, HttpMethodWrapper handler, Throwable e) {
-        // 使用异常类型去查找对应的自定义处理器...
-        // Class<? extends Throwable> klass = e.getClass();
-        // getExceptionHandlerMethod(handler, e);
-
-        // 没有对应的处理方案，那再走一下默认的方案
         // 404 Handler没找到...
         if (e instanceof NoHandlerFoundException) {
             this.noHandlerFound(request, response);
@@ -195,8 +191,10 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         else {
             this.handleServerException(request, response, e);
         }
-    }
 
+        // 异常监控...
+        ExceptionHelper.monitor(e);
+    }
 
     private void doAction(HttpServletRequest request, HttpServletResponse response, HttpMethodWrapper handler) throws Exception {
         // 1. 业务执行前触发postHandle

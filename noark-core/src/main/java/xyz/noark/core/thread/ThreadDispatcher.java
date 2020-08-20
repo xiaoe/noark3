@@ -195,7 +195,7 @@ public class ThreadDispatcher {
      */
     void dispatchSystemThreadHandle(Session session, NetworkPacket packet, SystemThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(taskQueue, command, command.getPlayerId(), packet, session));
     }
 
     /**
@@ -203,12 +203,12 @@ public class ThreadDispatcher {
      */
     void dispatchPlayerThreadHandle(Session session, NetworkPacket packet, PlayerThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(taskQueue, command, command.getPlayerId(), packet, session));
     }
 
     private void dispatchHandle(Session session, NetworkPacket packet, Serializable id, QueueThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(id);
-        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(taskQueue, command, command.getPlayerId(), packet, session));
     }
 
 
@@ -221,7 +221,7 @@ public class ThreadDispatcher {
      */
     void dispatchAsyncCallback(Serializable queueId, TaskCallback callback, Serializable playerId) {
         final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
-        taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, new AsyncThreadCommand(callback), playerId));
+        taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback), playerId));
     }
 
     /**
@@ -233,12 +233,12 @@ public class ThreadDispatcher {
     public void dispatch(Serializable queueId, TaskCallback callback) {
         // 如果没有指定队列ID
         if (queueId == null) {
-            businessThreadPool.execute(new AsyncTask(networkListener, callback));
+            businessThreadPool.execute(new AsyncTask(callback));
         }
         // 有指定队列
         else {
             final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
-            taskQueue.submit(new AsyncQueueTask(networkListener, taskQueue, new AsyncThreadCommand(callback), null));
+            taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback), null));
         }
     }
 

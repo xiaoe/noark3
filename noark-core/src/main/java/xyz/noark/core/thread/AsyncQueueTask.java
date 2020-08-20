@@ -13,7 +13,7 @@
  */
 package xyz.noark.core.thread;
 
-import xyz.noark.core.network.NetworkListener;
+import xyz.noark.core.exception.ExceptionHelper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
@@ -38,7 +38,6 @@ public class AsyncQueueTask implements Runnable {
     protected final TaskQueue taskQueue;
     private final ThreadCommand command;
     private final Serializable playerId;
-    private final NetworkListener networkListener;
 
     /**
      * 用于响应请求时
@@ -49,17 +48,16 @@ public class AsyncQueueTask implements Runnable {
     private Thread currentThread;
     private long startExecuteTime;
 
-    public AsyncQueueTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
-        this(networkListener, taskQueue, command, playerId, null, null);
+    public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
+        this(taskQueue, command, playerId, null, null);
     }
 
-    public AsyncQueueTask(NetworkListener networkListener, TaskQueue taskQueue, ThreadCommand command, Serializable playerId, NetworkPacket packet, Session session) {
+    public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId, NetworkPacket packet, Session session) {
         this.taskQueue = taskQueue;
         this.command = command;
         this.playerId = playerId;
         this.session = session;
         this.packet = packet;
-        this.networkListener = networkListener;
     }
 
     @Override
@@ -77,10 +75,7 @@ public class AsyncQueueTask implements Runnable {
             } else {
                 logger.error("handle {} exception. playerId={}{}", command.code(), playerId, e);
             }
-            // 额外处理逻辑
-            if (networkListener != null) {
-                networkListener.handleException(session, packet, e);
-            }
+            ExceptionHelper.monitor(session, packet, e);
         } finally {
             taskQueue.complete();// 后继逻辑...
             this.execCommandAfter(startExecuteTime);
