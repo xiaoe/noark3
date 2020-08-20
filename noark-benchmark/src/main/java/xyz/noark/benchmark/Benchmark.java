@@ -72,7 +72,6 @@ public class Benchmark {
 	/**
 	 * 多线程并发压测做任务接口.
 	 * 
-	 * @param warmup   需要预热
 	 * @param thread   多少线程的并发
 	 * @param times    循环几次
 	 * @param name     任务名称
