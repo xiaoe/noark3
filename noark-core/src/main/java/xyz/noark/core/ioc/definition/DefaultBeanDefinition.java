@@ -59,6 +59,8 @@ public class DefaultBeanDefinition implements BeanDefinition {
     protected final HashMap<Class<? extends Annotation>, List<MethodDefinition>> customMethods = new HashMap<>();
     private final Class<?> beanClass;
     private Annotation annotation;
+    private Class<? extends Annotation> annotationType;
+
     /**
      * 注入排序值
      */
@@ -69,22 +71,26 @@ public class DefaultBeanDefinition implements BeanDefinition {
     private final ArrayList<FieldDefinition> autowiredFields = new ArrayList<>();
 
     public DefaultBeanDefinition(Class<?> klass) {
-        this(ClassUtils.newInstance(klass));
+        this(klass, ClassUtils.newInstance(klass));
     }
 
     public DefaultBeanDefinition(Object object) {
+        this(object.getClass(), object);
+    }
+
+    public DefaultBeanDefinition(Class<?> klass, Object object) {
         this.single = object;
-        this.beanClass = object.getClass();
+        this.beanClass = klass;
         this.methodAccess = MethodAccess.get(beanClass);
 
         Order order = beanClass.getAnnotation(Order.class);
         this.order = order == null ? Integer.MAX_VALUE : order.value();
     }
 
-
-    public DefaultBeanDefinition(Class<?> klass, Annotation annotation) {
-        this(ClassUtils.newInstance(klass));
+    public DefaultBeanDefinition(Class<?> klass, Annotation annotation, Class<? extends Annotation> annotationType) {
+        this(klass, ClassUtils.newInstance(klass));
         this.annotation = annotation;
+        this.annotationType = annotationType;
     }
 
     public DefaultBeanDefinition init() {
@@ -101,7 +107,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
      * @return Bean的唯一ID
      */
     public int[] getIds() {
-        if (annotation.annotationType() == Component.class) {
+        if (annotationType == Component.class) {
             return ((Component) annotation).id();
         }
         throw new UnrealizedException("亲，只有@Component才会有这个配置，用于Map的注入");
@@ -109,7 +115,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     @Override
     public String[] getNames() {
-        if (annotation.annotationType() == Component.class) {
+        if (annotationType == Component.class) {
             return ((Component) annotation).name();
         }
         return new String[]{beanClass.getName()};

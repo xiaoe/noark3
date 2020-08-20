@@ -124,7 +124,7 @@ public class IocLoader {
         }
         // 不是已定义的，那就扫描这个注解上有没有@Component
         else {
-            beans.put(klass, new DefaultBeanDefinition(klass, annotation).init());
+            beans.put(klass, new DefaultBeanDefinition(klass, annotation, annotationType).init());
         }
     }
 
