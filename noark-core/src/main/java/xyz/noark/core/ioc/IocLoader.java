@@ -15,10 +15,15 @@ package xyz.noark.core.ioc;
 
 import xyz.noark.core.annotation.*;
 import xyz.noark.core.converter.ConvertManager;
-import xyz.noark.core.ioc.definition.*;
+import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
+import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
+import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+import xyz.noark.core.ioc.definition.StaticComponentBeanDefinition;
 import xyz.noark.core.ioc.scan.Resource;
 import xyz.noark.core.ioc.scan.ResourceScanning;
+import xyz.noark.core.util.AnnotationUtils;
 import xyz.noark.core.util.ClassUtils;
+import xyz.noark.core.util.MapUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
@@ -36,12 +41,13 @@ import java.util.stream.Collectors;
 public class IocLoader {
     private static final String PACKAGE_INFO_CLASS = "package-info.class";
     private static final String CLASS_SUFFIX = ".class";
-    private final HashMap<Class<?>, DefaultBeanDefinition> beans = new HashMap<>(1024);
+
+    private final HashMap<Class<?>, DefaultBeanDefinition> beans = MapUtils.newHashMap(1024);
     private final List<BeanDefinition> configurations = new ArrayList<>();
     private final List<StaticComponentBeanDefinition> staticComponents = new ArrayList<>();
 
     IocLoader(String... packages) {
-        ResourceScanning.scanPackage(packages, (resource) -> analysisResource(resource));
+        ResourceScanning.scanPackage(packages, this::analysisResource);
     }
 
     /**
@@ -88,70 +94,38 @@ public class IocLoader {
             return;
         }
 
-        for (Annotation annotation : klass.getAnnotations()) {
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-
-            // 配置类
-            if (annotationType == Configuration.class) {
-                analytical(klass, Configuration.class.cast(annotation));
-            }
-
-            // 模板转化器.
-            else if (annotationType == TemplateConverter.class) {
-                analytical(klass, TemplateConverter.class.cast(annotation));
-            }
-
-            // 协议入口控制类
-            else if (annotationType == Controller.class) {
-                analytical(klass, Controller.class.cast(annotation));
-            }
-            // 协议入口控制类(模块化)
-            else if (annotationType == ModuleController.class) {
-                analytical(klass, ModuleController.class.cast(annotation));
-            }
-
-            // 业务逻辑处理类
-            else if (annotationType == Service.class) {
-                analytical(klass, Service.class.cast(annotation));
-            }
-
-            // 数据存储功能类
-            else if (annotationType == Repository.class) {
-                analytical(klass, Repository.class.cast(annotation));
-            }
-
-            // 静态组件
-            else if (annotationType == StaticComponent.class) {
-                analytical(klass, StaticComponent.class.cast(annotation));
-            }
-
-            // 没有归属
-            else if (annotationType == Component.class) {
-                analytical(klass, Component.class.cast(annotation));
-            }
+        // 查找带有@Component注解或其他注解上有@Component注解的类
+        Annotation annotation = AnnotationUtils.getAnnotation(klass, Component.class);
+        if (annotation == null) {
+            return;
         }
-    }
 
-    /**
-     * 静态组件
-     */
-    private void analytical(Class<?> klass, StaticComponent component) {
-        staticComponents.add(new StaticComponentBeanDefinition(klass).init());
-    }
-
-    /**
-     * 组件类型的Bean...
-     */
-    private void analytical(Class<?> klass, Component component) {
-        beans.put(klass, new ComponentBeanDefinition(klass, component).init());
-    }
-
-    private void analytical(Class<?> klass, Repository cast) {
-        beans.put(klass, new DefaultBeanDefinition(klass).init());
-    }
-
-    private void analytical(Class<?> klass, Service cast) {
-        beans.put(klass, new DefaultBeanDefinition(klass).init());
+        // 目标类上实际注解类型
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        // 配置类
+        if (annotationType == Configuration.class) {
+            configurations.add(new ConfigurationBeanDefinition(klass).init());
+        }
+        // 模板转化器.
+        else if (annotationType == TemplateConverter.class) {
+            ConvertManager.getInstance().register(klass, (TemplateConverter) annotation);
+        }
+        // 协议入口控制类
+        else if (annotationType == Controller.class) {
+            analytical(klass, (Controller) annotation);
+        }
+        // 协议入口控制类(模块化)
+        else if (annotationType == ModuleController.class) {
+            analytical(klass, (ModuleController) annotation);
+        }
+        // 静态组件
+        else if (annotationType == StaticComponent.class) {
+            staticComponents.add(new StaticComponentBeanDefinition(klass).init());
+        }
+        // 不是已定义的，那就扫描这个注解上有没有@Component
+        else {
+            beans.put(klass, new DefaultBeanDefinition(klass, annotation).init());
+        }
     }
 
     /**
@@ -163,14 +137,6 @@ public class IocLoader {
 
     private void analytical(Class<?> klass, Controller controller) {
         beans.put(klass, new ControllerBeanDefinition(klass, controller).init());
-    }
-
-    private void analytical(Class<?> klass, TemplateConverter converter) {
-        ConvertManager.getInstance().register(klass, converter);
-    }
-
-    private void analytical(Class<?> klass, Configuration configuration) {
-        configurations.add(new ConfigurationBeanDefinition(klass).init());
     }
 
     public HashMap<Class<?>, DefaultBeanDefinition> getBeans() {

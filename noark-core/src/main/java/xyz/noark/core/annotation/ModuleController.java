@@ -30,6 +30,7 @@ import java.lang.annotation.*;
  * @author 小流氓[176543888@qq.com]
  * @since 3.2.4
  */
+@Component
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

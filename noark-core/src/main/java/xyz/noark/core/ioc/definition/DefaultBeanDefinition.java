@@ -14,6 +14,7 @@
 package xyz.noark.core.ioc.definition;
 
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
@@ -57,6 +58,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
     protected final MethodAccess methodAccess;
     protected final HashMap<Class<? extends Annotation>, List<MethodDefinition>> customMethods = new HashMap<>();
     private final Class<?> beanClass;
+    private Annotation annotation;
     /**
      * 注入排序值
      */
@@ -79,6 +81,12 @@ public class DefaultBeanDefinition implements BeanDefinition {
         this.order = order == null ? Integer.MAX_VALUE : order.value();
     }
 
+
+    public DefaultBeanDefinition(Class<?> klass, Annotation annotation) {
+        this(ClassUtils.newInstance(klass));
+        this.annotation = annotation;
+    }
+
     public DefaultBeanDefinition init() {
         this.analysisField();
         this.analysisMethod();
@@ -93,11 +101,17 @@ public class DefaultBeanDefinition implements BeanDefinition {
      * @return Bean的唯一ID
      */
     public int[] getIds() {
+        if (annotation.annotationType() == Component.class) {
+            return ((Component) annotation).id();
+        }
         throw new UnrealizedException("亲，只有@Component才会有这个配置，用于Map的注入");
     }
 
     @Override
     public String[] getNames() {
+        if (annotation.annotationType() == Component.class) {
+            return ((Component) annotation).name();
+        }
         return new String[]{beanClass.getName()};
     }
 
@@ -130,7 +144,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     private void analysisMethod() {
         List<Method> methods = MethodUtils.getAllMethod(beanClass);
-        final HashSet<String> methodNames = new HashSet<String>(methods.size());
+        final HashSet<String> methodNames = new HashSet<>(methods.size());
         for (Method method : methods) {
             Annotation[] annotations = method.getAnnotations();
             // 没有注解的忽略掉
@@ -168,7 +182,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
     }
 
     private void analysisField() {
-        FieldUtils.getAllField(beanClass).stream().filter(v -> v.isAnnotationPresent(Autowired.class) || v.isAnnotationPresent(Value.class)).forEach(v -> analysisAutowiredOrValue(v));
+        FieldUtils.getAllField(beanClass).stream().filter(v -> v.isAnnotationPresent(Autowired.class) || v.isAnnotationPresent(Value.class)).forEach(this::analysisAutowiredOrValue);
     }
 
     /**
