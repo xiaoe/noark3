@@ -265,7 +265,7 @@ public class ThreadDispatcher {
             case QueueThreadGroup:
                 if (event instanceof QueueEvent) {
                     QueueEvent e = (QueueEvent) event;
-                    this.dispatchHandle(null, null, ((QueueEvent) event).getId(), new QueueThreadCommand(null, handler, e));
+                    this.dispatchHandle(null, null, ((QueueEvent) event).getQueueId(), new QueueThreadCommand(null, handler, e));
                 } else {
                     throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
                 }
@@ -294,7 +294,7 @@ public class ThreadDispatcher {
             case QueueThreadGroup:
                 if (event instanceof QueueEvent) {
                     QueueEvent e = (QueueEvent) event;
-                    this.dispatchHandle(null, null, ((QueueEvent) event).getId(), new QueueThreadCommand(null, handler, e));
+                    this.dispatchHandle(null, null, ((QueueEvent) event).getQueueId(), new QueueThreadCommand(null, handler, e));
                 } else {
                     throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
                 }

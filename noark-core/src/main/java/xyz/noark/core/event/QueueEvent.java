@@ -31,5 +31,5 @@ public interface QueueEvent extends Event {
      *
      * @return 队列ID
      */
-    Serializable getId();
+    Serializable getQueueId();
 }
