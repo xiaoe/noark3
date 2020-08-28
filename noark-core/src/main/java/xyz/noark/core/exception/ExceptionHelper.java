@@ -30,8 +30,6 @@ public class ExceptionHelper {
      * @param e       异常堆栈
      */
     public static void monitor(Session session, NetworkPacket packet, Throwable e) {
-        monitor(e);
-
         // 额外处理逻辑
         if (networkListener != null) {
             networkListener.handleException(session, packet, e);

@@ -211,34 +211,22 @@ public class ThreadDispatcher {
         taskQueue.submit(new AsyncQueueTask(taskQueue, command, command.getPlayerId(), packet, session));
     }
 
-
-    /**
-     * 派发一个异步回调.
-     *
-     * @param queueId  队列ID
-     * @param callback 需要异步的逻辑
-     * @param playerId 玩家ID（可以为空）
-     */
-    void dispatchAsyncCallback(Serializable queueId, TaskCallback callback, Serializable playerId) {
-        final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
-        taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback), playerId));
-    }
-
     /**
      * 派发一个任务。
      *
      * @param queueId  执行队列ID
      * @param callback 一个任务
+     * @param playerId 玩家ID（可以为空）
      */
-    public void dispatch(Serializable queueId, TaskCallback callback) {
+    public void dispatch(Serializable queueId, TaskCallback callback, Serializable playerId) {
         // 如果没有指定队列ID
         if (queueId == null) {
-            businessThreadPool.execute(new AsyncTask(callback));
+            businessThreadPool.execute(new AsyncTask(callback, playerId));
         }
         // 有指定队列
         else {
             final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
-            taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback), null));
+            taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback), playerId));
         }
     }
 

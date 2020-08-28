@@ -30,14 +30,9 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public class AsyncQueueTask implements Runnable {
-    /**
-     * 任务创建时间
-     */
-    protected final long createTime = System.nanoTime();
+public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
     protected final TaskQueue taskQueue;
     private final ThreadCommand command;
-    private final Serializable playerId;
 
     /**
      * 用于响应请求时
@@ -45,69 +40,62 @@ public class AsyncQueueTask implements Runnable {
     private final NetworkPacket packet;
     private final Session session;
 
+    /**
+     * 当前执行的线程，用于监控队列超时输出堆栈信息
+     */
     private Thread currentThread;
-    private long startExecuteTime;
 
     public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
         this(taskQueue, command, playerId, null, null);
     }
 
     public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId, NetworkPacket packet, Session session) {
+        super(taskQueue.getId(), playerId);
         this.taskQueue = taskQueue;
         this.command = command;
-        this.playerId = playerId;
         this.session = session;
         this.packet = packet;
     }
 
+
     @Override
-    public void run() {
-        // 开始执行的时间
-        this.startExecuteTime = System.nanoTime();
-        this.execCommandBefore();
-        try {
-            // 开始处理协议，并发送结果
-            ResultHelper.trySendResult(session, packet, command.exec());
-        } catch (Throwable e) {
-            // 记录异常信息
-            if (playerId == null) {
-                logger.error("handle {} exception.{}", command.code(), e);
-            } else {
-                logger.error("handle {} exception. playerId={}{}", command.code(), playerId, e);
-            }
-            ExceptionHelper.monitor(session, packet, e);
-        } finally {
-            taskQueue.complete();// 后继逻辑...
-            this.execCommandAfter(startExecuteTime);
-        }
-    }
-
-    /**
-     * 执行之前做一个逻辑.
-     */
-    private void execCommandBefore() {
+    protected void execCommandBefore() {
+        // 记录当前执行线程
         this.currentThread = Thread.currentThread();
-        AsyncHelper.setTaskContext(new TaskContext(taskQueue.getId(), playerId));
+
+        // 设计当前任务上下文
+        super.execCommandBefore();
     }
 
-    /**
-     * 执行之后做一个逻辑.
-     *
-     * @param startExecuteTime 开始执行时间
-     */
-    private void execCommandAfter(long startExecuteTime) {
-        AsyncHelper.removeTaskContext();
+    @Override
+    protected void doSomething() {
+        // 开始处理协议，并发送结果
+        ResultHelper.trySendResult(session, packet, command.exec());
+    }
 
-        if (command.isPrintLog()) {
-            // 延迟时间与执行时间
-            float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
-            float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
-            if (playerId == null) {
-                logger.info("handle {},delay={} ms,exec={} ms", command.code(), delay, exec);
-            } else {
-                logger.info("handle {},delay={} ms,exec={} ms playerId={}", command.code(), delay, exec, playerId);
-            }
-        }
+    @Override
+    protected void execCommandException(Throwable e) {
+        super.execCommandException(e);
+        ExceptionHelper.monitor(session, packet, e);
+    }
+
+    @Override
+    protected void execCommandAfter(long startExecuteTime) {
+        // 通知队列完成当前任务，继续后面的逻辑...
+        taskQueue.complete();
+
+        // 记录日志等业务
+        super.execCommandAfter(startExecuteTime);
+    }
+
+    @Override
+    protected String logCode() {
+        return command.code();
+    }
+
+    @Override
+    protected boolean isPrintLog() {
+        return command.isPrintLog();
     }
 
     /**

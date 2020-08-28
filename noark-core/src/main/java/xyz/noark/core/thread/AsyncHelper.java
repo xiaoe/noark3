@@ -35,6 +35,16 @@ public class AsyncHelper {
      */
     private static final ThreadLocal<TaskContext> THREAD_LOCAL = new ThreadLocal<>();
 
+    @Autowired
+    private static ThreadDispatcher threadDispatcher;
+
+    /**
+     * 私有化构造函数
+     */
+    private AsyncHelper() {
+    }
+
+
     /**
      * 设置任务执行的上下文
      *
@@ -51,16 +61,13 @@ public class AsyncHelper {
         THREAD_LOCAL.remove();
     }
 
-    @Autowired
-    private static ThreadDispatcher threadDispatcher;
-
     /**
      * 异步化一段逻辑.
-     * <p>没有指定队列ID，就是在当前队列中执行</p>
+     * <p>就是在当前队列中执行，可以理解为本线程执行完当前逻辑再去执行那异步逻辑</p>
      *
      * @param callback 异步逻辑
      */
-    public static void call(TaskCallback callback) {
+    public static void localCall(TaskCallback callback) {
         TaskContext context = THREAD_LOCAL.get();
         call(context.getQueueId(), callback, context.getPlayerId());
     }
@@ -76,7 +83,18 @@ public class AsyncHelper {
         call(queueId, callback, context.getPlayerId());
     }
 
+    /**
+     * 异步化一段逻辑.
+     * <p>非当前队列中执行，可以理解随便找个线程跑一下这个异步逻辑</p>
+     *
+     * @param callback 异步逻辑
+     */
+    public static void randomCall(TaskCallback callback) {
+        TaskContext context = THREAD_LOCAL.get();
+        call(null, callback, context.getPlayerId());
+    }
+
     private static void call(Serializable queueId, TaskCallback callback, Serializable playerId) {
-        threadDispatcher.dispatchAsyncCallback(queueId, callback, playerId);
+        threadDispatcher.dispatch(queueId, callback, playerId);
     }
 }
