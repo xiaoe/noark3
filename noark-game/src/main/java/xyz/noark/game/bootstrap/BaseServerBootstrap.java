@@ -30,12 +30,11 @@ import java.util.Optional;
  * @since 3.0
  */
 public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
-
     protected NettyServer nettyServer;
-    protected Optional<Modular> dataModular;
-    protected Optional<Modular> eventModular;
-    protected Optional<Modular> httpModular;
-    protected Optional<Modular> threadModular;
+    protected Modular dataModular;
+    protected Modular eventModular;
+    protected Modular httpModular;
+    protected Modular threadModular;
 
     @Override
     protected void onStart() {
@@ -73,33 +72,39 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
      * 初始化HTTP服务模块
      */
     protected void initHttpModular() {
-        httpModular = modularManager.getModular(Modular.HTTP_MODULAR);
-        httpModular.ifPresent(v -> v.init());
+        Optional<Modular> modular = modularManager.getModular(Modular.HTTP_MODULAR);
+        modular.ifPresent(Modular::init);
+        httpModular = modular.orElse(null);
     }
 
     /**
      * 初始化事件模块
      */
     protected void initEventModular() {
-        eventModular = modularManager.getModular(Modular.EVENT_MODULAR);
-        eventModular.ifPresent(v -> v.init());
+        Optional<Modular> modular = modularManager.getModular(Modular.EVENT_MODULAR);
+        modular.ifPresent(Modular::init);
+        eventModular = modular.orElse(null);
     }
 
     /**
      * 初始化数据模块
      */
     protected void initDataModular() {
-        dataModular = modularManager.getModular(Modular.DATA_MODULAR);
-        dataModular.ifPresent(v -> v.init());
-        ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);
+        Optional<Modular> modular = modularManager.getModular(Modular.DATA_MODULAR);
+        modular.ifPresent(dataModular -> {
+            this.dataModular = dataModular;
+            dataModular.init();
+            ioc.invokeCustomAnnotationMethod(DataCheckAndInit.class);
+        });
     }
 
     /**
      * 初始化线程模块
      */
     protected void initThreadModular() {
-        threadModular = modularManager.getModular(Modular.THREAD_MODULAR);
-        threadModular.ifPresent(v -> v.init());
+        Optional<Modular> modular = modularManager.getModular(Modular.THREAD_MODULAR);
+        modular.ifPresent(Modular::init);
+        threadModular = modular.orElse(null);
     }
 
     @Override
@@ -110,24 +115,38 @@ public abstract class BaseServerBootstrap extends AbstractServerBootstrap {
     @Override
     protected void onStop() {
         // 停止对外网络
-        if (nettyServer != null) {
-            nettyServer.shutdown();
-        }
+        Optional.ofNullable(nettyServer).ifPresent(NettyServer::shutdown);
+
         // 停止HTTP服务
-        if (httpModular != null) {
-            httpModular.ifPresent(v -> v.destroy());
-        }
+        this.onStopHttpModular();
+
         // 停止延迟任务调度
-        if (eventModular != null) {
-            eventModular.ifPresent(v -> v.destroy());
-        }
+        this.onStopEventModular();
+
         // 等待所有任务处理完
-        if (threadModular != null) {
-            threadModular.ifPresent(v -> v.destroy());
-        }
+        this.onStopThreadModular();
+
         // 保存数据
-        if (dataModular != null) {
-            dataModular.ifPresent(v -> v.destroy());
-        }
+        this.onStopDataModular();
+    }
+
+    protected void onStopHttpModular() {
+        Optional.ofNullable(httpModular).ifPresent(Modular::destroy);
+    }
+
+    protected void onStopEventModular() {
+        Optional.ofNullable(eventModular).ifPresent(Modular::destroy);
+    }
+
+    /**
+     * 停止线程模块.
+     * <p>可由子类重写来实现一些特别的情况</p>
+     */
+    protected void onStopThreadModular() {
+        Optional.ofNullable(threadModular).ifPresent(Modular::destroy);
+    }
+
+    protected void onStopDataModular() {
+        Optional.ofNullable(dataModular).ifPresent(Modular::destroy);
     }
 }

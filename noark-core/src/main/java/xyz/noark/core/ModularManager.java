@@ -30,7 +30,7 @@ import java.util.Optional;
 public class ModularManager {
 
     @Autowired
-    private Map<String, Modular> modulars;
+    private Map<String, Modular> modularMap;
 
     /**
      * 获取一个模块.
@@ -39,6 +39,6 @@ public class ModularManager {
      * @return 模块
      */
     public Optional<Modular> getModular(String name) {
-        return Optional.ofNullable(modulars.get(name));
+        return Optional.ofNullable(modularMap.get(name));
     }
 }
