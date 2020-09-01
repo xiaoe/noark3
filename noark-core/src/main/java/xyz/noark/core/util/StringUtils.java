@@ -89,6 +89,10 @@ public class StringUtils {
      */
     public static final String ASTERISK = "*";
     /**
+     * 一个英文分号字符串 {@code ";"}
+     */
+    public static final String SEMICOLON = ";";
+    /**
      * 一个空字符串数组.
      */
     public static final String[] EMPTY_STRING_ARRAY = {};

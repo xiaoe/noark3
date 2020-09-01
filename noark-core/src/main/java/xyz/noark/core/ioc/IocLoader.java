@@ -106,10 +106,6 @@ public class IocLoader {
         if (annotationType == Configuration.class) {
             configurations.add(new ConfigurationBeanDefinition(klass).init());
         }
-        // 模板转化器.
-        else if (annotationType == TemplateConverter.class) {
-            ConvertManager.getInstance().register(klass, (TemplateConverter) annotation);
-        }
         // 协议入口控制类
         else if (annotationType == Controller.class) {
             analytical(klass, (Controller) annotation);
@@ -125,6 +121,10 @@ public class IocLoader {
         // 不是已定义的，那就扫描这个注解上有没有@Component
         else {
             beans.put(klass, new DefaultBeanDefinition(klass, annotation, annotationType).init());
+            // 模板转化器.
+            if (annotationType == TemplateConverter.class) {
+                ConvertManager.getInstance().register(klass, (TemplateConverter) annotation);
+            }
         }
     }
 
