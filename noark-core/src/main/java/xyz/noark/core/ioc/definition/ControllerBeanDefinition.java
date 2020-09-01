@@ -79,27 +79,27 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
     protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
         // 客户端过来的协议入口.
         if (annotationType == PacketMapping.class) {
-            pmds.add(new PacketMethodDefinition(methodAccess, method, PacketMapping.class.cast(annotation)));
+            pmds.add(new PacketMethodDefinition(methodAccess, method, (PacketMapping) annotation));
         }
         // 客户端过来的协议入口.
         else if (annotationType == CommandMapping.class) {
-            pmds.add(new PacketMethodDefinition(methodAccess, method, CommandMapping.class.cast(annotation)));
+            pmds.add(new PacketMethodDefinition(methodAccess, method, (CommandMapping) annotation));
         }
         // 事件监听
         else if (annotationType == EventListener.class) {
-            emds.add(new EventMethodDefinition(methodAccess, method, EventListener.class.cast(annotation), this));
+            emds.add(new EventMethodDefinition(methodAccess, method, (EventListener) annotation, this));
         }
         // HTTP服务
         else if (annotationType == RequestMapping.class) {
-            hmds.add(new HttpMethodDefinition(methodAccess, method, RequestMapping.class.cast(annotation)));
+            hmds.add(new HttpMethodDefinition(methodAccess, method, (RequestMapping) annotation));
         } else if (annotationType == GetMapping.class) {
-            hmds.add(new HttpMethodDefinition(methodAccess, method, GetMapping.class.cast(annotation)));
+            hmds.add(new HttpMethodDefinition(methodAccess, method, (GetMapping) annotation));
         } else if (annotationType == PostMapping.class) {
-            hmds.add(new HttpMethodDefinition(methodAccess, method, PostMapping.class.cast(annotation)));
+            hmds.add(new HttpMethodDefinition(methodAccess, method, (PostMapping) annotation));
         }
         // 延迟任务
         else if (annotationType == Scheduled.class) {
-            smds.add(new ScheduledMethodDefinition(methodAccess, method, Scheduled.class.cast(annotation)));
+            smds.add(new ScheduledMethodDefinition(methodAccess, method, (Scheduled) annotation));
         }
         // 其他的交给父类去处理
         else {
@@ -111,43 +111,43 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
     public void doAnalysisFunction(NoarkIoc noarkIoc) {
         super.doAnalysisFunction(noarkIoc);
 
-        this.doAnalysisPacketHandler(noarkIoc);
+        this.doAnalysisPacketHandler();
 
-        this.doAnalysisEventHandler(noarkIoc);
+        this.doAnalysisEventHandler();
 
-        this.doAnalysisHttpHandler(noarkIoc);
+        this.doAnalysisHttpHandler();
 
-        this.doAnalysisScheduledHandler(noarkIoc);
+        this.doAnalysisScheduledHandler();
     }
 
     /**
      * 分析延迟任务处理入口.
      */
-    private void doAnalysisScheduledHandler(NoarkIoc noarkIoc) {
+    private void doAnalysisScheduledHandler() {
         final ScheduledMethodManager manager = ScheduledMethodManager.getInstance();
-        smds.forEach(smd -> manager.resetScheduledHandler(new ScheduledMethodWrapper(methodAccess, single, smd, threadGroup, controllerMasterClass)));
+        smds.forEach(smd -> manager.resetScheduledHandler(new ScheduledMethodWrapper(single, smd, threadGroup, controllerMasterClass)));
     }
 
     /**
      * 分析HTTP处理入口.
      */
-    private void doAnalysisHttpHandler(NoarkIoc noarkIoc) {
-        hmds.forEach(hmd -> HttpMethodManager.registerHandler(new HttpMethodWrapper(methodAccess, single, hmd, threadGroup, controllerMasterClass)));
+    private void doAnalysisHttpHandler() {
+        hmds.forEach(hmd -> HttpMethodManager.registerHandler(new HttpMethodWrapper(single, hmd, threadGroup, controllerMasterClass)));
     }
 
     /**
      * 分析事件处理入口.
      */
-    private void doAnalysisEventHandler(NoarkIoc ioc) {
+    private void doAnalysisEventHandler() {
         final EventMethodManager manager = EventMethodManager.getInstance();
-        emds.forEach(emd -> manager.resetEventHandler(new EventMethodWrapper(methodAccess, single, emd, threadGroup, controllerMasterClass)));
+        emds.forEach(emd -> manager.resetEventHandler(new EventMethodWrapper(single, emd, threadGroup, controllerMasterClass)));
     }
 
     /**
      * 分析一下封包处理方法.
      */
-    private void doAnalysisPacketHandler(NoarkIoc noarkIoc) {
+    private void doAnalysisPacketHandler() {
         final PacketMethodManager manager = PacketMethodManager.getInstance();
-        pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(methodAccess, single, pmd, threadGroup, controllerMasterClass, queueId)));
+        pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(single, pmd, threadGroup, controllerMasterClass, queueId)));
     }
 }

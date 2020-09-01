@@ -123,19 +123,19 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
      */
     private Serializable getQueueId(HttpMethodWrapper handler, HttpServletRequest request) {
         // 没有设定队列ID，那就返回null，走非队列任务
-        if (StringUtils.isEmpty(handler.getQueueId())) {
+        if (StringUtils.isEmpty(handler.getQueueIdKey())) {
             return null;
         }
 
         // 如果配置了队列ID，请求里没有，那就给个转化异常，让提示走传入参数问题.
-        String value = request.getParameter(handler.getQueueId());
+        String value = request.getParameter(handler.getQueueIdKey());
         if (StringUtils.isEmpty(value)) {
-            throw new ConvertException("HTTP request param error. uri=" + request.getUri() + "," + handler.getQueueId() + " is required.");
+            throw new ConvertException("HTTP request param error. uri=" + request.getUri() + "," + handler.getQueueIdKey() + " is required.");
         }
 
         // 如果有值，需要使用Handler里的参数修正类型，以确保拿到参数最终状态，不然这个调度队列就是错的，比如玩家IDLong类型与参数String
         for (HttpParamWrapper param : handler.getParameters()) {
-            if (handler.getQueueId().equals(param.getName())) {
+            if (handler.getQueueIdKey().equals(param.getName())) {
                 Converter<?> converter = this.getConverter(param.getParameter());
                 try {
                     Object result = converter.convert(param.getParameter(), value);
@@ -143,17 +143,17 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
                         return (Serializable) result;
                     }
                     // 有队列ID，但类型异常，这个要算服务器内部错误了，定义有问题
-                    throw new UnrealizedQueueIdException(request.getMethod(), request.getUri(), handler.getQueueId());
+                    throw new UnrealizedQueueIdException(request.getMethod(), request.getUri(), handler.getQueueIdKey());
                 } catch (Exception e) {
                     // 出了异常，那就是参数转化出了问题，提交请求调用者.
                     throw new ConvertException("HTTP request param error. uri=" + request.getUri() + " >> "
-                            + handler.getQueueId() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
+                            + handler.getQueueIdKey() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
                 }
             }
         }
 
         // 这里就是处理方法上没有配置队列ID参数
-        throw new UnrealizedQueueIdException(request.getMethod(), request.getUri(), handler.getQueueId());
+        throw new UnrealizedQueueIdException(request.getMethod(), request.getUri(), handler.getQueueIdKey());
     }
 
     private void exec(HttpServletRequest request, HttpServletResponse response, HttpMethodWrapper handler, long createTime) {

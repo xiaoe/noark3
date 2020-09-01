@@ -172,7 +172,7 @@ public class ThreadDispatcher {
                 this.dispatchSystemThreadHandle(session, packet, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
                 break;
             case QueueThreadGroup:
-                Object id = session.attr(SessionAttrKey.valueOf(pmw.getQueueId())).get();
+                Object id = session.attr(SessionAttrKey.valueOf(pmw.getQueueIdKey())).get();
                 if (Objects.nonNull(id) && id instanceof Serializable) {
                     this.dispatchHandle(session, packet, (Serializable) id, new QueueThreadCommand(playerId, pmw, args));
                 }

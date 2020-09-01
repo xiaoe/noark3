@@ -13,9 +13,8 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
-import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.reflectasm.MethodAccess;
+import xyz.noark.core.ioc.MethodDefinition;
 
 /**
  * Controller类中的可执行方法.
@@ -25,9 +24,9 @@ import xyz.noark.reflectasm.MethodAccess;
  */
 public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper {
     /**
-     * 串型执行的队列ID.
+     * 串行执行的队列ID对应的Key名称
      */
-    protected String queueId;
+    protected String queueIdKey;
     /**
      * 当前方法是否已废弃使用.
      */
@@ -49,20 +48,20 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     private final String logCode;
     protected boolean printLog = false;
 
-    public AbstractControllerMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, ExecThreadGroup threadGroup, String module, Order order, String logCode) {
-        super(methodAccess, single, methodIndex, order);
+    public AbstractControllerMethodWrapper(Object single, ExecThreadGroup threadGroup, String module, String logCode, MethodDefinition md) {
+        super(single, md.getMethodAccess(), md.getMethodIndex(), md.getOrder());
         this.module = module;
         this.logCode = logCode;
         this.threadGroup = threadGroup;
     }
 
     /**
-     * 获取当前的串型执行的队列ID
+     * 获取当前的串行执行的队列ID对应的Key名称
      *
-     * @return 队列ID
+     * @return 队列ID对应的Key名称
      */
-    public String getQueueId() {
-        return queueId;
+    public String getQueueIdKey() {
+        return queueIdKey;
     }
 
     /**
@@ -84,7 +83,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     }
 
     //----------------------------------------
-    
+
     public boolean isPrintLog() {
         return printLog;
     }

@@ -32,7 +32,7 @@ public class BaseMethodWrapper implements MethodWrapper {
     protected final MethodAccess methodAccess;
     private final int order;
 
-    public BaseMethodWrapper(MethodAccess methodAccess, Object single, int methodIndex, Order order) {
+    public BaseMethodWrapper(Object single, MethodAccess methodAccess, int methodIndex, Order order) {
         this.single = single;
         this.methodIndex = methodIndex;
         this.methodAccess = methodAccess;

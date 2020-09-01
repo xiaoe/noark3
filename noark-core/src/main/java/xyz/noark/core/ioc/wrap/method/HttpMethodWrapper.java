@@ -20,7 +20,6 @@ import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.core.network.HandlerMethod;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -40,23 +39,21 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper implement
     private final Method method;
     private final Set<RequestMethod> methodSet;
     private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
-
-
     private final ResponseBody responseBody;
 
 
-    public HttpMethodWrapper(MethodAccess methodAccess, Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-        super(methodAccess, single, method.getMethodIndex(), threadGroup, controllerMasterClass.getName(), method.getOrder(), null);
+    public HttpMethodWrapper(Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+        super(single, threadGroup, controllerMasterClass.getName(), "handle(" + method.getPath() + ")", method);
         this.path = method.getPath();
         // 这里的方法缓存着，拦截器里可能会有获取注解的需求
         this.method = method.getMethod();
-        this.queueId = method.getQueueId();
+        this.queueIdKey = method.getQueueId();
         this.methodSet = method.getMethodSet();
         this.deprecated = method.isDeprecated();
 
         this.responseBody = method.getResponseBody();
 
-        Arrays.stream(method.getParameters()).forEach(v -> buildParamWrapper(v));
+        Arrays.stream(method.getParameters()).forEach(this::buildParamWrapper);
     }
 
     private void buildParamWrapper(Parameter parameter) {

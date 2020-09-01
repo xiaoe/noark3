@@ -36,8 +36,8 @@ public class ScheduledMethodWrapper extends AbstractControllerMethodWrapper {
     private final Long id;
     private final DelayTrigger trigger;
 
-    public ScheduledMethodWrapper(MethodAccess methodAccess, Object single, ScheduledMethodDefinition smd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-        super(methodAccess, single, smd.getMethodIndex(), threadGroup, controllerMasterClass.getName(), smd.getOrder(), "scheduled(" + smd.getMethodName() + ")");
+    public ScheduledMethodWrapper(Object single, ScheduledMethodDefinition smd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
+        super(single, threadGroup, controllerMasterClass.getName(), "scheduled(" + smd.getMethodName() + ")", smd);
         // 生成一个唯一ID编号.
         this.id = AUTO_ID.incrementAndGet();
         this.trigger = DelayTriggerFactory.create(smd.getScheduled());

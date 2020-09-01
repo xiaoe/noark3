@@ -234,6 +234,6 @@ public class DefaultBeanDefinition implements BeanDefinition {
      */
     public void doAnalysisFunction(NoarkIoc ioc) {
         // 有自定义的注解需要送回来IOC容器中.
-        customMethods.forEach((k, list) -> list.forEach(v -> ioc.addCustomMethod(k, new BaseMethodWrapper(v.getMethodAccess(), single, v.getMethodIndex(), v.getOrder()))));
+        customMethods.forEach((k, list) -> list.forEach(v -> ioc.addCustomMethod(k, new BaseMethodWrapper(single, v.getMethodAccess(), v.getMethodIndex(), v.getOrder()))));
     }
 }
