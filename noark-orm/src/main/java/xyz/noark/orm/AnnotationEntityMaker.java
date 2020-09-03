@@ -148,6 +148,10 @@ public class AnnotationEntityMaker {
         }
 
         guessEntityFieldColumnType(fm);
+
+        if (fm.isBlob() && fm.getFieldClass() != byte[].class) {
+            throw new NoEntityException(klass.getName(), "@Blob只能标识在byte[]的属性上 ≡ (^(OO)^) ≡");
+        }
         return fm;
     }
 
@@ -170,6 +174,10 @@ public class AnnotationEntityMaker {
         else if (fm.isJson()) {
             fm.setType(FieldType.AsJson);
             fm.setWidth(fm.getColumn() == null ? 1024 : fm.getColumn().length());
+        }
+        // Blob或byte[]
+        else if (fm.isBlob()) {
+            fm.setType(FieldType.AsBlob);
         }
         // 整型
         else if (fm.isInt()) {
@@ -216,10 +224,6 @@ public class AnnotationEntityMaker {
         else if (type == LongAdder.class) {
             fm.setWidth(16);
             fm.setType(FieldType.AsLongAdder);
-        }
-        // Blob或byte[]
-        else if (fm.isBlob()) {
-            fm.setType(FieldType.AsBlob);
         }
         // 其他就是Json类型的.
         else {

@@ -13,6 +13,7 @@
  */
 package xyz.noark.orm;
 
+import xyz.noark.core.annotation.Gzip;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.orm.*;
 import xyz.noark.core.util.FieldUtils;
@@ -53,7 +54,10 @@ public class FieldMapping {
     /**
      * 是否有可能为Emoji
      */
-    private boolean emoji = false;
+    private boolean emoji;
+
+
+    private boolean gzip;
 
     public FieldMapping(Field field, MethodAccess methodAccess) {
         this.field = field;
@@ -69,6 +73,7 @@ public class FieldMapping {
         this.createdDate = field.getAnnotation(CreatedDate.class);
         this.lastModifiedDate = field.getAnnotation(LastModifiedDate.class);
         this.emoji = field.isAnnotationPresent(Emoji.class);
+        this.gzip = field.isAnnotationPresent(Gzip.class);
 
         this.getMethodIndex = methodAccess.getIndex(FieldUtils.genGetMethodName(field));
         this.setMethodIndex = methodAccess.getIndex(FieldUtils.genSetMethodName(field));
@@ -216,5 +221,13 @@ public class FieldMapping {
 
     public void setEmoji(boolean emoji) {
         this.emoji = emoji;
+    }
+
+    public boolean isGzip() {
+        return gzip;
+    }
+
+    public void setGzip(boolean gzip) {
+        this.gzip = gzip;
     }
 }

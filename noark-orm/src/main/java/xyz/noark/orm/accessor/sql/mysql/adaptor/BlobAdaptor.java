@@ -13,6 +13,8 @@
  */
 package xyz.noark.orm.accessor.sql.mysql.adaptor;
 
+import xyz.noark.core.util.GzipUtils;
+import xyz.noark.log.LogHelper;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 
@@ -32,12 +34,24 @@ class BlobAdaptor extends AbstractValueAdaptor<Object> {
         if (value == null) {
             pstmt.setNull(parameterIndex, Types.BLOB);
         } else {
-            pstmt.setObject(parameterIndex, value);
+            byte[] array = (byte[]) value;
+            int length = array.length;
+            if (fm.isGzip()) {
+                array = GzipUtils.compress(array);
+                LogHelper.logger.debug("Gzip compress. {}->{}", length, array.length);
+            }
+            pstmt.setObject(parameterIndex, array);
         }
     }
 
     @Override
     protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
-        return rs.getObject(fm.getColumnName());
+        byte[] array = (byte[]) rs.getObject(fm.getColumnName());
+        int length = array.length;
+        if (fm.isGzip()) {
+            array = GzipUtils.uncompress(array);
+            LogHelper.logger.debug("Gzip uncompress. {}->{}", length, array.length);
+        }
+        return array;
     }
 }
