@@ -35,8 +35,16 @@ public class TimeoutHashMap<K, V> {
         this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).build(key -> loading.get());
     }
 
+    public TimeoutHashMap(long duration, TimeUnit unit, int maximumSize, Supplier<? extends V> loading) {
+        this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).maximumSize(maximumSize).build(key -> loading.get());
+    }
+
     public TimeoutHashMap(long duration, TimeUnit unit, CacheLoader<? super K, V> loader) {
         this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).build(key -> loader.load(key));
+    }
+
+    public TimeoutHashMap(long duration, TimeUnit unit, int maximumSize, CacheLoader<? super K, V> loader) {
+        this.caches = Caffeine.newBuilder().expireAfterAccess(duration, unit).maximumSize(maximumSize).build(key -> loader.load(key));
     }
 
     public V get(K key) {
