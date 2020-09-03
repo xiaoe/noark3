@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.util;
 
+import xyz.noark.core.exception.ServerBootstrapException;
+
 import java.lang.reflect.Method;
 
 /**
@@ -33,16 +35,16 @@ public class ClassUtils {
         // ClassLoader#loadClass(String)：将.class文件加载到JVM中，不会执行static块,只有在创建实例时才会去执行static块
         try {
             return Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
         }
 
         // Class#forName(String)：将.class文件加载到JVM中，还会对类进行解释，并执行类中的static块
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
         }
 
-        throw new RuntimeException("无法加载指定类名的Class=" + className);
+        throw new ServerBootstrapException("无法加载指定类名的Class=" + className);
     }
 
     /**
@@ -56,7 +58,7 @@ public class ClassUtils {
         try {
             return klass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("无法创建实例. Class=" + klass.getName(), e);
+            throw new ServerBootstrapException("无法创建实例. Class=" + klass.getName(), e);
         }
     }
 
@@ -70,7 +72,7 @@ public class ClassUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> T newInstance(String className, Object... parameters) {
-        Class<?> klass = (Class<?>) loadClass(className);
+        Class<?> klass = loadClass(className);
         try {
             Class<?>[] parameterTypes = new Class<?>[parameters.length];
             for (int i = 0, len = parameters.length; i < len; i++) {
@@ -78,7 +80,7 @@ public class ClassUtils {
             }
             return (T) klass.getConstructor(parameterTypes).newInstance(parameters);
         } catch (Exception e) {
-            throw new RuntimeException("无法创建实例. Class=" + klass.getName(), e);
+            throw new ServerBootstrapException("无法创建实例. Class=" + klass.getName(), e);
         }
     }
 
