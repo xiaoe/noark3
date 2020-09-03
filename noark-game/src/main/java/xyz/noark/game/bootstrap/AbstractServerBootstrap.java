@@ -95,7 +95,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             System.out.println(this.getServerName() + " is running, interval=" + interval + " ms");
 
             if (this.showBanner()) {
-                FileUtils.getFileText(bannerFileName()).ifPresent(this::printBanner);
+                FileUtils.loadFileText(bannerFileName()).ifPresent(this::printBanner);
             }
         } catch (Exception e) {
             e.printStackTrace();

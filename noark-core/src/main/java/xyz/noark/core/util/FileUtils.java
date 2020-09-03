@@ -35,7 +35,7 @@ public class FileUtils {
      * @param fileName 文件名称
      * @return 返回文件中的文本
      */
-    public static Optional<String> getFileText(String fileName) {
+    public static Optional<String> loadFileText(String fileName) {
         try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)) {
             return Optional.ofNullable(StringUtils.readString(is));
         } catch (Exception e) {
@@ -82,9 +82,21 @@ public class FileUtils {
      * @throws IOException If an I/O error occurs
      */
     public static void writeFileText(String fileName, boolean append, String content) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(fileName, append); OutputStreamWriter osw = new OutputStreamWriter(fos, CharsetUtils.CHARSET_UTF_8);) {
+        try (FileOutputStream fos = new FileOutputStream(fileName, append);
+             OutputStreamWriter osw = new OutputStreamWriter(fos, CharsetUtils.CHARSET_UTF_8)) {
             osw.write(content);
             osw.flush();
+        }
+    }
+
+
+    public static void writerFile(String fileName, byte[] data, boolean append) throws IOException {
+        File file = new File(fileName);
+        createNewFile(file);
+        try (FileOutputStream fos = new FileOutputStream(file, append);
+             OutputStream out = new BufferedOutputStream(fos)) {
+            out.write(data);
+            out.flush();
         }
     }
 
