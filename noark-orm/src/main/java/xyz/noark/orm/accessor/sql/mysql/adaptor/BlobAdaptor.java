@@ -47,6 +47,9 @@ class BlobAdaptor extends AbstractValueAdaptor<Object> {
     @Override
     protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
         byte[] array = (byte[]) rs.getObject(fm.getColumnName());
+        if (array == null) {
+            return null;
+        }
         int length = array.length;
         if (fm.isGzip()) {
             array = GzipUtils.uncompress(array);
