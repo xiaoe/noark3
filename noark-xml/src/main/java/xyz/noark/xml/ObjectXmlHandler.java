@@ -15,49 +15,50 @@ package xyz.noark.xml;
 
 import org.xml.sax.Attributes;
 
+import java.util.LinkedList;
+import java.util.Stack;
+
 /**
  * 用SAX解析XML的Handler.
- * <p>
- * 这个XML根节点必需是object
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.1
  */
 class ObjectXmlHandler<T> extends AbstractXmlHandler<T> {
-
-    private final ObjectData data = new ObjectData();
-    protected boolean isRootNode = false;
+    /**
+     * 解析时用的栈
+     */
+    private final Stack<XmlNode> stack = new Stack<>();
+    private XmlNode root;
+    private XmlNode curNode;
 
     public ObjectXmlHandler(Class<T> klass, String tplFileName) {
         super(klass, tplFileName);
     }
 
     @Override
-    public void startDocument() {
-        // 文档开始，标识为根节点
-        isRootNode = true;
-    }
-
-    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        // 不是根节点，需要把当前的处理节点，压入队列
-        if (!isRootNode) {
-            data.addHandleNode(qName);
-        }
-
+        XmlNode node = new XmlNode(qName, curNode);
+        // 节点上的属性
         for (int i = 0, len = attributes.getLength(); i < len; i++) {
-            data.putAttrData(attributes.getQName(i), attributes.getValue(i));
+            node.getAttributes().put(attributes.getQName(i), attributes.getValue(i));
         }
 
-        if (isRootNode) {
-            this.isRootNode = false;
+        if (curNode == null) {
+            this.root = node;
+        } else {
+            curNode.getChildNodeMap().computeIfAbsent(node.getName(), key -> new LinkedList<>()).add(node);
         }
+
+        this.curNode = node;
+        stack.push(node);
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) {
-        if (!isRootNode) {
-            data.removeHandleNode(qName);
+        XmlNode node = stack.pop();
+        if (qName.equals(node.getName())) {
+            this.curNode = node.getParentNode();
         }
     }
 
@@ -66,6 +67,6 @@ class ObjectXmlHandler<T> extends AbstractXmlHandler<T> {
      */
     public T getResult() {
         // 唯一对象，正常是配置文件，那需要修正EL表达式的.
-        return buildObject(data, true);
+        return buildObject(root, true);
     }
 }
