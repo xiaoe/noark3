@@ -61,13 +61,13 @@ public class ConvertManager {
      *
      * @param klass             类型
      * @param templateConverter 转化器
+     * @param single            转化器的实例
      */
-    public void register(Class<?> klass, TemplateConverter templateConverter) {
-        Object object = ClassUtils.newInstance(klass);
-        if (!(object instanceof Converter<?>)) {
+    public void register(Class<?> klass, TemplateConverter templateConverter, Object single) {
+        if (!(single instanceof Converter<?>)) {
             throw new ServerBootstrapException("非法的转化器." + klass.getName());
         }
-        this.putConvert((Converter<?>) object, templateConverter);
+        this.putConvert((Converter<?>) single, templateConverter);
     }
 
     /**
