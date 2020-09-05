@@ -19,16 +19,19 @@ import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
 import xyz.noark.core.exception.TplAttrRequiredException;
+import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.FieldUtils;
 import xyz.noark.core.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 抽象的XML处理器.
+ * <p>
+ * XML格式分两种:<br>
+ * 一、为单一对象，根节点为Object.<br>
+ * 二、为数组对象，根节点为Array.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.1
@@ -45,86 +48,45 @@ abstract class AbstractXmlHandler<T> extends DefaultHandler {
     /**
      * 构建对象.
      *
-     * @param root  XML数据
+     * @param data  数据
      * @param fixEl 是否修正EL表达式
      */
-    protected T buildObject(XmlNode root, boolean fixEl) {
-        // 修补参数引用
+    protected T buildObject(ObjectData data, boolean fixEl) {
         if (fixEl) {
-            root.fillExpression();
+            data.fillExpression();
         }
-        return (T) this.buildObject(klass, root);
-    }
 
-    /**
-     * 构建List属性对象.
-     *
-     * @param node  XML节点
-     * @param attr  属性配置
-     * @param field 属性反射对象
-     * @return List属性对象
-     */
-    private List<Object> buildListFieldObject(XmlNode node, TplAttr attr, Field field) {
-        List<XmlNode> nodeList = node.getNodeList(attr.name());
-        if (nodeList.isEmpty()) {
-            if (attr.required()) {
-                throw new TplAttrRequiredException(klass, field, attr);
-            } else {
-                return new ArrayList<>();
-            }
-        } else {
-            // 取出这个List对应的泛型Class
-            Class<?> keyClass = FieldUtils.getMapFieldKeyClass(field);
-            List<Object> result = new ArrayList<>(nodeList.size());
-            for (XmlNode xmlNode : nodeList) {
-                result.add(buildObject(keyClass, xmlNode));
-            }
-            return result;
-        }
-    }
+        T result = ClassUtils.newInstance(klass);
 
-    private Object buildObject(Class<?> klass, XmlNode node) {
-        Object result = ClassUtils.newInstance(klass);
         for (Field field : klass.getDeclaredFields()) {
             TplAttr attr = field.getAnnotation(TplAttr.class);
             if (attr == null || StringUtils.isEmpty(attr.name())) {
                 continue;
             }
 
-            // 查询转化器如果存在则这个可以使用转化器来完成.
+            String value = data.getValue(attr.name());
+            if (StringUtils.isEmpty(value)) {
+                if (attr.required()) {
+                    throw new TplAttrRequiredException(klass, field, attr);
+                }
+                continue;
+            }
+
             Converter<?> converter = this.getConverter(field);
-            if (converter != null) {
-                FieldUtils.writeField(result, field, this.buildConverterObject(converter, attr, node, field));
-            }
-            // List类型的属性
-            else if (field.getType().isAssignableFrom(List.class)) {
-                FieldUtils.writeField(result, field, this.buildListFieldObject(node, attr, field));
-            }
-            // 处理常规属性
-            else {
-                FieldUtils.writeField(result, field, this.buildObject(klass, node));
+            try {
+                FieldUtils.writeField(result, field, converter.convert(field, value));
+            } catch (Exception e) {
+                throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
             }
         }
         return result;
-
-
-    }
-
-    private Object buildConverterObject(Converter<?> converter, TplAttr attr, XmlNode node, Field field) {
-        String value = node.getAttributesValue(attr.name());
-        if (value == null) {
-            if (attr.required()) {
-                throw new TplAttrRequiredException(klass, field, attr);
-            }
-        }
-        try {
-            return converter.convert(field, value);
-        } catch (Exception e) {
-            throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
-        }
     }
 
     private Converter<?> getConverter(Field field) {
-        return ConvertManager.getInstance().getConverter(field.getType());
+        Converter<?> result = ConvertManager.getInstance().getConverter(field.getType());
+        if (result == null) {
+            throw new UnrealizedException("XML配置解析时，发现未实现的类型. field=(" + field.getType().getName() + ")" + field.getName());
+        }
+        return result;
     }
 }

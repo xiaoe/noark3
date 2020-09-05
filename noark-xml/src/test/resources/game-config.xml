@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root>
-	<server id="1" name="Game-${server.id}" externalIp="192.168.2.214" tcpPort="8866"  webPort="10086" />
-	<game local="/data/server/data/${server.id}" debug="true" saveInterval="1" offlineInterval="3600" location="true"/>
-	<db>
-		<property name="jdbcUrl" value="jdbc:mysql://148.71.41.183:3306/chess?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8"/>
-		<property name="jdbcUser" value="root"/>
-		<property name="jdbcPassword" value="pass"/>
-	</db>
-	<cache>
-		<redis type="1" ip="148.71.41.183" port="6385" index="0" password="ooxx.com${server.id}"/>
-		<redis type="2" ip="148.71.41.183" port="6386" index="0" password="ooxx.com${redis.type}"/>
-		<mysql type="2" ip="148.71.41.183" port="6386" index="0" password="ooxx.com${redis.type}"/>
-	</cache>
-	<cache>
-		<redis type="3" ip="148.71.41.183" port="6385" index="0" password="ooxx.com${server.id}"/>
-		<redis type="4" ip="148.71.41.183" port="6386" index="0" password="ooxx.com${redis.type}"/>
-	</cache>
-	<rpc timeout="0"></rpc>
-</root>
+
+<!-- pid:联运平台 , id:本服编号, name:服务器名称, pcu:同时最高在线, mru:允许最多注册人数, debug:调试模式(true=debug命令) -->
+<object pid="dev" sid="1" sname="研发${sid}区" pcu="3000" mru="18_0000" debug="true">
+
+    <!-- 网络 port:对外端口 heartBeat:心跳检测时间(0=不检测), crypto:加密, compress:压缩, compressThreshold:压缩阀值 -->
+    <network port="12580" heartBeat="300" crypto="false" compress="true" compressThreshold="1024"/>
+
+    <!-- 数据 templatePath:模板数据路径, saveInterval:存档时间(单位:秒), offlineInterval:离线缓存(单位:秒) -->
+    <data templatePath="/home/wdj/template/" saveInterval="300" offlineInterval="3600"/>
+
+    <!-- mysql -->
+    <mysql ip="192.168.0.92" port="3306" user="root" password="123456" dbname="d_wdj"/>
+
+    <!-- 全局Redis -->
+    <GlobalRedis ip="${mysql.ip}" port="6379" index="0"/>
+    <!-- 本地Redis -->
+    <LocalRedis ip="${mysql.ip}" port="6379" index="1"/>
+
+    <!-- 反私服配置,只有认证过的服务器才是自己人 -->
+    <security verify="http://${mysql.ip}:1235/api/security/verify/"/>
+</object>

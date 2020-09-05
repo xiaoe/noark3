@@ -13,6 +13,14 @@
  */
 package xyz.noark.xml;
 
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
+
 /**
  * XML测试
  *
@@ -20,8 +28,14 @@ package xyz.noark.xml;
  * @since 3.1
  */
 public class XmlTest {
-    public static void main(String[] args) {
+    @Test
+    public void test() throws ParserConfigurationException, SAXException, IOException {
+        MapTemplate template = Xml.load(MapTemplate.class);
+        assertTrue(template.getId() == 10000);
+        assertTrue("中文".equals(template.getName()));
+
         GameConfig config = Xml.load(GameConfig.class);
-        System.out.println(config);
+        assertTrue(config.getSid() == 1);
+        assertTrue("192.168.0.92".equals(config.getRedisIp()));
     }
 }

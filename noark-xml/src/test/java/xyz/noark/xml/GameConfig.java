@@ -16,9 +16,6 @@ package xyz.noark.xml;
 import xyz.noark.core.annotation.tpl.TplAttr;
 import xyz.noark.core.annotation.tpl.TplFile;
 
-import java.util.HashMap;
-import java.util.List;
-
 /**
  * 游戏服务器启动配置对象.
  *
@@ -26,14 +23,49 @@ import java.util.List;
  */
 @TplFile(value = "game-config.xml")
 public class GameConfig {
-    @TplAttr(name = "server.id")
+
+    @TplAttr(name = "pid")
+    private String pid = "dev";
+
+    @TplAttr(name = "sid")
     private int sid = 1;
 
-    @TplAttr(name = "server.name")
+    @TplAttr(name = "sname")
     private String sname = "研发一区";
 
-    @TplAttr(name = "cache.redis")
-    private List<Cache> list;
+    @TplAttr(name = "puc", required = false)
+    private int pcu = 3000;
+
+    @TplAttr(name = "mru", required = false)
+    private int mru = 18_0000;
+
+    @TplAttr(name = "network.port")
+    private int port = 12580;
+    @TplAttr(name = "network.heartBeat")
+    private int heartBeat = 300;
+    @TplAttr(name = "network.crypto")
+    private boolean crypto = false;
+    @TplAttr(name = "network.compress")
+    private boolean compress = false;
+    @TplAttr(name = "network.compressThreshold")
+    private int compressThreshold = 1024;
+
+    @TplAttr(name = "network.workThreads", required = false)
+    private int workThreads = 0;
+
+    @TplAttr(name = "data.templatePath")
+    private String templatePath = "/home/wdj/template/";
+    @TplAttr(name = "data.saveInterval")
+    private int saveInterval = 500;
+    @TplAttr(name = "data.offlineInterval")
+    private int offlineInterval = 3600;
+
+    @TplAttr(name = "GlobalRedis.ip")
+    private String redisIp;
+
+    public String getPid() {
+        return pid;
+    }
 
     public int getSid() {
         return sid;
@@ -43,16 +75,57 @@ public class GameConfig {
         return sname;
     }
 
-    public List<Cache> getList() {
-        return list;
+    public int getPcu() {
+        return pcu;
+    }
+
+    public int getMru() {
+        return mru;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public int getHeartBeat() {
+        return heartBeat;
+    }
+
+    public boolean isCrypto() {
+        return crypto;
+    }
+
+    public boolean isCompress() {
+        return compress;
+    }
+
+    public int getCompressThreshold() {
+        return compressThreshold;
+    }
+
+    public int getWorkThreads() {
+        return workThreads;
+    }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public int getSaveInterval() {
+        return saveInterval;
+    }
+
+    public int getOfflineInterval() {
+        return offlineInterval;
+    }
+
+    public String getRedisIp() {
+        return redisIp;
     }
 
     @Override
     public String toString() {
-        return "GameConfig{" +
-                "sid=" + sid +
-                ", sname='" + sname + '\'' +
-                ", list=" + list +
-                '}';
+        return "GameConfig [pid=" + pid + ", sid=" + sid + ", sname=" + sname + ", pcu=" + pcu + ", mru=" + mru + ", port=" + port + ", heartBeat=" + heartBeat + ", crypto=" + crypto + ", compress=" + compress + ", compressThreshold=" + compressThreshold
+                + ", workThreads=" + workThreads + ", templatePath=" + templatePath + ", saveInterval=" + saveInterval + ", offlineInterval=" + offlineInterval + "]";
     }
 }

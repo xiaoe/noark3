@@ -14,17 +14,7 @@
 package xyz.noark.xml;
 
 import org.xml.sax.Attributes;
-import xyz.noark.core.annotation.tpl.TplAttr;
-import xyz.noark.core.converter.ConvertManager;
-import xyz.noark.core.converter.Converter;
-import xyz.noark.core.exception.ConvertException;
-import xyz.noark.core.exception.TplAttrRequiredException;
-import xyz.noark.core.exception.UnrealizedException;
-import xyz.noark.core.util.ClassUtils;
-import xyz.noark.core.util.FieldUtils;
-import xyz.noark.core.util.StringUtils;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,51 +47,6 @@ class ArrayXmlHandler<T> extends AbstractXmlHandler<T> {
     public List<T> getResult() {
         List<T> result = new ArrayList<>(dataList.size());
         dataList.forEach(v -> result.add(buildObject(v, false)));
-        return result;
-    }
-
-    /**
-     * 构建对象.
-     *
-     * @param data  数据
-     * @param fixEl 是否修正EL表达式
-     */
-    protected T buildObject(ObjectData data, boolean fixEl) {
-        if (fixEl) {
-            data.fillExpression();
-        }
-
-        T result = ClassUtils.newInstance(klass);
-
-        for (Field field : klass.getDeclaredFields()) {
-            TplAttr attr = field.getAnnotation(TplAttr.class);
-            if (attr == null || StringUtils.isEmpty(attr.name())) {
-                continue;
-            }
-
-            String value = data.getValue(attr.name());
-            if (StringUtils.isEmpty(value)) {
-                if (attr.required()) {
-                    throw new TplAttrRequiredException(klass, field, attr);
-                }
-                continue;
-            }
-
-            Converter<?> converter = this.getConverter(field);
-            try {
-                FieldUtils.writeField(result, field, converter.convert(field, value));
-            } catch (Exception e) {
-                throw new ConvertException(tplFileName + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
-            }
-        }
-        return result;
-    }
-
-    private Converter<?> getConverter(Field field) {
-        Converter<?> result = ConvertManager.getInstance().getConverter(field.getType());
-        if (result == null) {
-            throw new UnrealizedException("XML配置解析时，发现未实现的类型. field=(" + field.getType().getName() + ")" + field.getName());
-        }
         return result;
     }
 }
