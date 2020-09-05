@@ -194,7 +194,7 @@ public class RandomUtils {
         // 数量刚刚好
         if (source.size() <= num) {
             List<T> result = new ArrayList<>(source);
-            Collections.shuffle(source);
+            Collections.shuffle(result);
             return result;
         }
 
@@ -220,7 +220,7 @@ public class RandomUtils {
      * @return 按权重随机返回集合中的一个元素.
      */
     public static <K> K randomByWeight(Map<K, Integer> data) {
-        final int sum = data.values().stream().reduce(0, (a, b) -> a + b);
+        final int sum = data.values().stream().reduce(0, Integer::sum);
         if (sum <= 0) {
             return randomList(new ArrayList<>(data.keySet()));
         }
@@ -228,7 +228,7 @@ public class RandomUtils {
         final int random = nextInt(sum);
         int step = 0;
         for (Map.Entry<K, Integer> e : data.entrySet()) {
-            step += e.getValue().intValue();
+            step += e.getValue();
             if (step > random) {
                 return e.getKey();
             }
@@ -247,7 +247,7 @@ public class RandomUtils {
      * @return 按权重随机返回集合中的一个元素
      */
     public static <T> T randomByWeight(List<T> data, ToIntFunction<? super T> weightFunction) {
-        final int sum = data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b);
+        final int sum = data.stream().mapToInt(weightFunction).reduce(0, Integer::sum);
         if (sum <= 0) {
             return randomList(data);
         }
@@ -279,7 +279,7 @@ public class RandomUtils {
             return Collections.emptyList();
         }
 
-        final int sum = data.stream().mapToInt(weightFunction).reduce(0, (a, b) -> a + b);
+        final int sum = data.stream().mapToInt(weightFunction).reduce(0, Integer::sum);
         if (sum <= 0) {
             return randomList(data, num);
         }
