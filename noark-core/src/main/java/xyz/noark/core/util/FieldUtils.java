@@ -54,7 +54,9 @@ public class FieldUtils {
         try {
             field.set(target, value);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new ServerBootstrapException(target.getClass() + " 的 " + field.getName() + " 属性无法注入.", e);
+            // 静态属性写入时Target会为null
+            Class<?> klass = target == null ? field.getDeclaringClass() : target.getClass();
+            throw new ServerBootstrapException(klass + " 的 " + field.getName() + " 属性无法注入.", e);
         }
     }
 
@@ -242,11 +244,13 @@ public class FieldUtils {
                 // 有需求，也有配置，那就准备注入
                 else {
                     Converter<?> converter = ConvertManager.getInstance().getConverter(field.getType());
+                    Object value;
                     try {
-                        FieldUtils.writeField(null, field, converter.convert(field, fun.apply(template)));
+                        value = converter.convert(field, fun.apply(template));
                     } catch (Exception e) {
                         throw new ConvertException(target.getName() + " >> " + field.getName() + " >> " + fun.apply(template) + "-->" + converter.buildErrorMsg(), e);
                     }
+                    FieldUtils.writeField(null, field, value);
                 }
             }
         }
