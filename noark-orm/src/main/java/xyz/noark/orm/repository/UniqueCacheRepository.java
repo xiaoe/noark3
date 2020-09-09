@@ -49,26 +49,6 @@ public class UniqueCacheRepository<T, K extends Serializable> extends AbstractCa
     }
 
     /**
-     * 从缓存中Load指定ID的对象
-     *
-     * @param entityId 缓存对象的Id
-     * @return 对象
-     */
-    public Optional<T> cacheLoad(K entityId) {
-        return Optional.ofNullable(dataCache.load(entityId));
-    }
-
-    /**
-     * 从缓存中Get指定ID的对象
-     *
-     * @param entityId 缓存对象的Id
-     * @return 对象
-     */
-    public T cacheGet(K entityId) {
-        return dataCache.load(entityId);
-    }
-
-    /**
      * 根据条件从缓存中获取所有缓存数据.
      *
      * @param filter 条件

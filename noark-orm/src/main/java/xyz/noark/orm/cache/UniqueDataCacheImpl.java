@@ -49,17 +49,14 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
         super(repository);
 
         // 构建一个数据加载器
-        CacheLoader<K, DataWrapper<T>> loader = new CacheLoader<K, DataWrapper<T>>() {
-            @Override
-            public DataWrapper<T> load(K entityId) throws Exception {
-                // 如果是启服就载入的，就没有必要再去访问DB了...
-                if (entityMapping.getFetchType() == FetchType.START) {
-                    return new DataWrapper<>(null);
-                }
-
-                // 没有缓存时，从数据访问策略中加载
-                return new DataWrapper<>(repository.load(entityId));
+        CacheLoader<K, DataWrapper<T>> loader = entityId -> {
+            // 如果是启服就载入的，就没有必要再去访问DB了...
+            if (entityMapping.getFetchType() == FetchType.START) {
+                return new DataWrapper<>(null);
             }
+
+            // 没有缓存时，从数据访问策略中加载
+            return new DataWrapper<>(repository.load(entityId));
         };
 
         // 启服时加载内存是需要永久缓存
@@ -179,7 +176,7 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
     public void initCacheData() {
         logger.debug("实体类[{}]抓取策略为启动服务器就加载缓存.", entityMapping.getEntityClass());
         List<T> result = repository.loadAll();
-        result.stream().forEach(entity -> caches.put(this.getPrimaryIdValue(entity), new DataWrapper<>(entity)));
+        result.forEach(entity -> caches.put(this.getPrimaryIdValue(entity), new DataWrapper<>(entity)));
         logger.debug("实体类[{}]初始化缓存完成,一共 {} 条数据.", entityMapping.getEntityClass(), result.size());
     }
 
@@ -190,7 +187,7 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
      *
      * @param <E> 实体对象
      */
-    private class DataWrapper<E> {
+    private static class DataWrapper<E> {
         private E entity;
 
         private DataWrapper(E entity) {

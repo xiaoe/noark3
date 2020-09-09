@@ -23,6 +23,7 @@ import xyz.noark.orm.write.AsyncWriteService;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 一种带有缓存类型的数据存储.
@@ -113,6 +114,26 @@ abstract class AbstractCacheRepository<T, K extends Serializable> extends OrmRep
         dataCache.update(entity);
 
         asyncWriteService.update(entityMapping, entity);
+    }
+
+    /**
+     * 从缓存中Load指定ID的对象
+     *
+     * @param entityId 缓存对象的Id
+     * @return 对象
+     */
+    public Optional<T> cacheLoad(K entityId) {
+        return Optional.ofNullable(dataCache.load(entityId));
+    }
+
+    /**
+     * 从缓存中Get指定ID的对象
+     *
+     * @param entityId 缓存对象的Id
+     * @return 对象
+     */
+    public T cacheGet(K entityId) {
+        return dataCache.load(entityId);
     }
 
     /**

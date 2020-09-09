@@ -43,13 +43,7 @@ abstract class AbstractDataCache<T, K extends Serializable> implements DataCache
     }
 
     @Override
-    public T load(K entityId) {
-        // 当不支持请求的操作时，抛出该异常。
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public T load(Serializable roleId, K entityId) {
+    public T load(Serializable playerId, K entityId) {
         throw new UnsupportedOperationException();
     }
 
