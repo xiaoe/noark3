@@ -16,6 +16,7 @@ package xyz.noark.core.util;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Map类型的工具类.
@@ -38,9 +39,32 @@ public class MapUtils {
      * @return 返回一个已计算好存储容量的HashMap
      */
     public static <K, V> HashMap<K, V> newHashMap(int size) {
+        return new HashMap<>(calculateInitialCapacity(size));
+    }
+
+    /**
+     * 创建一个将要存放Size个KV的ConcurrentHashMap.
+     * <p>初始化容量=(需要存储个数 / 负载因子) + 1</p>
+     *
+     * @param size 需要存储个数
+     * @param <K>  存储Key类型
+     * @param <V>  存储Value类型
+     * @return 返回一个已计算好存储容量的ConcurrentHashMap
+     */
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(int size) {
+        return new ConcurrentHashMap<>(calculateInitialCapacity(size));
+    }
+
+    /**
+     * 根据要存放数量来推算初始化容量
+     *
+     * @param size 要存放数量
+     * @return 初始化容量
+     */
+    private static int calculateInitialCapacity(int size) {
         // see java.util.HashMap.putMapEntries
         // float ft = ((float)s / loadFactor) + 1.0F;
-        return new HashMap<>((int) (size / 0.75F + 1.0F));
+        return (int) (size / 0.75F + 1.0F);
     }
 
     /**
