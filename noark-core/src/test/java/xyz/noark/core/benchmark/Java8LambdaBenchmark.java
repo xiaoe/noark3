@@ -14,6 +14,7 @@
 package xyz.noark.core.benchmark;
 
 import xyz.noark.benchmark.Benchmark;
+import xyz.noark.log.LogManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Java8LambdaBenchmark {
 
         BENCHMARK.doSomething("jdk7sum:", () -> jdk7sum(list));
         BENCHMARK.doSomething("jdk8sum:", () -> jdk8sum(list));
+        LogManager.shutdown();
     }
 
     public static int jdk7sum(List<Integer> list) {
