@@ -20,8 +20,11 @@ package xyz.noark.core.exception;
  * @since 3.0
  */
 public class DataAccessException extends RuntimeException {
-
     private static final long serialVersionUID = -5151735581480584254L;
+
+    public DataAccessException(String entityClassName, Exception e) {
+        super("entity class=" + entityClassName, e);
+    }
 
     public DataAccessException(Exception e) {
         super(e);

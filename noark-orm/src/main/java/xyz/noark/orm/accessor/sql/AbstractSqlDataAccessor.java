@@ -145,7 +145,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
                 return this.execute(em, action, sql, false);
             }
             // 不能扩容时，把异常向上抛出去...
-            throw new DataAccessException(e);
+            throw new DataAccessException(em.getEntityClass().getName(), e);
         }
     }
 
@@ -172,13 +172,13 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
                     return this.executeBatch(em, action, sql, false);
                 }
                 // 不能扩容时，把异常向上抛出去...
-                throw new DataAccessException(e);
+                throw new DataAccessException(em.getEntityClass().getName(), e);
             } finally {
                 // 还原为自动提交
                 con.setAutoCommit(true);
             }
         } catch (Exception e) {
-            throw new DataAccessException(e);
+            throw new DataAccessException(em.getEntityClass().getName(), e);
         }
     }
 
