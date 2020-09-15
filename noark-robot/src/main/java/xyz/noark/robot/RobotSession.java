@@ -79,13 +79,13 @@ public class RobotSession extends AbstractSession {
     public void send(ByteArray packet) {
         // 链接已关闭了...
         if (!channel.isActive()) {
-            logger.warn("send packet fail isActive=false. channel={}, playerId={}", channel, this.getPlayerId());
+            logger.debug("send packet fail isActive=false. channel={}, playerId={}", channel, this.getPlayerId());
             return;
         }
 
         // 不可写，未发送的数据已达最高水位了...
         if (!channel.isWritable()) {
-            logger.warn("send packet fail isWritable=false. channel={}, playerId={}", channel, this.getPlayerId());
+            logger.debug("send packet fail isWritable=false. channel={}, playerId={}", channel, this.getPlayerId());
             return;
         }
 

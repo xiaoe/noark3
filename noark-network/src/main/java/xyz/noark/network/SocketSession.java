@@ -106,13 +106,13 @@ public class SocketSession extends AbstractSession implements IncodeSession {
     public void send(ByteArray packet) {
         // 链接已关闭了...
         if (!channel.isActive()) {
-            logger.warn("send packet fail isActive=false. channel={}, playerId={}", channel, playerId);
+            logger.debug("send packet fail isActive=false. channel={}, playerId={}", channel, playerId);
             return;
         }
 
         // 不可写，未发送的数据已达最高水位了...
         if (!channel.isWritable()) {
-            logger.warn("send packet fail isWritable=false. channel={}, playerId={}", channel, playerId);
+            logger.debug("send packet fail isWritable=false. channel={}, playerId={}", channel, playerId);
             return;
         }
 
