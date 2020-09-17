@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 /**
  * ModuleController注解用来标识一个模块线程组专用消息入口处理类.
  * <p>
- * 功能等同于{@link Controller}，这个注解就是为了解决那些模块串型时，一个Controller里方法过多的问题.<br>
+ * 功能等同于{@link Controller}，这个注解就是为了解决那些模块串行时，一个Controller里方法过多的问题.<br>
  * <code>
  * &#64;ModuleController
  * <br>
@@ -39,7 +39,7 @@ public @interface ModuleController {
     /**
      * 隶属哪个Controller类.
      * <p>
-     * 模块串型以Controller类名为Key的，所以这里要提供一个可以识别主Controller
+     * 模块串行以Controller类名为Key的，所以这里要提供一个可以识别主Controller
      *
      * @return 主Controller类
      */

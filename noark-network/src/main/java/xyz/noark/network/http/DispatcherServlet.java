@@ -115,11 +115,11 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
     }
 
     /**
-     * 获取这个请求的串型队列ID
+     * 获取这个请求的串行队列ID
      *
      * @param handler 处理器
      * @param request 请求对象
-     * @return 串型队列ID可能会为null
+     * @return 串行队列ID可能会为null
      */
     private Serializable getQueueId(HttpMethodWrapper handler, HttpServletRequest request) {
         // 没有设定队列ID，那就返回null，走非队列任务

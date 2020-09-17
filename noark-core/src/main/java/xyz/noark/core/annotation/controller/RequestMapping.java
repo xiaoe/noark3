@@ -35,12 +35,12 @@ public @interface RequestMapping {
     RequestMethod[] method() default {};
 
     /**
-     * 指定串型执行的队列ID参数的名称.
+     * 指定串行执行的队列ID参数的名称.
      * <p>
-     * 这里的队列ID值是指HTTP请求参数中名称，如果找到名称就执行串型化，没有找到则放弃串型执行
+     * 这里的队列ID值是指HTTP请求参数中名称，如果找到名称就执行串行化，没有找到则放弃串行执行
      * </p>
      *
-     * @return 串型执行的队列ID参数的名称
+     * @return 串行执行的队列ID参数的名称
      */
     String queueId() default StringUtils.EMPTY;
 }

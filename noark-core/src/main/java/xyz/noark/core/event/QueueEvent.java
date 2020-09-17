@@ -16,7 +16,7 @@ package xyz.noark.core.event;
 import java.io.Serializable;
 
 /**
- * 串型队列类型的事件.
+ * 串行队列类型的事件.
  * <p>
  * 队列线程处理此事件，需要实现此接口.
  *
@@ -25,7 +25,7 @@ import java.io.Serializable;
  */
 public interface QueueEvent extends Event {
     /**
-     * 获取用什么ID进行串型执行的队列ID.
+     * 获取用什么ID进行串行执行的队列ID.
      * <p>
      * 比如联盟ID，城池ID，场景ID
      *

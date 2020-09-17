@@ -38,7 +38,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      */
     protected final ExecThreadGroup threadGroup;
     /**
-     * 如果是模块串型，模块唯一标识
+     * 如果是模块串行，模块唯一标识
      */
     protected final String module;
 
