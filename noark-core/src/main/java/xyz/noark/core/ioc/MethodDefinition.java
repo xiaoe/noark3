@@ -31,26 +31,26 @@ public interface MethodDefinition {
      *
      * @return 访问入口
      */
-    public MethodAccess getMethodAccess();
+    MethodAccess getMethodAccess();
 
     /**
      * 获取此方法的访问入口所对应的Index.
      *
      * @return 访问入口所对应的Index.
      */
-    public int getMethodIndex();
+    int getMethodIndex();
 
     /**
      * 获取参数列表
      *
      * @return 参数
      */
-    public Parameter[] getParameters();
+    Parameter[] getParameters();
 
     /**
      * 获取当前方法的排序注解
      *
      * @return 排序注解
      */
-    public Order getOrder();
+    Order getOrder();
 }

@@ -30,12 +30,12 @@ public interface BeanDefinition {
      *
      * @return Bean的名称
      */
-    public String[] getNames();
+    String[] getNames();
 
     /**
      * 注入属性.
      *
      * @param making 装配对象缓存
      */
-    public void injection(IocMaking making);
+    void injection(IocMaking making);
 }

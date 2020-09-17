@@ -36,33 +36,30 @@ public class NoarkIoc implements Ioc {
      * 容器中所有托管的Bean对象.
      */
     private final ConcurrentHashMap<Class<?>, Object> singletons = new ConcurrentHashMap<>(512);
-    ;
 
     private final ConcurrentHashMap<Class<? extends Annotation>, List<MethodWrapper>> customMethods = new ConcurrentHashMap<>();
 
     public NoarkIoc(String packager) {
         String[] packages = Arrays.asList(packager, "xyz.noark").toArray(new String[]{});
         logger.debug("init ioc, packages={}", packager);
+        IocHolder.setIoc(this);
 
         // 自动注入的实现也交给他去处理...
-
         IocLoader loader = new IocLoader(packages);
 
         try (IocMaking making = new IocMaking(loader)) {
             // 优先构建Configuration里的显示申明的Bean.
-            this.finishBeanInitialization(loader, making, loader.getConfigurations());
+            this.finishBeanInitialization(making, loader.getConfigurations());
 
             // 完成其他Bean的初始化和依赖注入的关系
-            this.finishBeanInitialization(loader, making, loader.getBeans().values());
+            this.finishBeanInitialization(making, loader.getBeans().values());
 
             // 最后还有一些静态属性注入.
-            this.finishBeanInitialization(loader, making, loader.getStaticComponents());
+            this.finishBeanInitialization(making, loader.getStaticComponents());
         }
 
         // 完成分析Bean的功能用途
         this.finishBeanAnalysis(loader);
-
-        IocHolder.setIoc(this);
     }
 
     /**
@@ -76,15 +73,15 @@ public class NoarkIoc implements Ioc {
         // 事件管理类中的事件监听扩展处理并排序
         EventMethodManager.getInstance().listenerExtend().sort();
         // 对自定义的注解进行排序.
-        customMethods.values().forEach(v -> v.sort((m1, m2) -> Integer.compare(m1.getOrder(), m2.getOrder())));
+        customMethods.values().forEach(v -> v.sort(Comparator.comparingInt(MethodWrapper::getOrder)));
 
-        this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(DefaultBeanDefinition::getBeanClass, v -> v.getSingle())));
+        this.singletons.putAll(loader.getBeans().values().stream().collect(Collectors.toMap(DefaultBeanDefinition::getBeanClass, DefaultBeanDefinition::getSingle)));
     }
 
     /**
      * 初始化和依赖注入的关系
      */
-    private void finishBeanInitialization(IocLoader loader, IocMaking making, Collection<? extends BeanDefinition> beans) {
+    private void finishBeanInitialization(IocMaking making, Collection<? extends BeanDefinition> beans) {
         beans.forEach(bean -> bean.injection(making));
     }
 
@@ -99,19 +96,7 @@ public class NoarkIoc implements Ioc {
      * @param klass 注解类
      */
     public void invokeCustomAnnotationMethod(Class<? extends Annotation> klass) {
-        customMethods.getOrDefault(klass, Collections.emptyList()).forEach(v -> v.invoke());
-    }
-
-    /**
-     * 查找所有实现类.
-     *
-     * @param <T>   要查找的类型
-     * @param klass 接口
-     * @return 实现类集合
-     */
-    @SuppressWarnings("unchecked")
-    public <T> List<T> findImpl(final Class<T> klass) {
-        return (List<T>) singletons.values().stream().filter(v -> klass.isInstance(v)).collect(Collectors.toList());
+        customMethods.getOrDefault(klass, Collections.emptyList()).forEach(MethodWrapper::invoke);
     }
 
     /**

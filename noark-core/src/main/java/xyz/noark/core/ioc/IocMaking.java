@@ -31,7 +31,7 @@ public class IocMaking implements AutoCloseable {
     /**
      * 缓存接口的实现类
      */
-    private Map<Class<?>, List<DefaultBeanDefinition>> interfaceImplCache = new HashMap<>();
+    private final Map<Class<?>, List<DefaultBeanDefinition>> interfaceImplCache = new HashMap<>();
 
     IocMaking(IocLoader loader) {
         this.loader = loader;
@@ -40,13 +40,13 @@ public class IocMaking implements AutoCloseable {
     public IocLoader getLoader() {
         return loader;
     }
+    
+    public List<DefaultBeanDefinition> findAllImpl(Class<?> interfaceClass) {
+        return interfaceImplCache.computeIfAbsent(interfaceClass, loader::findImpl);
+    }
 
     @Override
     public void close() {
         interfaceImplCache.clear();
-    }
-
-    public List<DefaultBeanDefinition> findAllImpl(Class<?> interfaceClass) {
-        return interfaceImplCache.computeIfAbsent(interfaceClass, key -> loader.findImpl(key));
     }
 }

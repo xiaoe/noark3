@@ -65,8 +65,8 @@ public class ResourceScanning {
     /**
      * 扫描指定目标下所有资源文件.
      *
-     * @param packages 扫描的包名
-     * @param callback 扫描到资源后的回调接口
+     * @param packagePath 扫描的包名
+     * @param callback    扫描到资源后的回调接口
      */
     private static void scanPackage(String packagePath, ResourceCallback callback) {
         // 处理一下包名到目录
@@ -148,7 +148,7 @@ public class ResourceScanning {
         }
 
         // 如果这是一个目录，继续向下找
-        else if (file.isDirectory()) {
+        if (file.isDirectory()) {
             findDir(packagePath, file, callback);
         }
 
