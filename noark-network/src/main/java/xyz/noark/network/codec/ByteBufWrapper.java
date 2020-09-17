@@ -26,16 +26,24 @@ import xyz.noark.core.lang.ByteArray;
  */
 public class ByteBufWrapper implements ByteArray {
     private final ByteBuf byteBuf;
+    private final int length;
+    private final int readerIndex;
+
+    /**
+     * 从ByteBuf读出来的Byte数组，仅仅用于缓存一下，以防多次调用xyz.noark.network.codec.ByteBufWrapper#array
+     */
     private byte[] array = null;
 
     public ByteBufWrapper(ByteBuf byteBuf) {
         this.byteBuf = byteBuf;
+        this.length = byteBuf.readableBytes();
+        this.readerIndex = byteBuf.readerIndex();
     }
 
     @Override
     public byte[] array() {
         if (array == null) {
-            array = new byte[byteBuf.readableBytes()];
+            array = new byte[length];
             byteBuf.readBytes(array);
         }
         return array;
@@ -43,23 +51,24 @@ public class ByteBufWrapper implements ByteArray {
 
     @Override
     public void close() {
-        byteBuf.release();// 拿出一个带引用的ByteBuf，这里--
+        // 拿出一个带引用的ByteBuf，这里--
+        byteBuf.release();
     }
 
     @Override
     public int length() {
-        return array == null ? byteBuf.readableBytes() : array.length;
+        return length;
     }
 
     @Override
     public byte getByte(int index) {
-        return array == null ? byteBuf.getByte(index) : array[index];
+        return array == null ? byteBuf.getByte(readerIndex + index) : array[index];
     }
 
     @Override
     public void setByte(int index, byte value) {
         if (array == null) {
-            byteBuf.setByte(index, value);
+            byteBuf.setByte(readerIndex + index, value);
         } else {
             array[index] = value;
         }
