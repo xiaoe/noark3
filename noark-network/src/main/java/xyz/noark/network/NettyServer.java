@@ -89,11 +89,7 @@ public class NettyServer implements TcpServer {
      * EPOLL模型是否激活
      */
     @Value(NetworkConstant.EPOLL_ACTIVE)
-    protected boolean epollActive = false;
-    @Autowired
-    protected InitializeHandlerManager initializeHandlerManager;
-    @Autowired
-    protected NettyServerHandler nettyServerHandler;
+    protected boolean epollActive = true;
     /**
      * Netty低水位，默认值32K
      */
@@ -105,9 +101,15 @@ public class NettyServer implements TcpServer {
     @Value(NetworkConstant.HIGH_WATER_MARK)
     private int defaultHighWaterMark = 64 * 1024;
 
+    @Autowired
+    protected NettyServerHandler nettyServerHandler;
+    @Autowired
+    protected InitializeHandlerManager initializeHandlerManager;
+
+
     public NettyServer() {
         this.bootstrap = new ServerBootstrap();
-        
+
         final int nThreads = workThreads <= 0 ? NetworkConstant.DEFAULT_EVENT_LOOP_THREADS : workThreads;
         if (epollActive && Epoll.isAvailable()) {
             this.bossGroup = new EpollEventLoopGroup(1);
