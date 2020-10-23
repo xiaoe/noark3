@@ -19,6 +19,9 @@ import xyz.noark.core.thread.NamedThreadFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import static xyz.noark.log.LogHelper.logger;
 
 /**
  * 监控服务管理器.
@@ -28,6 +31,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  */
 public class MonitorManager implements MonitorThreadPool {
     private static final int POOL_SIZE = 1;
+    private static final int SHUTDOWN_MAX_TIME = 5;
     private final ScheduledExecutorService scheduledExecutor;
 
     public MonitorManager() {
@@ -39,7 +43,30 @@ public class MonitorManager implements MonitorThreadPool {
         return scheduledExecutor;
     }
 
-    public void addMonitorService(AbstractMonitorService abstractMonitorService) {
-        scheduledExecutor.scheduleWithFixedDelay(abstractMonitorService, abstractMonitorService.getInitialDelay(), abstractMonitorService.getDelay(), abstractMonitorService.getUnit());
+    /**
+     * 添加控制服务
+     *
+     * @param monitorService 控制服务
+     */
+    public void addMonitorService(AbstractMonitorService monitorService) {
+        scheduledExecutor.scheduleWithFixedDelay(monitorService, monitorService.getInitialDelay(), monitorService.getDelay(), monitorService.getUnit());
+    }
+
+    /**
+     * 添加一个停止方法，用于游戏服务器安全停服
+     */
+    public void shutdown() {
+        logger.info("开始通知监控服务线程池停止服务.");
+        scheduledExecutor.shutdown();
+        try {
+            if (!scheduledExecutor.awaitTermination(SHUTDOWN_MAX_TIME, TimeUnit.SECONDS)) {
+                scheduledExecutor.shutdownNow();
+            }
+            logger.info("处理监控服务线程池已停止服务");
+        } catch (InterruptedException ie) {
+            logger.error("停止监控服务线程时发生异常.", ie);
+            scheduledExecutor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }
