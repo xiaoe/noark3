@@ -46,9 +46,9 @@ public class DefaultBeanDefinition implements BeanDefinition {
     private static final Set<Class<?>> IGNORE_ANNOTATION_BY_METHODS = new HashSet<>();
 
     static {
-        IGNORE_ANNOTATION_BY_METHODS.add(Override.class);
+      //  IGNORE_ANNOTATION_BY_METHODS.add(Override.class);
         IGNORE_ANNOTATION_BY_METHODS.add(Deprecated.class);
-        IGNORE_ANNOTATION_BY_METHODS.add(SuppressWarnings.class);
+     //   IGNORE_ANNOTATION_BY_METHODS.add(SuppressWarnings.class);
     }
 
     /**
@@ -156,7 +156,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
             // 没有注解的忽略掉
             if (annotations != null && annotations.length > 0) {
                 // 如果有重名方法，需要警告提示修正
-                if (methodNames.add(method.getName())) {
+                if (!methodNames.contains(method.getName())) {
                     for (Annotation annotation : annotations) {
                         final Class<? extends Annotation> annotationType = annotation.annotationType();
                         // 忽略一些系统警告类的注解
@@ -165,6 +165,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
                         }
 
                         this.analysisMethodByAnnotation(annotationType, annotation, method);
+                       methodNames.add(method.getName());
                     }
                 }
                 // 如果不是Controller里的方法可不管重复提示...
