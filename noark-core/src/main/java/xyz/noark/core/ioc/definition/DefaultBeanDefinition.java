@@ -26,9 +26,7 @@ import xyz.noark.core.ioc.definition.field.MapFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ValueFieldDefinition;
 import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
 import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
-import xyz.noark.core.util.ClassUtils;
-import xyz.noark.core.util.FieldUtils;
-import xyz.noark.core.util.MethodUtils;
+import xyz.noark.core.util.*;
 import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.annotation.Annotation;
@@ -46,9 +44,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
     private static final Set<Class<?>> IGNORE_ANNOTATION_BY_METHODS = new HashSet<>();
 
     static {
-      //  IGNORE_ANNOTATION_BY_METHODS.add(Override.class);
         IGNORE_ANNOTATION_BY_METHODS.add(Deprecated.class);
-     //   IGNORE_ANNOTATION_BY_METHODS.add(SuppressWarnings.class);
     }
 
     /**
@@ -150,29 +146,26 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     private void analysisMethod() {
         List<Method> methods = MethodUtils.getAllMethod(beanClass);
-        final HashSet<String> methodNames = new HashSet<>(methods.size());
+        final HashSet<String> methodNameSet = CollectionUtils.newHashSet(methods.size());
+
         for (Method method : methods) {
             Annotation[] annotations = method.getAnnotations();
             // 没有注解的忽略掉
-            if (annotations != null && annotations.length > 0) {
-                // 如果有重名方法，需要警告提示修正
-                if (!methodNames.contains(method.getName())) {
-                    for (Annotation annotation : annotations) {
-                        final Class<? extends Annotation> annotationType = annotation.annotationType();
-                        // 忽略一些系统警告类的注解
-                        if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
-                            continue;
-                        }
-
-                        this.analysisMethodByAnnotation(annotationType, annotation, method);
-                       methodNames.add(method.getName());
+            if (ArrayUtils.isNotEmpty(annotations)) {
+                for (Annotation annotation : annotations) {
+                    final Class<? extends Annotation> annotationType = annotation.annotationType();
+                    // 忽略一些系统警告类的注解
+                    if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
+                        continue;
                     }
+                    this.analysisMethodByAnnotation(annotationType, annotation, method);
                 }
-                // 如果不是Controller里的方法可不管重复提示...
-                // 由于底层使用的ASM，重名方法在调用时会有问题，所以直接约定我们的控制Bean中绝不允许重名
-                else if (this instanceof ControllerBeanDefinition) {
-                    throw new ServerBootstrapException("重名方法 class=" + beanClass.getName() + ", method=" + method.getName());
-                }
+            }
+
+            // 如果不是Controller里的方法可不管重复提示...
+            // 由于底层使用的ASM，重名方法在调用时会有问题，所以直接约定我们的控制Bean中绝不允许重名
+            if (this instanceof ControllerBeanDefinition && !methodNameSet.add(method.getName())) {
+                throw new ServerBootstrapException("重名方法 class=" + beanClass.getName() + ", method=" + method.getName());
             }
         }
     }
