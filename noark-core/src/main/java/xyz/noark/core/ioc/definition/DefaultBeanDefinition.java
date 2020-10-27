@@ -13,26 +13,37 @@
  */
 package xyz.noark.core.ioc.definition;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Value;
-import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.exception.UnrealizedException;
-import xyz.noark.core.ioc.*;
+import xyz.noark.core.ioc.BeanDefinition;
+import xyz.noark.core.ioc.FieldDefinition;
+import xyz.noark.core.ioc.IocMaking;
+import xyz.noark.core.ioc.MethodDefinition;
+import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.ioc.definition.field.DefaultFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ListFieldDefinition;
 import xyz.noark.core.ioc.definition.field.MapFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ValueFieldDefinition;
 import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
 import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
-import xyz.noark.core.util.*;
+import xyz.noark.core.util.ArrayUtils;
+import xyz.noark.core.util.ClassUtils;
+import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.MethodUtils;
 import xyz.noark.reflectasm.MethodAccess;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * 默认的Bean定义描述类.
@@ -146,13 +157,10 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     private void analysisMethod() {
         List<Method> methods = MethodUtils.getAllMethod(beanClass);
-        final HashSet<String> methodNameSet = CollectionUtils.newHashSet(methods.size());
-
         for (Method method : methods) {
             Annotation[] annotations = method.getAnnotations();
             // 没有注解的忽略掉
             if (ArrayUtils.isNotEmpty(annotations)) {
-            	if(!methodNameSet.contains(method.getName())) {
             		 for (Annotation annotation : annotations) {
                          final Class<? extends Annotation> annotationType = annotation.annotationType();
                          // 忽略一些系统警告类的注解
@@ -160,14 +168,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
                              continue;
                          }
                          this.analysisMethodByAnnotation(annotationType, annotation, method);
-                         methodNameSet.add(method.getName());
                      }
-            	}else {
-            		//  // 如果不是Controller里的方法可不管重复提示...
-            		if(!(this instanceof ControllerBeanDefinition)) {
-            			  throw new ServerBootstrapException("重名方法 class=" + beanClass.getName() + ", method=" + method.getName());
-            		}
-            	}
             }
         }
     }
