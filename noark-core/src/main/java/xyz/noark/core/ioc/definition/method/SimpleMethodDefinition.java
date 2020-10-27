@@ -44,7 +44,7 @@ public class SimpleMethodDefinition implements MethodDefinition {
 
     @Override
     public int getMethodIndex() {
-        return methodAccess.getIndex(method.getName());
+        return methodAccess.getIndex(method.getName(), method.getParameterTypes());
     }
 
     @Override
