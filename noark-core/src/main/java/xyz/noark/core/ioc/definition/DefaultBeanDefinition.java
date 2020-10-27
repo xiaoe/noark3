@@ -152,20 +152,22 @@ public class DefaultBeanDefinition implements BeanDefinition {
             Annotation[] annotations = method.getAnnotations();
             // 没有注解的忽略掉
             if (ArrayUtils.isNotEmpty(annotations)) {
-                for (Annotation annotation : annotations) {
-                    final Class<? extends Annotation> annotationType = annotation.annotationType();
-                    // 忽略一些系统警告类的注解
-                    if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
-                        continue;
-                    }
-                    this.analysisMethodByAnnotation(annotationType, annotation, method);
-                }
-            }
-
-            // 如果不是Controller里的方法可不管重复提示...
-            // 由于底层使用的ASM，重名方法在调用时会有问题，所以直接约定我们的控制Bean中绝不允许重名
-            if (this instanceof ControllerBeanDefinition && !methodNameSet.add(method.getName())) {
-                throw new ServerBootstrapException("重名方法 class=" + beanClass.getName() + ", method=" + method.getName());
+            	if(!methodNameSet.contains(method.getName())) {
+            		 for (Annotation annotation : annotations) {
+                         final Class<? extends Annotation> annotationType = annotation.annotationType();
+                         // 忽略一些系统警告类的注解
+                         if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
+                             continue;
+                         }
+                         this.analysisMethodByAnnotation(annotationType, annotation, method);
+                         methodNameSet.add(method.getName());
+                     }
+            	}else {
+            		//  // 如果不是Controller里的方法可不管重复提示...
+            		if(!(this instanceof ControllerBeanDefinition)) {
+            			  throw new ServerBootstrapException("重名方法 class=" + beanClass.getName() + ", method=" + method.getName());
+            		}
+            	}
             }
         }
     }
