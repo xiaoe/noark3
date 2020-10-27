@@ -61,7 +61,7 @@ public class MapUtils {
      * @param size 要存放数量
      * @return 初始化容量
      */
-    private static int calculateInitialCapacity(int size) {
+    static int calculateInitialCapacity(int size) {
         // see java.util.HashMap.putMapEntries
         // float ft = ((float)s / loadFactor) + 1.0F;
         return (int) (size / 0.75F + 1.0F);

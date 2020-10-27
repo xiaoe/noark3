@@ -27,6 +27,19 @@ import java.util.stream.Collectors;
  * @since 3.2
  */
 public class CollectionUtils {
+
+    /**
+     * 创建一个将要存放Size个V的HashSet.
+     * <p>初始化容量=(需要存储个数 / 负载因子) + 1</p>
+     *
+     * @param size 需要存储个数
+     * @param <V>  存储Value类型
+     * @return 返回一个已计算好存储容量的HashSet
+     */
+    public static <V> HashSet<V> newHashSet(int size) {
+        return new HashSet<>(MapUtils.calculateInitialCapacity(size));
+    }
+
     /**
      * 检测集合是否为{@code null}或长度为0
      *
