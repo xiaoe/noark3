@@ -52,11 +52,43 @@ public class DateUtils {
      * @return 如果是同一天返回true, 否则返回false
      */
     public static boolean isSameDay(final Date date1, final Date date2) {
+        return isSameDay(date1, date2, 0);
+    }
+
+    /**
+     * 判断两个日期时间是否是同一天，带小时偏移值
+     * <p>
+     * 例如：需要在次日的5点刷新，offset传值为5
+     * <p/>
+     *
+     * @param date1  第一个日期
+     * @param date2  第二个日期
+     * @param offset 小时偏移值
+     * @return 如果是同一天返回true, 否则返回false
+     */
+    public static boolean isSameDay(final Date date1, final Date date2, final int offset) {
         final Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
         final Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
-        return isSameDay(cal1, cal2);
+        if (!isSameDay(cal1, cal2)) {
+            Calendar minCal = cal1;
+            Date max = date2;
+            if (date1.after(date2)) {
+                minCal = cal2;
+                max = date1;
+            }
+            minCal.add(Calendar.DAY_OF_YEAR, 1);
+            minCal.set(Calendar.HOUR_OF_DAY, offset);
+            minCal.set(Calendar.MINUTE, 0);
+            minCal.set(Calendar.SECOND, 0);
+            minCal.set(Calendar.MILLISECOND, 0);
+            if (offset == 0 && isSameDay(minCal.getTime(), max)) {
+                return false;
+            }
+            return !minCal.getTime().before(max);
+        }
+        return true;
     }
 
     /**

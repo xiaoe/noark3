@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -108,5 +109,40 @@ public class DateUtilsTest {
         Date d1 = sdf.parse("2019-12-30 00:00:00:000");
         Date d2 = sdf.parse("2020-01-01 00:00:00:000");
         assertTrue(DateUtils.isSameWeek(d1, d2));
+    }
+
+    @Test
+    public void testIsSameDay() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        {
+            Date d1 = sdf.parse("2019-12-31 00:00:00:000");
+            Date d2 = sdf.parse("2019-12-30 23:59:58:999");
+            assertFalse(DateUtils.isSameDay(d2, d1));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-31 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-31 23:59:59:999");
+            assertTrue(DateUtils.isSameDay(d2, d1));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-30 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-31 23:59:59:999");
+            assertFalse(DateUtils.isSameDay(d2, d1));
+        }
+        {
+            Date d1 = sdf.parse("2019-12-31 00:00:00:000");
+            Date d2 = sdf.parse("2018-10-31 23:59:59:999");
+            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-20 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-21 06:00:00:000");
+            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-20 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-21 04:00:00:000");
+            assertTrue(DateUtils.isSameDay(d2, d1, 5));
+        }
     }
 }
