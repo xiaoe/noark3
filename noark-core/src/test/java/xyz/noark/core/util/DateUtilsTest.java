@@ -4,7 +4,11 @@
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
  *
+<<<<<<< Updated upstream
  *        http://www.noark.xyz/LICENSE
+=======
+ * 		http://www.noark.xyz/LICENSE
+>>>>>>> Stashed changes
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -20,12 +24,20 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 
+<<<<<<< Updated upstream
+=======
+import static org.junit.Assert.assertFalse;
+>>>>>>> Stashed changes
 import static org.junit.Assert.assertTrue;
 
 /**
  * 时间工具类测试用例.
  *
+<<<<<<< Updated upstream
  * @author 小流氓[176543888@qq.com]
+=======
+ * @author 小流氓(176543888 @ qq.com)
+>>>>>>> Stashed changes
  * @since 3.2.4
  */
 public class DateUtilsTest {
@@ -88,6 +100,7 @@ public class DateUtilsTest {
     }
 
     @Test
+<<<<<<< Updated upstream
     public void testToSecondsByStartOfDay() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
         Date d1 = sdf.parse("2019-02-14 00:00:00:000");
@@ -108,5 +121,54 @@ public class DateUtilsTest {
         Date d1 = sdf.parse("2019-12-30 00:00:00:000");
         Date d2 = sdf.parse("2020-01-01 00:00:00:000");
         assertTrue(DateUtils.isSameWeek(d1, d2));
+=======
+    public void testIsSameDay() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        {
+            Date d1 = sdf.parse("2019-12-31 00:00:00:000");
+            Date d2 = sdf.parse("2019-12-30 23:59:58:999");
+            assertFalse(DateUtils.isSameDay(d2, d1));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-31 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-31 23:59:59:999");
+            assertTrue(DateUtils.isSameDay(d2, d1));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-30 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-31 23:59:59:999");
+            assertFalse(DateUtils.isSameDay(d2, d1));
+        }
+        {
+            Date d1 = sdf.parse("2019-12-31 00:00:00:000");
+            Date d2 = sdf.parse("2018-10-31 23:59:59:999");
+            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-20 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-21 06:00:00:000");
+            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+        }
+        {
+            Date d1 = sdf.parse("2018-12-20 00:00:00:000");
+            Date d2 = sdf.parse("2018-12-21 04:00:00:000");
+            assertTrue(DateUtils.isSameDay(d2, d1, 5));
+        }
+    }
+
+    @Test
+    public void testToSecondsByStartOfDay() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        Date d1 = sdf.parse("2019-02-14 00:00:00:000");
+        assertTrue(DateUtils.toSeconds(d1) == DateUtils.toSecondsByStartOfDay(LocalDate.of(2019, 02, 14)));
+    }
+
+    @Test
+    public void testGetStartOfDay() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        Date d1 = sdf.parse("2019-02-14 00:00:00:000");
+        Date d2 = sdf.parse("2019-02-14 01:02:03:004");
+        assertTrue(DateUtils.getStartOfDay(d1).equals(DateUtils.getStartOfDay(d2)));
+>>>>>>> Stashed changes
     }
 }
