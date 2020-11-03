@@ -4,11 +4,7 @@
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
  *
-<<<<<<< Updated upstream
  *        http://www.noark.xyz/LICENSE
-=======
- * 		http://www.noark.xyz/LICENSE
->>>>>>> Stashed changes
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -18,11 +14,8 @@
 package xyz.noark.core.util;
 
 import java.time.*;
-<<<<<<< Updated upstream
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-=======
->>>>>>> Stashed changes
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -30,11 +23,7 @@ import java.util.TimeZone;
 /**
  * 时间相关操作工具类.
  *
-<<<<<<< Updated upstream
  * @author 小流氓[176543888@qq.com]
-=======
- * @author 小流氓(176543888 @ qq.com)
->>>>>>> Stashed changes
  * @since 3.0
  */
 public class DateUtils {
@@ -63,50 +52,11 @@ public class DateUtils {
      * @return 如果是同一天返回true, 否则返回false
      */
     public static boolean isSameDay(final Date date1, final Date date2) {
-<<<<<<< Updated upstream
-=======
-        return isSameDay(date1, date2, 0);
-    }
-
-    /**
-     * 判断两个日期时间是否是同一天，带小时偏移值
-     * <p>
-     * 例如：需要在次日的5点刷新，offset传值为5
-     * <p/>
-     *
-     * @param date1  第一个日期
-     * @param date2  第二个日期
-     * @param offset 小时偏移值
-     * @return 如果是同一天返回true, 否则返回false
-     */
-    public static boolean isSameDay(final Date date1, final Date date2, final int offset) {
->>>>>>> Stashed changes
         final Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
         final Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
-<<<<<<< Updated upstream
         return isSameDay(cal1, cal2);
-=======
-        if (!isSameDay(cal1, cal2)) {
-            Calendar minCal = cal1;
-            Date max = date2;
-            if (date1.after(date2)) {
-                minCal = cal2;
-                max = date1;
-            }
-            minCal.add(Calendar.DAY_OF_YEAR, 1);
-            minCal.set(Calendar.HOUR_OF_DAY, offset);
-            minCal.set(Calendar.MINUTE, 0);
-            minCal.set(Calendar.SECOND, 0);
-            minCal.set(Calendar.MILLISECOND, 0);
-            if (offset == 0 && isSameDay(minCal.getTime(), max)) {
-                return false;
-            }
-            return !minCal.getTime().before(max);
-        }
-        return true;
->>>>>>> Stashed changes
     }
 
     /**
@@ -128,7 +78,6 @@ public class DateUtils {
     }
 
     /**
-<<<<<<< Updated upstream
      * 判断两个日期时间是否是同周.
      * <p>
      * WeekFields.ISO代表每周从周一开始算。(默认)<br>
@@ -166,16 +115,12 @@ public class DateUtils {
      * WeekFields.ISO代表每周从周一开始算。(默认)<br>
      * WeekFields.SUNDAY_START代表每周从周日开始算。
      * </p>
-=======
-     * 判断两个日期时间是否是同周
->>>>>>> Stashed changes
      *
      * @param date1 第一个日期
      * @param date2 第二个日期
      * @return 如果是同周返回true, 否则返回false
      */
     public static boolean isSameWeek(final Date date1, final Date date2) {
-<<<<<<< Updated upstream
         return isSameWeek(DateUtils.toLocalDate(date1), DateUtils.toLocalDate(date2));
     }
 
@@ -193,24 +138,6 @@ public class DateUtils {
      */
     public static boolean isSameWeek(final Date date1, final Date date2, WeekFields weekFields) {
         return isSameWeek(DateUtils.toLocalDate(date1), DateUtils.toLocalDate(date2), weekFields);
-=======
-        final Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(date1);
-        final Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(date2);
-        return isSameWeek(cal1, cal2);
-    }
-
-    /**
-     * 判定两个日期是否为同周
-     *
-     * @param cal1 第一个日期
-     * @param cal2 第二个日期
-     * @return 如果是同周返回true, 否则返回false
-     */
-    public static boolean isSameWeek(Calendar cal1, Calendar cal2) {
-        return cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR);
->>>>>>> Stashed changes
     }
 
     /**
@@ -349,14 +276,11 @@ public class DateUtils {
      * @throws IllegalArgumentException if the date is null
      */
     private static Date add(final Date date, final int calendarField, final int amount) {
-<<<<<<< Updated upstream
         // 如果加上0的话，那就是不变，不要再计算啦
         if (amount == 0) {
             return date;
         }
 
-=======
->>>>>>> Stashed changes
         final Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(calendarField, amount);
@@ -428,7 +352,6 @@ public class DateUtils {
     }
 
     /**
-<<<<<<< Updated upstream
      * Date对象转化为LocalDate对象。
      * <p>
      * 时间会丢掉了哈，要注意，转过去就回不来了
@@ -441,8 +364,6 @@ public class DateUtils {
     }
 
     /**
-=======
->>>>>>> Stashed changes
      * Date对象转化为LocalTime对象
      *
      * @param date Date对象
@@ -453,7 +374,6 @@ public class DateUtils {
     }
 
     /**
-<<<<<<< Updated upstream
      * LocalDateTime对象转回Date对象.
      *
      * @param localDateTime LocalDateTime对象
@@ -464,8 +384,6 @@ public class DateUtils {
     }
 
     /**
-=======
->>>>>>> Stashed changes
      * 计算两个Date对象之间相差多少秒.
      *
      * @param date1 时间一
@@ -520,7 +438,6 @@ public class DateUtils {
     }
 
     /**
-<<<<<<< Updated upstream
      * 把纳秒转化为毫秒显示（保留小数点后面两位）
      *
      * @param nanoTime 纳秒
@@ -532,8 +449,6 @@ public class DateUtils {
     }
 
     /**
-=======
->>>>>>> Stashed changes
      * 获取指定日期的星期几属性，返回枚举结果{@code DayOfWeek}
      *
      * @param date 指定日期
