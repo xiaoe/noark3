@@ -59,7 +59,7 @@ public class DateUtils {
      * 判断两个日期时间是否是同一天，带小时偏移值
      * <p>
      * 例如：需要在次日的5点刷新，offset传值为5
-     * <p/>
+     * </p>
      *
      * @param date1  第一个日期
      * @param date2  第二个日期
