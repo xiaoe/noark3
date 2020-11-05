@@ -69,26 +69,13 @@ public class DateUtils {
     public static boolean isSameDay(final Date date1, final Date date2, final int offset) {
         final Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
+        cal1.add(Calendar.HOUR_OF_DAY, -offset);
+
         final Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
-        if (!isSameDay(cal1, cal2)) {
-            Calendar minCal = cal1;
-            Date max = date2;
-            if (date1.after(date2)) {
-                minCal = cal2;
-                max = date1;
-            }
-            minCal.add(Calendar.DAY_OF_YEAR, 1);
-            minCal.set(Calendar.HOUR_OF_DAY, offset);
-            minCal.set(Calendar.MINUTE, 0);
-            minCal.set(Calendar.SECOND, 0);
-            minCal.set(Calendar.MILLISECOND, 0);
-            if (offset == 0 && isSameDay(minCal.getTime(), max)) {
-                return false;
-            }
-            return !minCal.getTime().before(max);
-        }
-        return true;
+        cal2.add(Calendar.HOUR_OF_DAY, -offset);
+
+        return isSameDay(cal1, cal2);
     }
 
     /**
