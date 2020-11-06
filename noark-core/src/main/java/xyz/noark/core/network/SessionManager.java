@@ -66,7 +66,7 @@ public class SessionManager {
             for (Serializable playerId : playerIds) {
                 Session session = PLAYER_ID_2_SESSION.get(playerId);
                 if (session == null) {
-                    logger.debug("未找到Session，无法发送, playerId={}", playerId);
+                    logger.debug("未找到Session，无法发送, playerId={}, opcode={}", playerId, opcode);
                 } else {
                     session.send(packet);
                 }
