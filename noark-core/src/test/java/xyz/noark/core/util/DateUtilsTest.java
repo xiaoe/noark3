@@ -131,33 +131,33 @@ public class DateUtilsTest {
         {
             Date d1 = sdf.parse("2019-12-31 00:00:00:000");
             Date d2 = sdf.parse("2018-10-31 23:59:59:999");
-            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+            assertFalse(DateUtils.isSameDay(d2, d1, 5 * 3600));
         }
         {
             Date d1 = sdf.parse("2018-12-20 00:00:00:000");
             Date d2 = sdf.parse("2018-12-21 06:00:00:000");
-            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+            assertFalse(DateUtils.isSameDay(d2, d1, 5 * 3600));
         }
         {
             Date d1 = sdf.parse("2018-12-20 00:00:00:000");
             Date d2 = sdf.parse("2018-12-21 04:00:00:000");
-            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+            assertFalse(DateUtils.isSameDay(d2, d1, 5 * 3600));
         }
 
         {
             Date d1 = sdf.parse("2018-12-20 05:00:00:000");
             Date d2 = sdf.parse("2018-12-21 04:00:00:000");
-            assertTrue(DateUtils.isSameDay(d2, d1, 5));
+            assertTrue(DateUtils.isSameDay(d2, d1, 5 * 3600));
         }
         {
             Date d1 = sdf.parse("2018-12-20 05:00:00:000");
             Date d2 = sdf.parse("2018-12-20 23:00:00:000");
-            assertTrue(DateUtils.isSameDay(d2, d1, 5));
+            assertTrue(DateUtils.isSameDay(d2, d1, 5 * 3600));
         }
         {
             Date d1 = sdf.parse("2018-12-20 05:00:00:000");
             Date d2 = sdf.parse("2018-12-21 05:00:00:001");
-            assertFalse(DateUtils.isSameDay(d2, d1, 5));
+            assertFalse(DateUtils.isSameDay(d2, d1, 5 * 3600));
         }
     }
 }
