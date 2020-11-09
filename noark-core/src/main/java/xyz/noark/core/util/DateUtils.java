@@ -56,24 +56,24 @@ public class DateUtils {
     }
 
     /**
-     * 判断两个日期时间是否是同一天，带小时偏移值
+     * 判断两个日期时间是否是同一天，带秒钟偏移值
      * <p>
-     * 例如：需要在次日的5点刷新，offset传值为5
+     * 例如：需要在次日的5点刷新，offset传值为 5*3600 = 18000
      * </p>
      *
      * @param date1  第一个日期
      * @param date2  第二个日期
-     * @param offset 小时偏移值
+     * @param offset 秒钟偏移值
      * @return 如果是同一天返回true, 否则返回false
      */
     public static boolean isSameDay(final Date date1, final Date date2, final int offset) {
         final Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
-        cal1.add(Calendar.HOUR_OF_DAY, -offset);
+        cal1.add(Calendar.SECOND, -offset);
 
         final Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
-        cal2.add(Calendar.HOUR_OF_DAY, -offset);
+        cal2.add(Calendar.SECOND, -offset);
 
         return isSameDay(cal1, cal2);
     }
