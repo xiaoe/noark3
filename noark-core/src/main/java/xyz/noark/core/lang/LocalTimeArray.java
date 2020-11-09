@@ -15,6 +15,7 @@ package xyz.noark.core.lang;
 
 import xyz.noark.core.util.DateUtils;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -65,6 +66,30 @@ public class LocalTimeArray {
      * @return 下次触发时间
      */
     public Date doNext(LocalTime now) {
+        return doNext(null, now);
+    }
+
+    /**
+     * 以当前时间算，计算出指定开始日期后第一次触发时间
+     *
+     * @param start 指定开始日期
+     * @return 下次触发时间
+     */
+    public Date doNext(LocalDate start) {
+        return doNext(start, LocalTime.now());
+    }
+
+    /**
+     * 以指定时间算，计算出下次触发时间
+     *
+     * @param start 指定开始日期
+     * @param now   指定时间
+     * @return 下次触发时间
+     */
+    public Date doNext(LocalDate start, LocalTime now) {
+        // 有指定开始日期且在今天之后
+        boolean flag = start != null && start.isAfter(LocalDate.now());
+
         // 计算出来最小的那个时间
         int minSecond = MAX_SECOND_BY_DAY;
         int nextSecond = MAX_SECOND_BY_DAY;
@@ -72,7 +97,8 @@ public class LocalTimeArray {
         for (LocalTime time : array) {
             int targetSecond = time.toSecondOfDay();
             minSecond = Math.min(minSecond, targetSecond);
-            if (targetSecond > todaySecond) {
+
+            if (!flag && targetSecond > todaySecond) {
                 nextSecond = Math.min(nextSecond, targetSecond - todaySecond);
             }
         }
@@ -83,6 +109,14 @@ public class LocalTimeArray {
         }
 
         Calendar calendar = Calendar.getInstance();
+
+        // 对日期有要求的
+        if (flag) {
+            calendar.set(Calendar.YEAR, start.getYear());
+            calendar.set(Calendar.MONTH, start.getMonthValue() - 1);
+            calendar.set(Calendar.DAY_OF_MONTH, start.getDayOfMonth() - 1);
+        }
+
         calendar.set(Calendar.HOUR_OF_DAY, now.getHour());
         calendar.set(Calendar.MINUTE, now.getMinute());
         calendar.set(Calendar.SECOND, now.getSecond());

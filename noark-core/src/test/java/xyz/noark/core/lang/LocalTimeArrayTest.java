@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * LocalTime数组测试用例
@@ -48,15 +48,20 @@ public class LocalTimeArrayTest {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         {// 假如当前是0点，应该返回是明天早上0点
             LocalTime now = LocalTime.of(0, 0, 0);
-            assertTrue(sdf.format(DateUtils.addHours(todayStartTime, 8)).equals(sdf.format(array.doNext(now))));
+            assertEquals(sdf.format(DateUtils.addHours(todayStartTime, 8)), sdf.format(array.doNext(now)));
         }
         {// 假如当前是8点，应该是返回12点的时间
             LocalTime now = LocalTime.of(8, 0, 0);
-            assertTrue(sdf.format(DateUtils.addHours(todayStartTime, 12)).equals(sdf.format(array.doNext(now))));
+            assertEquals(sdf.format(DateUtils.addHours(todayStartTime, 12)), sdf.format(array.doNext(now)));
         }
         {// 假如当前是23点，应该返回是明天早上8点
             LocalTime now = LocalTime.of(23, 59, 59);
-            assertTrue(sdf.format(DateUtils.addHours(todayStartTime, 32)).equals(sdf.format(array.doNext(now))));
+            assertEquals(sdf.format(DateUtils.addHours(todayStartTime, 32)), sdf.format(array.doNext(now)));
+        }
+        {// 假如当前是23点，应该返回是明天早上8点
+            LocalTime now = LocalTime.of(23, 59, 59);
+            LocalDate start = LocalDate.of(2020, 1, 1);
+            assertEquals(sdf.format(DateUtils.addHours(todayStartTime, 32)), sdf.format(array.doNext(start, now)));
         }
     }
 
@@ -71,34 +76,34 @@ public class LocalTimeArrayTest {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final Date now = sdf.parse("2019-12-12 12:00:00");
 
-        {// 处罚时间在当前时间之后
+        {// 触发时间在当前时间之后
             final Date lastTriggerTime = sdf.parse("2019-12-13 12:00:00");
-            assertTrue(array.triggerTimes(lastTriggerTime, now) == 0);
+            assertEquals(0, array.triggerTimes(lastTriggerTime, now));
         }
         {
             final Date lastTriggerTime = sdf.parse("2019-12-12 12:00:00");
-            assertTrue(array.triggerTimes(lastTriggerTime, now) == 0);
+            assertEquals(0, array.triggerTimes(lastTriggerTime, now));
         }
         {
             final Date lastTriggerTime = sdf.parse("2019-12-12 11:00:00");
-            assertTrue(array.triggerTimes(lastTriggerTime, now) == 1);
+            assertEquals(1, array.triggerTimes(lastTriggerTime, now));
         }
         {
             final Date lastTriggerTime = sdf.parse("2019-12-12 00:00:00");
-            assertTrue(array.triggerTimes(lastTriggerTime, now) == 2);
+            assertEquals(2, array.triggerTimes(lastTriggerTime, now));
         }
         {
             final Date lastTriggerTime = sdf.parse("2019-12-11 23:59:59");
-            assertTrue(array.triggerTimes(lastTriggerTime, now) == 2);
+            assertEquals(2, array.triggerTimes(lastTriggerTime, now));
         }
 
         {
             final Date lastTriggerTime = sdf.parse("2019-12-10 23:59:59");
-            assertTrue(array.triggerTimes(lastTriggerTime, now) == 5);
+            assertEquals(5, array.triggerTimes(lastTriggerTime, now));
         }
         {
             final Date lastTriggerTime = sdf.parse("2019-12-01 08:00:00");
-            assertTrue(array.triggerTimes(lastTriggerTime, now) == 34);
+            assertEquals(34, array.triggerTimes(lastTriggerTime, now));
         }
     }
 }
