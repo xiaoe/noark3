@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -23,121 +23,149 @@ import xyz.noark.core.annotation.tpl.TplFile;
  */
 @TplFile("Item.tpl")
 public class ItemTemplate {
-	/** 道具编号 */
-	@TplAttr(name = "Id")
-	private String id;
+    /**
+     * 道具编号
+     */
+    @TplAttr(name = "Id")
+    private String id;
 
-	/** 道具名称 */
-	@TplAttr(name = "Name")
-	private String name;
+    /**
+     * 道具名称
+     */
+    @TplAttr(name = "Name")
+    private String name;
 
-	/** 标题 */
-	@TplAttr(name = "Title")
-	private String title;
+    /**
+     * 标题
+     */
+    @TplAttr(name = "Title")
+    private String title;
 
-	/** 品质 */
-	@TplAttr(name = "Quality")
-	private int quality;
+    /**
+     * 品质
+     */
+    @TplAttr(name = "Quality")
+    private int quality;
 
-	/** 道具图标 */
-	@TplAttr(name = "ICON")
-	private String icon;
+    /**
+     * 道具图标
+     */
+    @TplAttr(name = "ICON")
+    private String icon;
 
-	/** 能否直接使用 */
-	@TplAttr(name = "CanUse")
-	private int canUse;
+    /**
+     * 能否直接使用
+     */
+    @TplAttr(name = "CanUse")
+    private int canUse;
 
-	/** 功能类型 */
-	@TplAttr(name = "Func")
-	private int func;
+    /**
+     * 功能类型
+     */
+    @TplAttr(name = "Func")
+    private int func;
 
-	/** 功能参数1 */
-	@TplAttr(name = "Parameter1")
-	private int parameter1;
+    /**
+     * 功能参数1
+     */
+    @TplAttr(name = "Parameter1")
+    private int parameter1;
 
-	/** 功能参数1 */
-	@TplAttr(name = "Parameter2")
-	private int parameter2;
+    /**
+     * 功能参数1
+     */
+    @TplAttr(name = "Parameter2")
+    private int parameter2;
 
-	/** 描述 */
-	@TplAttr(name = "Describe")
-	private String describe;
+    /**
+     * 描述
+     */
+    @TplAttr(name = "Describe")
+    private String describe;
 
-	/** 功能跳转 */
-	@TplAttr(name = "Goto")
-	private String goTo;
+    /**
+     * 功能跳转
+     */
+    @TplAttr(name = "Goto")
+    private String goTo;
 
-	/** 使用等级 */
-	@TplAttr(name = "UseLevel")
-	private int useLevel;
+    /**
+     * 使用等级
+     */
+    @TplAttr(name = "UseLevel")
+    private int useLevel;
 
-	/** 使用次数 */
-	@TplAttr(name = "UseTimes")
-	private int useTimes;
+    /**
+     * 使用次数
+     */
+    @TplAttr(name = "UseTimes")
+    private int useTimes;
 
-	/** 这里只是测试，随便抓两个配置来充一下 */
-	@TplAttr(name = "Name")
-	@TplAttr(name = "UseLevel")
-	private Reward rewards;
+    /**
+     * 这里只是测试，随便抓两个配置来充一下
+     */
+    @TplAttr(name = "Name")
+    @TplAttr(name = "UseLevel")
+    private Reward rewards;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public int getQuality() {
-		return quality;
-	}
+    public int getQuality() {
+        return quality;
+    }
 
-	public String getIcon() {
-		return icon;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public int getCanUse() {
-		return canUse;
-	}
+    public int getCanUse() {
+        return canUse;
+    }
 
-	public int getFunc() {
-		return func;
-	}
+    public int getFunc() {
+        return func;
+    }
 
-	public int getParameter1() {
-		return parameter1;
-	}
+    public int getParameter1() {
+        return parameter1;
+    }
 
-	public int getParameter2() {
-		return parameter2;
-	}
+    public int getParameter2() {
+        return parameter2;
+    }
 
-	public String getDescribe() {
-		return describe;
-	}
+    public String getDescribe() {
+        return describe;
+    }
 
-	public String getGoTo() {
-		return goTo;
-	}
+    public String getGoTo() {
+        return goTo;
+    }
 
-	public int getUseLevel() {
-		return useLevel;
-	}
+    public int getUseLevel() {
+        return useLevel;
+    }
 
-	public int getUseTimes() {
-		return useTimes;
-	}
+    public int getUseTimes() {
+        return useTimes;
+    }
 
-	public Reward getRewards() {
-		return rewards;
-	}
+    public Reward getRewards() {
+        return rewards;
+    }
 
-	@Override
-	public String toString() {
-		return "ItemTemplate [id=" + id + ", useTimes=" + useTimes + "]";
-	}
+    @Override
+    public String toString() {
+        return "ItemTemplate [id=" + id + ", useTimes=" + useTimes + "]";
+    }
 }

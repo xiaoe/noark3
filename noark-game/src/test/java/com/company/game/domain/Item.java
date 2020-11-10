@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,112 +13,112 @@
  */
 package com.company.game.domain;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.concurrent.atomic.LongAdder;
-
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Entity;
 import xyz.noark.core.annotation.orm.Entity.FetchType;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.annotation.orm.Table;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.concurrent.atomic.LongAdder;
+
 /**
  * 道具表.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
  */
 @Entity(fetch = FetchType.START)
 @Table(name = "item")
 public class Item {
 
-	@Id
-	@Column(name = "id")
-	private int id;
+    @Id
+    @Column(name = "id")
+    private int id;
 
-	@Column(name = "template_id", length = 17)
-	private int templateId;
+    @Column(name = "template_id", length = 17)
+    private int templateId;
 
-	@Column(name = "attr", length = 128, defaultValue = "{}")
-	private String attr;
+    @Column(name = "attr", length = 128, defaultValue = "{}")
+    private String attr;
 
-	@Column(name = "read")
-	private boolean read;
+    @Column(name = "read")
+    private boolean read;
 
-	@Column(name = "today_buy", defaultValue = "1", nullable = false, comment = "今天购买次数")
-	private LongAdder todayBuy;
+    @Column(name = "today_buy", defaultValue = "1", nullable = false, comment = "今天购买次数")
+    private LongAdder todayBuy;
 
-	@Column(name = "create_time", nullable = false, comment = "创建时间", defaultValue = "2018-07-06 05:04:03")
-	private Date createTime;
+    @Column(name = "create_time", nullable = false, comment = "创建时间", defaultValue = "2018-07-06 05:04:03")
+    private Date createTime;
 
-	@Column(name = "modify_time", nullable = false, comment = "修改时间", defaultValue = "2018-07-06 05:04:03")
-	private Date modifyTime;
+    @Column(name = "modify_time", nullable = false, comment = "修改时间", defaultValue = "2018-07-06 05:04:03")
+    private Date modifyTime;
 
-	@Column(name = "test_time", nullable = false, comment = "测试时间", defaultValue = "2018-07-06 05:04:03")
-	private Instant testTime;
+    @Column(name = "test_time", nullable = false, comment = "测试时间", defaultValue = "2018-07-06 05:04:03")
+    private Instant testTime;
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getTemplateId() {
-		return templateId;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setTemplateId(int templateId) {
-		this.templateId = templateId;
-	}
+    public int getTemplateId() {
+        return templateId;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setTemplateId(int templateId) {
+        this.templateId = templateId;
+    }
 
-	public boolean isRead() {
-		return read;
-	}
+    public boolean isRead() {
+        return read;
+    }
 
-	public String getAttr() {
-		return attr;
-	}
+    public void setRead(boolean read) {
+        this.read = read;
+    }
 
-	public LongAdder getTodayBuy() {
-		return todayBuy;
-	}
+    public String getAttr() {
+        return attr;
+    }
 
-	public void setTodayBuy(LongAdder todayBuy) {
-		this.todayBuy = todayBuy;
-	}
+    public void setAttr(String attr) {
+        this.attr = attr;
+    }
 
-	public void setAttr(String attr) {
-		this.attr = attr;
-	}
+    public LongAdder getTodayBuy() {
+        return todayBuy;
+    }
 
-	public void setRead(boolean read) {
-		this.read = read;
-	}
+    public void setTodayBuy(LongAdder todayBuy) {
+        this.todayBuy = todayBuy;
+    }
 
-	public Date getCreateTime() {
-		return createTime;
-	}
+    public Date getCreateTime() {
+        return createTime;
+    }
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
-	public Date getModifyTime() {
-		return modifyTime;
-	}
+    public Date getModifyTime() {
+        return modifyTime;
+    }
 
-	public void setModifyTime(Date modifyTime) {
-		this.modifyTime = modifyTime;
-	}
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
+    }
 
-	public Instant getTestTime() {
-		return testTime;
-	}
+    public Instant getTestTime() {
+        return testTime;
+    }
 
-	public void setTestTime(Instant testTime) {
-		this.testTime = testTime;
-	}
+    public void setTestTime(Instant testTime) {
+        this.testTime = testTime;
+    }
 }

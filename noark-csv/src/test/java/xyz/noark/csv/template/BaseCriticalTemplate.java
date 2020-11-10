@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -21,28 +21,28 @@ import xyz.noark.core.lang.IntList;
 /**
  * 基础爆击配置
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.3.9
- * @author 小流氓(176543888@qq.com)
  */
 @TplFile("BaseCritical.tpl")
 public class BaseCriticalTemplate {
-	@TplAttr(name = "Fate")
-	private Integer fate;
+    @TplAttr(name = "Fate")
+    private Integer fate;
 
-	@TplAttr(name = "")
-	@TplAttrSuffix(start = 0, end = 150)
-	private IntList array;
+    @TplAttr(name = "")
+    @TplAttrSuffix(start = 0, end = 150)
+    private IntList array;
 
-	public Integer getFate() {
-		return fate;
-	}
+    public Integer getFate() {
+        return fate;
+    }
 
-	public IntList getArray() {
-		return array;
-	}
+    public IntList getArray() {
+        return array;
+    }
 
-	@Override
-	public String toString() {
-		return "BaseCriticalTemplate [fate=" + fate + ", array=" + array + "]";
-	}
+    @Override
+    public String toString() {
+        return "BaseCriticalTemplate [fate=" + fate + ", array=" + array + "]";
+    }
 }

@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,44 +13,44 @@
  */
 package xyz.noark.core.thread.command;
 
-import java.io.Serializable;
-
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 import xyz.noark.core.thread.ThreadCommand;
+
+import java.io.Serializable;
 
 /**
  * 抽象的线程处理指令.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 public class AbstractThreadCommand implements ThreadCommand {
-	private final AbstractControllerMethodWrapper method;
-	private final Object[] args;
-	private final Serializable playerId;
+    private final AbstractControllerMethodWrapper method;
+    private final Object[] args;
+    private final Serializable playerId;
 
-	public AbstractThreadCommand(AbstractControllerMethodWrapper method, Serializable playerId, Object... args) {
-		this.method = method;
-		this.args = args;
-		this.playerId = playerId;
-	}
+    public AbstractThreadCommand(AbstractControllerMethodWrapper method, Serializable playerId, Object... args) {
+        this.method = method;
+        this.args = args;
+        this.playerId = playerId;
+    }
 
-	@Override
-	public Object exec() {
-		return method.invoke(args);
-	}
+    @Override
+    public Object exec() {
+        return method.invoke(args);
+    }
 
-	@Override
-	public String code() {
-		return method.logCode();
-	}
+    @Override
+    public String code() {
+        return method.logCode();
+    }
 
-	@Override
-	public boolean isPrintLog() {
-		return method.isPrintLog();
-	}
+    @Override
+    public boolean isPrintLog() {
+        return method.isPrintLog();
+    }
 
-	public Serializable getPlayerId() {
-		return playerId;
-	}
+    public Serializable getPlayerId() {
+        return playerId;
+    }
 }

@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>noark-core</artifactId>
-  <version>3.3.9-SNAPSHOT</version>
-  <name>Noark</name>
+  <version>3.4.0-SNAPSHOT</version>
+  <name>noark-core</name>
   <description>This is a game server framework.</description>
   <url>http://noark.xyz</url>
   <licenses>
@@ -30,19 +30,13 @@
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-asm</artifactId>
-      <version>3.3.9-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-log</artifactId>
-      <version>3.3.9-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-all</artifactId>
-      <version>4.1.42.Final</version>
+      <version>3.4.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -54,7 +48,7 @@
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-benchmark</artifactId>
-      <version>3.3.9-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>

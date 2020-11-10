@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -16,58 +16,59 @@ package xyz.noark.core.lang;
 /**
  * 一种可变Object类型的实现.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.2
- * @author 小流氓(176543888@qq.com)
  */
 public class MutableObject<T> implements Mutable<T> {
-	private T value;
+    private T value;
 
-	public MutableObject() {}
+    public MutableObject() {
+    }
 
-	public MutableObject(T value) {
-		this.value = value;
-	}
+    public MutableObject(T value) {
+        this.value = value;
+    }
 
-	@Override
-	public T getValue() {
-		return value;
-	}
+    @Override
+    public T getValue() {
+        return value;
+    }
 
-	@Override
-	public void setValue(T value) {
-		this.value = value;
-	}
+    @Override
+    public void setValue(T value) {
+        this.value = value;
+    }
 
-	@Override
-	public int hashCode() {
-		return value == null ? 0 : value.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return value == null ? 0 : value.hashCode();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
 
-		MutableObject<?> other = (MutableObject<?>) obj;
-		if (value == null) {
-			if (other.value != null) {
-				return false;
-			}
-		} else if (!value.equals(other.value)) {
-			return false;
-		}
-		return true;
-	}
+        MutableObject<?> other = (MutableObject<?>) obj;
+        if (value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!value.equals(other.value)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public String toString() {
-		return "MutableObject [value=" + value + "]";
-	}
+    @Override
+    public String toString() {
+        return "MutableObject [value=" + value + "]";
+    }
 }

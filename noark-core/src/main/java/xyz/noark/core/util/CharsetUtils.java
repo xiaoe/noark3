@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -18,20 +18,32 @@ import java.nio.charset.Charset;
 /**
  * 字符集工具类
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
  */
 public class CharsetUtils {
-	/** ISO-8859-1 */
-	public static final String ISO_8859_1 = "ISO-8859-1";
-	/** UTF-8 */
-	public static final String UTF_8 = "UTF-8";
-	/** GBK */
-	public static final String GBK = "GBK";
-	/** ISO-8859-1 */
-	public static final Charset CHARSET_ISO_8859_1 = Charset.forName(ISO_8859_1);
-	/** UTF-8 */
-	public static final Charset CHARSET_UTF_8 = Charset.forName(UTF_8);
-	/** GBK */
-	public static final Charset CHARSET_GBK = Charset.forName(GBK);
+    /**
+     * ISO-8859-1
+     */
+    public static final String ISO_8859_1 = "ISO-8859-1";
+    /**
+     * UTF-8
+     */
+    public static final String UTF_8 = "UTF-8";
+    /**
+     * GBK
+     */
+    public static final String GBK = "GBK";
+    /**
+     * ISO-8859-1
+     */
+    public static final Charset CHARSET_ISO_8859_1 = Charset.forName(ISO_8859_1);
+    /**
+     * UTF-8
+     */
+    public static final Charset CHARSET_UTF_8 = Charset.forName(UTF_8);
+    /**
+     * GBK
+     */
+    public static final Charset CHARSET_GBK = Charset.forName(GBK);
 }

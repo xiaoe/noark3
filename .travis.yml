@@ -3,7 +3,7 @@ sudo: required
 branches:
   only:
     - master
-    - 3.3
+    - 3.4
 jdk:
   - openjdk8
 before_install:

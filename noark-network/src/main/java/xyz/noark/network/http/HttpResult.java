@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -18,52 +18,59 @@ import com.alibaba.fastjson.annotation.JSONField;
 /**
  * HTTP处理结果.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 public class HttpResult {
-	/** 返回编码 */
-	@JSONField(name = "req")
-	private int req = 0;
-	/** 错误信息 */
-	@JSONField(name = "msg")
-	private String msg = null;
-	/** 数据 */
-	@JSONField(name = "data")
-	private Object data;
+    /**
+     * 返回编码
+     */
+    @JSONField(name = "req")
+    private int req = 0;
+    /**
+     * 错误信息
+     */
+    @JSONField(name = "msg")
+    private String msg = null;
+    /**
+     * 数据
+     */
+    @JSONField(name = "data")
+    private Object data;
 
-	public HttpResult() {}
+    public HttpResult() {
+    }
 
-	public HttpResult(int code) {
-		this.req = code;
-	}
+    public HttpResult(int code) {
+        this.req = code;
+    }
 
-	public HttpResult(int code, String msg) {
-		this.req = code;
-		this.msg = msg;
-	}
+    public HttpResult(int code, String msg) {
+        this.req = code;
+        this.msg = msg;
+    }
 
-	public int getReq() {
-		return req;
-	}
+    public int getReq() {
+        return req;
+    }
 
-	public void setReq(int req) {
-		this.req = req;
-	}
+    public void setReq(int req) {
+        this.req = req;
+    }
 
-	public String getMsg() {
-		return msg;
-	}
+    public String getMsg() {
+        return msg;
+    }
 
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
-	public Object getData() {
-		return data;
-	}
+    public Object getData() {
+        return data;
+    }
 
-	public void setData(Object data) {
-		this.data = data;
-	}
+    public void setData(Object data) {
+        this.data = data;
+    }
 }

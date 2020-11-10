@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -20,29 +20,29 @@ import xyz.noark.network.IncodeSession;
 /**
  * 一种默认的封包检测过滤实现.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.1
- * @author 小流氓(176543888@qq.com)
  */
 public class DefaultPacketCheckFilter extends AbstractPacketCheckFilter {
 
-	@Override
-	protected boolean checkPacketIncode(IncodeSession session, NetworkPacket packet) {
-		boolean result = packet.getIncode() > session.getIncode() || session.getIncode() == 0xFFFF;
-		if (result) {
-			session.setIncode(packet.getIncode());
-		}
-		return result;
-	}
+    @Override
+    protected boolean checkPacketIncode(IncodeSession session, NetworkPacket packet) {
+        boolean result = packet.getIncode() > session.getIncode() || session.getIncode() == 0xFFFF;
+        if (result) {
+            session.setIncode(packet.getIncode());
+        }
+        return result;
+    }
 
-	@Override
-	protected boolean checkPacketChecksum(NetworkPacket packet) {
-		final ByteArray data = packet.getByteArray();
+    @Override
+    protected boolean checkPacketChecksum(NetworkPacket packet) {
+        final ByteArray data = packet.getByteArray();
 
-		// 一种简单的计算方案....
-		int sum = 0;
-		for (int i = 0, len = data.length(); i < len; i++) {
-			sum += (data.getByte(i) & 0xFF);
-		}
-		return sum == packet.getChecksum();
-	}
+        // 一种简单的计算方案....
+        int sum = 0;
+        for (int i = 0, len = data.length(); i < len; i++) {
+            sum += (data.getByte(i) & 0xFF);
+        }
+        return sum == packet.getChecksum();
+    }
 }

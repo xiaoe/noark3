@@ -1,14 +1,11 @@
 dependencies {
-	compile project(':noark-core')
-	implementation project(':noark-network')
-	implementation project(':noark-csv')
-	implementation project(':noark-xml')
-	implementation project(':noark-redis')
-	implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.16'
-	implementation 'com.alibaba:fastjson:1.2.57'
-	
-	testImplementation project(':noark-benchmark')
-	testImplementation project(':noark-orm')
-	testImplementation "com.alibaba:druid:1.0.27"
-	testImplementation "mysql:mysql-connector-java:5.1.40"
+    compile project(':noark-core')
+    implementation project(':noark-network')
+    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.16'
+    implementation 'com.alibaba:fastjson:1.2.57'
+
+    testImplementation project(':noark-benchmark')
+    testImplementation project(':noark-orm')
+    testImplementation "com.alibaba:druid:1.0.27"
+    testImplementation "mysql:mysql-connector-java:5.1.40"
 }

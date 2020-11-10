@@ -1,6 +1,7 @@
 dependencies {
-	implementation project(':noark-core')
-	implementation 'redis.clients:jedis:2.9.0'
-	
-	testImplementation project(':noark-benchmark')
+    implementation project(':noark-game')
+    implementation 'redis.clients:jedis:2.9.0'
+    implementation 'com.alibaba:fastjson:1.2.57'
+
+    testImplementation project(':noark-benchmark')
 }

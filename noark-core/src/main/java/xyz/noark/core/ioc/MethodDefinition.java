@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,44 +13,44 @@
  */
 package xyz.noark.core.ioc;
 
-import java.lang.reflect.Parameter;
-
 import xyz.noark.core.annotation.Order;
 import xyz.noark.reflectasm.MethodAccess;
+
+import java.lang.reflect.Parameter;
 
 /**
  * 一个方法的定义.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 public interface MethodDefinition {
 
-	/**
-	 * 获取此方法的访问入口.
-	 * 
-	 * @return 访问入口
-	 */
-	public MethodAccess getMethodAccess();
+    /**
+     * 获取此方法的访问入口.
+     *
+     * @return 访问入口
+     */
+    MethodAccess getMethodAccess();
 
-	/**
-	 * 获取此方法的访问入口所对应的Index.
-	 * 
-	 * @return 访问入口所对应的Index.
-	 */
-	public int getMethodIndex();
+    /**
+     * 获取此方法的访问入口所对应的Index.
+     *
+     * @return 访问入口所对应的Index.
+     */
+    int getMethodIndex();
 
-	/**
-	 * 获取参数列表
-	 * 
-	 * @return 参数
-	 */
-	public Parameter[] getParameters();
+    /**
+     * 获取参数列表
+     *
+     * @return 参数
+     */
+    Parameter[] getParameters();
 
-	/**
-	 * 获取当前方法的排序注解
-	 * 
-	 * @return 排序注解
-	 */
-	public Order getOrder();
+    /**
+     * 获取当前方法的排序注解
+     *
+     * @return 排序注解
+     */
+    Order getOrder();
 }

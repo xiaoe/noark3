@@ -1,12 +1,11 @@
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'eclipse'
+    apply plugin: 'java-library'
     apply plugin: 'maven'
 	apply plugin: 'signing'
 	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.3.9-SNAPSHOT'
+	version = '3.4.0-SNAPSHOT'
 	
 	sourceCompatibility = 1.8  
 	targetCompatibility = 1.8  
@@ -51,13 +50,14 @@ subprojects {
 	uploadArchives {
 	    repositories {
 	        mavenDeployer {
-	            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+	            beforeDeployment { deployment -> signing.signPom(deployment) }
 	
 	            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
 	                authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
 	            }
 	
 				//快照版本还是内网速度快，稳定再发布正式版本给大家使用
+				//https://oss.sonatype.org/content/repositories/snapshots
 	            snapshotRepository(url: "http://192.168.51.231:8081/repository/maven-snapshots/") {
 	                authentication(userName: 'admin', password: 'admin123')
 	            }
@@ -67,7 +67,7 @@ subprojects {
 	            	artifactId project.name
 	            	version project.version
 	            	
-	                name 'Noark'
+	                name project.name
 	        		description 'This is a game server framework.'
 	        		url 'http://noark.xyz'
 	                packaging 'jar'

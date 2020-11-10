@@ -4,7 +4,7 @@
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
  *
- * 		http://www.noark.xyz/LICENSE
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,85 +13,87 @@
  */
 package xyz.noark.network;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  * IP管理器测试用例
  * <p>
  * 使用Integer代替AtomicInteger,并发问题由CHM处理
- * 
+ *
  * @author https://gitee.com/pj_zhong
  */
 public class IpManagerTest {
-	private static final int MAX = 5;
+    private static final int MAX = 5;
 
-	@Test
-	public void activityTest() {
-		IpManager manager = new IpManager();
-		OldIpManger oldManger = new OldIpManger();
-		for (int i = 0; i < MAX; i++) {
-			String ip = String.valueOf(i);
-			assertEquals(oldManger.active(ip), manager.active(ip));
-		}
-	}
+    @Test
+    public void activityTest() {
+        IpManager manager = new IpManager();
+        OldIpManger oldManger = new OldIpManger();
+        for (int i = 0; i < MAX; i++) {
+            String ip = String.valueOf(i);
+            assertEquals(oldManger.active(ip), manager.active(ip));
+        }
+    }
 
-	@Test
-	public void inActivityTest() {
-		IpManager manager = new IpManager();
-		OldIpManger oldManger = new OldIpManger();
-		// 先激活
-		for (int i = 0; i < MAX; i++) {
-			String ip = String.valueOf(i);
-			assertEquals(oldManger.active(ip), manager.active(ip));
-		}
-		// 取消激活
-		for (int i = 0; i < MAX; i++) {
-			String ip = String.valueOf(i);
-			oldManger.inactive(ip);
-			manager.inactive(ip);
-		}
-		// 再次激活
-		for (int i = 0; i < MAX; i++) {
-			String ip = String.valueOf(i);
-			assertEquals(oldManger.active(ip), manager.active(ip));
-		}
-	}
+    @Test
+    public void inActivityTest() {
+        IpManager manager = new IpManager();
+        OldIpManger oldManger = new OldIpManger();
+        // 先激活
+        for (int i = 0; i < MAX; i++) {
+            String ip = String.valueOf(i);
+            assertEquals(oldManger.active(ip), manager.active(ip));
+        }
+        // 取消激活
+        for (int i = 0; i < MAX; i++) {
+            String ip = String.valueOf(i);
+            oldManger.inactive(ip);
+            manager.inactive(ip);
+        }
+        // 再次激活
+        for (int i = 0; i < MAX; i++) {
+            String ip = String.valueOf(i);
+            assertEquals(oldManger.active(ip), manager.active(ip));
+        }
+    }
 
-	/**
-	 * 修改前的IpManager
-	 * 
-	 * @author https://gitee.com/pj_zhong
-	 */
-	public static class OldIpManger {
+    /**
+     * 修改前的IpManager
+     *
+     * @author https://gitee.com/pj_zhong
+     */
+    public static class OldIpManger {
 
-		/** IP统计计数 */
-		private static final Map<String, AtomicInteger> COUNTS = new ConcurrentHashMap<>();
+        /**
+         * IP统计计数
+         */
+        private static final Map<String, AtomicInteger> COUNTS = new ConcurrentHashMap<>();
 
-		/**
-		 * 新激活一个通道
-		 *
-		 * @param ip 目标IP
-		 * @return 返回这个IP已激活的IP数量
-		 */
-		public int active(String ip) {
-			return COUNTS.computeIfAbsent(ip, key -> new AtomicInteger(0)).incrementAndGet();
-		}
+        /**
+         * 新激活一个通道
+         *
+         * @param ip 目标IP
+         * @return 返回这个IP已激活的IP数量
+         */
+        public int active(String ip) {
+            return COUNTS.computeIfAbsent(ip, key -> new AtomicInteger(0)).incrementAndGet();
+        }
 
-		/**
-		 * 断开链接.
-		 * <p>
-		 * 释放这个IP计数
-		 *
-		 * @param ip 目标IP
-		 */
-		public void inactive(String ip) {
-			COUNTS.compute(ip, (k, v) -> v == null ? null : (v.decrementAndGet() <= 0) ? null : v);
-		}
-	}
+        /**
+         * 断开链接.
+         * <p>
+         * 释放这个IP计数
+         *
+         * @param ip 目标IP
+         */
+        public void inactive(String ip) {
+            COUNTS.compute(ip, (k, v) -> v == null ? null : (v.decrementAndGet() <= 0) ? null : v);
+        }
+    }
 }

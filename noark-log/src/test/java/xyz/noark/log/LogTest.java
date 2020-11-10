@@ -1,10 +1,10 @@
 /*
  * Copyright © 2015 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,42 +13,42 @@
  */
 package xyz.noark.log;
 
-import static xyz.noark.log.LogHelper.logger;
-
-import java.util.HashMap;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+
+import static xyz.noark.log.LogHelper.logger;
+
 /**
  * 日志测试类.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 public class LogTest {
-	@Before
-	public void setUp() throws Exception {
-		HashMap<String, String> config = new HashMap<>(16, 1);
-		config.put("log.console", "false");
-		LogManager.init(config);
-	}
+    @Before
+    public void setUp() throws Exception {
+        HashMap<String, String> config = new HashMap<>(16, 1);
+        config.put("log.console", "false");
+        LogManager.init(config);
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		LogManager.shutdown();
-	}
+    @After
+    public void tearDown() throws Exception {
+        LogManager.shutdown();
+    }
 
-	@Test
-	public void test() {
-		logger.debug("haha{}", 123, "abc");
-		logger.info("haha");
-		logger.warn("123123123, {},{}", 1L, null);
-		logger.error("123123123", new RuntimeException("123"));
-		logger.debug("boolean={}", true);
-		logger.debug("array={}", 1, 2, 3);
-		logger.debug("array={}", new byte[] { 1, 2 });
-		logger.debug("array={}", new int[] { 1, 2 });
-	}
+    @Test
+    public void test() {
+        logger.debug("haha{}", 123, "abc");
+        logger.info("haha");
+        logger.warn("123123123, {},{}", 1L, null);
+        logger.error("123123123", new RuntimeException("123"));
+        logger.debug("boolean={}", true);
+        logger.debug("array={}", 1, 2, 3);
+        logger.debug("array={}", new byte[]{1, 2});
+        logger.debug("array={}", new int[]{1, 2});
+    }
 }

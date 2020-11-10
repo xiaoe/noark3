@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,31 +13,48 @@
  */
 package xyz.noark.orm.accessor.sql.mysql.adaptor;
 
-import java.sql.ResultSet;
-import java.sql.Types;
-
+import xyz.noark.core.util.GzipUtils;
+import xyz.noark.log.LogHelper;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
+
+import java.sql.ResultSet;
+import java.sql.Types;
 
 /**
  * Blob类型属性
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 class BlobAdaptor extends AbstractValueAdaptor<Object> {
 
-	@Override
-	protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Object value, int parameterIndex) throws Exception {
-		if (value == null) {
-			pstmt.setNull(parameterIndex, Types.BLOB);
-		} else {
-			pstmt.setObject(parameterIndex, value);
-		}
-	}
+    @Override
+    protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Object value, int parameterIndex) throws Exception {
+        if (value == null) {
+            pstmt.setNull(parameterIndex, Types.BLOB);
+        } else {
+            byte[] array = (byte[]) value;
+            int length = array.length;
+            if (fm.isGzip()) {
+                array = GzipUtils.compress(array);
+                LogHelper.logger.debug("Gzip compress. {}->{}", length, array.length);
+            }
+            pstmt.setObject(parameterIndex, array);
+        }
+    }
 
-	@Override
-	protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
-		return rs.getObject(fm.getColumnName());
-	}
+    @Override
+    protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
+        byte[] array = (byte[]) rs.getObject(fm.getColumnName());
+        if (array == null) {
+            return null;
+        }
+        int length = array.length;
+        if (fm.isGzip()) {
+            array = GzipUtils.uncompress(array);
+            LogHelper.logger.debug("Gzip uncompress. {}->{}", length, array.length);
+        }
+        return array;
+    }
 }

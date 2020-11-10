@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,30 +13,47 @@
  */
 package xyz.noark.core.ioc.definition.field;
 
+import xyz.noark.core.ioc.IocMaking;
+import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
+import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.MapUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-
-import xyz.noark.core.ioc.IocMaking;
 
 /**
  * Map类型的属性注入
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 public class MapFieldDefinition extends DefaultFieldDefinition {
 
-	public MapFieldDefinition(Field field, boolean required) {
-		super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1], required);
-	}
+    public MapFieldDefinition(Field field, boolean required) {
+        super(field, (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1], required);
+    }
 
-	@Override
-	protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-		Map<String, Object> result = new HashMap<>(32, 1);
-		making.findAllImpl(fieldClass).forEach(v -> Arrays.stream(v.getNames()).forEach(n -> result.put(n, v.getSingle())));
-		return result;
-	}
+    @Override
+    protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
+        List<DefaultBeanDefinition> allImpl = making.findAllImpl(fieldClass);
+        if (allImpl.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        final Map<Object, Object> result = MapUtils.newHashMap(allImpl.size());
+        Class<?> keyClass = FieldUtils.getMapFieldKeyClass(field);
+        // Int类型的Key，使用ID
+        if (Integer.class.equals(keyClass)) {
+            allImpl.forEach(v -> Arrays.stream(v.getIds()).forEach(n -> result.put(n, v.getSingle())));
+        }
+        // 其他类型使用Name
+        else {
+            allImpl.forEach(v -> Arrays.stream(v.getNames()).forEach(n -> result.put(n, v.getSingle())));
+        }
+        return result;
+    }
 }

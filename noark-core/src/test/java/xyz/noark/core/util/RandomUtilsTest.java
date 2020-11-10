@@ -1,10 +1,10 @@
 /*
  * Copyright © 2018 www.noark.xyz All Rights Reserved.
- * 
+ *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
- * 
- * 		http://www.noark.xyz/LICENSE
+ *
+ *        http://www.noark.xyz/LICENSE
  *
  * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
  * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
@@ -13,87 +13,156 @@
  */
 package xyz.noark.core.util;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * 随机工具类测试.
  *
+ * @author 小流氓[176543888@qq.com]
  * @since 3.0
- * @author 小流氓(176543888@qq.com)
  */
 public class RandomUtilsTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
+    @Test
+    public void testNextBoolean() {
+        RandomUtils.nextBoolean();
+    }
 
-	@Test
-	public void testNextIntInt() {
-		assertTrue(RandomUtils.nextInt(1, 2) == 1);
-		assertTrue(RandomUtils.nextInt(0, 2) >= 0);
-	}
+    @Test
+    public void testNextIntInt() {
+        assertEquals(RandomUtils.nextInt(1), 0);
+    }
 
-	@Test
-	public void testRandomListListOfT() {
-		List<Integer> list = new ArrayList<>();
-		assertTrue(RandomUtils.randomList(list) == null);
+    @Test
+    public void testNextIntIntInt() {
+        assertEquals(RandomUtils.nextInt(1, 2), 1);
+    }
 
-		list.add(1);
-		assertTrue(RandomUtils.randomList(list) == 1);
-	}
+    @Test
+    public void testNextLongLong() {
+        assertEquals(RandomUtils.nextLong(1), 0L);
+    }
 
-	@Test
-	public void testRandomByWeight() {
-		List<TestData> data = new ArrayList<>();
-		TestData e = new TestData();
-		e.setId(1);
-		e.setWeight(RandomUtils.nextInt(100));
-		data.add(e);
+    @Test
+    public void testNextLongLongLong() {
+        assertEquals(RandomUtils.nextLong(1, 2), 1L);
+    }
 
-		TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
-		assertTrue(random.getId() == e.getId());
-	}
+    @Test
+    public void testIsSuccessFloat() {
+        assertEquals(RandomUtils.isSuccess(0F), false);
+        assertEquals(RandomUtils.isSuccess(1F), true);
+    }
 
-	@Test
-	public void testRandomByWeight2() {
-		List<TestData> data = new ArrayList<>();
-		TestData e = new TestData();
-		e.setId(1);
-		e.setWeight(RandomUtils.nextInt(100));
-		data.add(e);
+    @Test
+    public void testIsSuccessDouble() {
+        assertEquals(RandomUtils.isSuccess(0D), false);
+        assertEquals(RandomUtils.isSuccess(1D), true);
+    }
 
-		List<TestData> random = RandomUtils.randomByWeight(data, TestData::getWeight, 2);
-		assertTrue(random.size() == 2);
-	}
+    @Test
+    public void testIsSuccessByPercentage() {
+        assertEquals(RandomUtils.isSuccessByPercentage(0), false);
+        assertEquals(RandomUtils.isSuccessByPercentage(100), true);
+    }
 
-	static class TestData {
-		private int id;
-		private int weight;
+    @Test
+    public void testIsSuccessByPermillage() {
+        assertEquals(RandomUtils.isSuccessByPermillage(0), false);
+        assertEquals(RandomUtils.isSuccessByPermillage(1000), true);
+    }
 
-		public int getId() {
-			return id;
-		}
+    @Test
+    public void testRandomList() {
+        Object result = null;
+        assertEquals(RandomUtils.randomList(null), result);
 
-		public void setId(int id) {
-			this.id = id;
-		}
+        List<Integer> list = new ArrayList<>();
+        assertEquals(RandomUtils.randomList(list), null);
+        assertEquals(RandomUtils.randomList(list, 0), Collections.emptyList());
+        assertEquals(RandomUtils.randomList(null, 0), Collections.emptyList());
 
-		public int getWeight() {
-			return weight;
-		}
+        list.add(1);
+        assertEquals(RandomUtils.randomList(list), Integer.valueOf(1));
+        assertEquals(RandomUtils.randomList(list, 1), Arrays.asList(1));
 
-		public void setWeight(int weight) {
-			this.weight = weight;
-		}
+        list.add(2);
+        assertEquals(RandomUtils.randomList(list, 1).size(), 1);
+        assertEquals(RandomUtils.randomList(list, 2).size(), 2);
+    }
 
-		@Override
-		public String toString() {
-			return "TestData [id=" + id + ", weight=" + weight + "]";
-		}
-	}
+    @Test
+    public void testRandomByWeight() {
+        List<TestData> data = new ArrayList<>();
+        {
+            TestData e = new TestData();
+            e.setId(1);
+            e.setWeight(0);
+            data.add(e);
+            TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
+            assertEquals(random.getId(), e.getId());
+        }
+
+        {
+            TestData e = new TestData();
+            e.setId(1);
+            e.setWeight(1);
+            data.add(e);
+
+            TestData random = RandomUtils.randomByWeight(data, TestData::getWeight);
+            assertEquals(random.getId(), e.getId());
+        }
+
+        try {
+            RandomUtils.randomByWeight(data, TestData::getWeigthx);
+        } catch (Exception e) {
+            assertNotNull(e);
+        }
+    }
+
+    static class TestData {
+        private int id;
+        private int weight;
+        private AtomicBoolean flag = new AtomicBoolean(true);
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
+
+        public int getWeigthx() {
+            // 特别的方法，实际上不会有这样的用法.
+            if (flag.get()) {
+                flag.set(false);
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "TestData [id=" + id + ", weight=" + weight + "]";
+        }
+    }
 }
