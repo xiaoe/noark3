@@ -233,6 +233,18 @@ public class StringUtils {
     }
 
     /**
+     * 切割指定字符串
+     *
+     * @param str            要切割的字符串
+     * @param separatorChars 切割符
+     * @param max            最大分几部分
+     * @return 切割后的数组
+     */
+    public static String[] split(final String str, final String separatorChars, int max) {
+        return splitWorker(str, separatorChars, max, false);
+    }
+
+    /**
      * Performs the logic for the {@code split} and {@code splitPreserveAllTokens} methods that return a maximum array length.
      *
      * @param str               the String to parse, may be {@code null}

@@ -26,12 +26,12 @@ public class SchemeManager {
     private static final Map<Integer, AbstractScheme> SCHEME_MAP = new HashMap<>();
 
     static {
-        regist(new NumScheme(1 << 8));
-        regist(new EnvScheme(1 << 16));
-        regist(new HttpScheme(1 << 24));
+        register(new NumScheme(1 << 8));
+        register(new EnvScheme(1 << 16));
+        register(new HttpScheme(1 << 24));
     }
 
-    static void regist(AbstractScheme scheme) {
+    static void register(AbstractScheme scheme) {
         SCHEME_MAP.put(scheme.getCode(), scheme);
     }
 

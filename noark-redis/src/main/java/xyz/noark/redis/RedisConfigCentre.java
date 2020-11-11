@@ -27,11 +27,17 @@ import java.util.Map;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class RedisConfigContre extends AbstractConfigCentre {
+public class RedisConfigCentre extends AbstractConfigCentre {
     private final Redis redis;
+    protected final String configPathPrefix;
+    protected final String configPathDefault;
 
-    public RedisConfigContre(HashMap<String, String> basicConfig) {
+    public RedisConfigCentre(HashMap<String, String> basicConfig) {
         super(basicConfig);
+        this.configPathPrefix = basicConfig.getOrDefault("NoarkConstant.CONFIG_PATH", "/noark/config/game/");
+        this.configPathDefault = StringUtils.pathJoin(configPathPrefix, "default");
+
+
         String host = basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_HOST, "127.0.0.1");
         int port = Integer.parseInt(basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_PORT, "6379"));
         String password = basicConfig.get(RedisConstant.CONFIG_REDIS_PASSWORD);

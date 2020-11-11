@@ -17,9 +17,9 @@ import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.UnicodeInputStream;
 import xyz.noark.core.util.BooleanUtils;
-import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.game.config.ConfigCentre;
+import xyz.noark.game.config.NacosConfigCentre;
 import xyz.noark.game.crypto.StringEncryptor;
 
 import java.io.IOException;
@@ -69,7 +69,7 @@ class NoarkPropertiesLoader {
         this.loadConfigAfter(result);
 
         // 开启配置中心功能,才能加载配置中心里的配置(本地配置会覆盖远程配置)
-        if (BooleanUtils.toBoolean(result.get(NoarkConstant.CONFIG_ENABLED))) {
+        if (BooleanUtils.toBoolean(result.get(NoarkConstant.NACOS_ENABLED))) {
             this.loadConfigCentre(result);
             this.loadConfigAfter(result);
         }
@@ -110,9 +110,9 @@ class NoarkPropertiesLoader {
         }
         logger.info("正在启动配置中心模式 sid={}", sid);
         // 尝试创建Redis的配置中心读取配置
-        ConfigCentre cc = ClassUtils.newInstance("xyz.noark.redis.RedisConfigContre", result);
+        ConfigCentre cc = new NacosConfigCentre(result);
         // 本地配置会覆盖远程配置
-        cc.loadConfig(sid).forEach((key, value) -> result.putIfAbsent(key, value));
+        cc.loadConfig(sid).forEach(result::putIfAbsent);
     }
 
     private void loadProperties(ClassLoader loader, String filename, HashMap<String, String> result) {

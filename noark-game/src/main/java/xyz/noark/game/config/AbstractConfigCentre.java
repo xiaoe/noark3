@@ -13,9 +13,6 @@
  */
 package xyz.noark.game.config;
 
-import xyz.noark.core.util.StringUtils;
-import xyz.noark.game.NoarkConstant;
-
 import java.util.HashMap;
 
 /**
@@ -25,12 +22,8 @@ import java.util.HashMap;
  * @since 3.4
  */
 public abstract class AbstractConfigCentre implements ConfigCentre {
-    protected final String configPathPrefix;
-    protected final String configPathDefault;
 
     protected AbstractConfigCentre(HashMap<String, String> basicConfig) {
         ConfigCentreHolder.setInstance(this);
-        this.configPathPrefix = basicConfig.getOrDefault(NoarkConstant.CONFIG_PATH, "/noark/config/game/");
-        this.configPathDefault = StringUtils.pathJoin(configPathPrefix, "default");
     }
 }
