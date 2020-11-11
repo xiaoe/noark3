@@ -45,6 +45,7 @@ public class HttpUtils {
      *
      * @param url 发送请求的URL
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
     public static String get(String url) throws IOException {
         return get(url, DEFAULT_TIMEOUT, Collections.emptyMap());
@@ -56,6 +57,7 @@ public class HttpUtils {
      * @param url             发送请求的URL
      * @param responseCharset 响应编码（默认UTF-8）
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
     public static String get(String url, Charset responseCharset) throws IOException {
         return get(url, DEFAULT_TIMEOUT, Collections.emptyMap(), responseCharset);
@@ -67,6 +69,7 @@ public class HttpUtils {
      * @param url     发送请求的URL
      * @param timeout 请求超时（单位：毫秒）
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
     public static String get(String url, int timeout) throws IOException {
         return get(url, timeout, Collections.emptyMap());
@@ -78,6 +81,7 @@ public class HttpUtils {
      * @param url             发送请求的URL
      * @param requestProperty 请求属性
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
     public static String get(String url, Map<String, String> requestProperty) throws IOException {
         return get(url, DEFAULT_TIMEOUT, requestProperty);
@@ -90,6 +94,7 @@ public class HttpUtils {
      * @param timeout         请求超时（单位：毫秒）
      * @param requestProperty 请求属性
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
     public static String get(String url, int timeout, Map<String, String> requestProperty) throws IOException {
         return get(url, timeout, requestProperty, CharsetUtils.CHARSET_UTF_8);
@@ -103,6 +108,7 @@ public class HttpUtils {
      * @param requestProperty 请求属性
      * @param responseCharset 响应编码（默认UTF-8）
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
     public static String get(String url, int timeout, Map<String, String> requestProperty, Charset responseCharset) throws IOException {
 

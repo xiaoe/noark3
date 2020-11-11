@@ -13,10 +13,9 @@
  */
 package xyz.noark.network.http;
 
-import com.alibaba.fastjson.JSON;
-import io.netty.util.ResourceLeakDetector;
 import xyz.noark.core.util.HttpUtils;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -27,7 +26,7 @@ import java.util.HashMap;
  */
 public class HttpServerTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         HashMap<String, String> params = new HashMap<>(16);
         params.put("time", "1533118010926");
@@ -35,9 +34,10 @@ public class HttpServerTest {
         params.put("byte", new String("pub!@~#$%^&*(\"\"::;;'')_+lic skdfsdaf ?!@#!$!@$   ".getBytes()));
 
         System.out.println();
-        for(int i =0;i<1;i++)
-        HttpUtils.get("http://127.0.0.1:11111/test");
-
+        for (int i = 0; i < 1; i++) {
+            HttpUtils.get("http://127.0.0.1:11111/test");
+        }
+        
         System.out.println();
     }
 }
