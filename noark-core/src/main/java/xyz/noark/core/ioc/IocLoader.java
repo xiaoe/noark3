@@ -15,16 +15,19 @@ package xyz.noark.core.ioc;
 
 import xyz.noark.core.annotation.*;
 import xyz.noark.core.converter.ConvertManager;
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
 import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.ioc.definition.StaticComponentBeanDefinition;
 import xyz.noark.core.ioc.scan.Resource;
 import xyz.noark.core.ioc.scan.ResourceScanning;
-import xyz.noark.core.util.AnnotationUtils;
-import xyz.noark.core.util.ClassUtils;
-import xyz.noark.core.util.MapUtils;
+import xyz.noark.core.util.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ import java.util.stream.Collectors;
 public class IocLoader {
     private static final String PACKAGE_INFO_CLASS = "package-info.class";
     private static final String CLASS_SUFFIX = ".class";
+    private static final String STARTER_SUFFIX = ".starter";
 
     private final HashMap<Class<?>, DefaultBeanDefinition> beans = MapUtils.newHashMap(1024);
     private final List<BeanDefinition> configurations = new ArrayList<>();
@@ -63,18 +67,46 @@ public class IocLoader {
     private void analysisResource(Resource resource) {
         String resourceName = resource.getName();
 
-        // 忽略 package-info.class
-        if (PACKAGE_INFO_CLASS.equals(resourceName)) {
-            return;
+        // starter
+        if (resourceName.endsWith(STARTER_SUFFIX)) {
+            analysisStarter(resourceName);
         }
-
-        // 忽略非Class文件
-        if (!resourceName.endsWith(CLASS_SUFFIX)) {
-            return;
+        // Class文件
+        else if (resourceName.endsWith(CLASS_SUFFIX)) {
+            // 忽略 package-info.class
+            if (PACKAGE_INFO_CLASS.equals(resourceName)) {
+                return;
+            }
+            // Class快速载入
+            this.analysisClass(resourceName.substring(0, resourceName.length() - 6).replaceAll("[/\\\\]", "."));
         }
+    }
 
-        // Class快速载入
-        analysisClass(ClassUtils.loadClass(resourceName.substring(0, resourceName.length() - 6).replaceAll("[/\\\\]", ".")));
+    /**
+     * 分析Starter配置
+     *
+     * @param resourceName Starter配置
+     */
+    private void analysisStarter(String resourceName) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try (InputStream is = classLoader.getResourceAsStream(resourceName)) {
+            assert is != null;
+            try (InputStreamReader isr = new InputStreamReader(is, CharsetUtils.CHARSET_UTF_8); BufferedReader br = new BufferedReader(isr)) {
+
+                final String line = br.readLine();
+
+                // Class快速载入
+                if (StringUtils.isNotEmpty(line)) {
+                    this.analysisClass(line);
+                }
+            }
+        } catch (IOException e) {
+            throw new ServerBootstrapException("解析Starter配置时", e);
+        }
+    }
+
+    private void analysisClass(String className) {
+        analysisClass(ClassUtils.loadClass(className));
     }
 
     /**

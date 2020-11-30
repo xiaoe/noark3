@@ -14,6 +14,7 @@
 package xyz.noark.core.annotation.configuration;
 
 import xyz.noark.core.annotation.Configuration;
+import xyz.noark.core.util.StringUtils;
 
 import java.lang.annotation.*;
 
@@ -29,4 +30,10 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Bean {
+    /**
+     * 定义Bean的名字，默认不写就是这个类的ClassName
+     *
+     * @return Bean的名字
+     */
+    String name() default StringUtils.EMPTY;
 }

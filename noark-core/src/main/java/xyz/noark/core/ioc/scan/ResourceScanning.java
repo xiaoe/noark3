@@ -41,6 +41,10 @@ public class ResourceScanning {
      */
     private static final String URL_PROTOCOL_JAR = "jar";
     private static final String BACKSLASH = "/";
+    /**
+     * META-INF/目录
+     */
+    private static final String META_INF_PATH = "META-INF/";
 
     /**
      * 私有化构造函数,这个类只用一次.
@@ -60,6 +64,8 @@ public class ResourceScanning {
         for (String packagePath : packages) {
             scanPackage(packagePath, callback);
         }
+        // 扫描所有Starter
+        scanPackage(META_INF_PATH, callback);
     }
 
     /**

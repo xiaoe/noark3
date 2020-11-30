@@ -13,37 +13,25 @@
  */
 package xyz.noark.core.ioc.definition;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Order;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.UnrealizedException;
-import xyz.noark.core.ioc.BeanDefinition;
-import xyz.noark.core.ioc.FieldDefinition;
-import xyz.noark.core.ioc.IocMaking;
-import xyz.noark.core.ioc.MethodDefinition;
-import xyz.noark.core.ioc.NoarkIoc;
+import xyz.noark.core.ioc.*;
 import xyz.noark.core.ioc.definition.field.DefaultFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ListFieldDefinition;
 import xyz.noark.core.ioc.definition.field.MapFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ValueFieldDefinition;
 import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
 import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
-import xyz.noark.core.util.ArrayUtils;
-import xyz.noark.core.util.ClassUtils;
-import xyz.noark.core.util.FieldUtils;
-import xyz.noark.core.util.MethodUtils;
+import xyz.noark.core.util.*;
 import xyz.noark.reflectasm.MethodAccess;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * 默认的Bean定义描述类.
@@ -65,6 +53,8 @@ public class DefaultBeanDefinition implements BeanDefinition {
     protected final MethodAccess methodAccess;
     protected final HashMap<Class<? extends Annotation>, List<MethodDefinition>> customMethods = new HashMap<>();
     private final Class<?> beanClass;
+    private String beanName = StringUtils.EMPTY;
+
     private Annotation annotation;
     private Class<? extends Annotation> annotationType;
 
@@ -81,8 +71,9 @@ public class DefaultBeanDefinition implements BeanDefinition {
         this(klass, ClassUtils.newInstance(klass));
     }
 
-    public DefaultBeanDefinition(Object object) {
+    public DefaultBeanDefinition(String beanName, Object object) {
         this(object.getClass(), object);
+        this.beanName = beanName;
     }
 
     public DefaultBeanDefinition(Class<?> klass, Object object) {
@@ -125,6 +116,12 @@ public class DefaultBeanDefinition implements BeanDefinition {
         if (annotationType == Component.class) {
             return ((Component) annotation).name();
         }
+
+        // 有指定名称使用指定名称
+        if (StringUtils.isNotEmpty(beanName)) {
+            return new String[]{beanName};
+        }
+
         return new String[]{beanClass.getName()};
     }
 
@@ -161,14 +158,14 @@ public class DefaultBeanDefinition implements BeanDefinition {
             Annotation[] annotations = method.getAnnotations();
             // 没有注解的忽略掉
             if (ArrayUtils.isNotEmpty(annotations)) {
-            		 for (Annotation annotation : annotations) {
-                         final Class<? extends Annotation> annotationType = annotation.annotationType();
-                         // 忽略一些系统警告类的注解
-                         if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
-                             continue;
-                         }
-                         this.analysisMethodByAnnotation(annotationType, annotation, method);
-                     }
+                for (Annotation annotation : annotations) {
+                    final Class<? extends Annotation> annotationType = annotation.annotationType();
+                    // 忽略一些系统警告类的注解
+                    if (IGNORE_ANNOTATION_BY_METHODS.contains(annotationType)) {
+                        continue;
+                    }
+                    this.analysisMethodByAnnotation(annotationType, annotation, method);
+                }
             }
         }
     }
