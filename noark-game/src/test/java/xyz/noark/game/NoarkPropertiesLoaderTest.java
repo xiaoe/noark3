@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * 属性配置文件加载测试.
@@ -30,10 +30,11 @@ public class NoarkPropertiesLoaderTest {
     @Test
     public void test() {
         NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
-        Map<String, String> config = loader.loadProperties("dev");
+        loader.loadingProperties();
+        Map<String, String> config = loader.getProperties();
 
-        assertTrue("中国".equals(config.get("noark.key.test")));
-        assertTrue("2".equals(config.get("noark.server.id")));
-        assertTrue("2 server".equals(config.get("noark.server.name")));
+        assertEquals("中国", config.get("noark.key.test"));
+        assertEquals("1", config.get("noark.server.id"));
+        assertEquals("1 server", config.get("noark.server.name"));
     }
 }

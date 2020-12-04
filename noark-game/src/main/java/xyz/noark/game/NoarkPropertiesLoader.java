@@ -17,6 +17,7 @@ import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.UnicodeInputStream;
 import xyz.noark.core.util.BooleanUtils;
+import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.game.config.ConfigCentre;
 import xyz.noark.game.config.NacosConfigCentre;
@@ -39,44 +40,64 @@ import static xyz.noark.log.LogHelper.logger;
  * @since 3.0
  */
 class NoarkPropertiesLoader {
-    private static final String DEFAULT_PROPERTIES = "application.properties";
-    private static final String TEST_PROPERTIES = "application-test.properties";
-    private static final String PROFILE_PREFIX = "application-";
-    private static final String PROFILE_SUFFIX = ".properties";
+    private static final String BOOTSTRAP_PREFIX = "bootstrap";
+    private static final String APPLICATION_PREFIX = "application";
+    private static final String PROPERTIES_SUFFIX = ".properties";
+
+    private final ClassLoader loader;
+    /**
+     * 所有配置
+     */
+    private final HashMap<String, String> properties;
+
+    NoarkPropertiesLoader() {
+        this.loader = this.getClass().getClassLoader();
+        this.properties = MapUtils.newHashMap(128);
+        // 系统配置
+        properties.put(NoarkConstant.NOARK_VERSION, Noark.getVersion());
+    }
+
+    /**
+     * 加载启动命令行的参数.
+     * <p>命令行参数优先级 大于 配置文件优先级</p>
+     * Noark在启动时命令行参数需要使用双杠--指定，参数即为配置文件中的参数配置相同！
+     *
+     * @param args 启动命令行的参数
+     */
+    public void loadingArgs(String... args) {
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                int index = arg.indexOf('=', 2);
+                if (index > 1) {
+                    String optionName = arg.substring(2, index);
+                    String optionValue = arg.substring(index + 1);
+                    if (StringUtils.isBlank(optionName) || StringUtils.isBlank(optionValue)) {
+                        throw new IllegalArgumentException("Invalid argument syntax: " + arg);
+                    }
+                    this.properties.put(optionName, optionValue);
+                }
+            }
+        }
+    }
+
 
     /**
      * 加载系统配置文件中的内容.
      * <p>
      * application-test.properties中的内容会覆盖application.properties中的配置
-     *
-     * @param profile profile
-     * @return 返回配置内容
      */
-    Map<String, String> loadProperties(String profile) {
-        final ClassLoader loader = Noark.class.getClassLoader();
-        HashMap<String, String> result = new HashMap<>(256, 1);
+    void loadingProperties() {
+        // --noark.profiles.active=dev/prod/test     # 指定运行环境
+        String profile = properties.getOrDefault(NoarkConstant.NOARK_PROFILES_ACTIVE, "test");
 
-        loadProperties(loader, DEFAULT_PROPERTIES, result);
+        // 优先载入bootstrap.properties
+        properties.putAll(loadingFile(BOOTSTRAP_PREFIX, profile));
 
-        // 加载指定的Profile
-        if (StringUtils.isNotEmpty(profile)) {
-            loadProperties(loader, PROFILE_PREFIX + profile + PROFILE_SUFFIX, result);
-        }
-        // 没有配置的情况，要加载那个Test配置
-        else {
-            loadProperties(loader, TEST_PROPERTIES, result);
-        }
-        this.loadConfigAfter(result);
+        // 然后再载入application.properties
+        properties.putAll(loadingFile(APPLICATION_PREFIX, profile));
 
-        // 开启配置中心功能,才能加载配置中心里的配置(本地配置会覆盖远程配置)
-        if (BooleanUtils.toBoolean(result.get(NoarkConstant.NACOS_ENABLED))) {
-            this.loadConfigCentre(result);
-            this.loadConfigAfter(result);
-        }
-
-        // 系统配置
-        result.put(NoarkConstant.NOARK_VERSION, Noark.getVersion());
-        return result;
+        // 加载配置完成后
+        this.loadingConfigAfter(properties);
     }
 
     /**
@@ -84,7 +105,7 @@ class NoarkPropertiesLoader {
      *
      * @param result 配置
      */
-    private void loadConfigAfter(HashMap<String, String> result) {
+    private void loadingConfigAfter(HashMap<String, String> result) {
         // 密文解密
         final StringEncryptor encryptor = new StringEncryptor(result);
         for (Map.Entry<String, String> e : result.entrySet()) {
@@ -94,6 +115,56 @@ class NoarkPropertiesLoader {
         // 表达式引用...
         for (Map.Entry<String, String> e : result.entrySet()) {
             e.setValue(EnvConfigHolder.fillExpression(e.getValue(), result, true));
+        }
+    }
+
+    private HashMap<String, String> loadingFile(String filename, String profile) {
+        HashMap<String, String> config = MapUtils.newHashMap(128);
+        this.loadingFile(filename + PROPERTIES_SUFFIX, config);
+
+        // 加载指定的Profile
+        if (StringUtils.isNotEmpty(profile)) {
+            loadingFile(filename + "-" + profile + PROPERTIES_SUFFIX, config);
+        }
+        return config;
+    }
+
+    private void loadingFile(String filename, Map<String, String> config) {
+        try (InputStream in = loader.getResourceAsStream(filename)) {
+            if (in == null) {
+                return;
+            }
+            // 使用UnicodeInputStream处理带有BOM的配置
+            try (UnicodeInputStream uis = new UnicodeInputStream(in, "UTF-8");
+                 InputStreamReader isr = new InputStreamReader(uis, uis.getEncoding())) {
+                Properties props = new Properties();
+                props.load(isr);
+
+                for (Entry<Object, Object> e : props.entrySet()) {
+                    String key = e.getKey().toString().trim();
+
+                    // 有更高优化级的配置，忽略这个配置
+                    if (properties.containsKey(key)) {
+                        continue;
+                    }
+
+                    // 收录这个新的配置
+                    String value = e.getValue().toString().trim();
+                    if (config.put(key, value) != null) {
+                        System.err.println("覆盖配置 >>" + key + "=" + value);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new ServerBootstrapException("配置文件格式异常... filename=" + filename);
+        }
+    }
+
+    public void loadingConfigCentre() {
+        // 开启配置中心功能,才能加载配置中心里的配置(本地配置会覆盖远程配置)
+        if (BooleanUtils.toBoolean(properties.get(NoarkConstant.NACOS_ENABLED))) {
+            this.loadConfigCentre(properties);
+            this.loadingConfigAfter(properties);
         }
     }
 
@@ -114,27 +185,8 @@ class NoarkPropertiesLoader {
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
     }
-
-    private void loadProperties(ClassLoader loader, String filename, HashMap<String, String> result) {
-        try (InputStream in = loader.getResourceAsStream(filename)) {
-            if (in == null) {
-                return;
-            }
-            // 使用UnicodeInputStream处理带有BOM的配置
-            try (UnicodeInputStream uis = new UnicodeInputStream(in, "UTF-8");
-                 InputStreamReader isr = new InputStreamReader(uis, uis.getEncoding())) {
-                Properties props = new Properties();
-                props.load(isr);
-                for (Entry<Object, Object> e : props.entrySet()) {
-                    String key = e.getKey().toString().trim();
-                    String value = e.getValue().toString();
-                    if (result.put(key, value) != null) {
-                        System.err.println("覆盖配置 >>" + key + "=" + value);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new ServerBootstrapException("配置文件格式异常... filename=" + filename);
-        }
+    
+    public Map<String, String> getProperties() {
+        return properties;
     }
 }

@@ -24,7 +24,7 @@ public class NoarkConstant {
     /**
      * 激活Noark的Profile的Key.
      */
-    public static final String NOARK_PROFILES_ACTIVE = "--noark.profiles.active=";
+    public static final String NOARK_PROFILES_ACTIVE = "noark.profiles.active";
 
     /**
      * Noark版本的配置，系统自动生成，不可配置.
