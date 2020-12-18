@@ -73,8 +73,6 @@ public class ByteArrayUtils {
      * @return short类型的数字
      */
     public static int toUnsignedShort(byte[] bytes, int off) {
-        int high = bytes[off];
-        int low = bytes[off + 1];
-        return (high << 8 & 0xFF00) | (low & 0xFF);
+        return (bytes[off + 1] << 8 & 0xFF00) | (bytes[off] & 0xFF);
     }
 }
