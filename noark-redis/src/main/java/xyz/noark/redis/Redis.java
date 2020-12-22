@@ -918,6 +918,27 @@ public class Redis {
     }
 
     /**
+     * 返回有序集key中，指定区间内的成员。
+     * <p>
+     * 其中成员的位置按score值递减(从大到小)来排列。<br>
+     * 具有相同score值的成员按字典序的反序排列。 <br>
+     * 除了成员按score值递减的次序排列这一点外，ZREVRANGE命令的其他方面和ZRANGE命令一样。
+     * </p>
+     * 可用版本： &gt;= 1.2.0<br>
+     * 时间复杂度: O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements returned.
+     *
+     * @param key   有序集key
+     * @param start 开始下标
+     * @param end   结束下标
+     * @return 指定区间内有序集成员的列表
+     */
+    public Set<String> zrevrange(String key, long start, long end) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.zrevrange(key, start, end);
+        }
+    }
+
+    /**
      * 返回有序集 key中，指定区间内的成员
      * <p>
      * 等同{@link #zrevrank(String, String)}方法，只是返回值多了一个分值
