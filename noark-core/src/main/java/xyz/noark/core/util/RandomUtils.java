@@ -237,6 +237,38 @@ public class RandomUtils {
     }
 
     /**
+     * 在指定集合中按权重随机出num个元素.
+     * <p>
+     * K为元素，如果是自定义对象记得重写HashCode和equals.<br>
+     * V为权重，机率为V/(sum(All))
+     *
+     * @param <K>  要随机的元素类型，也是Map的Key
+     * @param data 随机集合
+     * @param num  指定数量
+     * @return 按权重随机返回集合中的一个元素.
+     */
+    public static <K> List<K> randomByWeight(Map<K, Integer> data, int num) {
+        final int sum = data.values().stream().reduce(0, Integer::sum);
+        if (sum <= 0) {
+            return randomList(new ArrayList<>(data.keySet()), num);
+        }
+
+        List<K> result = new ArrayList<>(num);
+        for (int i = 1; i <= num; i++) {
+            final int random = nextInt(sum);
+            int step = 0;
+            for (Map.Entry<K, Integer> e : data.entrySet()) {
+                step += e.getValue();
+                if (step > random) {
+                    result.add(e.getKey());
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * 在指定集合中按权重随机出一个元素.
      * <p>
      * 权重，机率为V/(sum(All))
