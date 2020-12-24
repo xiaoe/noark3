@@ -1111,6 +1111,33 @@ public class Redis {
         }
     }
 
+
+    // ------------------------------List------------------------------
+
+    /**
+     * BRPOP 是一个阻塞的列表弹出原语。
+     * <p>
+     * 它是 RPOP 的阻塞版本，因为这个命令会在给定list无法弹出任何元素的时候阻塞连接。<br>
+     * 该命令会按照给出的 key 顺序查看 list，并在找到的第一个非空 list 的尾部弹出一个元素。
+     * </p>
+     * 请在 BLPOP 文档 中查看该命令的准确语义，因为 BRPOP 和 BLPOP 基本是完全一样的，除了它们一个是从尾部弹出元素，而另一个是从头部弹出元素。
+     *
+     * <p>
+     * 可用版本： &gt;= 2.0.0<br>
+     * 时间复杂度：O(1)
+     *
+     * @param timeout 超时时间，单位：秒
+     * @param keys    监听List的Key
+     * @return 多批量回复(multi - bulk - reply): 具体来说:<p>
+     * 1. 当没有元素可以被弹出时返回一个 nil 的多批量值，并且 timeout 过期。<br>
+     * 2. 当有元素弹出时会返回一个双元素的多批量值，其中第一个元素是弹出元素的 key，第二个元素是 value。
+     */
+    public List<String> brpop(final int timeout, final String... keys) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.brpop(timeout, keys);
+        }
+    }
+
     // ------------------------------Lua脚本------------------------------
 
     /**
