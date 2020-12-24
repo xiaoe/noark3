@@ -57,6 +57,10 @@ public class NoarkConstant {
      * Nacos的密码
      */
     public static final String NACOS_PASSWORD = "noark.nacos.password";
+    /**
+     * Nacos的命名空间
+     */
+    public static final String NACOS_NAMESPACES = "noark.nacos.namespaces";
 
     /**
      * 当前游戏进程PID文件位置。

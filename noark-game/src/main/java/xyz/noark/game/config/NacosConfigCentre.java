@@ -23,6 +23,7 @@ public class NacosConfigCentre extends AbstractConfigCentre {
     private final List<String> serverAddrList;
     private final String username;
     private final String password;
+    private final String tenant;
 
     public NacosConfigCentre(HashMap<String, String> basicConfig) {
         super(basicConfig);
@@ -37,8 +38,9 @@ public class NacosConfigCentre extends AbstractConfigCentre {
         }
         this.serverAddrList = serverAddr;
 
-        username = basicConfig.get(NoarkConstant.NACOS_USERNAME);
-        password = basicConfig.get(NoarkConstant.NACOS_PASSWORD);
+        this.tenant = basicConfig.getOrDefault(NoarkConstant.NACOS_NAMESPACES, "public");
+        this.username = basicConfig.get(NoarkConstant.NACOS_USERNAME);
+        this.password = basicConfig.get(NoarkConstant.NACOS_PASSWORD);
     }
 
     @Override
@@ -57,9 +59,9 @@ public class NacosConfigCentre extends AbstractConfigCentre {
         String url;
         if (StringUtils.isNotEmpty(username)) {
             url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId,
-                    "&group=", DEFAULT_GROUP, "&username=", username, "&password=", password);
+                    "&group=", DEFAULT_GROUP, "&tenant=", tenant, "&username=", username, "&password=", password);
         } else {
-            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", DEFAULT_GROUP);
+            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", DEFAULT_GROUP, "&tenant=", tenant);
         }
 
         try {
@@ -68,7 +70,7 @@ public class NacosConfigCentre extends AbstractConfigCentre {
             throw new ServerBootstrapException("加载Nacos配置中心配置时发生了异常情况", e);
         }
     }
-    
+
     public Map<String, String> toMap(String result) {
         String[] allLine = StringUtils.split(result, "\n");
         Map<String, String> configMap = MapUtils.newHashMap(allLine.length);
