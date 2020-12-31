@@ -111,7 +111,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         final Serializable queueId = this.getQueueId(handler, request);
         // 异步派发
         final long createTime = System.nanoTime();
-        threadDispatcher.dispatch(queueId, () -> this.exec(request, response, handler, createTime), null);
+        threadDispatcher.dispatch(queueId, () -> this.exec(request, response, handler, createTime), null, false);
     }
 
     /**
