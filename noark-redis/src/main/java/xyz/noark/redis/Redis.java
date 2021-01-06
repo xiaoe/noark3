@@ -69,6 +69,10 @@ public class Redis {
         logger.info("redis info. host={},port={},database={}", host, port, index);
     }
 
+    public Redis(JedisPool pool) {
+        this.pool = pool;
+    }
+
     public Redis ping() {
         try (Jedis j = pool.getResource()) {
             if (PONG.equals(j.ping())) {
