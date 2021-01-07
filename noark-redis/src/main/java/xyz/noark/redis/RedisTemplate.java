@@ -50,7 +50,12 @@ public class RedisTemplate {
         return redis;
     }
 
-    public Redis opsForValue() {
+    /**
+     * 获取简单的KV操作接口.
+     *
+     * @return 简单的KV操作接口
+     */
+    public ValueOperations opsForValue() {
         return redis;
     }
 }
