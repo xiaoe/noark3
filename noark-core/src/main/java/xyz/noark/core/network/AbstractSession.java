@@ -24,13 +24,13 @@ import java.io.Serializable;
 public abstract class AbstractSession implements Session {
     protected final Serializable id;
     protected final String ip;
-    protected final PacketStatis statis;
+    protected final PacketStatistics statistics;
     protected State state = State.CONNECTED;
 
     protected AbstractSession(Serializable id, String ip) {
         this.id = id;
         this.ip = ip;
-        this.statis = new PacketStatis();
+        this.statistics = new PacketStatistics();
     }
 
     @Override
@@ -58,8 +58,8 @@ public abstract class AbstractSession implements Session {
     }
 
     @Override
-    public PacketStatis getStatis() {
-        return statis;
+    public PacketStatistics getStatistics() {
+        return statistics;
     }
 
     @Override
