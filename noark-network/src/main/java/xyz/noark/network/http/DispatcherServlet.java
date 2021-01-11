@@ -19,11 +19,11 @@ import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.core.util.DateUtils;
-import xyz.noark.core.util.IpUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.http.exception.HandlerDeprecatedException;
 import xyz.noark.network.http.exception.NoHandlerFoundException;
 import xyz.noark.network.http.exception.UnrealizedQueueIdException;
+import xyz.noark.network.util.NettyUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -69,7 +69,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest fhr) {
-        final String ip = IpUtils.getIp(ctx.channel().remoteAddress());
+        final String ip = NettyUtils.analyzeIp(fhr, ctx);
         final QueryStringDecoder decoder = new QueryStringDecoder(fhr.uri());
         // HTTP请求
         NoarkHttpServletRequest request = new NoarkHttpServletRequest(decoder.path(), fhr.method(), ip);
