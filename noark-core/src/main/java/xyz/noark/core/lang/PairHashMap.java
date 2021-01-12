@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.util.MapUtils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -31,16 +33,12 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
         this.hashmap = new HashMap<>();
     }
 
-    public PairHashMap(int initialCapacity) {
-        this.hashmap = new HashMap<>(initialCapacity);
-    }
-
-    public PairHashMap(int initialCapacity, float loadFactor) {
-        this.hashmap = new HashMap<>(initialCapacity, loadFactor);
+    public PairHashMap(int size) {
+        this.hashmap = MapUtils.newHashMap(size);
     }
 
     public PairHashMap(List<V> templates, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends R> rightMapper) {
-        this(templates.size() + 1, 1);
+        this(templates.size());
         templates.forEach(v -> put(v, leftMapper, rightMapper));
     }
 

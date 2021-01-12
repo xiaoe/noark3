@@ -13,13 +13,15 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.util.MapUtils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
 /**
- * 两个元素当Key的HashMap.
+ * 三个元素当Key的HashMap.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
@@ -27,20 +29,24 @@ import java.util.function.Function;
 public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
     private final HashMap<Triple<L, M, R>, V> hashmap;
 
+    /**
+     * 构建一个TripleHashMap
+     */
     public TripleHashMap() {
         this.hashmap = new HashMap<>();
     }
 
-    public TripleHashMap(int initialCapacity) {
-        this.hashmap = new HashMap<>(initialCapacity);
-    }
-
-    public TripleHashMap(int initialCapacity, float loadFactor) {
-        this.hashmap = new HashMap<>(initialCapacity, loadFactor);
+    /**
+     * 根据指定存储元素数量来构建一个TripleHashMap
+     *
+     * @param size 存储元素数量
+     */
+    public TripleHashMap(int size) {
+        this.hashmap = MapUtils.newHashMap(size);
     }
 
     public TripleHashMap(List<V> templates, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends M> middleMapper, Function<? super V, ? extends R> rightMapper) {
-        this(templates.size() + 1, 1);
+        this(templates.size());
         templates.forEach(v -> put(v, leftMapper, middleMapper, rightMapper));
     }
 
