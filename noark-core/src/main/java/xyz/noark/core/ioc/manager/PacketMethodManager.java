@@ -15,6 +15,9 @@ package xyz.noark.core.ioc.manager;
 
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
+import xyz.noark.core.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -107,5 +110,24 @@ public class PacketMethodManager {
         result.entrySet().stream().sorted(Map.Entry.<Serializable, Long>comparingByValue().reversed()).limit(maxSize).forEachOrdered(e -> {
             logger.info("protocol stat. opcode={}, call={}", e.getKey(), e.getValue());
         });
+    }
+
+    /**
+     * 记录封包信息.
+     *
+     * @param session 链接Session
+     * @param packet  封包内容
+     */
+    public void logPacket(Session session, NetworkPacket packet) {
+        logger.warn("^(oo)^ packet info. session={}, packet={}", session.getId(), analysisPacket(session, packet));
+    }
+
+    private String analysisPacket(Session session, NetworkPacket packet) {
+        PacketMethodWrapper pmw = INSTANCE.getPacketMethodWrapper(packet.getOpcode());
+        if (pmw == null) {
+            return StringUtils.join("illegal opcode:", packet.getOpcode().toString());
+        }
+        // 把内容转成可直接阅读的信息
+        return pmw.toString(session, packet);
     }
 }

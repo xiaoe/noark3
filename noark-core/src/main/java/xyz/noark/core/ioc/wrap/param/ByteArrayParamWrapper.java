@@ -16,8 +16,10 @@ package xyz.noark.core.ioc.wrap.param;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.util.StringUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * 注入byte[]
@@ -35,5 +37,10 @@ public class ByteArrayParamWrapper implements ParamWrapper {
     @Override
     public Object read(Serializable playerId, Object protocol) {
         return protocol;
+    }
+
+    @Override
+    public String toString(Session session, NetworkPacket packet) {
+        return StringUtils.join("byte[]=", Arrays.toString(packet.getByteArray().array()));
     }
 }

@@ -40,4 +40,9 @@ public class ObjectParamWrapper implements ParamWrapper {
     public Object read(Serializable playerId, Object object) {
         return object;
     }
+
+    @Override
+    public String toString(Session session, NetworkPacket packet) {
+        throw new UnrealizedException("对象参数，不会走到这个逻辑.");
+    }
 }

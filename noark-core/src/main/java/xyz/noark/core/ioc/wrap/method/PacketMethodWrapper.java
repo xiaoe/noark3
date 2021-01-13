@@ -20,7 +20,6 @@ import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.*;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.io.Serializable;
 import java.lang.reflect.Parameter;
@@ -168,5 +167,25 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
      */
     public long getCallNum() {
         return callNum.longValue();
+    }
+
+    /**
+     * 把内容转成可直接阅读的信息
+     *
+     * @param session 链接Session
+     * @param packet  封包内容
+     * @return 返回这个封包可阅读字符串
+     */
+    public String toString(Session session, NetworkPacket packet) {
+        StringBuilder sb = new StringBuilder(128);
+        sb.append("[opcode=").append(opcode).append(',');
+        for (ParamWrapper parameter : parameters) {
+            sb.append(parameter.toString(session, packet)).append(',');
+        }
+        if (!parameters.isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        sb.append(']');
+        return sb.toString();
     }
 }

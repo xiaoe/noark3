@@ -17,6 +17,7 @@ import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.util.StringUtils;
 
 import java.io.Serializable;
 
@@ -36,6 +37,22 @@ public class PacketParamWrapper implements ParamWrapper {
     @Override
     public Object read(Session session, NetworkPacket packet) {
         return PacketCodecHolder.getPacketCodec().decodeProtocol(packet.getByteArray(), klass);
+    }
+
+    @Override
+    public String toString(Session session, NetworkPacket packet) {
+        Object object = read(session, packet);
+        if (object == null) {
+            return "protocol=null";
+        }
+
+        String protocol = object.toString();
+        if (StringUtils.isNotEmpty(protocol)) {
+            // 把回车换成逗号，最后一个逗号干掉
+            protocol = protocol.replace('\n', ',');
+            protocol = protocol.substring(0, protocol.length() - 1);
+        }
+        return StringUtils.join("protocol={", protocol, "}");
     }
 
     @Override

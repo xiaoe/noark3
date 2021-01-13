@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.network;
 
+import xyz.noark.core.ioc.manager.PacketMethodManager;
+
 /**
  * 默认的网络监听器.
  * <p>
@@ -25,11 +27,13 @@ public abstract class AbstractNetworkListener implements NetworkListener {
 
     @Override
     public boolean handleDuplicatePacket(Session session, NetworkPacket packet) {
+        PacketMethodManager.getInstance().logPacket(session, packet);
         return true;
     }
 
     @Override
     public boolean handleChecksumFail(Session session, NetworkPacket packet) {
+        PacketMethodManager.getInstance().logPacket(session, packet);
         return true;
     }
 
@@ -44,5 +48,6 @@ public abstract class AbstractNetworkListener implements NetworkListener {
 
     @Override
     public void handleException(Session session, NetworkPacket packet, Throwable e) {
+        PacketMethodManager.getInstance().logPacket(session, packet);
     }
 }
