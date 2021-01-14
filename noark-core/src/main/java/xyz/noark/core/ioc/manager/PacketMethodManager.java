@@ -119,6 +119,12 @@ public class PacketMethodManager {
      * @param packet  封包内容
      */
     public void logPacket(Session session, NetworkPacket packet) {
+        // 如果不是请求协议，这里就不记录了.
+        if (packet == null) {
+            return;
+        }
+
+        // 记录一下请求协议的内容，主要用于排查一些坏人干的坏事
         logger.warn("^(oo)^ packet info. session={}, packet={}", analysisSession(session), analysisPacket(session, packet));
     }
 
