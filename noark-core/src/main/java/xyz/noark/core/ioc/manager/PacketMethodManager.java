@@ -119,7 +119,15 @@ public class PacketMethodManager {
      * @param packet  封包内容
      */
     public void logPacket(Session session, NetworkPacket packet) {
-        logger.warn("^(oo)^ packet info. session={}, packet={}", session.getId(), analysisPacket(session, packet));
+        logger.warn("^(oo)^ packet info. session={}, packet={}", analysisSession(session), analysisPacket(session, packet));
+    }
+
+    private Object analysisSession(Session session) {
+        if (session == null) {
+            return "null";
+        }
+
+        return session.getId();
     }
 
     private String analysisPacket(Session session, NetworkPacket packet) {
