@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.MapUtils;
 
 import java.util.Collection;
@@ -47,7 +48,16 @@ public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
 
     public TripleHashMap(List<V> templates, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends M> middleMapper, Function<? super V, ? extends R> rightMapper) {
         this(templates.size());
-        templates.forEach(v -> put(v, leftMapper, middleMapper, rightMapper));
+        for (V template : templates) {
+            V object = put(template, leftMapper, middleMapper, rightMapper);
+            if (object != null) {
+                String name = object.getClass().getName();
+                L left = leftMapper.apply(object);
+                M middle = middleMapper.apply(object);
+                R right = rightMapper.apply(object);
+                throw new ServerBootstrapException("重复主键 class=" + name + ", left=" + left + ", middle=" + middle + ", right=" + right);
+            }
+        }
     }
 
     private V put(V value, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends M> middleMapper, Function<? super V, ? extends R> rightMapper) {

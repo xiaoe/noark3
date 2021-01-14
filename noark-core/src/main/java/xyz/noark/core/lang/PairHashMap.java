@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.MapUtils;
 
 import java.util.Collection;
@@ -39,7 +40,15 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
 
     public PairHashMap(List<V> templates, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends R> rightMapper) {
         this(templates.size());
-        templates.forEach(v -> put(v, leftMapper, rightMapper));
+        for (V template : templates) {
+            V object = put(template, leftMapper, rightMapper);
+            if (object != null) {
+                String name = object.getClass().getName();
+                L left = leftMapper.apply(object);
+                R right = rightMapper.apply(object);
+                throw new ServerBootstrapException("重复主键 class=" + name + ", left=" + left + ", right=" + right);
+            }
+        }
     }
 
     private V put(V value, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends R> rightMapper) {
