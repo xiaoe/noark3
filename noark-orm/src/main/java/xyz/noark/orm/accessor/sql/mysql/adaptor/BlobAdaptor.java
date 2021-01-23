@@ -36,9 +36,9 @@ class BlobAdaptor extends AbstractValueAdaptor<Object> {
             pstmt.setNull(parameterIndex, Types.BLOB);
         } else {
             byte[] array = (byte[]) value;
-            int length = array.length;
+            final int length = array.length;
             // 当且仅当开启了压缩且数据大于压缩阀值
-            if (fm.isGzip() && fm.getGzipThreshold() > length) {
+            if (fm.isGzip() && length > fm.getGzipThreshold()) {
                 array = GzipUtils.compress(array);
                 logger.debug("Gzip compress. {}->{}", length, array.length);
             }
