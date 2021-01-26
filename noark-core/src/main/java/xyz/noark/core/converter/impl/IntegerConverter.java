@@ -27,7 +27,14 @@ public class IntegerConverter extends AbstractConverter<Integer> {
 
     @Override
     public Integer convert(String value) {
-        return Integer.parseInt(value.replaceAll("_| ", ""));
+        // 常规数字
+        try {
+            return Integer.parseInt(value);
+        }
+        // 解析不出来，那就是一个骚的写法，比如为了可读性添加的'_'或','等
+        catch (NumberFormatException e) {
+            return Integer.parseInt(value.trim().replaceAll("_|,", ""));
+        }
     }
 
     @Override
