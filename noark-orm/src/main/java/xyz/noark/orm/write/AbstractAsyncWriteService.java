@@ -1,6 +1,9 @@
 package xyz.noark.orm.write;
 
-import com.github.benmanes.caffeine.cache.*;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.RemovalListener;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.thread.NamedThreadFactory;
@@ -36,7 +39,7 @@ public abstract class AbstractAsyncWriteService implements AsyncWriteService {
      * 批量存档数量
      */
     @Value(DataModular.DATA_BATCH_NUM)
-    protected int batchOperateNum = 256;
+    protected int batchOperateNum = 64;
     /**
      * 这个定时任务，有空就处理一下数据保存和缓存清理功能
      */
@@ -57,30 +60,19 @@ public abstract class AbstractAsyncWriteService implements AsyncWriteService {
         // 初始化存档异步线程池
         scheduledExecutorService = new ScheduledThreadPoolExecutor(threadPoolSize, new NamedThreadFactory(threadNamePrefix));
 
-        RemovalListener<Serializable, AsyncWriteContainer> listener = new RemovalListener<Serializable, AsyncWriteContainer>() {
-            @Override
-            public void onRemoval(Serializable key, AsyncWriteContainer value, RemovalCause cause) {
-                logger.info("销毁{}秒都没有读写操作的异步回写容器 groupId={}", offlineInterval, key);
-                value.syncFlush();
-                value.close();
-            }
+        RemovalListener<Serializable, AsyncWriteContainer> listener = (key, value, cause) -> {
+            logger.info("销毁{}秒都没有读写操作的异步回写容器 groupId={}", offlineInterval, key);
+            value.syncFlush();
+            value.close();
         };
 
-        CacheLoader<Serializable, AsyncWriteContainer> loader = new CacheLoader<Serializable, AsyncWriteContainer>() {
-            @Override
-            public AsyncWriteContainer load(Serializable groupId) {
-                logger.info("创建异步回写容器 groupId={}", groupId);
-                return new AsyncWriteContainer(groupId, saveInterval, scheduledExecutorService, dataAccessor, batchOperateNum);
-            }
+        CacheLoader<Serializable, AsyncWriteContainer> loader = groupId -> {
+            logger.info("创建异步回写容器 groupId={}", groupId);
+            return new AsyncWriteContainer(groupId, saveInterval, scheduledExecutorService, dataAccessor, batchOperateNum);
         };
 
         this.containers = Caffeine.newBuilder().expireAfterAccess(offlineInterval, TimeUnit.SECONDS).removalListener(listener).build(loader);
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                containers.cleanUp();
-            }
-        }, offlineInterval, offlineInterval, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> containers.cleanUp(), offlineInterval, offlineInterval, TimeUnit.SECONDS);
     }
 
     @Override

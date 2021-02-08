@@ -35,7 +35,7 @@ public class DataModular implements Modular {
      */
     public static final String DATA_OFFLINE_INTERVAL = "data.offline.interval";
     /**
-     * 服务器数据每次批量操作的最大数量，默认：256
+     * 服务器数据每次批量操作的最大数量，默认：64
      */
     public static final String DATA_BATCH_NUM = "data.batch.num";
     /**
