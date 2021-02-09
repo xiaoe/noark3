@@ -15,7 +15,7 @@ package xyz.noark.core.ioc.definition;
 
 import xyz.noark.core.annotation.configuration.Bean;
 import xyz.noark.core.ioc.IocMaking;
-import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
+import xyz.noark.core.ioc.definition.method.BeanMethodDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 
-    private final List<SimpleMethodDefinition> beans;
+    private final List<BeanMethodDefinition> beans;
 
     public ConfigurationBeanDefinition(Class<?> klass) {
         super(klass);
@@ -42,11 +42,10 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
         super.injection(making);
 
         // 注入完属性，还要建构相关Bean.
-        for (SimpleMethodDefinition bean : beans) {
+        for (BeanMethodDefinition bean : beans) {
             // FIXME 可以使用参数注入的方式 @Value一起用...
             Object obj = bean.getMethodAccess().invoke(single, bean.getMethodIndex());
-
-            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(obj).init();
+            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(bean.getBeanName(), obj).init();
             making.getLoader().getBeans().put(beanDefinition.getBeanClass(), beanDefinition);
         }
     }
@@ -55,7 +54,7 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
     protected void analysisMethodByAnnotation(Class<? extends Annotation> annotationType, Annotation annotation, Method method) {
         // 配置类中，只关心@Bean的注解方法，其他都忽略掉吧，没有什么意义...
         if (annotationType == Bean.class) {
-            beans.add(new SimpleMethodDefinition(methodAccess, method));
+            beans.add(new BeanMethodDefinition(methodAccess, method, (Bean) annotation));
         } else {
             super.analysisMethodByAnnotation(annotationType, annotation, method);
         }

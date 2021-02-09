@@ -5,10 +5,10 @@ subprojects {
 	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.4.0-SNAPSHOT'
-	
-	sourceCompatibility = 1.8  
-	targetCompatibility = 1.8  
+	version = '3.4.2-SNAPSHOT'
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 
 	[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -28,7 +28,7 @@ subprojects {
 		manifest.attributes["Implementation-Title"] = project.name
 		manifest.attributes["Implementation-Version"] = project.version
     }
-    
+
     javadoc {
     	options{
     		encoding "UTF-8"
@@ -38,11 +38,11 @@ subprojects {
     		links "http://docs.oracle.com/javase/8/docs/api/"
     	}
     }
-    
+
     ext."signing.keyId"='15567893'
 	ext."signing.password"=System.getenv('SIGNING_PASSWORD')
 	ext."signing.secretKeyRingFile"=System.getenv('SIGNING_SECRETKEYRINGFILE')
-	
+
 	signing {
 	    //sign configurations.archives
 	}

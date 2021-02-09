@@ -49,17 +49,15 @@ class NoarkInitializer {
      * 根据启动参数分析加载相应的配置文件
      */
     private Map<String, String> loadProperties(String... args) {
-        // --noark.profiles.active=dev
-        String profiles = null;
-        for (String a : args) {
-            if (a.startsWith(NoarkConstant.NOARK_PROFILES_ACTIVE)) {
-                profiles = a.substring(NoarkConstant.NOARK_PROFILES_ACTIVE.length());
-                break;
-            }
-        }
-
         // 载入配置文件...
         NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
-        return loader.loadProperties(profiles);
+        // 加载命令行参数
+        loader.loadingArgs(args);
+        // 加载配置文件参数
+        loader.loadingProperties();
+        // 加载配置中心参数
+        loader.loadingConfigCentre();
+        // 最终的配置
+        return loader.getProperties();
     }
 }

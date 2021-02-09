@@ -33,7 +33,7 @@ public interface ParamWrapper {
      * @param packet  封包
      * @return 返回参数对象
      */
-    public Object read(Session session, NetworkPacket packet);
+    Object read(Session session, NetworkPacket packet);
 
     /**
      * 解析参数对象
@@ -42,5 +42,14 @@ public interface ParamWrapper {
      * @param protocol 协议对象
      * @return 返回参数对象
      */
-    public Object read(Serializable playerId, Object protocol);
+    Object read(Serializable playerId, Object protocol);
+
+    /**
+     * 解析参数并转化为可阅读字符串
+     *
+     * @param session Session会话
+     * @param packet  封包
+     * @return 可阅读字符串
+     */
+    String toString(Session session, NetworkPacket packet);
 }

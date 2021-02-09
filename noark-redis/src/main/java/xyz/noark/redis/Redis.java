@@ -33,7 +33,7 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public class Redis {
+public class Redis implements ValueOperations {
     /**
      * 默认超时（毫秒）
      */
@@ -67,6 +67,10 @@ public class Redis {
     public Redis(String host, int port, String password, int index) {
         this.pool = new JedisPool(new GenericObjectPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
         logger.info("redis info. host={},port={},database={}", host, port, index);
+    }
+
+    public Redis(JedisPool pool) {
+        this.pool = pool;
     }
 
     public Redis ping() {
@@ -271,23 +275,6 @@ public class Redis {
         }
     }
 
-    /**
-     * 获取指定键Key所关联的字符串值.
-     * <p>
-     * 如果key不存在那么返回特殊值null<br>
-     * 假如key储存的值不是字符串类型，返回一个错误，因为 GET只能用于处理字符串值。
-     * <p>
-     * 可用版本： &gt;= 1.0.0<br>
-     * 时间复杂度： O(1)
-     *
-     * @param key 指定键Key
-     * @return 当key不存在时，返回 null，否则，返回 key的值
-     */
-    public String get(final String key) {
-        try (Jedis jedis = pool.getResource()) {
-            return jedis.get(key);
-        }
-    }
 
     /**
      * 将指定键Key中储存的数字值增加1。
@@ -382,76 +369,35 @@ public class Redis {
         }
     }
 
-    /**
-     * 为指定键Key设计指定值Value.
-     * <p>
-     * 如果key已经持有其他值， SET就覆写旧值，无视类型。<br>
-     * 对于某个原本带有生存时间（TTL）的键来说， 当 SET 命令成功在这个键上执行时， 这个键原有的 TTL 将被清除。
-     * <p>
-     * 可用版本： &gt;= 1.0.0<br>
-     * 时间复杂度： O(1)
-     *
-     * @param key   指定键Key
-     * @param value 指定值Value
-     * @return 返回OK。
-     */
+    @Override
+    public String get(final String key) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.get(key);
+        }
+    }
+
+    @Override
     public String set(final String key, String value) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.set(key, value);
         }
     }
 
-    /**
-     * 为指定键Key设计指定值Value.
-     * <p>
-     * 可用版本： &gt;= 1.0.0<br>
-     * 时间复杂度： O(1)
-     *
-     * @param key   指定键Key
-     * @param value 指定值Value
-     * @param nxxx  NX|XX, NX=只在键不存在时， XX=只在键已经存在时
-     * @return 返回OK。
-     */
+    @Override
     public String set(final String key, String value, String nxxx) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.set(key, value, nxxx);
         }
     }
 
-    /**
-     * 为指定键Key设计指定值Value.
-     * <p>
-     * 可用版本： &gt;= 2.6.12<br>
-     * 时间复杂度： O(1)
-     *
-     * @param key   指定键Key
-     * @param value 指定值Value
-     * @param nxxx  NX|XX, NX=只在键不存在时， XX=只在键已经存在时
-     * @param expx  EX|PX, 过期时间: EX=秒; PX=豪秒
-     * @param time  过期时间值.
-     * @return 从 Redis 2.6.12 版本开始， SET在设置操作成功完成时，才返回 OK。
-     * 如果设置了NX或者XX，但因为条件没达到而造成设置操作未执行，那么命令返回空批量回复（NULL Bulk Reply）。
-     */
+    @Override
     public String set(final String key, String value, String nxxx, String expx, final int time) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.set(key, value, nxxx, expx, time);
         }
     }
 
-    /**
-     * 为指定键Key设计指定值Value.
-     * <p>
-     * 可用版本： &gt;= 2.6.12<br>
-     * 时间复杂度： O(1)
-     *
-     * @param key   指定键Key
-     * @param value 指定值Value
-     * @param nxxx  NX|XX, NX=只在键不存在时， XX=只在键已经存在时
-     * @param expx  EX|PX, 过期时间: EX=秒; PX=豪秒
-     * @param time  过期时间值.
-     * @return 从 Redis 2.6.12 版本开始， SET在设置操作成功完成时，才返回 OK。
-     * 如果设置了NX或者XX，但因为条件没达到而造成设置操作未执行，那么命令返回空批量回复（NULL Bulk Reply）。
-     */
+    @Override
     public String set(final String key, String value, String nxxx, String expx, final long time) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.set(key, value, nxxx, expx, time);
@@ -918,6 +864,27 @@ public class Redis {
     }
 
     /**
+     * 返回有序集key中，指定区间内的成员。
+     * <p>
+     * 其中成员的位置按score值递减(从大到小)来排列。<br>
+     * 具有相同score值的成员按字典序的反序排列。 <br>
+     * 除了成员按score值递减的次序排列这一点外，ZREVRANGE命令的其他方面和ZRANGE命令一样。
+     * </p>
+     * 可用版本： &gt;= 1.2.0<br>
+     * 时间复杂度: O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements returned.
+     *
+     * @param key   有序集key
+     * @param start 开始下标
+     * @param end   结束下标
+     * @return 指定区间内有序集成员的列表
+     */
+    public Set<String> zrevrange(String key, long start, long end) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.zrevrange(key, start, end);
+        }
+    }
+
+    /**
      * 返回有序集 key中，指定区间内的成员
      * <p>
      * 等同{@link #zrevrank(String, String)}方法，只是返回值多了一个分值
@@ -1087,6 +1054,33 @@ public class Redis {
     public Long srem(final String key, final String... members) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.srem(key, members);
+        }
+    }
+
+
+    // ------------------------------List------------------------------
+
+    /**
+     * BRPOP 是一个阻塞的列表弹出原语。
+     * <p>
+     * 它是 RPOP 的阻塞版本，因为这个命令会在给定list无法弹出任何元素的时候阻塞连接。<br>
+     * 该命令会按照给出的 key 顺序查看 list，并在找到的第一个非空 list 的尾部弹出一个元素。
+     * </p>
+     * 请在 BLPOP 文档 中查看该命令的准确语义，因为 BRPOP 和 BLPOP 基本是完全一样的，除了它们一个是从尾部弹出元素，而另一个是从头部弹出元素。
+     *
+     * <p>
+     * 可用版本： &gt;= 2.0.0<br>
+     * 时间复杂度：O(1)
+     *
+     * @param timeout 超时时间，单位：秒
+     * @param keys    监听List的Key
+     * @return 多批量回复(multi - bulk - reply): 具体来说:<p>
+     * 1. 当没有元素可以被弹出时返回一个 nil 的多批量值，并且 timeout 过期。<br>
+     * 2. 当有元素弹出时会返回一个双元素的多批量值，其中第一个元素是弹出元素的 key，第二个元素是 value。
+     */
+    public List<String> brpop(final int timeout, final String... keys) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.brpop(timeout, keys);
         }
     }
 

@@ -13,6 +13,9 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.util.MapUtils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -31,17 +34,21 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
         this.hashmap = new HashMap<>();
     }
 
-    public PairHashMap(int initialCapacity) {
-        this.hashmap = new HashMap<>(initialCapacity);
-    }
-
-    public PairHashMap(int initialCapacity, float loadFactor) {
-        this.hashmap = new HashMap<>(initialCapacity, loadFactor);
+    public PairHashMap(int size) {
+        this.hashmap = MapUtils.newHashMap(size);
     }
 
     public PairHashMap(List<V> templates, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends R> rightMapper) {
-        this(templates.size() + 1, 1);
-        templates.forEach(v -> put(v, leftMapper, rightMapper));
+        this(templates.size());
+        for (V template : templates) {
+            V object = put(template, leftMapper, rightMapper);
+            if (object != null) {
+                String name = object.getClass().getName();
+                L left = leftMapper.apply(object);
+                R right = rightMapper.apply(object);
+                throw new ServerBootstrapException("重复主键 class=" + name + ", left=" + left + ", right=" + right);
+            }
+        }
     }
 
     private V put(V value, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends R> rightMapper) {

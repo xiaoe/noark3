@@ -32,6 +32,20 @@ public class GzipUtils {
     public static final String ENCODING_GZIP = "gzip";
 
     /**
+     * 判定指定数据是否Gzip压缩数据.
+     *
+     * @param data 指定数据
+     * @return 如果是Gzip压缩数据则返回true，否则返回false
+     */
+    public static boolean isGzip(byte[] data) {
+        // 如果数据为空或长度小于2位的情况，肯定不是Gzip压缩方式
+        if (data == null || data.length <= 1) {
+            return false;
+        }
+        return ByteArrayUtils.toUnsignedShort(data) == GZIPInputStream.GZIP_MAGIC;
+    }
+
+    /**
      * 以GZip方式压缩
      *
      * @param data 要压缩的数据
@@ -39,12 +53,12 @@ public class GzipUtils {
      * @throws IOException 如果发生I/O错误。
      */
     public static byte[] compress(byte[] data) throws IOException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(data.length)) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length)) {
             // 写法有点怪，没有关系，GZip压缩写得怪，请参考java.util.zip.GZIPOutputStream.finish()
-            try (GZIPOutputStream gzipos = new GZIPOutputStream(baos)) {
-                gzipos.write(data);
+            try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream)) {
+                gzipOutputStream.write(data);
             }
-            return baos.toByteArray();
+            return outputStream.toByteArray();
         }
     }
 
@@ -56,13 +70,14 @@ public class GzipUtils {
      * @throws IOException 如果发生I/O错误。
      */
     public static byte[] uncompress(byte[] data) throws IOException {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(data.length); GZIPInputStream gzipos = new GZIPInputStream(new ByteArrayInputStream(data))) {
-            int n = -1;
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+             GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(data))) {
+            int n;
             byte[] temp = new byte[1024];
-            while ((n = gzipos.read(temp)) > 0) {
-                baos.write(temp, 0, n);
+            while ((n = gzipInputStream.read(temp)) > 0) {
+                outputStream.write(temp, 0, n);
             }
-            return baos.toByteArray();
+            return outputStream.toByteArray();
         }
     }
 }

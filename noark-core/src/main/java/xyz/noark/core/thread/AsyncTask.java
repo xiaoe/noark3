@@ -10,10 +10,12 @@ import java.io.Serializable;
  */
 public class AsyncTask extends AbstractAsyncTask implements Runnable {
     private final TaskCallback taskCallback;
+    private final boolean printLog;
 
-    public AsyncTask(TaskCallback taskCallback, Serializable playerId) {
+    public AsyncTask(TaskCallback taskCallback, Serializable playerId, boolean printLog) {
         super(null, playerId);
         this.taskCallback = taskCallback;
+        this.printLog = printLog;
     }
 
     @Override
@@ -28,6 +30,6 @@ public class AsyncTask extends AbstractAsyncTask implements Runnable {
 
     @Override
     protected boolean isPrintLog() {
-        return true;
+        return printLog;
     }
 }

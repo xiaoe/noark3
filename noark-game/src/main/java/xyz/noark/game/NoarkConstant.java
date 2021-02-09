@@ -24,7 +24,7 @@ public class NoarkConstant {
     /**
      * 激活Noark的Profile的Key.
      */
-    public static final String NOARK_PROFILES_ACTIVE = "--noark.profiles.active=";
+    public static final String NOARK_PROFILES_ACTIVE = "noark.profiles.active";
 
     /**
      * Noark版本的配置，系统自动生成，不可配置.
@@ -42,13 +42,25 @@ public class NoarkConstant {
     public static final String BI_REPORT_ACTIVE = "game.bi.report.active";
 
     /**
-     * 配置中心是否开启,默认为关闭状态
+     * Nacos服务是否开启,默认为关闭状态
      */
-    public static final String CONFIG_ENABLED = "noark.config.enabled";
+    public static final String NACOS_ENABLED = "noark.nacos.enabled";
     /**
-     * 配置中心的配置存档路径，默认值为/noark/config/game/
+     * Nacos的服务地址
      */
-    public static final String CONFIG_PATH = "noark.config.path";
+    public static final String NACOS_SERVER_ADDR = "noark.nacos.server-addr";
+    /**
+     * Nacos的账号
+     */
+    public static final String NACOS_USERNAME = "noark.nacos.username";
+    /**
+     * Nacos的密码
+     */
+    public static final String NACOS_PASSWORD = "noark.nacos.password";
+    /**
+     * Nacos的命名空间
+     */
+    public static final String NACOS_NAMESPACES = "noark.nacos.namespaces";
 
     /**
      * 当前游戏进程PID文件位置。

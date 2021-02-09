@@ -13,13 +13,16 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.util.MapUtils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
 /**
- * 两个元素当Key的HashMap.
+ * 三个元素当Key的HashMap.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
@@ -27,21 +30,34 @@ import java.util.function.Function;
 public class TripleHashMap<L, M, R, V> implements TripleMap<L, M, R, V> {
     private final HashMap<Triple<L, M, R>, V> hashmap;
 
+    /**
+     * 构建一个TripleHashMap
+     */
     public TripleHashMap() {
         this.hashmap = new HashMap<>();
     }
 
-    public TripleHashMap(int initialCapacity) {
-        this.hashmap = new HashMap<>(initialCapacity);
-    }
-
-    public TripleHashMap(int initialCapacity, float loadFactor) {
-        this.hashmap = new HashMap<>(initialCapacity, loadFactor);
+    /**
+     * 根据指定存储元素数量来构建一个TripleHashMap
+     *
+     * @param size 存储元素数量
+     */
+    public TripleHashMap(int size) {
+        this.hashmap = MapUtils.newHashMap(size);
     }
 
     public TripleHashMap(List<V> templates, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends M> middleMapper, Function<? super V, ? extends R> rightMapper) {
-        this(templates.size() + 1, 1);
-        templates.forEach(v -> put(v, leftMapper, middleMapper, rightMapper));
+        this(templates.size());
+        for (V template : templates) {
+            V object = put(template, leftMapper, middleMapper, rightMapper);
+            if (object != null) {
+                String name = object.getClass().getName();
+                L left = leftMapper.apply(object);
+                M middle = middleMapper.apply(object);
+                R right = rightMapper.apply(object);
+                throw new ServerBootstrapException("重复主键 class=" + name + ", left=" + left + ", middle=" + middle + ", right=" + right);
+            }
+        }
     }
 
     private V put(V value, Function<? super V, ? extends L> leftMapper, Function<? super V, ? extends M> middleMapper, Function<? super V, ? extends R> rightMapper) {

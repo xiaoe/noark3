@@ -14,12 +14,13 @@
 package xyz.noark.orm.accessor.sql.mysql.adaptor;
 
 import xyz.noark.core.util.GzipUtils;
-import xyz.noark.log.LogHelper;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
 
 import java.sql.ResultSet;
 import java.sql.Types;
+
+import static xyz.noark.log.LogHelper.logger;
 
 /**
  * Blob类型属性
@@ -35,10 +36,11 @@ class BlobAdaptor extends AbstractValueAdaptor<Object> {
             pstmt.setNull(parameterIndex, Types.BLOB);
         } else {
             byte[] array = (byte[]) value;
-            int length = array.length;
-            if (fm.isGzip()) {
+            final int length = array.length;
+            // 当且仅当开启了压缩且数据大于压缩阀值
+            if (fm.isGzip() && length > fm.getGzipThreshold()) {
                 array = GzipUtils.compress(array);
-                LogHelper.logger.debug("Gzip compress. {}->{}", length, array.length);
+                logger.debug("Gzip compress. {}->{}", length, array.length);
             }
             pstmt.setObject(parameterIndex, array);
         }
@@ -50,11 +52,14 @@ class BlobAdaptor extends AbstractValueAdaptor<Object> {
         if (array == null) {
             return null;
         }
-        int length = array.length;
-        if (fm.isGzip()) {
+
+        // 如果这是属性开启了Gzip压缩且他是个Gzip压缩数据
+        if (fm.isGzip() && GzipUtils.isGzip(array)) {
+            int length = array.length;
             array = GzipUtils.uncompress(array);
-            LogHelper.logger.debug("Gzip uncompress. {}->{}", length, array.length);
+            logger.debug("Gzip uncompress. {}->{}", length, array.length);
         }
+
         return array;
     }
 }

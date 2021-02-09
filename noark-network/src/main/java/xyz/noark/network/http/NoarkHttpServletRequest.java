@@ -134,10 +134,17 @@ class NoarkHttpServletRequest implements HttpServletRequest {
 
     private void parsePostFromContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
         // 解析Post默认参数
-        List<InterfaceHttpData> parameterList = new HttpPostRequestDecoder(fhr).getBodyHttpDatas();
-        for (InterfaceHttpData parameter : parameterList) {
-            Attribute attr = (Attribute) parameter;
-            parameterMap.computeIfAbsent(attr.getName(), key -> new ArrayList<>(1)).add(attr.getValue());
+        HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(fhr);
+        try {
+            List<InterfaceHttpData> parameterList = decoder.getBodyHttpDatas();
+            for (InterfaceHttpData parameter : parameterList) {
+                Attribute attr = (Attribute) parameter;
+                parameterMap.computeIfAbsent(attr.getName(), key -> new ArrayList<>(1)).add(attr.getValue());
+            }
+        } finally {
+            // This decoder will decode Body and can handle POST BODY.
+            // You MUST call destroy() after completion to release all resources.
+            decoder.destroy();
         }
     }
 

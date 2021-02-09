@@ -217,11 +217,12 @@ public class ThreadDispatcher {
      * @param queueId  执行队列ID
      * @param callback 一个任务
      * @param playerId 玩家ID（可以为空）
+     * @param printLog 是否输出执行耗时日志
      */
-    public void dispatch(Serializable queueId, TaskCallback callback, Serializable playerId) {
+    public void dispatch(Serializable queueId, TaskCallback callback, Serializable playerId, boolean printLog) {
         // 如果没有指定队列ID
         if (queueId == null) {
-            businessThreadPool.execute(new AsyncTask(callback, playerId));
+            businessThreadPool.execute(new AsyncTask(callback, playerId, printLog));
         }
         // 有指定队列
         else {

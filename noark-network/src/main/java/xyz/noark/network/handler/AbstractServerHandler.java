@@ -153,10 +153,10 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
     private void statPacket(Session session, NetworkPacket packet) {
         long second = System.currentTimeMillis() / 1000;
         // 当前秒内累计接受到的封包长度
-        long packetLength = session.getStatis().record(second, packet.getLength());
+        long packetLength = session.getStatistics().record(second, packet.getLength());
         if (packetLength >= receiveThreshold) {
             // 当前秒已预警次数
-            int warnCount = session.getStatis().warning(second, receiveSecond);
+            int warnCount = session.getStatistics().warning(second, receiveSecond);
             if (warnCount >= receiveCount) {
                 logger.warn("网络封包统计预警：在 {} 秒内累计 {} 次超出 {} 预警值", receiveSecond, warnCount, receiveThreshold);
 

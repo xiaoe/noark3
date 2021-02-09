@@ -34,6 +34,10 @@ public class RedisPublishReportImpl extends AbstractReportService implements Rep
         this.redis = redis;
     }
 
+    public Redis getRedis() {
+        return redis;
+    }
+
     @Override
     public void report(ReportData data) {
         if (reportActive) {

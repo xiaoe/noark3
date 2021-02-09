@@ -54,4 +54,25 @@ public class ByteArrayUtils {
     public static int toInt(byte[] bytes) {
         return bytes[3] & 0xFF | (bytes[2] & 0xFF) << 8 | (bytes[1] & 0xFF) << 16 | (bytes[0] & 0xFF) << 24;
     }
+
+    /**
+     * N位byte数组读出一个无符号short类型的数字
+     *
+     * @param bytes byte数组
+     * @return short类型的数字
+     */
+    public static int toUnsignedShort(byte[] bytes) {
+        return toUnsignedShort(bytes, 0);
+    }
+
+    /**
+     * N位byte数组读出一个无符号short类型的数字
+     *
+     * @param bytes byte数组
+     * @param off   偏移值
+     * @return short类型的数字
+     */
+    public static int toUnsignedShort(byte[] bytes, int off) {
+        return (bytes[off + 1] << 8 & 0xFF00) | (bytes[off] & 0xFF);
+    }
 }

@@ -17,8 +17,10 @@ import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.util.StringUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * NetworkPacket对象.
@@ -36,5 +38,10 @@ public class NetworkPacketParamWrapper implements ParamWrapper {
     @Override
     public Object read(Serializable playerId, Object protocol) {
         throw new UnrealizedException("内部指令是不可以注入封包对象.");
+    }
+
+    @Override
+    public String toString(Session session, NetworkPacket packet) {
+        return StringUtils.join("packet=", Arrays.toString(packet.getByteArray().array()));
     }
 }

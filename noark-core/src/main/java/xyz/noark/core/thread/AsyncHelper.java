@@ -95,6 +95,6 @@ public class AsyncHelper {
     }
 
     private static void call(Serializable queueId, TaskCallback callback, Serializable playerId) {
-        threadDispatcher.dispatch(queueId, callback, playerId);
+        threadDispatcher.dispatch(queueId, callback, playerId, true);
     }
 }

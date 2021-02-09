@@ -56,8 +56,7 @@ public class FieldMapping {
      */
     private boolean emoji;
 
-
-    private boolean gzip;
+    private Gzip gzip;
 
     public FieldMapping(Field field, MethodAccess methodAccess) {
         this.field = field;
@@ -73,7 +72,7 @@ public class FieldMapping {
         this.createdDate = field.getAnnotation(CreatedDate.class);
         this.lastModifiedDate = field.getAnnotation(LastModifiedDate.class);
         this.emoji = field.isAnnotationPresent(Emoji.class);
-        this.gzip = field.isAnnotationPresent(Gzip.class);
+        this.gzip = field.getAnnotation(Gzip.class);
 
         this.getMethodIndex = methodAccess.getIndex(FieldUtils.genGetMethodName(field));
         this.setMethodIndex = methodAccess.getIndex(FieldUtils.genSetMethodName(field));
@@ -224,10 +223,10 @@ public class FieldMapping {
     }
 
     public boolean isGzip() {
-        return gzip;
+        return gzip != null;
     }
 
-    public void setGzip(boolean gzip) {
-        this.gzip = gzip;
+    public int getGzipThreshold(){
+        return gzip.threshold();
     }
 }

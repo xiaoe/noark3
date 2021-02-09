@@ -1,5 +1,7 @@
 package xyz.noark.network.http.intercept;
 
+import xyz.noark.core.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.regex.Pattern;
  * @since 3.4
  */
 class IpAllowListConfig {
-    private static Pattern pattern = Pattern.compile("(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})");
+    private static final Pattern PATTERN = Pattern.compile("(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\." + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})");
     private final Set<String> ipList;
 
     IpAllowListConfig(String allowIp) {
@@ -24,15 +26,15 @@ class IpAllowListConfig {
      * getAvaliIpList:(根据IP白名单设置获取可用的IP列表).
      */
     public Set<String> getAvailIpList(String allowIp) {
-        Set<String> ipList = new HashSet<String>();
-        for (String allow : allowIp.replaceAll("\\s", "").split(";")) {
-            if (allow.indexOf("*") > -1) {
+        Set<String> ipList = new HashSet<>();
+        for (String allow : allowIp.replaceAll("\\s", "").split(StringUtils.SEMICOLON)) {
+            if (allow.contains("*")) {
                 String[] ips = allow.split("\\.");
                 String[] from = new String[]{"0", "0", "0", "0"};
                 String[] end = new String[]{"255", "255", "255", "255"};
-                List<String> tem = new ArrayList<String>();
+                List<String> tem = new ArrayList<>();
                 for (int i = 0; i < ips.length; i++) {
-                    if (ips[i].indexOf("*") > -1) {
+                    if (ips[i].contains("*")) {
                         tem = complete(ips[i]);
                         from[i] = null;
                         end[i] = null;
@@ -41,22 +43,22 @@ class IpAllowListConfig {
                         end[i] = ips[i];
                     }
                 }
-                StringBuffer fromIP = new StringBuffer();
-                StringBuffer endIP = new StringBuffer();
+                StringBuilder fromIp = new StringBuilder();
+                StringBuilder endIp = new StringBuilder();
                 for (int i = 0; i < 4; i++) {
                     if (from[i] != null) {
-                        fromIP.append(from[i]).append(".");
-                        endIP.append(end[i]).append(".");
+                        fromIp.append(from[i]).append(".");
+                        endIp.append(end[i]).append(".");
                     } else {
-                        fromIP.append("[*].");
-                        endIP.append("[*].");
+                        fromIp.append("[*].");
+                        endIp.append("[*].");
                     }
                 }
-                fromIP.deleteCharAt(fromIP.length() - 1);
-                endIP.deleteCharAt(endIP.length() - 1);
+                fromIp.deleteCharAt(fromIp.length() - 1);
+                endIp.deleteCharAt(endIp.length() - 1);
 
                 for (String s : tem) {
-                    String ip = fromIP.toString().replace("[*]", s.split(";")[0]) + "-" + endIP.toString().replace("[*]", s.split(";")[1]);
+                    String ip = fromIp.toString().replace("[*]", s.split(";")[0]) + "-" + endIp.toString().replace("[*]", s.split(";")[1]);
                     if (validate(ip)) {
                         ipList.add(ip);
                     }
@@ -71,8 +73,8 @@ class IpAllowListConfig {
     }
 
     private static String complete(String arg, int length) {
-        String from = "";
-        String end = "";
+        String from;
+        String end;
         if (length == 1) {
             from = arg.replace("*", "0");
             end = arg.replace("*", "9");
@@ -80,10 +82,10 @@ class IpAllowListConfig {
             from = arg.replace("*", "00");
             end = arg.replace("*", "99");
         }
-        if (Integer.valueOf(from) > 255) {
+        if (Integer.parseInt(from) > 255) {
             return null;
         }
-        if (Integer.valueOf(end) > 255) {
+        if (Integer.parseInt(end) > 255) {
             end = "255";
         }
         return from + ";" + end;
@@ -93,8 +95,8 @@ class IpAllowListConfig {
      * 在添加至白名单时进行格式校验
      */
     private static boolean validate(String ip) {
-        for (String s : ip.split("-")) {
-            if (!pattern.matcher(s).matches()) {
+        for (String s : ip.split(StringUtils.HYPHEN)) {
+            if (!PATTERN.matcher(s).matches()) {
                 return false;
             }
         }
@@ -104,11 +106,11 @@ class IpAllowListConfig {
     /**
      * 对单个IP节点进行范围限定
      *
-     * @param arg
+     * @param arg 参数
      * @return 返回限定后的IP范围，格式为List[10;19, 100;199]
      */
     private static List<String> complete(String arg) {
-        List<String> com = new ArrayList<String>();
+        List<String> com = new ArrayList<>();
         if (arg.length() == 1) {
             com.add("0;255");
         } else if (arg.length() == 2) {
@@ -137,7 +139,7 @@ class IpAllowListConfig {
 
         // 多组配置
         for (String allow : ipList) {
-            if (allow.indexOf("-") > -1) {
+            if (allow.contains("-")) {
                 String[] from = allow.split("-")[0].split("\\.");
                 String[] end = allow.split("-")[1].split("\\.");
                 String[] tag = ip.split("\\.");
@@ -145,9 +147,9 @@ class IpAllowListConfig {
                 // 对IP从左到右进行逐段匹配
                 boolean check = true;
                 for (int i = 0; i < 4; i++) {
-                    int s = Integer.valueOf(from[i]);
-                    int t = Integer.valueOf(tag[i]);
-                    int e = Integer.valueOf(end[i]);
+                    int s = Integer.parseInt(from[i]);
+                    int t = Integer.parseInt(tag[i]);
+                    int e = Integer.parseInt(end[i]);
                     if (!(s <= t && t <= e)) {
                         check = false;
                         break;

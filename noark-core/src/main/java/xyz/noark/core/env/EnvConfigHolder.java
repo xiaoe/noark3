@@ -79,6 +79,9 @@ public class EnvConfigHolder {
      * @return 替换完的值
      */
     public static String fillExpression(String value, Map<String, String> config, boolean required) {
+        if (value == null) {
+            return null;
+        }
         int startIndex = value.indexOf("${");
         while (startIndex >= 0) {
             int endIndex = value.indexOf("}", startIndex);

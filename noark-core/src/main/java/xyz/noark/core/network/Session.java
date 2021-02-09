@@ -30,19 +30,19 @@ public interface Session extends SessionAttrMap {
      *
      * @return 实际就是链接Channel的ID
      */
-    public Serializable getId();
+    Serializable getId();
 
     /**
      * 获取当前Session链接的IP地址
      *
      * @return IP地址
      */
-    public String getIp();
+    String getIp();
 
     /**
      * 关闭当前Session的链接.
      */
-    public void close();
+    void close();
 
     /**
      * 发送一个网络封包.
@@ -50,7 +50,7 @@ public interface Session extends SessionAttrMap {
      * @param opcode   协议编号
      * @param protocol 协议对象
      */
-    public void send(Serializable opcode, Object protocol);
+    void send(Serializable opcode, Object protocol);
 
     /**
      * 发送完成后关闭当前链接.
@@ -58,7 +58,7 @@ public interface Session extends SessionAttrMap {
      * @param opcode   协议编号
      * @param protocol 协议对象
      */
-    public void sendAndClose(Serializable opcode, Object protocol);
+    void sendAndClose(Serializable opcode, Object protocol);
 
     /**
      * 发送一个网络封包.
@@ -67,59 +67,59 @@ public interface Session extends SessionAttrMap {
      *
      * @param packet 封包内容
      */
-    public void send(ByteArray packet);
+    void send(ByteArray packet);
 
     /**
      * 发送一个网络协议
      *
      * @param networkProtocol 网络协议
      */
-    public void send(NetworkProtocol networkProtocol);
+    void send(NetworkProtocol networkProtocol);
 
     /**
      * 获取当前链接状态.
      *
      * @return 链接状态
      */
-    public State getState();
+    State getState();
 
     /**
      * 获取玩家的UID.
      *
      * @return 玩家的UID
      */
-    public String getUid();
+    String getUid();
 
     /**
      * 获取玩家ID
      *
      * @return 玩家ID
      */
-    public Serializable getPlayerId();
+    Serializable getPlayerId();
 
     /**
      * 清除账号和角色ID，用于顶号后解绑
      */
-    public void clearUidAndPlayerId();
+    void clearUidAndPlayerId();
 
     /**
      * 获取封包统计情况.
      *
      * @return 封包统计情况
      */
-    public PacketStatis getStatis();
+    PacketStatistics getStatistics();
 
     /**
      * 获取封包加密接口.
      *
      * @return 封包加密接口
      */
-    public PacketEncrypt getPacketEncrypt();
+    PacketEncrypt getPacketEncrypt();
 
     /**
      * Session状态.
      */
-    static enum State {
+    enum State {
         /**
          * 随便什么状态都可以访问.
          * <p>

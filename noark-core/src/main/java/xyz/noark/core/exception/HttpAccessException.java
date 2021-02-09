@@ -22,6 +22,10 @@ package xyz.noark.core.exception;
 public class HttpAccessException extends RuntimeException {
     private static final long serialVersionUID = -2161803030662179025L;
 
+    public HttpAccessException(String msg) {
+        super(msg);
+    }
+
     public HttpAccessException(Exception e) {
         super(e);
     }

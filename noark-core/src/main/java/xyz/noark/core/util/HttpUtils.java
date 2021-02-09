@@ -45,8 +45,9 @@ public class HttpUtils {
      *
      * @param url 发送请求的URL
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
-    public static String get(String url) {
+    public static String get(String url) throws IOException {
         return get(url, DEFAULT_TIMEOUT, Collections.emptyMap());
     }
 
@@ -56,8 +57,9 @@ public class HttpUtils {
      * @param url             发送请求的URL
      * @param responseCharset 响应编码（默认UTF-8）
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
-    public static String get(String url, Charset responseCharset) {
+    public static String get(String url, Charset responseCharset) throws IOException {
         return get(url, DEFAULT_TIMEOUT, Collections.emptyMap(), responseCharset);
     }
 
@@ -67,8 +69,9 @@ public class HttpUtils {
      * @param url     发送请求的URL
      * @param timeout 请求超时（单位：毫秒）
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
-    public static String get(String url, int timeout) {
+    public static String get(String url, int timeout) throws IOException {
         return get(url, timeout, Collections.emptyMap());
     }
 
@@ -78,8 +81,9 @@ public class HttpUtils {
      * @param url             发送请求的URL
      * @param requestProperty 请求属性
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
-    public static String get(String url, Map<String, String> requestProperty) {
+    public static String get(String url, Map<String, String> requestProperty) throws IOException {
         return get(url, DEFAULT_TIMEOUT, requestProperty);
     }
 
@@ -90,8 +94,9 @@ public class HttpUtils {
      * @param timeout         请求超时（单位：毫秒）
      * @param requestProperty 请求属性
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
-    public static String get(String url, int timeout, Map<String, String> requestProperty) {
+    public static String get(String url, int timeout, Map<String, String> requestProperty) throws IOException {
         return get(url, timeout, requestProperty, CharsetUtils.CHARSET_UTF_8);
     }
 
@@ -103,22 +108,20 @@ public class HttpUtils {
      * @param requestProperty 请求属性
      * @param responseCharset 响应编码（默认UTF-8）
      * @return URL 所代表远程资源的响应结果
+     * @throws IOException HTTP过程中可能会出现IO异常
      */
-    public static String get(String url, int timeout, Map<String, String> requestProperty, Charset responseCharset) {
-        logger.info("GET: url={}", url);
-        try {
-            // 打开和URL之间的连接
-            URLConnection connection = new URL(url).openConnection();
-            connection.setReadTimeout(timeout);
-            requestProperty.forEach(connection::setRequestProperty);
+    public static String get(String url, int timeout, Map<String, String> requestProperty, Charset responseCharset) throws IOException {
 
-            // 建立实际的连接
-            connection.connect();
+        // 打开和URL之间的连接
+        URLConnection connection = new URL(url).openConnection();
+        connection.setReadTimeout(timeout);
+        requestProperty.forEach(connection::setRequestProperty);
 
-            return handleResponseText(connection, responseCharset);
-        } catch (Exception e) {
-            throw new HttpAccessException(e);
-        }
+        // 建立实际的连接
+        connection.connect();
+
+        return handleResponseText(connection, responseCharset);
+
     }
 
     /**
@@ -276,8 +279,6 @@ public class HttpUtils {
     }
 
     private static String readResponseText(InputStream inputStream, Charset responseCharset) throws IOException {
-        String result = StringUtils.readString(inputStream, responseCharset);
-        logger.info(result);
-        return result;
+        return StringUtils.readString(inputStream, responseCharset);
     }
 }

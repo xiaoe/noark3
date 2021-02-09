@@ -112,7 +112,9 @@ public class SocketSession extends AbstractSession implements IncodeSession {
 
         // 不可写，未发送的数据已达最高水位了...
         if (!channel.isWritable()) {
-            logger.debug("send packet fail isWritable=false. channel={}, playerId={}", channel, playerId);
+            logger.warn("send packet fail isWritable=false. channel={}, playerId={}", channel, playerId);
+            // 不能写了，还是T了这个货吧，留着过年吗？？？
+            this.close();
             return;
         }
 

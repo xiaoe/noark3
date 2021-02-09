@@ -13,7 +13,10 @@
  */
 package xyz.noark.game.loader.scheme;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.HttpUtils;
+
+import java.io.IOException;
 
 /**
  * 密钥来源于HTTP.
@@ -23,6 +26,14 @@ import xyz.noark.core.util.HttpUtils;
  */
 class HttpScheme extends AbstractSecretkeyScheme {
     HttpScheme(int code) {
-        super(code, HttpUtils.get("http://noark.xyz/secretkey/?id=9527"));
+        super(code, loadSecretKey());
+    }
+
+    private static String loadSecretKey() {
+        try {
+            return HttpUtils.get("http://noark.xyz/secretkey/?id=9527");
+        } catch (IOException e) {
+            throw new ServerBootstrapException("加载密钥失败", e);
+        }
     }
 }
