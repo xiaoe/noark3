@@ -27,6 +27,10 @@ import java.util.zip.ZipOutputStream;
  * @since 3.4.2
  */
 public class ZipUtils {
+    /**
+     * 默认的压缩等级为：9
+     */
+    private static final int DEFAULT_COMPRESS_LEVEL = 9;
 
     /**
      * 以Zip方式压缩
@@ -36,12 +40,24 @@ public class ZipUtils {
      * @throws IOException 如果发生I/O错误。
      */
     public static byte[] compress(byte[] data) throws IOException {
+        return compress(data, DEFAULT_COMPRESS_LEVEL);
+    }
+
+    /**
+     * 以Zip方式压缩
+     *
+     * @param data  要压缩的数据
+     * @param level 压缩等级
+     * @return 压缩后的数据
+     * @throws IOException 如果发生I/O错误。
+     */
+    public static byte[] compress(byte[] data, int level) throws IOException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length)) {
-            try (ZipOutputStream zos = new ZipOutputStream(outputStream, CharsetUtils.CHARSET_UTF_8)) {
+            try (ZipOutputStream zos = new ZipOutputStream(outputStream)) {
                 // 使用一个匿名的ZipEntry
-                zos.putNextEntry(new ZipEntry(""));
+                zos.putNextEntry(new ZipEntry(StringUtils.EMPTY));
                 // 压缩等级为9
-                zos.setLevel(9);
+                zos.setLevel(level);
                 // 写入数据
                 zos.write(data);
                 zos.closeEntry();
@@ -60,6 +76,9 @@ public class ZipUtils {
     public static byte[] uncompress(byte[] data) throws IOException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length * 2);
              ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(data))) {
+            // 取第一条ZipEntry
+            zipInputStream.getNextEntry();
+            
             int n;
             byte[] temp = new byte[1024];
             while ((n = zipInputStream.read(temp)) > 0) {
