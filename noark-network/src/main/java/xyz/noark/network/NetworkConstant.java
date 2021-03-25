@@ -80,11 +80,11 @@ public class NetworkConstant {
      */
     public static final String EPOLL_ACTIVE = "network.epoll.active";
     /**
-     * NETTY低水位，默认值32K
+     * NETTY低水位，默认值256K
      */
     public static final String LOW_WATER_MARK = "network.low.water.mark";
     /**
-     * NETTY高水位，默认值64K
+     * NETTY高水位，默认值512K
      */
     public static final String HIGH_WATER_MARK = "network.high.water.mark";
 
