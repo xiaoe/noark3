@@ -13,35 +13,30 @@
  */
 package xyz.noark.log;
 
+import xyz.noark.log.Appender.ConsoleAppender;
+import xyz.noark.log.Appender.FileAppender;
+
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- * 日志输出任务.
+ * Appender工厂类.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.3.6
+ * @since 3.4.3
  */
-class LogOutputTask implements Runnable {
-    private final Message message;
-    private final LogOutputManager outputManager;
+class AppenderFactory {
 
-    LogOutputTask(Message message, LogOutputManager outputManager) {
-        this.message = message;
-        this.outputManager = outputManager;
-    }
-
-    @Override
-    public void run() {
-        try {
-            char[] text = message.build();
-            // 记录到控制台
-            if (LogConfigurator.CONSOLE) {
-                outputManager.recordToConsole(message.getLevel(), text);
-            }
-            // 记录到文件
-            if (LogConfigurator.LOG_PATH.isActivate()) {
-                outputManager.recordToFile(message.getDate(), text);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    static List<Appender> createList(LogConfig config) {
+        List<Appender> appenderList = new LinkedList<>();
+        // 控制台输出
+        if (config.isConsole()) {
+            appenderList.add(new ConsoleAppender());
         }
+        // 文件输出
+        if (config.getPath() != null && config.getPath().isActivate()) {
+            appenderList.add(new FileAppender(config.getPath()));
+        }
+        return appenderList;
     }
 }

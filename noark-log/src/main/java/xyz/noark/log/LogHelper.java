@@ -36,5 +36,5 @@ public class LogHelper {
      * logger.error("记录一条错误级别的日志{}", new RuntimeException("我是异常..."));<br>
      * </pre>
      */
-    public static final Logger logger = new NoarkLogger();
+    public static final Logger logger = LoggerFactory.getLogger(LogConstant.DEFAULT_LOGGER_NAME);
 }

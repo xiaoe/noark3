@@ -13,9 +13,8 @@
  */
 package xyz.noark.log;
 
+import java.util.Collections;
 import java.util.Map;
-
-import static xyz.noark.log.LogHelper.logger;
 
 /**
  * 日志管理器.
@@ -26,21 +25,33 @@ import static xyz.noark.log.LogHelper.logger;
  * @since 3.0
  */
 public class LogManager {
+    private static final LogManager INSTANCE = new LogManager();
+    /**
+     * 所有Logger的注册表
+     */
+    private final LoggerRegistry loggerRegistry;
+    /**
+     * 日志输出管理器
+     */
+    private final LogFileWriterManager writerManager;
+    /**
+     * 异步日志调度器
+     */
+    private final AsyncLoggerDisruptor asyncLoggerDisruptor;
 
     /**
-     * 日志级别[debug|info|warn|error],默认值为debug
+     * 当前配置
      */
-    private static final String LOG_LEVEL = "log.level";
+    private LogConfigurator configurator;
 
     /**
-     * 是否输出到控制台[true|false],默认值为true
+     * 私有化构建函数
      */
-    private static final String LOG_CONSOLE = "log.console";
-
-    /**
-     * 文件日志存储目录(默认:/data/log/game/1/game.{yyyy-MM-dd-HH}.log)
-     */
-    private static final String LOG_PATH = "log.path";
+    private LogManager() {
+        this.loggerRegistry = new LoggerRegistry();
+        this.writerManager = new LogFileWriterManager();
+        this.asyncLoggerDisruptor = new AsyncLoggerDisruptor();
+    }
 
     /**
      * 日志功能初始化.
@@ -48,22 +59,70 @@ public class LogManager {
      * @param config 配置参数
      */
     public static void init(Map<String, String> config) {
-        // 日志等级
-        LogConfigurator.DEFAULT_LEVEL = Level.valueOf(config.getOrDefault(LOG_LEVEL, "debug").toUpperCase());
-        // 是否输出到控制台
-        LogConfigurator.CONSOLE = Boolean.valueOf(config.getOrDefault(LOG_CONSOLE, "true"));
-        // 日志存储路径
-        LogConfigurator.LOG_PATH = new LogPath(config.get(LOG_PATH));
+        INSTANCE.reconfigureAndUpdateAll(config);
+    }
+
+    /**
+     * 重新配置，然后还要更新所有Logger对象
+     *
+     * @param config 配置
+     */
+    public static void reconfigure(Map<String, String> config) {
+        INSTANCE.reconfigureAndUpdateAll(config);
+    }
+
+    private void reconfigureAndUpdateAll(Map<String, String> config) {
+        this.configurator = new LogConfigurator(config);
+        synchronized (INSTANCE) {
+            loggerRegistry.updateLoggers(configurator);
+        }
     }
 
     /**
      * 日志功能安全停止.
      */
     public static void shutdown() {
-        LogOutputManager.getInstance().shutdown();
+        getAsyncLoggerDisruptor().shutdown();
+        getWriterManager().shutdown();
     }
 
-    public static Logger getDefaultLogger() {
-        return logger;
+    /**
+     * 获取当前的配置
+     *
+     * @return 当前的配置
+     */
+    static LogConfigurator getConfigurator() {
+        // 如果没有初始化
+        if (INSTANCE.configurator == null) {
+            INSTANCE.reconfigureAndUpdateAll(Collections.emptyMap());
+        }
+        return INSTANCE.configurator;
+    }
+
+    /**
+     * 获取所有Logger注册表
+     *
+     * @return Logger注册表
+     */
+    static LoggerRegistry getLoggerRegistry() {
+        return INSTANCE.loggerRegistry;
+    }
+
+    /**
+     * 获取异步日志调度器
+     *
+     * @return 日志调度器
+     */
+    static AsyncLoggerDisruptor getAsyncLoggerDisruptor() {
+        return INSTANCE.asyncLoggerDisruptor;
+    }
+
+    /**
+     * 获取日志输出管理器
+     *
+     * @return 日志输出管理器
+     */
+    static LogFileWriterManager getWriterManager() {
+        return INSTANCE.writerManager;
     }
 }

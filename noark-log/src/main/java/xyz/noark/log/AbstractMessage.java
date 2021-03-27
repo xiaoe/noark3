@@ -36,26 +36,40 @@ abstract class AbstractMessage implements Message {
     protected final LocalDateTime date;
     private final Level level;
     private final String threadName;
+    private final int configLevel;
+
     private String fileName;
     private int lineNumber;
 
-    AbstractMessage(Level level, String msg) {
+    /**
+     * 结果缓存
+     */
+    private char[] resultCache = null;
+
+    AbstractMessage(int configLevel, Level level, String msg) {
+        this.configLevel = configLevel;
         this.level = level;
         this.msg = msg;
         this.date = LocalDateTime.now();
 
+
         final Thread thread = Thread.currentThread();
         this.threadName = thread.getName();
 
-        if (LogConfigurator.DEFAULT_LEVEL == Level.DEBUG) {
-            StackTraceElement[] elements = thread.getStackTrace();
-            for (int i = 7; i < elements.length; i++) {
-                StackTraceElement stackTraceElement = elements[i];
-                fileName = stackTraceElement.getFileName();
-                lineNumber = stackTraceElement.getLineNumber();
-                if (fileName != null && !fileName.endsWith("Logger.java")) {
-                    break;
-                }
+        // 当前的Logger配置等级为Debug，那就要记录堆栈信息
+        if (configLevel == Level.DEBUG.getValue()) {
+            this.initStackTraceInfo(thread);
+        }
+    }
+
+    private void initStackTraceInfo(Thread thread) {
+        StackTraceElement[] elements = thread.getStackTrace();
+        for (int i = 7; i < elements.length; i++) {
+            StackTraceElement stackTraceElement = elements[i];
+            fileName = stackTraceElement.getFileName();
+            lineNumber = stackTraceElement.getLineNumber();
+            if (fileName != null && !fileName.endsWith("Logger.java")) {
+                break;
             }
         }
     }
@@ -72,6 +86,10 @@ abstract class AbstractMessage implements Message {
 
     @Override
     public char[] build() {
+        if (resultCache != null) {
+            return resultCache;
+        }
+
         DEFAULT_LOG_BUILDER.setLength(0);
 
         // 2017-11-11 19:59:42.538 [main] INFO Test.java:18 - test
@@ -79,7 +97,7 @@ abstract class AbstractMessage implements Message {
         // 线程名称+输出级别
         DEFAULT_LOG_BUILDER.append(' ').append(level).append(" [").append(threadName).append("]");
         // Debug状态，输出线程等细节信息
-        if (LogConfigurator.DEFAULT_LEVEL == Level.DEBUG) {
+        if (configLevel == Level.DEBUG.getValue()) {
             DEFAULT_LOG_BUILDER.append(" [").append(fileName).append(":").append(lineNumber).append("]");
         }
         DEFAULT_LOG_BUILDER.append(" - ");
@@ -91,6 +109,7 @@ abstract class AbstractMessage implements Message {
         // 把结果复制出来...
         final char[] result = new char[DEFAULT_LOG_BUILDER.length()];
         DEFAULT_LOG_BUILDER.getChars(0, result.length, result, 0);
+        this.resultCache = result;
         return result;
     }
 

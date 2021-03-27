@@ -14,19 +14,22 @@
 package xyz.noark.log;
 
 /**
- * 简单文本.
+ * Noark实现的异步日志
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-class SimpleMessage extends AbstractMessage {
+class NoarkAsyncLogger extends NoarkLogger {
+    private final AsyncLoggerDisruptor asyncLoggerDisruptor;
 
-    SimpleMessage(int configLevel, Level level, String msg) {
-        super(configLevel, level, msg);
+    NoarkAsyncLogger(String name) {
+        super(name);
+        this.asyncLoggerDisruptor = LogManager.getAsyncLoggerDisruptor();
     }
 
     @Override
-    protected void onBuildMessage(StringBuilder sb) {
-        sb.append(msg);
+    protected void logMessage(Level level, String msg, Object... args) {
+        Message message = MessageFactory.create(privateConfig.getIntLevel(), level, msg, args);
+        asyncLoggerDisruptor.publish(new AsyncLogEvent(this, message));
     }
 }

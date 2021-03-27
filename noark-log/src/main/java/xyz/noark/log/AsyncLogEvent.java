@@ -14,19 +14,22 @@
 package xyz.noark.log;
 
 /**
- * 简单文本.
+ * 异步日志事件
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-class SimpleMessage extends AbstractMessage {
+class AsyncLogEvent implements Runnable {
+    private final AbstractLogger logger;
+    private final Message message;
 
-    SimpleMessage(int configLevel, Level level, String msg) {
-        super(configLevel, level, msg);
+    AsyncLogEvent(AbstractLogger logger, Message message) {
+        this.logger = logger;
+        this.message = message;
     }
 
     @Override
-    protected void onBuildMessage(StringBuilder sb) {
-        sb.append(msg);
+    public void run() {
+        logger.getPrivateConfig().handle(message);
     }
 }

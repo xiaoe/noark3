@@ -13,31 +13,45 @@
  */
 package xyz.noark.log;
 
+import java.util.List;
+
 /**
- * 带参数的日志信息.
+ * 每个Logger对象都有一个自己的配置
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-class ParameterizedMessage extends AbstractMessage {
-    private static final MessageAnalyzerManager CACHE = new MessageAnalyzerManager();
-    private final Object[] args;
+class PrivateConfig {
+    /**
+     * Int类型的日志等级
+     */
+    private final int intLevel;
+    /**
+     * 所有输出终端
+     */
+    private final List<Appender> appenderList;
 
-    ParameterizedMessage(int configLevel, Level level, String messagePattern, Object[] args) {
-        super(configLevel, level, messagePattern);
-        this.args = this.handleArgs(args);
+    PrivateConfig(AbstractLogger logger, LogConfigurator configurator) {
+        final LogConfig config = configurator.getConfig(logger.getName());
+        this.intLevel = config.getLevel().getValue();
+        this.appenderList = AppenderFactory.createList(config);
     }
 
-    private Object[] handleArgs(Object[] args) {
-        // 把传递的参数处理了，把非基本数据类型提交转为String对象
-        for (int i = 0, len = args.length; i < len; i++) {
-            args[i] = MessageHelper.preprocessingEnteringLogThreadBefore(args[i]);
-        }
-        return args;
+    /**
+     * 获取Int类型的日志等级
+     *
+     * @return 日志等级
+     */
+    public int getIntLevel() {
+        return intLevel;
     }
 
-    @Override
-    protected void onBuildMessage(StringBuilder sb) {
-        CACHE.get(msg, key -> new MessageAnalyzer(key)).build(sb, args);
+    /**
+     * 处理日志信息.
+     *
+     * @param message 日志信息
+     */
+    public void handle(Message message) {
+        appenderList.forEach(v -> v.output(message));
     }
 }

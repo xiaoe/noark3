@@ -14,19 +14,30 @@
 package xyz.noark.log;
 
 /**
- * 简单文本.
+ * 日志常量配置.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-class SimpleMessage extends AbstractMessage {
+class LogConstant {
+    /**
+     * 日志级别[debug|info|warn|error],默认值为debug
+     */
+    static final String LOG_LEVEL = "log.level";
 
-    SimpleMessage(int configLevel, Level level, String msg) {
-        super(configLevel, level, msg);
-    }
+    /**
+     * 是否输出到控制台[true|false],默认值为true
+     */
+    static final String LOG_CONSOLE = "log.console";
 
-    @Override
-    protected void onBuildMessage(StringBuilder sb) {
-        sb.append(msg);
-    }
+    /**
+     * 文件日志存储目录(默认:/data/log/game/1/game.{yyyy-MM-dd-HH}.log)
+     */
+    static final String LOG_PATH = "log.path";
+
+
+    /**
+     * 默认的日志名称，长度为0的字符串
+     */
+    static final String DEFAULT_LOGGER_NAME = "";
 }

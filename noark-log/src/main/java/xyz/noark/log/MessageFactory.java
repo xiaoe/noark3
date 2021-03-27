@@ -24,15 +24,16 @@ class MessageFactory {
     /**
      * 创建一条日志消息.
      *
-     * @param level 日志等级
-     * @param msg   日志内容
-     * @param args  日志参数
+     * @param configLevel 当前日志的配置等级
+     * @param level       日志等级
+     * @param msg         日志内容
+     * @param args        日志参数
      * @return 返回一个封装好的日志消息.
      */
-    static Message create(Level level, String msg, Object... args) {
+    static Message create(int configLevel, Level level, String msg, Object... args) {
         if (args.length == 0) {
-            return new SimpleMessage(level, msg);
+            return new SimpleMessage(configLevel, level, msg);
         }
-        return new ParameterizedMessage(level, msg, args);
+        return new ParameterizedMessage(configLevel, level, msg, args);
     }
 }

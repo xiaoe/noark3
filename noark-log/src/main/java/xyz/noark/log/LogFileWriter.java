@@ -13,43 +13,105 @@
  */
 package xyz.noark.log;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
 
 /**
- * 日志文件写入器.
+ * 一个路径对应的输出类.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-class LogFileWriter {
-    private final ScheduledFuture<?> future;
-    private final FileWriter fileWriter;
-    private final BufferedWriter bufferedWriter;
+public class LogFileWriter {
+    /**
+     * 配置的存档路径
+     */
+    private final LogPath path;
+    /**
+     * 当前正在记录的文件引用
+     */
+    private LogFile logFile = null;
+    /**
+     * 文件记录最后写入的时间（小时），用于切换输出日志文件
+     */
+    private int lastWriterHour = -1;
 
-    LogFileWriter(File file, ScheduledExecutorService scheduledExecutor) throws IOException {
-        this.fileWriter = new FileWriter(file, true);
-        this.bufferedWriter = new BufferedWriter(fileWriter);
-        // 每秒刷一下输入流.
-        this.future = scheduledExecutor.scheduleWithFixedDelay(new LogOutputFlushTask(this), 1, 1, TimeUnit.SECONDS);
+    public LogFileWriter(LogPath path) {
+        this.path = path;
     }
 
-    void writer(char[] text) throws IOException {
-        bufferedWriter.write(text);
+    /**
+     * 输出到文件.
+     *
+     * @param message 日志消息
+     */
+    public void output(Message message) {
+        try {
+            this.recordToFile(message.getDate(), message.build());
+        } catch (Throwable e) {
+            // 日志输出到终端时有问题，那就丢掉吧...
+            e.printStackTrace();
+        }
     }
 
-    public void flush() throws IOException {
-        bufferedWriter.flush();
+    /**
+     * 记录到文件.
+     *
+     * @param logTime 日志时间
+     * @param text    日志文本
+     * @throws IOException 记录时可能会抛出IO异常
+     */
+    public void recordToFile(LocalDateTime logTime, char[] text) throws IOException {
+        this.checkRollover(logTime);
+        logFile.writer(text);
     }
 
-    public void close() throws IOException {
-        future.cancel(true);
-        bufferedWriter.close();
-        fileWriter.close();
+    private void checkRollover(final LocalDateTime logTime) throws IOException {
+        // 不是同一时间，就要切换输出目标
+        if (logTime.getHour() != lastWriterHour) {
+            rollover(logTime);
+        }
+    }
+
+    private void rollover(LocalDateTime logTime) throws IOException {
+        // 关闭上一小时的日志文件
+        this.flushAndClose();
+
+        // 创建下一小时的日志文件
+        final File file = this.createNewFile(path.getPath(logTime));
+        this.logFile = new LogFile(file);
+        this.lastWriterHour = logTime.getHour();
+    }
+
+    void flushAndClose() throws IOException {
+        if (logFile != null) {
+            logFile.close();
+        }
+    }
+
+    /**
+     * 创建新的日志文件.
+     * <p>
+     * 如果文件已存在，直接返回那个文件，不存在才会创建，目录不存在也会自动创建
+     *
+     * @param path 文件路径
+     * @return 日志文件
+     * @throws IOException If an I/O error occurred
+     */
+    private File createNewFile(String path) throws IOException {
+        File file = new File(path);
+        // 文件已存在，直接返回这个文件
+        if (file.exists()) {
+            return file;
+        }
+        // 目录不存在直接创建目录
+        File fileParent = file.getParentFile();
+        if (!fileParent.exists()) {
+            fileParent.mkdirs();
+        }
+        // 创建文件
+        file.createNewFile();
+        return file;
     }
 }

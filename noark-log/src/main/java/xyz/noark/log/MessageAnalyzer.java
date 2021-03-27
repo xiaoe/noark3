@@ -25,7 +25,7 @@ class MessageAnalyzer {
     private static final char DELIMIT_START = '{';
     private static final char DELIMIT_STOP = '}';
 
-    private ArrayList<Placeholder> caches = new ArrayList<>();
+    private final ArrayList<Placeholder> caches = new ArrayList<>();
     /**
      * 占位符个数
      */
@@ -52,7 +52,7 @@ class MessageAnalyzer {
         int i = 0;
         int index = 0;
         final int len = messagePattern.length();
-        /** 最后的字符被排除在循环之外 */
+        /* 最后的字符被排除在循环之外 */
         for (; i < len - 1; i++) {
             final char curChar = messagePattern.charAt(i);
             if (isDelimitPair(curChar, messagePattern, i)) {
@@ -104,8 +104,8 @@ class MessageAnalyzer {
         void build(StringBuilder sb, Object[] args);
     }
 
-    class StrPlaceholder implements Placeholder {
-        private String str;
+    static class StrPlaceholder implements Placeholder {
+        private final String str;
 
         public StrPlaceholder(String str) {
             this.str = str;
@@ -122,8 +122,8 @@ class MessageAnalyzer {
         }
     }
 
-    class ObjPlaceholder implements Placeholder {
-        private int index;
+    static class ObjPlaceholder implements Placeholder {
+        private final int index;
 
         public ObjPlaceholder(int index) {
             this.index = index;

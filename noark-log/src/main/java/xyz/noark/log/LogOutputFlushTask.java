@@ -20,9 +20,9 @@ package xyz.noark.log;
  * @since 3.3.6
  */
 public class LogOutputFlushTask implements Runnable {
-    private final LogFileWriter fileWriter;
+    private final LogFile fileWriter;
 
-    public LogOutputFlushTask(LogFileWriter fileWriter) {
+    public LogOutputFlushTask(LogFile fileWriter) {
         this.fileWriter = fileWriter;
     }
 
@@ -30,7 +30,7 @@ public class LogOutputFlushTask implements Runnable {
     public void run() {
         try {
             fileWriter.flush();
-        } catch (Exception e) {
+        } catch (Throwable e) {
         }
     }
 }
