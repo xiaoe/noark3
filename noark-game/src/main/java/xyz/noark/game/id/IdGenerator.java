@@ -25,6 +25,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>
  * 持久化：区服编号（16位）+ 计次（18位）+ 自旋因子（25位）+ 类型（1位） <br>
  * <p>
+ * 使用方案：创建一个ID生成工厂类，调用此实例.<br>
+ * 需要捕获IdMaxSequenceException，超出一轮计次+1存档后再次使用
+ * <pre>
+ *    public synchronized static long generateId() {
+ *      try {
+ *          return generator.generateId();
+ *      } catch (IdMaxSequenceException e) {
+ *          logger.warn("ID生成工厂一轮用完了....");
+ *          serverInfoService.updateTimes();
+ *          return generateId();
+ *      }
+ *    }
+ * </pre>
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.1
