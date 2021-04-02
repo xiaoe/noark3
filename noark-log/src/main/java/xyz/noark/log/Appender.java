@@ -23,23 +23,24 @@ interface Appender {
     /**
      * 输出日志消息.
      *
-     * @param message 日志消息
+     * @param event 一次日志记录
+     * @param text  输出内容
      */
-    void output(Message message);
+    void output(LogEvent event, char[] text);
 
     /**
      * 控制台Appender
      */
     class ConsoleAppender implements Appender {
         @Override
-        public void output(Message message) {
-            switch (message.getLevel()) {
+        public void output(LogEvent event, char[] text) {
+            switch (event.getLevel()) {
                 case DEBUG:
                 case INFO:
-                    System.out.print(message.build());
+                    System.out.print(text);
                     break;
                 default:
-                    System.err.print(message.build());
+                    System.err.print(text);
                     break;
             }
         }
@@ -58,8 +59,8 @@ interface Appender {
         }
 
         @Override
-        public void output(Message message) {
-            writerManager.getWriter(path).output(message);
+        public void output(LogEvent event, char[] text) {
+            writerManager.getWriter(path).output(event, text);
         }
     }
 }

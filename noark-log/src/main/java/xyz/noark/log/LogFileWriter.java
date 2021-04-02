@@ -44,11 +44,12 @@ public class LogFileWriter {
     /**
      * 输出到文件.
      *
-     * @param message 日志消息
+     * @param event 日志消息
+     * @param text  输出内容
      */
-    public void output(Message message) {
+    public void output(LogEvent event, char[] text) {
         try {
-            this.recordToFile(message.getDate(), message.build());
+            this.recordToFile(event.getEventTime(), text);
         } catch (Throwable e) {
             // 日志输出到终端时有问题，那就丢掉吧...
             e.printStackTrace();

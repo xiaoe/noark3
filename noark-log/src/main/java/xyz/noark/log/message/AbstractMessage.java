@@ -11,29 +11,30 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.message;
 
 /**
- * 消息工厂.
+ * 日志消息的一个抽象类.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-class MessageFactory {
+abstract class AbstractMessage implements Message {
+    protected final String msg;
+
+    AbstractMessage(String msg) {
+        this.msg = msg;
+    }
+
+    @Override
+    public void build(StringBuilder toAppendTo) {
+        this.onBuildMessage(toAppendTo);
+    }
 
     /**
-     * 创建一条日志消息.
+     * 构建日志内容
      *
-     * @param configLevel 当前日志的配置等级
-     * @param level       日志等级
-     * @param msg         日志内容
-     * @param args        日志参数
-     * @return 返回一个封装好的日志消息.
+     * @param sb StringBuilder对象.
      */
-    static Message create(int configLevel, Level level, String msg, Object... args) {
-        if (args.length == 0) {
-            return new SimpleMessage(configLevel, level, msg);
-        }
-        return new ParameterizedMessage(configLevel, level, msg, args);
-    }
+    protected abstract void onBuildMessage(StringBuilder sb);
 }

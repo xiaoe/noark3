@@ -13,6 +13,9 @@
  */
 package xyz.noark.log;
 
+import xyz.noark.log.message.Message;
+import xyz.noark.log.message.MessageFactory;
+
 /**
  * 抽象的日志记录器.
  *
@@ -77,6 +80,7 @@ abstract class AbstractLogger implements Logger {
      * @param args  日志参数
      */
     protected void logMessage(Level level, String msg, Object... args) {
-        privateConfig.handle(MessageFactory.create(privateConfig.getIntLevel(), level, msg, args));
+        Message message = MessageFactory.create(msg, args);
+        privateConfig.processLogEvent(new LogEvent(this, level, message));
     }
 }

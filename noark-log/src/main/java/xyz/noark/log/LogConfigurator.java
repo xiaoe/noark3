@@ -26,7 +26,7 @@ import static xyz.noark.log.LogConstant.LOG_LEVEL;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public class LogConfigurator {
+class LogConfigurator {
     /**
      * 如果连配置都没有，那就用这个默认的配置吧...
      */
@@ -36,7 +36,7 @@ public class LogConfigurator {
      */
     private final Map<String, LogConfig> configMap = new TreeMap<>();
 
-    public LogConfigurator(Map<String, String> config) {
+    LogConfigurator(Map<String, String> config) {
         // 初始化配置信息
         this.initConfig(config);
         // 修复层级传递关系
@@ -112,8 +112,23 @@ public class LogConfigurator {
             else if (configKey.startsWith(LogConstant.LOG_PATH)) {
                 this.handleLogPathConfig(configKey, e.getValue());
             }
+            // 布局样式
+            else if (configKey.startsWith(LogConstant.LOG_LAYOUT_PATTERN)) {
+                this.handleLogLayoutPatternConfig(configKey, e.getValue());
+            }
             // 不是日志相关的配置就忽略了
         }
+    }
+
+    /**
+     * 处理日志显示样式配置
+     *
+     * @param configKey 配置Key
+     * @param value     配置值
+     */
+    private void handleLogLayoutPatternConfig(String configKey, String value) {
+        String key = this.judgeLoggerConfigKey(configKey, LogConstant.LOG_LAYOUT_PATTERN);
+        configMap.computeIfAbsent(key, k -> new LogConfig()).setLayoutPattern(value);
     }
 
     /**

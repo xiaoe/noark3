@@ -11,26 +11,22 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
-
-import xyz.noark.log.message.Message;
+package xyz.noark.log.message;
 
 /**
- * 异步日志事件
+ * 简单文本.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4.3
+ * @since 3.0
  */
-public class AsyncLogEvent extends LogEvent implements Runnable {
-    private final PrivateConfig privateConfig;
+class SimpleMessage extends AbstractMessage {
 
-    AsyncLogEvent(AbstractLogger logger, Level level, Message message) {
-        super(logger, level, message);
-        this.privateConfig = logger.getPrivateConfig();
+    SimpleMessage(String msg) {
+        super(msg);
     }
 
     @Override
-    public void run() {
-        privateConfig.processLogEvent(this);
+    protected void onBuildMessage(StringBuilder sb) {
+        sb.append(msg);
     }
 }

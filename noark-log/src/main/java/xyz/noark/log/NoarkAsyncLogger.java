@@ -13,6 +13,9 @@
  */
 package xyz.noark.log;
 
+import xyz.noark.log.message.Message;
+import xyz.noark.log.message.MessageFactory;
+
 /**
  * Noark实现的异步日志
  *
@@ -29,7 +32,7 @@ class NoarkAsyncLogger extends NoarkLogger {
 
     @Override
     protected void logMessage(Level level, String msg, Object... args) {
-        Message message = MessageFactory.create(privateConfig.getIntLevel(), level, msg, args);
-        asyncLoggerDisruptor.publish(new AsyncLogEvent(this, message));
+        Message message = MessageFactory.create(msg, args);
+        asyncLoggerDisruptor.publish(new AsyncLogEvent(this, level, message));
     }
 }

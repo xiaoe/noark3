@@ -29,6 +29,9 @@ class LogConfig {
     private boolean pathInitialized = false;
     private LogPath path = null;
 
+    private boolean patternInitialized = false;
+    private String layoutPattern = LogConstant.DEFAULT_LAYOUT_PATTERN;
+
     LogConfig() {
     }
 
@@ -64,13 +67,22 @@ class LogConfig {
         this.pathInitialized = true;
     }
 
+    public String getLayoutPattern() {
+        return layoutPattern;
+    }
+
+    public void setLayoutPattern(String layoutPattern) {
+        this.layoutPattern = layoutPattern;
+        this.patternInitialized = true;
+    }
+
     /**
      * 有一个没初始化就需要修正
      *
      * @return 如果需要修正返回true
      */
     public boolean ifNeedFix() {
-        return !levelInitialized || !consoleInitialized || !pathInitialized;
+        return !levelInitialized || !consoleInitialized || !pathInitialized || !patternInitialized;
     }
 
     /**
@@ -89,6 +101,10 @@ class LogConfig {
 
         if (!pathInitialized) {
             this.setPath(parentConfig.getPath());
+        }
+
+        if (!patternInitialized) {
+            this.setLayoutPattern(parentConfig.getLayoutPattern());
         }
     }
 }

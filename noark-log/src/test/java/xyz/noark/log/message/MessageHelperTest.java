@@ -11,17 +11,17 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.message;
 
 import org.junit.Before;
 import org.junit.Test;
+import xyz.noark.log.ThreadSafe;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 /**
  * 消息辅助类的测试用例.
@@ -31,22 +31,22 @@ import static org.junit.Assert.assertNotEquals;
  */
 @ThreadSafe
 public class MessageHelperTest {
-    private RuntimeException exception = new RuntimeException("测试异常");
-    private Date now = new Date();
+    private final RuntimeException exception = new RuntimeException("测试异常");
+    private final Date now = new Date();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
     @Test
     public void testPreprocessingEnteringLogThreadBefore() {
-        assertEquals(MessageHelper.preprocessingEnteringLogThreadBefore(null), null);
-        assertEquals(MessageHelper.preprocessingEnteringLogThreadBefore(1), Integer.valueOf(1));
+        assertNull(MessageHelper.preprocessingEnteringLogThreadBefore(null));
+        assertEquals(MessageHelper.preprocessingEnteringLogThreadBefore(1), 1);
 
         assertEquals(MessageHelper.preprocessingEnteringLogThreadBefore(now), now);
         assertEquals(MessageHelper.preprocessingEnteringLogThreadBefore("123"), "123");
 
-        Character character = new Character('!');
+        Character character = '!';
         assertEquals(MessageHelper.preprocessingEnteringLogThreadBefore(character), character);
 
         assertEquals(MessageHelper.preprocessingEnteringLogThreadBefore(exception), exception);
@@ -109,7 +109,7 @@ public class MessageHelperTest {
             }
         };
         MessageHelper.append(sb, exception);
-        // xyz.noark.log.MessageHelperTest$1: 测试异常
+        // xyz.noark.log.message.MessageHelperTest$1: 测试异常
         assertNotEquals(sb.toString(), "null");
         sb.setLength(0);
     }

@@ -11,26 +11,32 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.message;
 
-import xyz.noark.log.message.Message;
+import org.junit.Test;
+import xyz.noark.log.message.MessageAnalyzer;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * 异步日志事件
+ * 日志分析测试.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4.3
+ * @since 3.0
  */
-public class AsyncLogEvent extends LogEvent implements Runnable {
-    private final PrivateConfig privateConfig;
+public class MessageAnalyzerTest {
 
-    AsyncLogEvent(AbstractLogger logger, Level level, Message message) {
-        super(logger, level, message);
-        this.privateConfig = logger.getPrivateConfig();
+    @Test
+    public void testMessageAnalyzer() {
+        MessageAnalyzer analyzer = new MessageAnalyzer("1111{}1{}{}1{}");
+        assertTrue(analyzer.getCount() == 4);
     }
 
-    @Override
-    public void run() {
-        privateConfig.processLogEvent(this);
+    @Test
+    public void testBuild() {
+        MessageAnalyzer analyzer = new MessageAnalyzer("xx={}");
+        StringBuilder sb = new StringBuilder();
+        analyzer.build(sb, new Object[]{1});
+        assertTrue("xx=1".equals(sb.toString()));
     }
 }

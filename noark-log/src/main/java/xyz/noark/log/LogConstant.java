@@ -24,12 +24,15 @@ class LogConstant {
      * 日志级别[debug|info|warn|error],默认值为debug
      */
     static final String LOG_LEVEL = "log.level";
-
     /**
      * 是否输出到控制台[true|false],默认值为true
      */
     static final String LOG_CONSOLE = "log.console";
-
+    /**
+     * 布局格式.
+     * <p>%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n</p>
+     */
+    static final String LOG_LAYOUT_PATTERN = "log.layout.pattern";
     /**
      * 文件日志存储目录(默认:/data/log/game/1/game.{yyyy-MM-dd-HH}.log)
      */
@@ -40,4 +43,8 @@ class LogConstant {
      * 默认的日志名称，长度为0的字符串
      */
     static final String DEFAULT_LOGGER_NAME = "";
+    /**
+     * 默认的显示布局
+     */
+    static final String DEFAULT_LAYOUT_PATTERN = "%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n";
 }

@@ -11,26 +11,39 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.pattern;
 
-import xyz.noark.log.message.Message;
+import xyz.noark.log.LogEvent;
+
+import java.time.format.DateTimeFormatter;
 
 /**
- * 异步日志事件
+ * 日期样式格式化实现
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4.3
  */
-public class AsyncLogEvent extends LogEvent implements Runnable {
-    private final PrivateConfig privateConfig;
+class DatePatternFormatter extends AbstractPatternFormatter {
+    /**
+     * 日志中输出的时间格式
+     */
+    private final DateTimeFormatter formatter;
 
-    AsyncLogEvent(AbstractLogger logger, Level level, Message message) {
-        super(logger, level, message);
-        this.privateConfig = logger.getPrivateConfig();
+    public DatePatternFormatter(FormattingInfo formattingInfo, String options) {
+        super(formattingInfo, options);
+
+        // 没有指定格式，给个默认的
+        if (options == null) {
+            this.formatter = DateTimeFormatter.ISO_DATE;
+        }
+        // 使用指定的日期格式
+        else {
+            this.formatter = DateTimeFormatter.ofPattern(options);
+        }
     }
 
     @Override
-    public void run() {
-        privateConfig.processLogEvent(this);
+    public void doFormat(LogEvent event, StringBuilder toAppendTo) {
+        toAppendTo.append(formatter.format(event.getEventTime()));
     }
 }
