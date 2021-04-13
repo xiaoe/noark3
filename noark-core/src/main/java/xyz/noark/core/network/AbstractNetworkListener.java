@@ -27,14 +27,14 @@ public abstract class AbstractNetworkListener implements NetworkListener {
 
     @Override
     public boolean handleDuplicatePacket(Session session, NetworkPacket packet) {
-        PacketMethodManager.getInstance().logPacket(session, packet);
-        return true;
+        // 解析封包失败就不在向下传送了
+        return !PacketMethodManager.getInstance().logPacket(session, packet);
     }
 
     @Override
     public boolean handleChecksumFail(Session session, NetworkPacket packet) {
-        PacketMethodManager.getInstance().logPacket(session, packet);
-        return true;
+        // 解析封包失败就不在向下传送了
+        return !PacketMethodManager.getInstance().logPacket(session, packet);
     }
 
     @Override
