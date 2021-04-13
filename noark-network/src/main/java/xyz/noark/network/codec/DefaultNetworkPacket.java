@@ -46,6 +46,10 @@ public class DefaultNetworkPacket implements NetworkPacket {
      * 封包CRC16
      */
     private int checksum;
+    /**
+     * 是否已解过码
+     */
+    private boolean decoded = false;
 
     @Override
     public Serializable getOpcode() {
@@ -93,7 +97,17 @@ public class DefaultNetworkPacket implements NetworkPacket {
     }
 
     @Override
+    public boolean isDecoded() {
+        return decoded;
+    }
+
+    @Override
+    public void setDecoded(boolean decoded) {
+        this.decoded = decoded;
+    }
+
+    @Override
     public String toString() {
-        return "Packet [opcode=" + opcode + ", bytes=" + bytes + ", incode=" + incode + ", checksum=" + checksum + "]";
+        return "Packet [opcode=" + opcode + ", bytes=" + bytes + ", incode=" + incode + ", checksum=" + checksum + ", decoded=" + decoded + "]";
     }
 }

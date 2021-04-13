@@ -28,14 +28,14 @@ public interface PacketEncrypt {
      *
      * @return 如果封包需要加密则返回true, 否则返回false
      */
-    public boolean isEncrypt();
+    boolean isEncrypt();
 
     /**
      * 返回随机生成的公钥
      *
      * @return 随机生成的公钥
      */
-    public String getPublicKey();
+    String getPublicKey();
 
     /**
      * 解码逻辑.
@@ -43,5 +43,5 @@ public interface PacketEncrypt {
      * @param data   加密数据
      * @param incode 此包自增编号
      */
-    public void decode(ByteArray data, int incode);
+    void decode(ByteArray data, int incode);
 }

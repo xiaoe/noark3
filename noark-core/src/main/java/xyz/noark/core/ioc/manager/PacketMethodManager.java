@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.manager;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.PacketHelper;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.util.StringUtils;
 
@@ -123,6 +124,9 @@ public class PacketMethodManager {
         if (packet == null) {
             return;
         }
+
+        // 尝试解密
+        PacketHelper.tryDecode(session.getPacketEncrypt(), packet);
 
         // 记录一下请求协议的内容，主要用于排查一些坏人干的坏事
         logger.warn("^(oo)^ packet info. session={}, packet={}", analysisSession(session), analysisPacket(session, packet));
