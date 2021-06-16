@@ -18,11 +18,11 @@ import xyz.noark.core.lang.PairHashMap;
 import xyz.noark.core.lang.PairMap;
 import xyz.noark.core.lang.TripleHashMap;
 import xyz.noark.core.lang.TripleMap;
+import xyz.noark.core.util.CollectionUtils;
 import xyz.noark.core.util.StringUtils;
 
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 抽象实现的模板加载器.
@@ -55,7 +55,7 @@ public abstract class AbstractTemplateLoader implements TemplateLoader {
 
     @Override
     public <K, T> Map<K, T> loadAll(Class<T> klass, Function<? super T, ? extends K> keyMapper) {
-        return this.loadAll(klass).stream().collect(Collectors.toMap(keyMapper, Function.identity()));
+        return CollectionUtils.toLinkedHashMap(this.loadAll(klass), keyMapper);
     }
 
     @Override
