@@ -175,6 +175,31 @@ public class DateUtils {
     }
 
     /**
+     * 判断两个日期时间是否是同一周，带秒钟偏移值
+     * <p>
+     * WeekFields.ISO代表每周从周一开始算。(建议)<br>
+     * WeekFields.SUNDAY_START代表每周从周日开始算。
+     * 例如：需要在次周的5点刷新，offset传值为 5*3600 = 18000
+     * </p>
+     *
+     * @param date1  第一个日期
+     * @param date2  第二个日期
+     * @param offset 秒钟偏移值
+     * @return 如果是同一周返回true, 否则返回false
+     */
+    public static boolean isSameWeek(final Date date1, final Date date2, final int offset) {
+        final Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal1.add(Calendar.SECOND, -offset);
+
+        final Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        cal2.add(Calendar.SECOND, -offset);
+
+        return isSameWeek(DateUtils.toLocalDate(cal1.getTime()), DateUtils.toLocalDate(cal2.getTime()));
+    }
+
+    /**
      * 判定两个日期是否为同年同月份
      *
      * @param cal1 第一个日期
