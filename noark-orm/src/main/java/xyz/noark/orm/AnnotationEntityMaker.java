@@ -148,10 +148,6 @@ public class AnnotationEntityMaker {
         }
 
         guessEntityFieldColumnType(fm);
-
-        if (fm.isBlob() && fm.getFieldClass() != byte[].class) {
-            throw new NoEntityException(klass.getName(), "@Blob只能标识在byte[]的属性上 ≡ (^(OO)^) ≡");
-        }
         return fm;
     }
 
