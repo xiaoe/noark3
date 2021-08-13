@@ -21,7 +21,6 @@ import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.ObjectParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
-import xyz.noark.reflectasm.MethodAccess;
 
 import java.io.Serializable;
 import java.lang.reflect.Parameter;
@@ -41,13 +40,34 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper implemen
     private final boolean async;
 
     public EventMethodWrapper(Object single, EventMethodDefinition emd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
-        super(single, threadGroup, controllerMasterClass.getName(),  "event(" + emd.getEventClass().getSimpleName() + ")", emd);
+        super(single, threadGroup, controllerMasterClass.getName(), buildLogCode(single, emd), emd);
         this.eventClass = emd.getEventClass();
         this.printLog = emd.isPrintLog();
         this.async = emd.isAsync();
 
         this.parameters = new ArrayList<>(emd.getParameters().length);
-        Arrays.stream(emd.getParameters()).forEach(v -> buildParamWrapper(v));
+        Arrays.stream(emd.getParameters()).forEach(this::buildParamWrapper);
+    }
+
+    /**
+     * 构建这个事件日志的编码
+     *
+     * @param single 处理类入口
+     * @param emd    事件处理方法的定义
+     * @return 返回日志编码
+     */
+    private static String buildLogCode(Object single, EventMethodDefinition emd) {
+        StringBuilder sb = new StringBuilder(128);
+        // 事件
+        sb.append("event[");
+        // 类名
+        sb.append(single.getClass().getSimpleName()).append('#');
+        // 方法名称
+        sb.append(emd.getMethod().getName()).append('(');
+        // 参数名称
+        sb.append(emd.getEventClass().getSimpleName()).append(')');
+        // 最终结果
+        return sb.append(']').toString();
     }
 
     /**
