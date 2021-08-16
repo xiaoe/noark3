@@ -43,7 +43,7 @@ public class RedisPublishReportImpl extends AbstractReportService implements Rep
         if (reportActive) {
             final String channel = data.channel();
             final String json = JSON.toJSONString(data.getData());
-            logger.info("{}-->{}", channel, json);
+            logger.info("[BI]{}={}", channel, json);
             redis.publish(channel, json);
         }
     }
