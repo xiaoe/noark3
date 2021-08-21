@@ -22,5 +22,20 @@ import xyz.noark.game.event.AbstractDelayEvent;
  * @since 3.2.8
  */
 public class BuildingUpgradeEvent extends AbstractDelayEvent {
+    private String msg;
 
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    @Override
+    public String toString() {
+        return "BuildingUpgradeEvent{" +
+                "msg='" + msg + '\'' +
+                '}';
+    }
 }

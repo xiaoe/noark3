@@ -79,6 +79,10 @@ class DelayEventThread extends Thread {
         return QUEUE.remove(event);
     }
 
+    public boolean removeAll(DelayEvent event) {
+        return QUEUE.removeIf(v -> v.equals(event));
+    }
+
     /**
      * 停止执行延迟事件.
      */

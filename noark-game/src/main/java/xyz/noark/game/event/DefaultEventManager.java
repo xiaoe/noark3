@@ -85,6 +85,11 @@ public class DefaultEventManager implements EventManager {
     }
 
     @Override
+    public boolean removeAll(DelayEvent event) {
+        return handler.removeAll(event);
+    }
+
+    @Override
     public void publish(FixedTimeEvent event) {
         // 未配置触发时间，会死人的....
         if (event.getTrigger() == null) {
