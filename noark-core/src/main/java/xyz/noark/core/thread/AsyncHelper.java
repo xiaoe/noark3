@@ -80,7 +80,8 @@ public class AsyncHelper {
      */
     public static void call(Serializable queueId, TaskCallback callback) {
         TaskContext context = THREAD_LOCAL.get();
-        call(queueId, callback, context.getPlayerId());
+        // 如果没有任务上下文，就用null吧，这个可能是启服时的逻辑里调用的，反正这个参数也只是日志记录
+        call(queueId, callback, context == null ? null : context.getPlayerId());
     }
 
     /**
