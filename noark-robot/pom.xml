@@ -55,6 +55,6 @@
   <parent>
     <groupId>xyz.noark</groupId>
     <artifactId>noark-parent</artifactId>
-    <version>1.0</version>
+    <version>3.4.3-SNAPSHOT</version>
   </parent>
 </project>

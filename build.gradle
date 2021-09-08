@@ -124,7 +124,7 @@ subprojects {
 			def parent = pomRoot.appendNode("parent");
 			parent.appendNode("groupId", "xyz.noark");
 			parent.appendNode("artifactId", "noark-parent");
-			parent.appendNode("version", "1.0");
+			parent.appendNode("version", version);
 			
 			def pomDependencies = pomRoot.dependencies.first();
 			pomDependencies.dependency.each{dep -> pomDependencies.remove(dep) }
