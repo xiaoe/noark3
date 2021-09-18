@@ -17,8 +17,8 @@ import xyz.noark.core.lang.Point;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 数学计算相关的工具类库.
@@ -324,50 +324,95 @@ public class MathUtils {
      * @return 一种最优的掠夺结果
      */
     public static <T> Map<T, Long> plunder(Map<T, Long> resources, long max, Map<T, Integer> ratio) {
-        final Map<T, Long> result = new HashMap<>(resources.size());
-        final int sum = ratio.values().stream().reduce(0, (a, b) -> a + b);
-        final long step = max >= sum ? max / Math.min(1000, Math.max(10, ratio.values().stream().reduce(0, (a, b) -> a + b))) : max;
-        // 总计要抢的资源量
-        long total = max;
+        final Map<T, Long> result = MapUtils.newHashMap(ratio.size());
+        if (max <= 0) {
+            return result;
+        }
+        plunder(resources, result, max, ratio);
+        return result;
+    }
 
-        while (total > 0) {
-            // 标识是否还有资源可以抢...
-            boolean flag = false;
-            for (Map.Entry<T, Long> e : resources.entrySet()) {
-                if (e.getValue() <= 0) {
-                    continue;
-                }
-
-                // 只要有一种资源大于0都算还有资源
-                flag = true;
-
-                // 比例+小步长随便，让抢出来的资源效果更好些...
-                long selfStep = step * ratio.getOrDefault(e.getKey(), 1) + RandomUtils.nextLong(step);
-                long temp = selfStep > total ? total : selfStep;
-
-                // 如果资源不足，就以当前有的抢光就好了...
-                if (e.getValue() < temp) {
-                    temp = e.getValue();
-                }
-
-                // 最终本次抢的值
-                final long value = temp;
-                e.setValue(e.getValue() - value);
-                total -= temp;
-                result.compute(e.getKey(), (k, v) -> v == null ? value : v.longValue() + value);
-
-                // 抢满了就退出啦...
-                if (total <= 0) {
-                    break;
-                }
-            }
-
-            // 没有资源可以抢时，就直接退出了...
-            if (!flag) {
-                break;
+    private static <T> void plunder(final Map<T, Long> resources, final Map<T, Long> result, long max, Map<T, Integer> ratio) {
+        // 比率总和
+        int ratioSum = 0;
+        for (Entry<T, Integer> e : ratio.entrySet()) {
+            Long value = resources.get(e.getKey());
+            if (value != null && value > 0 && e.getValue() > 0) {
+                ratioSum += e.getValue();
             }
         }
-        return result;
+
+        // 已掠夺的数量
+        long plunderNum = 0;
+        // 资源一种一种的处理
+        for (Entry<T, Long> e : resources.entrySet()) {
+            if (e.getValue() <= 0) {
+                continue;
+            }
+            Integer r = ratio.get(e.getKey());
+            // 这种资源没有配置比例就是不能抢
+            if (r == null) {
+                continue;
+            }
+
+            // 默认这个比例抢的最大值
+            long ratioValue = MathUtils.floorLong(max * (r.doubleValue() / ratioSum));
+            if (ratioValue <= 0) {
+                continue;
+            }
+
+            // 当前资源总量
+            long totalValue = e.getValue();
+            // 如果资源能满足被抢的量
+            if (totalValue >= ratioValue) {
+                plunderNum += ratioValue;
+                e.setValue(totalValue - ratioValue);
+                MapUtils.addValue(result, e.getKey(), ratioValue);
+            }
+            // 不够，那就有多少算多少
+            else {
+                plunderNum += totalValue;
+                e.setValue(0L);
+                MapUtils.addValue(result, e.getKey(), totalValue);
+            }
+        }
+
+        // 已掠夺数量为0时，那就是比例精度问题，需要手工容错处理了
+        if (plunderNum <= 0) {
+            fixPlunderDeficiency(resources, result, max, ratio);
+        }
+        // 能掠夺到资源，那就把差的再递归一次
+        else if (max > plunderNum) {
+            plunder(resources, result, max - plunderNum, ratio);
+        }
+    }
+
+    private static <T> void fixPlunderDeficiency(final Map<T, Long> resources, final Map<T, Long> result, long max, Map<T, Integer> ratio) {
+        // 资源一种一种的处理
+        for (Entry<T, Long> e : resources.entrySet()) {
+            if (e.getValue() <= 0) {
+                continue;
+            }
+            Integer r = ratio.get(e.getKey());
+            // 这种资源没有配置比例就是不能抢
+            if (r == null || r <= 0) {
+                continue;
+            }
+            // 当前资源总量
+            long totalValue = e.getValue();
+            // 如果资源能满足被抢的量
+            if (totalValue >= max) {
+                e.setValue(totalValue - max);
+                MapUtils.addValue(result, e.getKey(), max);
+                break;
+            }
+            // 不够，那就有多少算多少
+            else {
+                e.setValue(0L);
+                MapUtils.addValue(result, e.getKey(), totalValue);
+                max = max - totalValue;
+            }
+        }
     }
 
     /**

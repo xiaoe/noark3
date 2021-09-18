@@ -13,29 +13,30 @@
  */
 package xyz.noark.log;
 
-import org.junit.Test;
+import xyz.noark.log.Appender.ConsoleAppender;
+import xyz.noark.log.Appender.FileAppender;
 
-import static org.junit.Assert.assertTrue;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * 日志分析测试.
+ * Appender工厂类.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-public class MessageAnalyzerTest {
+class AppenderFactory {
 
-    @Test
-    public void testMessageAnalyzer() {
-        MessageAnalyzer analyzer = new MessageAnalyzer("1111{}1{}{}1{}");
-        assertTrue(analyzer.getCount() == 4);
-    }
-
-    @Test
-    public void testBuild() {
-        MessageAnalyzer analyzer = new MessageAnalyzer("xx={}");
-        StringBuilder sb = new StringBuilder();
-        analyzer.build(sb, new Object[]{1});
-        assertTrue("xx=1".equals(sb.toString()));
+    static List<Appender> createList(LogConfig config) {
+        List<Appender> appenderList = new LinkedList<>();
+        // 控制台输出
+        if (config.isConsole()) {
+            appenderList.add(new ConsoleAppender());
+        }
+        // 文件输出
+        if (config.getPath() != null && config.getPath().isActivate()) {
+            appenderList.add(new FileAppender(config.getPath()));
+        }
+        return appenderList;
     }
 }

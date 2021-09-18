@@ -92,35 +92,6 @@ public class IntRange {
      * @return 如果存在则返回true
      */
     public boolean contains(final int element) {
-        return flag ? true : sectionList.stream().anyMatch(v -> v.contains(element));
-    }
-
-    /**
-     * Int数字区间.
-     *
-     * @author 小流氓[176543888@qq.com]
-     * @since 3.3.4
-     */
-    private class IntSection {
-        private final int min;
-        private final int max;
-
-        public IntSection(int value) {
-            this(value, value);
-        }
-
-        public IntSection(int min, int max) {
-            this.min = min;
-            this.max = max;
-        }
-
-        public boolean contains(int element) {
-            return min <= element && element <= max;
-        }
-
-        @Override
-        public String toString() {
-            return "IntSection [min=" + min + ", max=" + max + "]";
-        }
+        return flag || sectionList.stream().anyMatch(v -> v.contains(element));
     }
 }

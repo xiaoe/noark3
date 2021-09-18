@@ -30,21 +30,21 @@ public interface NetworkPacket {
      *
      * @return 封包长度
      */
-    public int getLength();
+    int getLength();
 
     /**
      * 封包的编号.
      *
      * @return 编号
      */
-    public Serializable getOpcode();
+    Serializable getOpcode();
 
     /**
      * 封包的内容.
      *
      * @return 内容
      */
-    public ByteArray getByteArray();
+    ByteArray getByteArray();
 
     /**
      * 获取自增校验位.
@@ -54,7 +54,7 @@ public interface NetworkPacket {
      *
      * @return 自增校验位
      */
-    public int getIncode();
+    int getIncode();
 
     /**
      * 获取封包校验码.
@@ -63,5 +63,19 @@ public interface NetworkPacket {
      *
      * @return 封包校验码
      */
-    public int getChecksum();
+    int getChecksum();
+
+    /**
+     * 是否已解过码的状态
+     *
+     * @return 已解过码
+     */
+    boolean isDecoded();
+
+    /**
+     * 设计已解码的状态
+     *
+     * @param decoded 是否已解过码
+     */
+    void setDecoded(boolean decoded);
 }

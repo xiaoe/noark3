@@ -11,34 +11,30 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.pattern;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import xyz.noark.log.LogEvent;
 
 /**
- * 分析管理器.
- * <p>
- * 主要用来缓存热点分析器.
+ * 原来输出的样式.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-class MessageAnalyzerManager {
-    /**
-     * 1分钟
-     */
-    private static final int DURATION = 1;
-    private final Cache<String, MessageAnalyzer> caches;
+class LiteralPatternFormatter implements PatternFormatter {
+    private final char[] array;
 
-    MessageAnalyzerManager() {
-        this.caches = Caffeine.newBuilder().maximumSize(1024).expireAfterAccess(DURATION, TimeUnit.MINUTES).build();
+    public LiteralPatternFormatter(char[] array) {
+        this.array = array;
     }
 
-    public MessageAnalyzer get(String key, Function<? super String, ? extends MessageAnalyzer> mappingFunction) {
-        return caches.get(key, mappingFunction);
+    @Override
+    public boolean isIncludeLocation() {
+        return false;
+    }
+
+    @Override
+    public void format(LogEvent event, StringBuilder toAppendTo) {
+        toAppendTo.append(array);
     }
 }

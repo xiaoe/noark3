@@ -25,7 +25,7 @@ public interface EventManager {
      *
      * @param event 事件源
      */
-    public void publish(Event event);
+    void publish(Event event);
 
     /**
      * 发布一个延迟事件.
@@ -34,22 +34,37 @@ public interface EventManager {
      *
      * @param event 事件源
      */
-    public void publish(DelayEvent event);
+    void publish(DelayEvent event);
 
     /**
      * 发布一个定时任务事件.
      *
      * @param event 事件源
      */
-    public void publish(FixedTimeEvent event);
+    void publish(FixedTimeEvent event);
 
     /**
-     * 移除一个延迟事件.
+     * 从事件管理器中移除最先执行的那个延迟事件（无论它是否过期）.
      * <p>
-     * 一定要重新HashCode和equals
+     * 注：<br>
+     * 1.一定要重新HashCode和equals<br>
+     * 2.只会删除一个事件，正常事件管理器里也不会有两个一样的事件，不是吗？<br>
      *
      * @param event 事件源
      * @return 如果移除成功则返回true, 否则返回false.
      */
-    public boolean remove(DelayEvent event);
+    boolean remove(DelayEvent event);
+
+    /**
+     * 从事件管理器中移除指定的延迟事件（无论它是否过期）.
+     * <p>
+     * 注：<br>
+     * 1.一定要重新HashCode和equals<br>
+     * 2.移除所有指定的延迟事件，就是一个事件可能多次添加<br>
+     * 3.用于重用事件，但没移除就又加进去了，建议有增有减，有序执行，理不清就是给将来维护留坑啊
+     *
+     * @param event 事件源
+     * @return 如果移除成功则返回true, 否则返回false.
+     */
+    boolean removeAll(DelayEvent event);
 }

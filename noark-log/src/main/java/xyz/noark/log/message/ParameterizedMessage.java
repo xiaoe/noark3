@@ -11,28 +11,33 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.message;
 
 /**
- * 消息工厂.
+ * 带参数的日志信息.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-class MessageFactory {
+class ParameterizedMessage extends AbstractMessage {
+    private static final MessageAnalyzerManager CACHE = new MessageAnalyzerManager();
+    private final Object[] args;
 
-    /**
-     * 创建一条日志消息.
-     *
-     * @param level 日志等级
-     * @param msg   日志内容
-     * @param args  日志参数
-     * @return 返回一个封装好的日志消息.
-     */
-    static Message create(Level level, String msg, Object... args) {
-        if (args.length == 0) {
-            return new SimpleMessage(level, msg);
+    ParameterizedMessage(String messagePattern, Object[] args) {
+        super(messagePattern);
+        this.args = this.handleArgs(args);
+    }
+
+    private Object[] handleArgs(Object[] args) {
+        // 把传递的参数处理了，把非基本数据类型提交转为String对象
+        for (int i = 0, len = args.length; i < len; i++) {
+            args[i] = MessageHelper.preprocessingEnteringLogThreadBefore(args[i]);
         }
-        return new ParameterizedMessage(level, msg, args);
+        return args;
+    }
+
+    @Override
+    protected void onBuildMessage(StringBuilder sb) {
+        CACHE.get(msg, MessageAnalyzer::new).build(sb, args);
     }
 }

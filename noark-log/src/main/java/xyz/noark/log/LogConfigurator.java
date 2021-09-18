@@ -13,23 +13,166 @@
  */
 package xyz.noark.log;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import static xyz.noark.log.LogConstant.LOG_CONSOLE;
+import static xyz.noark.log.LogConstant.LOG_LEVEL;
+
 /**
  * 日志配置.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public class LogConfigurator {
+class LogConfigurator {
     /**
-     * 日志输出等级.
+     * 如果连配置都没有，那就用这个默认的配置吧...
      */
-    static Level DEFAULT_LEVEL = Level.DEBUG;
+    private static final LogConfig DEFAULT_CONFIG = new LogConfig(Level.DEBUG, true);
     /**
-     * 日志是否输出到控制台.
+     * 缓存所有配置
      */
-    static boolean CONSOLE = true;
+    private final Map<String, LogConfig> configMap = new TreeMap<>();
+
+    LogConfigurator(Map<String, String> config) {
+        // 初始化配置信息
+        this.initConfig(config);
+        // 修复层级传递关系
+        this.fixConfigHierarchy();
+    }
+
     /**
-     * 日志输出目录位置
+     * 根据日志名来取一个日志配置
+     *
+     * @param name 日志名
+     * @return 日志配置
      */
-    static LogPath LOG_PATH = new LogPath();
+    LogConfig getConfig(String name) {
+        if (configMap.isEmpty()) {
+            return DEFAULT_CONFIG;
+        }
+        LogConfig config = configMap.get(name);
+        return config == null ? getParentConfig(name) : config;
+    }
+
+    private LogConfig getParentConfig(String name) {
+        LogConfig config;
+        do {
+            int index = name.lastIndexOf(".");
+            // 没有点了，那就使用根配置
+            if (index == -1) {
+                name = LogConstant.DEFAULT_LOGGER_NAME;
+            }
+            // 向上一级查询配置
+            else {
+                name = name.substring(0, index);
+            }
+            config = configMap.get(name);
+        } while (config == null);
+        return config;
+    }
+
+    /**
+     * 修复层级传递关系
+     */
+    private void fixConfigHierarchy() {
+        for (Entry<String, LogConfig> e : configMap.entrySet()) {
+            // 根配置，忽略修正
+            if (LogConstant.DEFAULT_LOGGER_NAME.equals(e.getKey())) {
+                continue;
+            }
+
+            LogConfig config = e.getValue();
+            // 确认需要修正，那就查找当前配置的爸爸配置
+            if (config.ifNeedFix()) {
+                config.fix(getParentConfig(e.getKey()));
+            }
+        }
+    }
+
+    /**
+     * 初始化配置
+     *
+     * @param config 配置
+     */
+    private void initConfig(Map<String, String> config) {
+        for (Entry<String, String> e : config.entrySet()) {
+            String configKey = e.getKey();
+            // 日志等级
+            if (configKey.startsWith(LOG_LEVEL)) {
+                this.handleLogLevelConfig(configKey, e.getValue());
+            }
+            // 控制台输出
+            else if (configKey.startsWith(LOG_CONSOLE)) {
+                this.handleLogConsoleConfig(configKey, e.getValue());
+            }
+            // 输出文件配置
+            else if (configKey.startsWith(LogConstant.LOG_PATH)) {
+                this.handleLogPathConfig(configKey, e.getValue());
+            }
+            // 布局样式
+            else if (configKey.startsWith(LogConstant.LOG_LAYOUT_PATTERN)) {
+                this.handleLogLayoutPatternConfig(configKey, e.getValue());
+            }
+            // 不是日志相关的配置就忽略了
+        }
+    }
+
+    /**
+     * 处理日志显示样式配置
+     *
+     * @param configKey 配置Key
+     * @param value     配置值
+     */
+    private void handleLogLayoutPatternConfig(String configKey, String value) {
+        String key = this.judgeLoggerConfigKey(configKey, LogConstant.LOG_LAYOUT_PATTERN);
+        configMap.computeIfAbsent(key, k -> new LogConfig()).setLayoutPattern(value);
+    }
+
+    /**
+     * 处理日志存档路径配置
+     *
+     * @param configKey 配置Key
+     * @param value     配置值
+     */
+    private void handleLogPathConfig(String configKey, String value) {
+        String key = this.judgeLoggerConfigKey(configKey, LogConstant.LOG_PATH);
+        final LogPath path = new LogPath(value);
+        configMap.computeIfAbsent(key, k -> new LogConfig()).setPath(path);
+    }
+
+    /**
+     * 处理日志是否输出控制台配置
+     *
+     * @param configKey 配置Key
+     * @param value     配置值
+     */
+    private void handleLogConsoleConfig(String configKey, String value) {
+        String key = this.judgeLoggerConfigKey(configKey, LogConstant.LOG_CONSOLE);
+        final boolean console = Boolean.parseBoolean(value);
+        configMap.computeIfAbsent(key, k -> new LogConfig()).setConsole(console);
+    }
+
+    /**
+     * 处理日志等级配置
+     *
+     * @param configKey 配置Key
+     * @param value     配置值
+     */
+    private void handleLogLevelConfig(String configKey, String value) {
+        String key = this.judgeLoggerConfigKey(configKey, LogConstant.LOG_LEVEL);
+        final Level level = Level.valueOf(value.toUpperCase());
+        configMap.computeIfAbsent(key, k -> new LogConfig()).setLevel(level);
+    }
+
+    private String judgeLoggerConfigKey(String configKey, String configPrefix) {
+        String key = LogConstant.DEFAULT_LOGGER_NAME;
+        int length = configPrefix.length();
+        if (configKey.length() > length) {
+            key = configKey.substring(length + 1);
+        }
+        return key;
+    }
 }

@@ -17,8 +17,8 @@ import com.alibaba.fastjson.JSON;
 import xyz.noark.game.bi.AbstractReportService;
 import xyz.noark.game.bi.ReportData;
 import xyz.noark.game.bi.ReportService;
-
-import static xyz.noark.log.LogHelper.logger;
+import xyz.noark.log.Logger;
+import xyz.noark.log.LoggerFactory;
 
 /**
  * 利用Redis的订阅发布实现BI数据上报实现
@@ -27,7 +27,7 @@ import static xyz.noark.log.LogHelper.logger;
  * @since 3.3.3
  */
 public class RedisPublishReportImpl extends AbstractReportService implements ReportService {
-
+    private static final Logger logger = LoggerFactory.getLogger(RedisPublishReportImpl.class);
     private final Redis redis;
 
     public RedisPublishReportImpl(Redis redis) {

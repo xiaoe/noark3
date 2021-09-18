@@ -13,17 +13,41 @@
  */
 package xyz.noark.log;
 
+import xyz.noark.log.message.Message;
+import xyz.noark.log.message.MessageFactory;
+
 /**
  * 抽象的日志记录器.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-abstract class AbstractLogger {
+abstract class AbstractLogger implements Logger {
     /**
-     * 日志输出管理器
+     * 日志名，就是构建Logger对象时传入的那个类的包名
      */
-    private static final LogOutputManager OUTPUT_MANAGER = LogOutputManager.getInstance();
+    private final String name;
+    /**
+     * 这个Logger的私有配置
+     */
+    protected PrivateConfig privateConfig;
+
+    protected AbstractLogger(String name) {
+        this.name = name;
+        this.updateConfiguration(LogManager.getConfigurator());
+    }
+
+    String getName() {
+        return name;
+    }
+
+    PrivateConfig getPrivateConfig() {
+        return privateConfig;
+    }
+
+    protected void updateConfiguration(LogConfigurator configurator) {
+        this.privateConfig = new PrivateConfig(this, configurator);
+    }
 
     /**
      * 记录日志，如果级别达标的话.
@@ -45,7 +69,7 @@ abstract class AbstractLogger {
      * @return 如果达标则返回true
      */
     private boolean isEnabled(Level level) {
-        return LogConfigurator.DEFAULT_LEVEL.getValue() <= level.getValue();
+        return privateConfig.getIntLevel() <= level.getValue();
     }
 
     /**
@@ -55,7 +79,8 @@ abstract class AbstractLogger {
      * @param msg   日志信息
      * @param args  日志参数
      */
-    private void logMessage(Level level, String msg, Object... args) {
-        OUTPUT_MANAGER.asyncLog(MessageFactory.create(level, msg, args));
+    protected void logMessage(Level level, String msg, Object... args) {
+        Message message = MessageFactory.create(msg, args);
+        privateConfig.processLogEvent(new LogEvent(this, level, message));
     }
 }

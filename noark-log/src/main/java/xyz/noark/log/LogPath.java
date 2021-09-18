@@ -23,19 +23,18 @@ import java.time.format.DateTimeFormatter;
  * @since 3.0
  */
 class LogPath {
+    /**
+     * 配置存档路径
+     */
     private final String path;
     private final boolean activate;
     private DateTimeFormatter formatter = null;
     private String prefix;
     private String suffix;
 
-    LogPath() {
-        this(null);
-    }
-
     LogPath(String path) {
         this.path = path;
-        this.activate = (path == null || "".equals(path)) ? false : true;
+        this.activate = path != null && !"".equals(path);
 
         if (activate) {
             int start = path.indexOf("{");
@@ -52,6 +51,19 @@ class LogPath {
         }
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * 日志存储文件功能是否激活.
+     *
+     * @return 日志存储文件功能是否激活
+     */
+    public boolean isActivate() {
+        return activate;
+    }
+
     /**
      * 计算当前日志时间所对应的文件路径.
      *
@@ -63,14 +75,5 @@ class LogPath {
             return path;
         }
         return new StringBuilder(path.length()).append(prefix).append(date.format(formatter)).append(suffix).toString();
-    }
-
-    /**
-     * 日志存储文件功能是否激活.
-     *
-     * @return 日志存储文件功能是否激活
-     */
-    public boolean isActivate() {
-        return activate;
     }
 }

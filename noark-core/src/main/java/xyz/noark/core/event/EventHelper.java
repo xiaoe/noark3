@@ -49,4 +49,14 @@ public class EventHelper {
     public static boolean remove(DelayEvent event) {
         return eventManager.remove(event);
     }
+
+    /**
+     * 事件小助手，移除一个延迟事件的所有副本.
+     *
+     * @param event 延迟事件
+     * @return 移除成功返回true
+     */
+    public static boolean removeAll(DelayEvent event) {
+        return eventManager.removeAll(event);
+    }
 }

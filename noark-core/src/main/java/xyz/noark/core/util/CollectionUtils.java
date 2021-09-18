@@ -17,6 +17,7 @@ import xyz.noark.core.lang.PairHashMap;
 import xyz.noark.core.lang.PairMap;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -176,5 +177,44 @@ public class CollectionUtils {
      */
     public static int size(Collection<?> collection) {
         return collection == null ? 0 : collection.size();
+    }
+
+    /**
+     * List到HashMap结构.
+     *
+     * @param list      集结
+     * @param keyMapper 转化Map的Key方法
+     * @param <K>       键类型
+     * @param <T>       值类型
+     * @return Map结构
+     */
+    public static <K, T> HashMap<K, T> toHashMap(Collection<T> list, Function<? super T, ? extends K> keyMapper) {
+        return list.stream().collect(Collectors.toMap(keyMapper, Function.identity(), throwingMerger(), HashMap::new));
+    }
+
+    /**
+     * List到LinkedHashMap结构.
+     * <p>区别于HashMap是为了有序...</p>
+     *
+     * @param list      集结
+     * @param keyMapper 转化Map的Key方法
+     * @param <K>       键类型
+     * @param <T>       值类型
+     * @return Map结构
+     */
+    public static <K, T> LinkedHashMap<K, T> toLinkedHashMap(Collection<T> list, Function<? super T, ? extends K> keyMapper) {
+        return list.stream().collect(Collectors.toMap(keyMapper, Function.identity(), throwingMerger(), LinkedHashMap::new));
+    }
+
+    /**
+     * 重复主键时给个提示异常.
+     *
+     * @param <T> 值类型
+     * @return 提示异常
+     */
+    private static <T> BinaryOperator<T> throwingMerger() {
+        return (u, v) -> {
+            throw new IllegalStateException(String.format("Duplicate key %s", u));
+        };
     }
 }

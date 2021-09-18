@@ -11,7 +11,9 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.message;
+
+import xyz.noark.log.ThreadSafe;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

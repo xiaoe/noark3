@@ -14,10 +14,12 @@
 package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
+import xyz.noark.core.annotation.controller.Scheduled;
 import xyz.noark.core.cron.DelayTrigger;
 import xyz.noark.core.cron.DelayTriggerFactory;
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.definition.method.ScheduledMethodDefinition;
-import xyz.noark.reflectasm.MethodAccess;
+import xyz.noark.core.util.StringUtils;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,7 +42,14 @@ public class ScheduledMethodWrapper extends AbstractControllerMethodWrapper {
         super(single, threadGroup, controllerMasterClass.getName(), "scheduled(" + smd.getMethodName() + ")", smd);
         // 生成一个唯一ID编号.
         this.id = AUTO_ID.incrementAndGet();
-        this.trigger = DelayTriggerFactory.create(smd.getScheduled());
+
+        final Scheduled scheduled = smd.getScheduled();
+        // 固定速率不能为0，就是有人会忘了写参数，给个明确的提示
+        if (scheduled.fixedRate() <= 0 && StringUtils.isEmpty(scheduled.cron())) {
+            String position = single.getClass().getName() + "[" + smd.getMethodName() + "]";
+            throw new ServerBootstrapException("@Scheduled没有配置参数：" + position + "，请火速处理...");
+        }
+        this.trigger = DelayTriggerFactory.create(scheduled);
     }
 
     public Long getId() {

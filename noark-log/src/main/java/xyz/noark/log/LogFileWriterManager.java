@@ -13,20 +13,30 @@
  */
 package xyz.noark.log;
 
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 /**
- * 简单文本.
+ * 日志输出管理器
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.3
  */
-class SimpleMessage extends AbstractMessage {
+public class LogFileWriterManager {
+    private final ConcurrentMap<String, LogFileWriter> writerMap = new ConcurrentHashMap<>();
 
-    SimpleMessage(Level level, String msg) {
-        super(level, msg);
+    public LogFileWriter getWriter(LogPath logPath) {
+        return writerMap.computeIfAbsent(logPath.getPath(), key -> new LogFileWriter(logPath));
     }
 
-    @Override
-    protected void onBuildMessage(StringBuilder sb) {
-        sb.append(msg);
+    public void shutdown() {
+        for (LogFileWriter writer : writerMap.values()) {
+            try {
+                writer.flushAndClose();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

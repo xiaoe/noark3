@@ -134,7 +134,7 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      * @param delta 要加的值
      * @return 获得当前值后进行加法操作
      */
-    public final long getAndAdd(int delta) {
+    public final long getAndAdd(long delta) {
         final long oldValue = value;
         this.value += delta;
         return oldValue;
@@ -168,7 +168,7 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      * @param delta 指定值
      * @return 加上指定值后再返回
      */
-    public final long addAndGet(int delta) {
+    public final long addAndGet(long delta) {
         return value += delta;
     }
 }

@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.exception.ConvertException;
 import xyz.noark.core.util.DateUtils;
 
 import java.time.LocalDate;
@@ -167,6 +168,23 @@ public class LocalTimeArray {
             result += (days - 1) * array.length;
         }
         return result;
+    }
+
+    /**
+     * 判定指定时间是不是在这个区间之内.
+     *
+     * @param localTime 指定时间
+     * @return 如果在这个区间内返回true，否则返回false
+     */
+    public boolean inSection(LocalTime localTime) {
+        if (array.length != 2) {
+            throw new ConvertException("只有配置两个时间，还可以使用此方法" + this);
+        }
+
+        long startTime = array[0].toSecondOfDay();
+        long endTime = array[1].toSecondOfDay();
+        long now = localTime.toSecondOfDay();
+        return startTime <= now && now <= endTime;
     }
 
     @Override

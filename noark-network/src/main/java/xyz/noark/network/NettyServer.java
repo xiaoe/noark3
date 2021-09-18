@@ -30,6 +30,7 @@ import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.lang.FileSize;
 import xyz.noark.core.network.TcpServer;
 import xyz.noark.network.log.NettyLoggerFactory;
 
@@ -93,12 +94,12 @@ public class NettyServer implements TcpServer {
      * Netty低水位，默认值256K
      */
     @Value(NetworkConstant.LOW_WATER_MARK)
-    private int defaultLowWaterMark = 256 * 1024;
+    private FileSize defaultLowWaterMark = new FileSize(256 * 1024);
     /**
      * Netty高水位，默认值512K
      */
     @Value(NetworkConstant.HIGH_WATER_MARK)
-    private int defaultHighWaterMark = 512 * 1024;
+    private FileSize defaultHighWaterMark = new FileSize(512 * 1024);
 
     @Autowired
     protected NettyServerHandler nettyServerHandler;
@@ -141,7 +142,7 @@ public class NettyServer implements TcpServer {
         bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
         // Netty参数，写低水位标记，默认值32KB。当Netty的写缓冲区中的字节超过高水位之后若下降到低水位，则Channel的isWritable()返回True。
         // Netty参数，写高水位标记，默认值64KB。如果Netty的写缓冲区中的字节超过该值，Channel的isWritable()返回False。
-        bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(defaultLowWaterMark, defaultHighWaterMark));
+        bootstrap.childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(defaultLowWaterMark.intValue(), defaultHighWaterMark.intValue()));
 
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
             @Override

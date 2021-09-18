@@ -32,5 +32,5 @@ public interface DelayEvent extends Event, Delayed {
      *
      * @return 结束时间
      */
-    public Date getEndTime();
+    Date getEndTime();
 }

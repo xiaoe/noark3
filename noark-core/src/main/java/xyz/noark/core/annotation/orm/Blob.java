@@ -19,7 +19,6 @@ import java.lang.annotation.*;
  * Blob注解用来标注二进制数字存储的属性.
  * <p>
  * 可配合Column一起使用. <br>
- * 这个注解标识的属性只能是byte[]<br>
  * 可配置一些压缩算法的注解一起使用
  *
  * @author 小流氓[176543888@qq.com]

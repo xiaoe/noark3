@@ -15,11 +15,14 @@ package xyz.noark.core.ioc.manager;
 
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.lang.MutableBoolean;
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.PacketHelper;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.util.StringUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -117,18 +120,26 @@ public class PacketMethodManager {
      *
      * @param session 链接Session
      * @param packet  封包内容
+     * @return 如果封包解析失败则返回true
      */
-    public void logPacket(Session session, NetworkPacket packet) {
+    public boolean logPacket(Session session, NetworkPacket packet) {
         // 如果不是请求协议，这里就不记录了.
         if (packet == null) {
-            return;
+            return true;
         }
 
+        // 尝试解密
+        PacketHelper.tryDecode(session.getPacketEncrypt(), packet);
+
         // 记录一下请求协议的内容，主要用于排查一些坏人干的坏事
-        logger.warn("^(oo)^ packet info. session={}, packet={}", analysisSession(session), analysisPacket(session, packet));
+        Serializable sessionStr = analysisSession(session);
+        MutableBoolean parsingFailedFlag = new MutableBoolean(false);
+        String packetStr = analysisPacket(session, packet, parsingFailedFlag);
+        logger.warn("^(oo)^ packet info. session={}, packet={}", sessionStr, packetStr);
+        return parsingFailedFlag.getValue();
     }
 
-    private Object analysisSession(Session session) {
+    private Serializable analysisSession(Session session) {
         if (session == null) {
             return "null";
         }
@@ -136,12 +147,20 @@ public class PacketMethodManager {
         return session.getId();
     }
 
-    private String analysisPacket(Session session, NetworkPacket packet) {
+    private String analysisPacket(Session session, NetworkPacket packet, MutableBoolean parsingFailedFlag) {
         PacketMethodWrapper pmw = INSTANCE.getPacketMethodWrapper(packet.getOpcode());
         if (pmw == null) {
             return StringUtils.join("illegal opcode:", packet.getOpcode().toString());
         }
+
         // 把内容转成可直接阅读的信息
-        return pmw.toString(session, packet);
+        try {
+            return pmw.toString(session, packet);
+        }
+        // 如果封包解析失败，原有堆栈没并没有实际价值，那就包装一个HackerException
+        catch (Exception e) {
+            parsingFailedFlag.setValue(true);
+            return "Illegal packet:" + Arrays.toString(packet.getByteArray().array());
+        }
     }
 }

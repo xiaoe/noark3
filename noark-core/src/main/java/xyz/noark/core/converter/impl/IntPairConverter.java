@@ -11,37 +11,33 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.core.converter.impl;
+
+import xyz.noark.core.annotation.TemplateConverter;
+import xyz.noark.core.converter.AbstractConverter;
+import xyz.noark.core.lang.IntPair;
+import xyz.noark.core.util.StringUtils;
 
 /**
- * 日志输出任务.
+ * IntPair转化器.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.3.6
+ * @since 3.4.3
  */
-class LogOutputTask implements Runnable {
-    private final Message message;
-    private final LogOutputManager outputManager;
+@TemplateConverter({IntPair.class})
+public class IntPairConverter extends AbstractConverter<IntPair> {
 
-    LogOutputTask(Message message, LogOutputManager outputManager) {
-        this.message = message;
-        this.outputManager = outputManager;
+    @Override
+    public IntPair convert(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return new IntPair(0, 0);
+        }
+        String[] array = StringUtils.split(value, ":");
+        return new IntPair(Integer.parseInt(array[0]), Integer.parseInt(array[1]));
     }
 
     @Override
-    public void run() {
-        try {
-            char[] text = message.build();
-            // 记录到控制台
-            if (LogConfigurator.CONSOLE) {
-                outputManager.recordToConsole(message.getLevel(), text);
-            }
-            // 记录到文件
-            if (LogConfigurator.LOG_PATH.isActivate()) {
-                outputManager.recordToFile(message.getDate(), text);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public String buildErrorMsg() {
+        return "数字配对，如：1:234";
     }
 }

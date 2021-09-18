@@ -21,7 +21,8 @@ package xyz.noark.log;
  */
 class NoarkLogger extends AbstractLogger implements Logger {
 
-    NoarkLogger() {
+    NoarkLogger(String name) {
+        super(name);
     }
 
     @Override

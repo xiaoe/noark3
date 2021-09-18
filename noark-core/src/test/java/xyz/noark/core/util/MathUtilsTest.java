@@ -70,18 +70,19 @@ public class MathUtilsTest {
     @Test
     public void testPlunder() {
         LinkedHashMap<Integer, Long> resources = new LinkedHashMap<>();
-        resources.put(301, RandomUtils.nextLong(1, 88888));
+        resources.put(301, 0L);
         resources.put(302, RandomUtils.nextLong(1, 88888));
         resources.put(303, RandomUtils.nextLong(1, 88888));
-        resources.put(304, RandomUtils.nextLong(1, 88888));
+        resources.put(305, RandomUtils.nextLong(1, 88888));
+        resources.put(304, 1L);
 
         LinkedHashMap<Integer, Integer> r = new LinkedHashMap<>();
-        r.put(301, 10);
-        r.put(302, 10);
-        r.put(303, 4);
-        r.put(304, 3);
+        r.put(301, 30);
+        r.put(302, 30);
+        r.put(303, 20);
+        r.put(304, 20);
 
-        long max = RandomUtils.nextLong(10000, 50000);
+        long max = 111;
         System.out.println("源：" + resources + "----->抢他个" + max);
         System.out.println("抢：" + MathUtils.plunder(resources, max, r));
         System.out.println();
