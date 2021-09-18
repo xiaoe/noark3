@@ -17,7 +17,10 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.lang.StringByteArray;
 
 import java.io.Serializable;
 
@@ -43,7 +46,13 @@ public class WebSocketSession extends SocketSession {
         channel.writeAndFlush(buildFrame(buildPacket(opcode, protocol))).addListener(ChannelFutureListener.CLOSE);
     }
 
-    private BinaryWebSocketFrame buildFrame(ByteArray packet) {
+    private WebSocketFrame buildFrame(ByteArray packet) {
+        // 如果是个字符串
+        if (packet instanceof StringByteArray) {
+            return new TextWebSocketFrame(((StringByteArray) packet).getText());
+        }
+
+        // 2进制的走这个逻辑
         return new BinaryWebSocketFrame(Unpooled.wrappedBuffer(packet.array()));
     }
 }
