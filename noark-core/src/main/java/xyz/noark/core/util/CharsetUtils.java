@@ -14,6 +14,7 @@
 package xyz.noark.core.util;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 字符集工具类
@@ -34,14 +35,16 @@ public class CharsetUtils {
      * GBK
      */
     public static final String GBK = "GBK";
+
+    
     /**
      * ISO-8859-1
      */
-    public static final Charset CHARSET_ISO_8859_1 = Charset.forName(ISO_8859_1);
+    public static final Charset CHARSET_ISO_8859_1 = StandardCharsets.ISO_8859_1;
     /**
      * UTF-8
      */
-    public static final Charset CHARSET_UTF_8 = Charset.forName(UTF_8);
+    public static final Charset CHARSET_UTF_8 = StandardCharsets.UTF_8;
     /**
      * GBK
      */
