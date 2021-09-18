@@ -5,7 +5,7 @@ subprojects {
 	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.4.3-SNAPSHOT'
+	version = '3.4.3.Final'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -44,7 +44,7 @@ subprojects {
 	ext."signing.secretKeyRingFile"=System.getenv('SIGNING_SECRETKEYRINGFILE')
 
 	signing {
-	    //sign configurations.archives
+	    sign configurations.archives
 	}
 
 	uploadArchives {
@@ -58,7 +58,7 @@ subprojects {
 	
 				//快照版本还是内网速度快，稳定再发布正式版本给大家使用
 				//https://oss.sonatype.org/content/repositories/snapshots
-	            snapshotRepository(url: "http://192.168.51.231:8081/repository/maven-snapshots/") {
+	            snapshotRepository(url: "http://192.168.0.235:8089/repository/maven-snapshots/") {
 	                authentication(userName: 'admin', password: 'admin123')
 	            }
 	            
