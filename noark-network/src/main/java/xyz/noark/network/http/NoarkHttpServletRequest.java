@@ -119,6 +119,12 @@ class NoarkHttpServletRequest implements HttpServletRequest {
 
     private void parsePostContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
         String contentType = fhr.headers().get("Content-Type");
+        // 非标准浏览器的请求时，这个参数都没有的...
+        if (contentType == null) {
+            parsePostFromContent(fhr, parameterMap);
+            return;
+        }
+
         switch (contentType) {
             // JSON类型的参数格式
             case "application/json":
