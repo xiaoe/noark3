@@ -13,7 +13,9 @@
  */
 package xyz.noark.core.ioc.wrap.param;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session;
@@ -30,8 +32,12 @@ import java.io.Serializable;
 public class PacketParamWrapper implements ParamWrapper {
     private final Class<?> klass;
 
-    public PacketParamWrapper(Class<?> klass) {
+    public PacketParamWrapper(Class<?> klass, PacketMethodWrapper packetMethod) {
         this.klass = klass;
+        // 正常情况下，封包不可能是基本类型，只有注入的角色ID可能是下面这些类型，但没有@PlayerId所以被识别为封包了...
+        if (klass == Long.class || klass == long.class || klass == String.class || klass == int.class || klass == Integer.class) {
+            throw new ServerBootstrapException("亲，你是不是少了个@PlayerId了... " + packetMethod.getTipsInfo());
+        }
     }
 
     @Override
