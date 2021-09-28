@@ -18,6 +18,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.Tuple;
+import redis.clients.jedis.params.SetParams;
 import xyz.noark.core.exception.ServerBootstrapException;
 
 import java.util.HashMap;
@@ -384,23 +385,9 @@ public class Redis implements ValueOperations {
     }
 
     @Override
-    public String set(final String key, String value, String nxxx) {
+    public String set(final String key, String value, SetParams params) {
         try (Jedis jedis = pool.getResource()) {
-            return jedis.set(key, value, nxxx);
-        }
-    }
-
-    @Override
-    public String set(final String key, String value, String nxxx, String expx, final int time) {
-        try (Jedis jedis = pool.getResource()) {
-            return jedis.set(key, value, nxxx, expx, time);
-        }
-    }
-
-    @Override
-    public String set(final String key, String value, String nxxx, String expx, final long time) {
-        try (Jedis jedis = pool.getResource()) {
-            return jedis.set(key, value, nxxx, expx, time);
+            return jedis.set(key, value, params);
         }
     }
 
