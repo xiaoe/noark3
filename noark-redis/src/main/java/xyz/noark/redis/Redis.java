@@ -14,10 +14,7 @@
 package xyz.noark.redis;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPubSub;
-import redis.clients.jedis.Tuple;
+import redis.clients.jedis.*;
 import redis.clients.jedis.params.SetParams;
 import xyz.noark.core.exception.ServerBootstrapException;
 
@@ -66,7 +63,7 @@ public class Redis implements ValueOperations {
     }
 
     public Redis(String host, int port, String password, int index) {
-        this.pool = new JedisPool(new GenericObjectPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
+        this.pool = new JedisPool(new JedisPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
         logger.info("redis info. host={},port={},database={}", host, port, index);
     }
 
@@ -187,14 +184,14 @@ public class Redis implements ValueOperations {
      * @param seconds 秒
      * @return 设置成功返回 1 。 当key不存在或者不能为 key设置生存时间时，返回 0 。
      */
-    public long expire(final String key, int seconds) {
+    public long expire(final String key, long seconds) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.expire(key, seconds);
         }
     }
 
     /**
-     * EXPIREAT 的作用和 {@link Redis#expire(String, int)} 类似，都用于为key设置生存时间。<br>
+     * EXPIREAT 的作用和 {@link Redis#expire(String, long)} 类似，都用于为key设置生存时间。<br>
      * 不同在于EXPIREAT命令接受的时间参数是UNIX时间戳(unix timestamp)。
      * <p>
      * 可用版本： &gt;= 1.2.0<br>
