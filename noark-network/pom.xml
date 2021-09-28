@@ -36,13 +36,13 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
-      <version>4.1.51.Final</version>
+      <version>4.1.68.Final</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
-      <version>1.2.57</version>
+      <version>1.2.78</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

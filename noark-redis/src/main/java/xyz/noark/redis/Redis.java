@@ -109,7 +109,7 @@ public class Redis implements ValueOperations {
     }
 
     /**
-     * 序列化指定的键key，并返回被序列化的值，使用{@link #restore(String, int, byte[])}命令可以将这个值反序列化为Redis键.
+     * 序列化指定的键key，并返回被序列化的值，使用{@link #restore(String, long, byte[])}命令可以将这个值反序列化为Redis键.
      * <p>
      * 序列化生成的值有以下几个特点：
      * <p>
@@ -153,7 +153,7 @@ public class Redis implements ValueOperations {
      * @param serializedValue 要反序列化的字节数组
      * @return 如果反序列化成功那么返回OK，否则返回一个错误。
      */
-    public String restore(final String key, final int ttl, final byte[] serializedValue) {
+    public String restore(final String key, final long ttl, final byte[] serializedValue) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.restore(key, ttl, serializedValue);
         }
