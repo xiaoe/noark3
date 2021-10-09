@@ -58,6 +58,7 @@ public class GameServerConfiguration {
         accessor.setStatementParameterSetLogEnable(true);
         // 执行时间超过1秒的都要记录下.
         accessor.setSlowQuerySqlMillis(1000);
+        accessor.setAutoAlterTableDropColumn(true);
         return accessor;
     }
 
