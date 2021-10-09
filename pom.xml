@@ -6,7 +6,7 @@
   <version>3.4.3.Fianl</version>
   <name>noark</name>
   <description>This is a game server framework.</description>
-  <url>http://noark.xyz</url>
+  <url>https://noark.xyz</url>
   <packaging>pom</packaging>
   <modules>
     <module>noark-asm</module>
