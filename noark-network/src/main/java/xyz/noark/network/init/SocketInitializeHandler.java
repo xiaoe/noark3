@@ -13,9 +13,9 @@
  */
 package xyz.noark.network.init;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Component;
 import xyz.noark.core.network.PacketCodecHolder;
@@ -43,9 +43,9 @@ public class SocketInitializeHandler extends AbstractInitializeHandler {
 
         final AbstractPacketCodec codec = (AbstractPacketCodec) PacketCodecHolder.getPacketCodec();
         // Socket有封包长度编码器,但也可能会为空，有时候长度都直接编码进群发了也是一种提升...
-        final MessageToByteEncoder<?> lengthEncoder = codec.lengthEncoder();
+        final ChannelHandler lengthEncoder = codec.lengthEncoder();
         if (lengthEncoder != null) {
-            pipeline.addLast("encoder", codec.lengthEncoder());
+            pipeline.addLast("encoder", lengthEncoder);
         }
 
         // Socket有封包长度解码器...
