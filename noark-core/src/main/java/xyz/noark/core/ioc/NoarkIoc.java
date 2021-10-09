@@ -39,13 +39,28 @@ public class NoarkIoc implements Ioc {
 
     private final ConcurrentHashMap<Class<? extends Annotation>, List<MethodWrapper>> customMethods = new ConcurrentHashMap<>();
 
+    /**
+     * 构建NoarkIOC容器
+     *
+     * @param packager 被扫描的业务目录
+     */
     public NoarkIoc(String packager) {
+        this(null, packager);
+    }
+
+    /**
+     * 构建NoarkIOC容器
+     *
+     * @param packager 被扫描的业务目录
+     * @param profile  环境配置
+     */
+    public NoarkIoc(String profile, String packager) {
         String[] packages = Arrays.asList(packager, "xyz.noark").toArray(new String[]{});
         logger.debug("init ioc, packages={}", packager);
         IocHolder.setIoc(this);
 
         // 自动注入的实现也交给他去处理...
-        IocLoader loader = new IocLoader(packages);
+        IocLoader loader = new IocLoader(profile, packages);
 
         try (IocMaking making = new IocMaking(loader)) {
             // 优先构建Configuration里的显示申明的Bean.

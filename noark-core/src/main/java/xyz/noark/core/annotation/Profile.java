@@ -11,23 +11,27 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.bootstrap;
+package xyz.noark.core.annotation;
+
+import java.lang.annotation.*;
 
 /**
- * 服务启动类.
+ * 根据当前环境，激活对应的组件功能.
+ * <p>
+ * 只有在这个环境激活的时候才会被注册到IOC容器中
+ * </p>
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.4
  */
-public interface ServerBootstrap {
-
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface Profile {
     /**
-     * 启动
+     * 指定的环境编码
+     *
+     * @return 环境编码
      */
-    void start();
-
-    /**
-     * 停止
-     */
-    void stop();
+    String[] value();
 }

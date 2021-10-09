@@ -33,6 +33,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -46,11 +47,17 @@ public class IocLoader {
     private static final String CLASS_SUFFIX = ".class";
     private static final String STARTER_SUFFIX = ".starter";
 
+    /**
+     * 启动时的配置环境
+     */
+    private final String profileString;
     private final HashMap<Class<?>, DefaultBeanDefinition> beans = MapUtils.newHashMap(1024);
     private final List<BeanDefinition> configurations = new ArrayList<>();
     private final List<StaticComponentBeanDefinition> staticComponents = new ArrayList<>();
 
-    IocLoader(String... packages) {
+
+    IocLoader(String profile, String... packages) {
+        this.profileString = profile;
         ResourceScanning.scanPackage(packages, this::analysisResource);
     }
 
@@ -126,6 +133,11 @@ public class IocLoader {
             return;
         }
 
+        // @Profile 指定环境
+        if (this.notInProfile(klass)) {
+            return;
+        }
+
         // 查找带有@Component注解或其他注解上有@Component注解的类
         Annotation annotation = AnnotationUtils.getAnnotation(klass, Component.class);
         if (annotation == null) {
@@ -159,6 +171,24 @@ public class IocLoader {
                 ConvertManager.getInstance().register(klass, (TemplateConverter) annotation, definition.getSingle());
             }
         }
+    }
+
+    private boolean notInProfile(Class<?> klass) {
+        // @Profile 指定环境，没有配置生效
+        Profile profile = klass.getAnnotation(Profile.class);
+        if (profile == null) {
+            return false;
+        }
+
+        // 只要有一个是当前的配置的，那就算配置生效
+        for (String test : profile.value()) {
+            if (Objects.equals(test, profileString)) {
+                return false;
+            }
+        }
+
+        // 一个也没有命令中，那就要中断啦...
+        return true;
     }
 
     /**
