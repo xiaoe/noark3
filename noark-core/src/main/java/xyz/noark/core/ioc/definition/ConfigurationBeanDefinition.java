@@ -32,8 +32,8 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 
     private final List<BeanMethodDefinition> beans;
 
-    public ConfigurationBeanDefinition(Class<?> klass) {
-        super(klass);
+    public ConfigurationBeanDefinition(String profileStr, Class<?> klass) {
+        super(profileStr, klass);
         this.beans = new ArrayList<>();
     }
 
@@ -45,7 +45,7 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
         for (BeanMethodDefinition bean : beans) {
             // FIXME 可以使用参数注入的方式 @Value一起用...
             Object obj = bean.getMethodAccess().invoke(single, bean.getMethodIndex());
-            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(bean.getBeanName(), obj).init();
+            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(profileStr, bean.getBeanName(), obj).init();
             making.getLoader().getBeans().put(beanDefinition.getBeanClass(), beanDefinition);
         }
     }

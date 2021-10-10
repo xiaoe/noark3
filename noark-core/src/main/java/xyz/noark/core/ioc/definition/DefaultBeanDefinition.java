@@ -13,10 +13,7 @@
  */
 package xyz.noark.core.ioc.definition;
 
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
-import xyz.noark.core.annotation.Order;
-import xyz.noark.core.annotation.Value;
+import xyz.noark.core.annotation.*;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.*;
 import xyz.noark.core.ioc.definition.field.DefaultFieldDefinition;
@@ -52,7 +49,10 @@ public class DefaultBeanDefinition implements BeanDefinition {
     protected final Object single;
     protected final MethodAccess methodAccess;
     protected final HashMap<Class<? extends Annotation>, List<MethodDefinition>> customMethods = new HashMap<>();
+    protected final String profileStr;
+
     private final Class<?> beanClass;
+
     private String beanName = StringUtils.EMPTY;
 
     private Annotation annotation;
@@ -67,16 +67,17 @@ public class DefaultBeanDefinition implements BeanDefinition {
      */
     private final ArrayList<FieldDefinition> autowiredFields = new ArrayList<>();
 
-    public DefaultBeanDefinition(Class<?> klass) {
-        this(klass, ClassUtils.newInstance(klass));
+    public DefaultBeanDefinition(String profileStr, Class<?> klass) {
+        this(profileStr, klass, ClassUtils.newInstance(klass));
     }
 
-    public DefaultBeanDefinition(String beanName, Object object) {
-        this(object.getClass(), object);
+    public DefaultBeanDefinition(String profileStr, String beanName, Object object) {
+        this(profileStr, object.getClass(), object);
         this.beanName = beanName;
     }
 
-    public DefaultBeanDefinition(Class<?> klass, Object object) {
+    public DefaultBeanDefinition(String profileStr, Class<?> klass, Object object) {
+        this.profileStr = profileStr;
         this.single = object;
         this.beanClass = klass;
         this.methodAccess = MethodAccess.get(beanClass);
@@ -85,8 +86,8 @@ public class DefaultBeanDefinition implements BeanDefinition {
         this.order = order == null ? Integer.MAX_VALUE : order.value();
     }
 
-    public DefaultBeanDefinition(Class<?> klass, Annotation annotation, Class<? extends Annotation> annotationType) {
-        this(klass, ClassUtils.newInstance(klass));
+    public DefaultBeanDefinition(String profileStr, Class<?> klass, Annotation annotation, Class<? extends Annotation> annotationType) {
+        this(profileStr, klass, ClassUtils.newInstance(klass));
         this.annotation = annotation;
         this.annotationType = annotationType;
     }
@@ -158,6 +159,12 @@ public class DefaultBeanDefinition implements BeanDefinition {
             Annotation[] annotations = method.getAnnotations();
             // 没有注解的忽略掉
             if (ArrayUtils.isNotEmpty(annotations)) {
+
+                // @Profile 指定环境
+                if (AnnotationUtils.filterProfile(method.getAnnotation(Profile.class), profileStr)) {
+                    continue;
+                }
+
                 for (Annotation annotation : annotations) {
                     final Class<? extends Annotation> annotationType = annotation.annotationType();
                     // 忽略一些系统警告类的注解

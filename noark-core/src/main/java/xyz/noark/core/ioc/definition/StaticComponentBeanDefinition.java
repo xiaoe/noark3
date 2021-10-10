@@ -21,9 +21,9 @@ package xyz.noark.core.ioc.definition;
  */
 public class StaticComponentBeanDefinition extends DefaultBeanDefinition {
 
-    public StaticComponentBeanDefinition(Class<?> klass) {
+    public StaticComponentBeanDefinition(String profileStr, Class<?> klass) {
         // 静态组件，是不需要构建这个实例对象的...
-        super(klass, null);
+        super(profileStr, klass, null);
     }
 
     @Override
