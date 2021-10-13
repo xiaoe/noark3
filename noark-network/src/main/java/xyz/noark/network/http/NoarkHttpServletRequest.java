@@ -156,6 +156,12 @@ class NoarkHttpServletRequest implements HttpServletRequest {
 
     private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) {
         byte[] bs = ByteBufUtils.readBytes(fhr.content());
+
+        // 长度为0，那就当他没有参数
+        if (bs.length == 0) {
+            return;
+        }
+
         JSONObject jsonObject = JSON.parseObject(new String(bs, CharsetUtils.CHARSET_UTF_8));
         for (Map.Entry<String, Object> e : jsonObject.entrySet()) {
             parameterMap.computeIfAbsent(e.getKey(), key -> new ArrayList<>(1)).add(e.getValue().toString());
