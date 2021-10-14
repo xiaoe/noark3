@@ -2,6 +2,7 @@ package xyz.noark.network.http;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -10,10 +11,13 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.MapUtils;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.http.exception.UnrealizedMethodException;
 import xyz.noark.network.util.ByteBufUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -31,6 +35,10 @@ class NoarkHttpServletRequest implements HttpServletRequest {
      * 请求参数Map
      */
     private Map<String, String[]> parameterMap = Collections.emptyMap();
+    /**
+     * 请求内容输入流
+     */
+    private InputStream requestBodyInputStream;
 
     NoarkHttpServletRequest(String uri, HttpMethod method, String ip) {
         this.uri = uri;
@@ -72,6 +80,11 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     @Override
     public Map<String, String[]> getParameterMap() {
         return parameterMap;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return requestBodyInputStream;
     }
 
     @Override
@@ -118,24 +131,25 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     }
 
     private void parsePostContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
-        String contentType = fhr.headers().get("Content-Type");
-        // 非标准浏览器的请求时，这个参数都没有的...
-        if (contentType == null) {
-            parsePostFromContent(fhr, parameterMap);
-            return;
+        // KEY的值，大小写无所谓，但Get出来的Value是大小写敏感的
+        String contentType = fhr.headers().get("content-type");
+        // 有些非正常的请求，可能会没有内容类型
+        if (StringUtils.isNotEmpty(contentType)) {
+            this.parsePostBodyContent(fhr);
         }
+        // JSON类型的参数格式
+        else if ("application/json".equalsIgnoreCase(contentType)) {
+            this.parseJsonContent(fhr, parameterMap);
+        }
+        // 其他走HTTP常规参数编码key1=val1&key2=val2
+        else {
+            this.parsePostFromContent(fhr, parameterMap);
+        }
+    }
 
-        switch (contentType) {
-            // JSON类型的参数格式
-            case "application/json":
-                parseJsonContent(fhr, parameterMap);
-                break;
-            // 默认走标准HTTP的POST参数
-            case "application/from":
-            default:
-                parsePostFromContent(fhr, parameterMap);
-                break;
-        }
+    private void parsePostBodyContent(FullHttpRequest fhr) {
+        byte[] content = ByteBufUtils.readBytes(fhr.content());
+        this.requestBodyInputStream = new ByteArrayInputStream(content);
     }
 
     private void parsePostFromContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
@@ -155,14 +169,12 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     }
 
     private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) {
-        byte[] bs = ByteBufUtils.readBytes(fhr.content());
-
-        // 长度为0，那就当他没有参数
-        if (bs.length == 0) {
+        final ByteBuf content = fhr.content();
+        if (content.readableBytes() == 0) {
             return;
         }
 
-        JSONObject jsonObject = JSON.parseObject(new String(bs, CharsetUtils.CHARSET_UTF_8));
+        JSONObject jsonObject = JSON.parseObject(content.toString(CharsetUtils.CHARSET_UTF_8));
         for (Map.Entry<String, Object> e : jsonObject.entrySet()) {
             parameterMap.computeIfAbsent(e.getKey(), key -> new ArrayList<>(1)).add(e.getValue().toString());
         }

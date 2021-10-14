@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
+import xyz.noark.core.annotation.controller.RequestBody;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
@@ -26,6 +27,7 @@ import xyz.noark.network.http.exception.UnrealizedQueueIdException;
 import xyz.noark.network.util.NettyUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -235,8 +237,28 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
             }
             // 其他转化器参数
             else {
-                Converter<?> converter = this.getConverter(param.getParameter());
-                String data = request.getParameter(param.getName());
+                final Converter<?> converter = this.getConverter(param.getParameter());
+
+                String data;
+                RequestBody requestBody = param.getRequestBody();
+                // 没有RequestBody，从请求参数中拿值
+                if (requestBody == null) {
+                    data = request.getParameter(param.getName());
+                }
+                // 有RequestBody，就要取出请求内容
+                else {
+                    try (InputStream inputStream = request.getInputStream()) {
+                        data = StringUtils.readString(inputStream);
+                    } catch (Exception e) {
+                        data = null;
+                        e.printStackTrace();
+                    }
+
+                    // 请求内容必需有值
+                    if (requestBody.required() && data == null) {
+                        throw new ConvertException("HTTP request body error. uri=" + request.getUri() + "," + param.getName() + " is required.");
+                    }
+                }
 
                 if (data == null) {
                     // 必选参数必需有值

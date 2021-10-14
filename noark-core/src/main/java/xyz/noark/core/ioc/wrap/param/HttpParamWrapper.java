@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc.wrap.param;
 
+import xyz.noark.core.annotation.controller.RequestBody;
 import xyz.noark.core.annotation.controller.RequestParam;
 import xyz.noark.core.util.StringUtils;
 
@@ -26,13 +27,15 @@ import java.lang.reflect.Parameter;
  */
 public class HttpParamWrapper {
     private final Parameter parameter;
-
+    private final RequestBody requestBody;
     private final boolean required;
     private final String name;
     private final String defaultValue;
 
     public HttpParamWrapper(RequestParam requestParam, Parameter parameter) {
         this.parameter = parameter;
+        this.requestBody = parameter.getAnnotation(RequestBody.class);
+
         if (requestParam == null) {
             this.required = false;
             this.name = parameter.getName();
@@ -58,5 +61,9 @@ public class HttpParamWrapper {
 
     public String getDefaultValue() {
         return defaultValue;
+    }
+
+    public RequestBody getRequestBody() {
+        return requestBody;
     }
 }
