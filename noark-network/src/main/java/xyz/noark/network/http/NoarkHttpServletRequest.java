@@ -134,7 +134,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         // KEY的值，大小写无所谓，但Get出来的Value是大小写敏感的
         String contentType = fhr.headers().get("content-type");
         // 有些非正常的请求，可能会没有内容类型
-        if (StringUtils.isNotEmpty(contentType)) {
+        if (StringUtils.isEmpty(contentType)) {
             this.parsePostBodyContent(fhr);
         }
         // JSON类型的参数格式
