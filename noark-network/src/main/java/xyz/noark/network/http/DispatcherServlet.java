@@ -90,7 +90,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         // 如果在解析参数和派发任务时抛出异常
         catch (Throwable e) {
             dispatchException = true;
-            this.processHandlerException(request, response, handler, e);
+            this.processHandlerException(request, response, e);
         } finally {
             if (dispatchException) {
                 response.flush();
@@ -164,19 +164,25 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         try {
             this.doAction(request, response, handler);
         } catch (Throwable e) {
-            this.processHandlerException(request, response, handler, e);
+            this.processHandlerException(request, response, e);
         } finally {
             response.flush();
 
             // 延迟时间与执行时间
-            String ip = request.getRemoteAddr();
-            float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
-            float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
-            logger.info("handle http({}),delay={} ms,exe={} ms,ip={}", request.getUri(), delay, exec, ip);
+            if (handler.isPrintLog()) {
+                this.handleExecAfter(request, startExecuteTime, createTime);
+            }
         }
     }
 
-    private void processHandlerException(HttpServletRequest request, HttpServletResponse response, HttpMethodWrapper handler, Throwable e) {
+    private void handleExecAfter(HttpServletRequest request, long startExecuteTime, long createTime) {
+        String ip = request.getRemoteAddr();
+        float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
+        float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
+        logger.info("handle http({}),delay={} ms,exe={} ms,ip={}", request.getUri(), delay, exec, ip);
+    }
+
+    private void processHandlerException(HttpServletRequest request, HttpServletResponse response, Throwable e) {
         // 404 Handler没找到...
         if (e instanceof NoHandlerFoundException) {
             this.noHandlerFound(request, response);

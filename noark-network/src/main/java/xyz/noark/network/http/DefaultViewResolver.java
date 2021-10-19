@@ -35,7 +35,7 @@ public class DefaultViewResolver implements ViewResolver {
         else {
             // 如果返回值是HttpResult类或子类的话，那就直接以特定的格式写入到response的body区域<br>
             if (returnValue instanceof HttpResult) {
-                return (HttpResult) returnValue;
+                return returnValue;
             }
             // 如果返回值不是HttpResult类或子类的话，底层会将方法的返回值封装为HttpResult对象里的data属性，然后再以特定的格式写入到response的body区域<br>
             else {

@@ -31,8 +31,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      * 当前方法是否已废弃使用.
      */
     protected boolean deprecated = false;
-
-    //----------------------------------------
+    
     /**
      * 执行线程组
      */
@@ -46,6 +45,9 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      * 可执行方法的两个属性
      */
     private final String logCode;
+    /**
+     * 是否打印执行日志
+     */
     protected boolean printLog = false;
 
     public AbstractControllerMethodWrapper(Object single, ExecThreadGroup threadGroup, String module, String logCode, MethodDefinition md) {
@@ -82,12 +84,21 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
         this.deprecated = deprecated;
     }
 
-    //----------------------------------------
-
+    /**
+     * 判定当前入口是否打印执行日志
+     *
+     * @return 如果需要打印返回true
+     */
     public boolean isPrintLog() {
         return printLog;
     }
 
+    /**
+     * 设置是否打印执行日志.
+     * <p>这个方法是留给脚本调用的，方便线上想输出打印日志</p>
+     *
+     * @param printLog 是否打印
+     */
     public void setPrintLog(boolean printLog) {
         this.printLog = printLog;
     }
@@ -108,6 +119,4 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     public String logCode() {
         return logCode;
     }
-
-
 }
