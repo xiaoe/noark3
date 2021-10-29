@@ -1,5 +1,6 @@
 package xyz.noark.redis;
 
+import redis.clients.jedis.params.SetParams;
 import xyz.noark.core.lock.DistributedLock;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.core.util.ThreadUtils;
@@ -27,7 +28,7 @@ public class RedisDistributedLock extends DistributedLock {
     /**
      * 锁定时间：1分钟
      */
-    private final int timeout = 60;
+    private final long timeout = 60;
 
     private final RedisTemplate redisTemplate;
 
@@ -50,7 +51,7 @@ public class RedisDistributedLock extends DistributedLock {
     @Override
     public boolean tryLock() {
         final ValueOperations operations = redisTemplate.opsForValue();
-        String result = operations.set(lockKey, id, "NX", "EX", timeout);
+        String result = operations.set(lockKey, id, SetParams.setParams().nx().ex(timeout));
         return "OK".equals(result);
     }
 

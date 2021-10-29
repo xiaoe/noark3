@@ -41,11 +41,12 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
     private final Set<Session.State> stateSet;
     private final boolean allState;
     private final ArrayList<ParamWrapper> parameters;
+    private final String tipsInfo;
     /**
      * 调用总次数
      */
     private final LongAdder callNum = new LongAdder();
-
+    
     public PacketMethodWrapper(Object single, PacketMethodDefinition md, ExecThreadGroup threadGroup, Class<?> controllerMasterClass, String queueId) {
         super(single, threadGroup, controllerMasterClass.getName(), "protocol(opcode=" + md.getOpcode() + ")", md);
         this.opcode = md.getOpcode();
@@ -54,9 +55,14 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
         this.stateSet = md.getStateSet();
         this.allState = stateSet.contains(Session.State.ALL);
         this.deprecated = md.isDeprecated();
+        this.tipsInfo = this.buildTipsInfo(md);
 
         this.parameters = new ArrayList<>(md.getParameters().length);
         Arrays.stream(md.getParameters()).forEach(this::buildParamWrapper);
+    }
+
+    private String buildTipsInfo(PacketMethodDefinition md) {
+        return md.getMethod().toGenericString();
     }
 
     /**
@@ -81,7 +87,7 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
         }
         // 无法识别的只能依靠Session内置解码器来转化了.
         else {
-            this.parameters.add(new PacketParamWrapper(parameter.getType()));
+            this.parameters.add(new PacketParamWrapper(parameter.getType(), this));
         }
     }
 
@@ -187,5 +193,14 @@ public class PacketMethodWrapper extends AbstractControllerMethodWrapper {
         }
         sb.append(']');
         return sb.toString();
+    }
+
+    /**
+     * 获取这个封包入口可读提示信息
+     *
+     * @return 封包入口信息
+     */
+    public String getTipsInfo() {
+        return tipsInfo;
     }
 }

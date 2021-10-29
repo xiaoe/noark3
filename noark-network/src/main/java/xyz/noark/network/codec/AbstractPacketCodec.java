@@ -13,8 +13,8 @@
  */
 package xyz.noark.network.codec;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.MessageToByteEncoder;
 import xyz.noark.core.network.PacketCodec;
 
 /**
@@ -31,7 +31,7 @@ public abstract class AbstractPacketCodec extends AbstractWebsocketPacketCodec i
      *
      * @return 长度编码器
      */
-    public abstract MessageToByteEncoder<?> lengthEncoder();
+    public abstract ChannelHandler lengthEncoder();
 
     /**
      * 长度解码器

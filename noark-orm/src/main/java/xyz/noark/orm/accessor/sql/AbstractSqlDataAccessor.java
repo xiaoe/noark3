@@ -16,6 +16,7 @@ package xyz.noark.orm.accessor.sql;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.DataAccessException;
 import xyz.noark.core.exception.DataException;
+import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.MathUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.orm.DataConstant;
@@ -129,7 +130,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
      */
     protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {
         long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
-        final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
+        final Map<String, Integer> columnMaxLenMap = MapUtils.newHashMap(em.getFieldMapping().size());
         try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
             PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable, autoAlterColumnLength, columnMaxLenMap);
 
@@ -151,7 +152,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
 
     protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {
         long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
-        final Map<String, Integer> columnMaxLenMap = new HashMap<String, Integer>(em.getFieldMapping().size());
+        final Map<String, Integer> columnMaxLenMap = MapUtils.newHashMap(em.getFieldMapping().size());
         // 批量执行，如果出现异常，数据将进行回滚
         try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
             // 关闭自动提交功能
@@ -186,7 +187,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
         // 1.尝试修复数据库字段过长的问题，自动扩容
         // Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation: Data too long for column 'json' at row 1
         if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
-            synchronized (em) {
+            synchronized (this) {
                 this.handleDataTooLongException(em, columnMaxLenMap);
             }
             return true;
@@ -195,7 +196,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
         // 2.尝试修复Emoji表情存档失败的问题
         // java.sql.SQLException: Incorrect string value: '\xF0\x9F\x98\xA218' for column 'content' at row 1
         if (flag && autoAlterEmojiColumn && e instanceof SQLException && e.getMessage().startsWith(MYSQL_DATA_INCORRECT_PREFIX)) {
-            synchronized (em) {
+            synchronized (this) {
                 em.getFieldMapping().forEach(v -> v.setEmoji(true));
             }
             return true;
@@ -218,7 +219,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
             return;
         }
 
-        StringBuffer formattedSql = new StringBuffer(256);
+        StringBuilder formattedSql = new StringBuilder(256);
         if (slowQuerySqlMillis > 0) {
             float execTime = (System.nanoTime() - startTime) / 100_0000F;
             if (execTime >= slowQuerySqlMillis) {

@@ -13,6 +13,7 @@
  */
 package xyz.noark.network.http;
 
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -76,4 +77,6 @@ public interface HttpServletRequest {
      * @return 参数映射关系
      */
     Map<String, String[]> getParameterMap();
+
+    InputStream getInputStream() throws Exception;
 }

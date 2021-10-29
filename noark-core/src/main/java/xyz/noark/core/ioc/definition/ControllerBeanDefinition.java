@@ -60,16 +60,16 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
     private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
     private final ArrayList<ScheduledMethodDefinition> smds = new ArrayList<>();
 
-    public ControllerBeanDefinition(Class<?> klass, Controller controller) {
-        this(klass, controller.threadGroup(), controller.value(), klass);
+    public ControllerBeanDefinition(String profileStr, Class<?> klass, Controller controller) {
+        this(profileStr, klass, controller.threadGroup(), controller.value(), klass);
     }
 
-    public ControllerBeanDefinition(Class<?> klass, ModuleController controller) {
-        this(klass, ExecThreadGroup.ModuleThreadGroup, StringUtils.EMPTY, controller.master());
+    public ControllerBeanDefinition(String profileStr, Class<?> klass, ModuleController controller) {
+        this(profileStr, klass, ExecThreadGroup.ModuleThreadGroup, StringUtils.EMPTY, controller.master());
     }
 
-    private ControllerBeanDefinition(Class<?> klass, ExecThreadGroup threadGroup, String queueId, Class<?> controllerMasterClass) {
-        super(klass);
+    private ControllerBeanDefinition(String profileStr, Class<?> klass, ExecThreadGroup threadGroup, String queueId, Class<?> controllerMasterClass) {
+        super(profileStr, klass);
         this.queueId = queueId;
         this.threadGroup = threadGroup;
         this.controllerMasterClass = controllerMasterClass;

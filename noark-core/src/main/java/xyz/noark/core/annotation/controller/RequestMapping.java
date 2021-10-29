@@ -43,4 +43,11 @@ public @interface RequestMapping {
      * @return 串行执行的队列ID参数的名称
      */
     String queueId() default StringUtils.EMPTY;
+
+    /**
+     * 是否需要打印协议相关的日志.
+     *
+     * @return 默认为输出日志
+     */
+    boolean printLog() default true;
 }

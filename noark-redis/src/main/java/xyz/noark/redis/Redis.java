@@ -14,10 +14,8 @@
 package xyz.noark.redis;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPubSub;
-import redis.clients.jedis.Tuple;
+import redis.clients.jedis.*;
+import redis.clients.jedis.params.SetParams;
 import xyz.noark.core.exception.ServerBootstrapException;
 
 import java.util.HashMap;
@@ -65,7 +63,7 @@ public class Redis implements ValueOperations {
     }
 
     public Redis(String host, int port, String password, int index) {
-        this.pool = new JedisPool(new GenericObjectPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
+        this.pool = new JedisPool(new JedisPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
         logger.info("redis info. host={},port={},database={}", host, port, index);
     }
 
@@ -108,7 +106,7 @@ public class Redis implements ValueOperations {
     }
 
     /**
-     * 序列化指定的键key，并返回被序列化的值，使用{@link #restore(String, int, byte[])}命令可以将这个值反序列化为Redis键.
+     * 序列化指定的键key，并返回被序列化的值，使用{@link #restore(String, long, byte[])}命令可以将这个值反序列化为Redis键.
      * <p>
      * 序列化生成的值有以下几个特点：
      * <p>
@@ -152,7 +150,7 @@ public class Redis implements ValueOperations {
      * @param serializedValue 要反序列化的字节数组
      * @return 如果反序列化成功那么返回OK，否则返回一个错误。
      */
-    public String restore(final String key, final int ttl, final byte[] serializedValue) {
+    public String restore(final String key, final long ttl, final byte[] serializedValue) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.restore(key, ttl, serializedValue);
         }
@@ -186,14 +184,14 @@ public class Redis implements ValueOperations {
      * @param seconds 秒
      * @return 设置成功返回 1 。 当key不存在或者不能为 key设置生存时间时，返回 0 。
      */
-    public long expire(final String key, int seconds) {
+    public long expire(final String key, long seconds) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.expire(key, seconds);
         }
     }
 
     /**
-     * EXPIREAT 的作用和 {@link Redis#expire(String, int)} 类似，都用于为key设置生存时间。<br>
+     * EXPIREAT 的作用和 {@link Redis#expire(String, long)} 类似，都用于为key设置生存时间。<br>
      * 不同在于EXPIREAT命令接受的时间参数是UNIX时间戳(unix timestamp)。
      * <p>
      * 可用版本： &gt;= 1.2.0<br>
@@ -384,23 +382,9 @@ public class Redis implements ValueOperations {
     }
 
     @Override
-    public String set(final String key, String value, String nxxx) {
+    public String set(final String key, String value, SetParams params) {
         try (Jedis jedis = pool.getResource()) {
-            return jedis.set(key, value, nxxx);
-        }
-    }
-
-    @Override
-    public String set(final String key, String value, String nxxx, String expx, final int time) {
-        try (Jedis jedis = pool.getResource()) {
-            return jedis.set(key, value, nxxx, expx, time);
-        }
-    }
-
-    @Override
-    public String set(final String key, String value, String nxxx, String expx, final long time) {
-        try (Jedis jedis = pool.getResource()) {
-            return jedis.set(key, value, nxxx, expx, time);
+            return jedis.set(key, value, params);
         }
     }
 

@@ -1,5 +1,7 @@
 package xyz.noark.redis;
 
+import redis.clients.jedis.params.SetParams;
+
 /**
  * Redis之简单的KV操作.
  *
@@ -42,42 +44,12 @@ public interface ValueOperations {
      * 可用版本： &gt;= 1.0.0<br>
      * 时间复杂度： O(1)
      *
-     * @param key   指定键Key
-     * @param value 指定值Value
-     * @param nxxx  NX|XX, NX=只在键不存在时， XX=只在键已经存在时
-     * @return 返回OK。
-     */
-    String set(final String key, String value, String nxxx);
-
-    /**
-     * 为指定键Key设计指定值Value.
-     * <p>
-     * 可用版本： &gt;= 2.6.12<br>
-     * 时间复杂度： O(1)
-     *
-     * @param key   指定键Key
-     * @param value 指定值Value
-     * @param nxxx  NX|XX, NX=只在键不存在时， XX=只在键已经存在时
-     * @param expx  EX|PX, 过期时间: EX=秒; PX=豪秒
-     * @param time  过期时间值.
+     * @param key    指定键Key
+     * @param value  指定值Value
+     * @param params NX|XX, NX=只在键不存在时， XX=只在键已经存在时
+     *               EX|PX, 过期时间: EX=秒; PX=豪秒
      * @return 从 Redis 2.6.12 版本开始， SET在设置操作成功完成时，才返回 OK。
      * 如果设置了NX或者XX，但因为条件没达到而造成设置操作未执行，那么命令返回空批量回复（NULL Bulk Reply）。
      */
-    String set(final String key, String value, String nxxx, String expx, final int time);
-
-    /**
-     * 为指定键Key设计指定值Value.
-     * <p>
-     * 可用版本： &gt;= 2.6.12<br>
-     * 时间复杂度： O(1)
-     *
-     * @param key   指定键Key
-     * @param value 指定值Value
-     * @param nxxx  NX|XX, NX=只在键不存在时， XX=只在键已经存在时
-     * @param expx  EX|PX, 过期时间: EX=秒; PX=豪秒
-     * @param time  过期时间值.
-     * @return 从 Redis 2.6.12 版本开始， SET在设置操作成功完成时，才返回 OK。
-     * 如果设置了NX或者XX，但因为条件没达到而造成设置操作未执行，那么命令返回空批量回复（NULL Bulk Reply）。
-     */
-    String set(final String key, String value, String nxxx, String expx, final long time);
+    String set(final String key, String value, SetParams params);
 }

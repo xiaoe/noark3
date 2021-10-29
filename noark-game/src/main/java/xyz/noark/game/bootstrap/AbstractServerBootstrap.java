@@ -81,7 +81,8 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
         long startTime = System.nanoTime();
         try {
             // 启动IOC容器
-            this.ioc = new NoarkIoc(this.getClass().getPackage().getName());
+            String profile = EnvConfigHolder.getString(NoarkConstant.NOARK_PROFILES_ACTIVE);
+            this.ioc = new NoarkIoc(profile, this.getClass().getPackage().getName());
             this.modularManager = ioc.get(ModularManager.class);
 
             // 服务器启动之前的逻辑...

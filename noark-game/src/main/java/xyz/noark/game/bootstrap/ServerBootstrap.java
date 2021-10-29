@@ -24,10 +24,10 @@ public interface ServerBootstrap {
     /**
      * 启动
      */
-    public void start();
+    void start();
 
     /**
      * 停止
      */
-    public void stop();
+    void stop();
 }

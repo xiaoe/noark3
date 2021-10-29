@@ -57,7 +57,7 @@ public class ProtobufCodec extends AbstractPacketCodec {
             throw new UnrealizedException("illegal opcode=" + opcode + ", max=65535");
         }
 
-        MessageLite message = null;
+        MessageLite message;
         if (networkProtocol.getProtocol() instanceof MessageLite) {
             message = (MessageLite) networkProtocol.getProtocol();
         } else if (networkProtocol.getProtocol() instanceof MessageLite.Builder) {

@@ -32,29 +32,29 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
     private final String path;
     private final Set<RequestMethod> methodSet;
     private final String queueId;
-
+    private final boolean printLog;
     private final Parameter[] parameters;
     private final ResponseBody responseBody;
 
-    public HttpMethodDefinition(MethodAccess methodAccess, Method method, RequestMapping requestMapping) {
-        this(methodAccess, method, requestMapping.path(), requestMapping.method(), requestMapping.queueId());
+    public HttpMethodDefinition(MethodAccess methodAccess, Method method, RequestMapping mapping) {
+        this(methodAccess, method, mapping.path(), mapping.method(), mapping.queueId(), mapping.printLog());
     }
 
     public HttpMethodDefinition(MethodAccess methodAccess, Method method, GetMapping mapping) {
-        this(methodAccess, method, mapping.path(), new RequestMethod[]{RequestMethod.GET}, mapping.queueId());
+        this(methodAccess, method, mapping.path(), new RequestMethod[]{RequestMethod.GET}, mapping.queueId(), mapping.printLog());
     }
 
     public HttpMethodDefinition(MethodAccess methodAccess, Method method, PostMapping mapping) {
-        this(methodAccess, method, mapping.path(), new RequestMethod[]{RequestMethod.POST}, mapping.queueId());
+        this(methodAccess, method, mapping.path(), new RequestMethod[]{RequestMethod.POST}, mapping.queueId(), mapping.printLog());
     }
 
-    private HttpMethodDefinition(MethodAccess methodAccess, Method method, String path, RequestMethod[] methods, String queueId) {
+    private HttpMethodDefinition(MethodAccess methodAccess, Method method, String path, RequestMethod[] methods, String queueId, boolean printLog) {
         super(methodAccess, method);
 
         this.path = path;
         this.methodSet = new HashSet<>(Arrays.asList(methods));
         this.queueId = queueId;
-
+        this.printLog = printLog;
         this.parameters = method.getParameters();
         this.responseBody = method.getAnnotation(ResponseBody.class);
     }
@@ -78,5 +78,9 @@ public class HttpMethodDefinition extends SimpleMethodDefinition {
 
     public String getQueueId() {
         return queueId;
+    }
+
+    public boolean isPrintLog() {
+        return printLog;
     }
 }

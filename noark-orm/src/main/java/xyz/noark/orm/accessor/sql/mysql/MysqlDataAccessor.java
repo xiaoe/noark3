@@ -21,7 +21,7 @@ import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.AbstractSqlDataAccessor;
 import xyz.noark.orm.accessor.sql.PreparedStatementCallback;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
-import xyz.noark.orm.accessor.sql.mysql.adaptor.AbstractValueAdaptor;
+import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptor;
 import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptorManager;
 
 import javax.sql.DataSource;
@@ -222,7 +222,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
     public <T> List<T> loadAll(final EntityMapping<T> em) {
         class LoadAllPreparedStatementCallback implements PreparedStatementCallback<List<T>> {
             @Override
-            public List<T> doInPreparedStatement(PreparedStatementProxy pstmt) throws SQLException {
+            public List<T> doInPreparedStatement(PreparedStatementProxy pstmt) {
                 try (ResultSet rs = pstmt.executeQuery()) {
                     return newEntityList(em, rs);
                 } catch (Exception e) {
@@ -267,7 +267,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
     }
 
     private <T> void setPstmtParameter(EntityMapping<T> em, FieldMapping fm, PreparedStatementProxy pstmt, final T entity, final int index) throws Exception {
-        AbstractValueAdaptor<?> adaptor = ValueAdaptorManager.getValueAdaptor(fm.getType());
+        ValueAdaptor adaptor = ValueAdaptorManager.getValueAdaptor(fm.getType());
         adaptor.parameterToPreparedStatement(em, fm, pstmt, entity, index);
     }
 }

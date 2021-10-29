@@ -24,7 +24,7 @@ import java.util.EnumMap;
  * @since 3.0
  */
 public class ValueAdaptorManager {
-    private static final EnumMap<FieldType, AbstractValueAdaptor<?>> ADAPTOR = new EnumMap<>(FieldType.class);
+    private static final EnumMap<FieldType, ValueAdaptor> ADAPTOR = new EnumMap<>(FieldType.class);
 
     static {
         ADAPTOR.put(FieldType.AsInteger, new IntegerAdaptor());
@@ -43,7 +43,7 @@ public class ValueAdaptorManager {
         ADAPTOR.put(FieldType.AsBlob, new BlobAdaptor());
     }
 
-    public static AbstractValueAdaptor<?> getValueAdaptor(FieldType type) {
+    public static ValueAdaptor getValueAdaptor(FieldType type) {
         return ADAPTOR.getOrDefault(type, UnrealizedAdaptor.getInstance());
     }
 }

@@ -1,7 +1,10 @@
 package xyz.noark.core.util;
 
+import xyz.noark.core.annotation.Profile;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.Objects;
 
 /**
  * 注解工具类.
@@ -32,5 +35,29 @@ public class AnnotationUtils {
             }
         }
         return annotation;
+    }
+
+    /**
+     * 过滤掉非当前环境的配置
+     *
+     * @param profile    注解配置
+     * @param profileStr 配置环境
+     * @return 如果需要过滤掉返回true
+     */
+    public static boolean filterProfile(Profile profile, String profileStr) {
+        // @Profile 指定环境，没有配置不过滤
+        if (profile == null) {
+            return false;
+        }
+
+        // 只要有一个是当前的配置的，那就不要过滤啦
+        for (String test : profile.value()) {
+            if (Objects.equals(test, profileStr)) {
+                return false;
+            }
+        }
+
+        // 一个也没有命令中，那就要过滤掉
+        return true;
     }
 }

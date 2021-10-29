@@ -41,16 +41,15 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper implement
     private final ArrayList<HttpParamWrapper> parameters = new ArrayList<>();
     private final ResponseBody responseBody;
 
-
     public HttpMethodWrapper(Object single, HttpMethodDefinition method, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
         super(single, threadGroup, controllerMasterClass.getName(), "handle(" + method.getPath() + ")", method);
         this.path = method.getPath();
         // 这里的方法缓存着，拦截器里可能会有获取注解的需求
         this.method = method.getMethod();
+        this.printLog = method.isPrintLog();
         this.queueIdKey = method.getQueueId();
         this.methodSet = method.getMethodSet();
         this.deprecated = method.isDeprecated();
-
         this.responseBody = method.getResponseBody();
 
         Arrays.stream(method.getParameters()).forEach(this::buildParamWrapper);

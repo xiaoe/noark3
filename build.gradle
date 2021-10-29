@@ -5,7 +5,7 @@ subprojects {
 	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.4.3.Final'
+	version = '3.4.4-SNAPSHOT'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -44,7 +44,7 @@ subprojects {
 	ext."signing.secretKeyRingFile"=System.getenv('SIGNING_SECRETKEYRINGFILE')
 
 	signing {
-	    sign configurations.archives
+	    //sign configurations.archives
 	}
 
 	uploadArchives {
@@ -69,7 +69,7 @@ subprojects {
 	            	
 	                name project.name
 	        		description 'This is a game server framework.'
-	        		url 'http://noark.xyz'
+	        		url 'https://noark.xyz'
 	                packaging 'jar'
 	
 	        		scm {

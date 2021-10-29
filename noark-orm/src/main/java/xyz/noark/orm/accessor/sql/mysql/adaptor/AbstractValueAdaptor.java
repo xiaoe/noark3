@@ -25,8 +25,9 @@ import java.sql.ResultSet;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public abstract class AbstractValueAdaptor<T> {
+public abstract class AbstractValueAdaptor<T> implements ValueAdaptor {
 
+    @Override
     @SuppressWarnings("unchecked")
     public void parameterToPreparedStatement(EntityMapping<?> em, FieldMapping fm, PreparedStatementProxy pstmt, Object entity, int index) throws Exception {
         T value = (T) em.getMethodAccess().invoke(entity, fm.getGetMethodIndex());
@@ -44,6 +45,7 @@ public abstract class AbstractValueAdaptor<T> {
      */
     protected abstract void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, T value, final int parameterIndex) throws Exception;
 
+    @Override
     public void resultSetToParameter(EntityMapping<?> em, FieldMapping fm, ResultSet rs, Object result) throws Exception {
         Object value = this.toParameter(fm, rs);
         em.getMethodAccess().invoke(result, fm.getSetMethodIndex(), value);

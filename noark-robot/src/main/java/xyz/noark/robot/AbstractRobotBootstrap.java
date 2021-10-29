@@ -19,7 +19,6 @@ import xyz.noark.game.bt.BehaviorTree;
 import xyz.noark.game.template.ReloadManager;
 
 import javax.annotation.PostConstruct;
-import java.util.Optional;
 
 /**
  * 抽象的机器人启动引导类
@@ -28,8 +27,14 @@ import java.util.Optional;
  * @since 3.4
  */
 public abstract class AbstractRobotBootstrap extends AbstractServerBootstrap {
-    protected Optional<Modular> eventModular;
-    protected Optional<Modular> threadModular;
+    /**
+     * 事件模块
+     */
+    protected Modular eventModular;
+    /**
+     * 线程模块
+     */
+    protected Modular threadModular;
 
     @Override
     protected String getServerName() {
@@ -69,27 +74,31 @@ public abstract class AbstractRobotBootstrap extends AbstractServerBootstrap {
      * 初始化事件模块
      */
     protected void initEventModular() {
-        eventModular = modularManager.getModular(Modular.EVENT_MODULAR);
-        eventModular.ifPresent(v -> v.init());
+        modularManager.getModular(Modular.EVENT_MODULAR).ifPresent(v -> {
+            this.eventModular = v;
+            this.eventModular.init();
+        });
     }
 
     /**
      * 初始化线程模块
      */
     protected void initThreadModular() {
-        threadModular = modularManager.getModular(Modular.THREAD_MODULAR);
-        threadModular.ifPresent(v -> v.init());
+        modularManager.getModular(Modular.THREAD_MODULAR).ifPresent(v -> {
+            this.threadModular = v;
+            this.threadModular.init();
+        });
     }
 
     @Override
     protected void onStop() {
         // 停止延迟任务调度
         if (eventModular != null) {
-            eventModular.ifPresent(v -> v.destroy());
+            eventModular.destroy();
         }
         // 等待所有任务处理完
         if (threadModular != null) {
-            threadModular.ifPresent(v -> v.destroy());
+            threadModular.destroy();
         }
     }
 }

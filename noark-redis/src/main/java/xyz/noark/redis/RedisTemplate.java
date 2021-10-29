@@ -2,6 +2,7 @@ package xyz.noark.redis;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class RedisTemplate {
 
 
     public RedisTemplate(String host, int port, String password, int index) {
-        JedisPool pool = new JedisPool(new GenericObjectPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
+        JedisPool pool = new JedisPool(new JedisPoolConfig(), host, port, DEFAULT_TIMEOUT, password, index);
         logger.info("redis info. host={},port={},database={}", host, port, index);
         this.redis = new Redis(pool).ping();
     }

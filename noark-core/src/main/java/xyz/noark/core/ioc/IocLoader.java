@@ -46,11 +46,17 @@ public class IocLoader {
     private static final String CLASS_SUFFIX = ".class";
     private static final String STARTER_SUFFIX = ".starter";
 
+    /**
+     * 启动时的配置环境
+     */
+    private final String profileStr;
     private final HashMap<Class<?>, DefaultBeanDefinition> beans = MapUtils.newHashMap(1024);
     private final List<BeanDefinition> configurations = new ArrayList<>();
     private final List<StaticComponentBeanDefinition> staticComponents = new ArrayList<>();
 
-    IocLoader(String... packages) {
+
+    IocLoader(String profileStr, String... packages) {
+        this.profileStr = profileStr;
         ResourceScanning.scanPackage(packages, this::analysisResource);
     }
 
@@ -126,6 +132,11 @@ public class IocLoader {
             return;
         }
 
+        // @Profile 指定环境
+        if (AnnotationUtils.filterProfile(klass.getAnnotation(Profile.class), profileStr)) {
+            return;
+        }
+
         // 查找带有@Component注解或其他注解上有@Component注解的类
         Annotation annotation = AnnotationUtils.getAnnotation(klass, Component.class);
         if (annotation == null) {
@@ -136,7 +147,7 @@ public class IocLoader {
         Class<? extends Annotation> annotationType = annotation.annotationType();
         // 配置类
         if (annotationType == Configuration.class) {
-            configurations.add(new ConfigurationBeanDefinition(klass).init());
+            configurations.add(new ConfigurationBeanDefinition(profileStr, klass).init());
         }
         // 协议入口控制类
         else if (annotationType == Controller.class) {
@@ -148,11 +159,11 @@ public class IocLoader {
         }
         // 静态组件
         else if (annotationType == StaticComponent.class) {
-            staticComponents.add(new StaticComponentBeanDefinition(klass).init());
+            staticComponents.add(new StaticComponentBeanDefinition(profileStr, klass).init());
         }
         // 不是已定义的，那就扫描这个注解上有没有@Component
         else {
-            DefaultBeanDefinition definition = new DefaultBeanDefinition(klass, annotation, annotationType).init();
+            DefaultBeanDefinition definition = new DefaultBeanDefinition(profileStr, klass, annotation, annotationType).init();
             beans.put(klass, definition);
             // 模板转化器.
             if (annotationType == TemplateConverter.class) {
@@ -165,11 +176,11 @@ public class IocLoader {
      * 协议入口控制类(模块化)
      */
     private void analytical(Class<?> klass, ModuleController controller) {
-        beans.put(klass, new ControllerBeanDefinition(klass, controller).init());
+        beans.put(klass, new ControllerBeanDefinition(profileStr, klass, controller).init());
     }
 
     private void analytical(Class<?> klass, Controller controller) {
-        beans.put(klass, new ControllerBeanDefinition(klass, controller).init());
+        beans.put(klass, new ControllerBeanDefinition(profileStr, klass, controller).init());
     }
 
     public HashMap<Class<?>, DefaultBeanDefinition> getBeans() {

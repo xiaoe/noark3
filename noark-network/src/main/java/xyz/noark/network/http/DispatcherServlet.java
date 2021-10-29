@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Service;
+import xyz.noark.core.annotation.controller.RequestBody;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
@@ -26,6 +27,7 @@ import xyz.noark.network.http.exception.UnrealizedQueueIdException;
 import xyz.noark.network.util.NettyUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -88,7 +90,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         // 如果在解析参数和派发任务时抛出异常
         catch (Throwable e) {
             dispatchException = true;
-            this.processHandlerException(request, response, handler, e);
+            this.processHandlerException(request, response, e);
         } finally {
             if (dispatchException) {
                 response.flush();
@@ -162,19 +164,25 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         try {
             this.doAction(request, response, handler);
         } catch (Throwable e) {
-            this.processHandlerException(request, response, handler, e);
+            this.processHandlerException(request, response, e);
         } finally {
             response.flush();
 
             // 延迟时间与执行时间
-            String ip = request.getRemoteAddr();
-            float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
-            float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
-            logger.info("handle http({}),delay={} ms,exe={} ms,ip={}", request.getUri(), delay, exec, ip);
+            if (handler.isPrintLog()) {
+                this.handleExecAfter(request, startExecuteTime, createTime);
+            }
         }
     }
 
-    private void processHandlerException(HttpServletRequest request, HttpServletResponse response, HttpMethodWrapper handler, Throwable e) {
+    private void handleExecAfter(HttpServletRequest request, long startExecuteTime, long createTime) {
+        String ip = request.getRemoteAddr();
+        float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
+        float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
+        logger.info("handle http({}),delay={} ms,exe={} ms,ip={}", request.getUri(), delay, exec, ip);
+    }
+
+    private void processHandlerException(HttpServletRequest request, HttpServletResponse response, Throwable e) {
         // 404 Handler没找到...
         if (e instanceof NoHandlerFoundException) {
             this.noHandlerFound(request, response);
@@ -235,8 +243,28 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
             }
             // 其他转化器参数
             else {
-                Converter<?> converter = this.getConverter(param.getParameter());
-                String data = request.getParameter(param.getName());
+                final Converter<?> converter = this.getConverter(param.getParameter());
+
+                String data;
+                RequestBody requestBody = param.getRequestBody();
+                // 没有RequestBody，从请求参数中拿值
+                if (requestBody == null) {
+                    data = request.getParameter(param.getName());
+                }
+                // 有RequestBody，就要取出请求内容
+                else {
+                    try (InputStream inputStream = request.getInputStream()) {
+                        data = StringUtils.readString(inputStream);
+                    } catch (Exception e) {
+                        data = null;
+                        e.printStackTrace();
+                    }
+
+                    // 请求内容必需有值
+                    if (requestBody.required() && data == null) {
+                        throw new ConvertException("HTTP request body error. uri=" + request.getUri() + "," + param.getName() + " is required.");
+                    }
+                }
 
                 if (data == null) {
                     // 必选参数必需有值
