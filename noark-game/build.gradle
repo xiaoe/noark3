@@ -1,7 +1,7 @@
 dependencies {
     compile project(':noark-core')
     implementation project(':noark-network')
-    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.16'
+    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.21'
     implementation 'com.alibaba:fastjson:1.2.78'
 
     testImplementation project(':noark-benchmark')
