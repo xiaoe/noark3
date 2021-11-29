@@ -84,6 +84,20 @@ public class Csv extends ResourceLoader {
      * @return 模板类对象的集合
      */
     public <T> List<T> loadAll(String templatePath, String zone, Class<T> klass) {
+        return loadAll(templatePath, zone, 0, klass);
+    }
+
+    /**
+     * 根据指定类文件加载CSV格式的模板.
+     *
+     * @param <T>          要转化对象的类型
+     * @param templatePath 模板文件路径
+     * @param zone         版本编号
+     * @param step         阶服配置
+     * @param klass        模板类文件
+     * @return 模板类对象的集合
+     */
+    public <T> List<T> loadAll(String templatePath, String zone, int step, Class<T> klass) {
         TplFile file = klass.getAnnotation(TplFile.class);
         if (file == null) {
             throw new TplConfigurationException("这不是CSV格式的配置文件类:" + klass.getName());
@@ -94,8 +108,8 @@ public class Csv extends ResourceLoader {
             logger.warn("模板类正常为只读模式，不应该存在Set方法噢，class={}", klass.getName());
         }
 
-        try (CsvReader reader = new CsvReader(separator, newBufferedReader(templatePath, zone, file.value(), CharsetUtils.CHARSET_UTF_8))) {
-            /** 标题 */
+        try (CsvReader reader = new CsvReader(separator, newBufferedReader(templatePath, zone, step, file.value(), CharsetUtils.CHARSET_UTF_8))) {
+            // 标题
             Map<String, Integer> titles = reader.getHeaders();
 
             List<T> result = new ArrayList<>();
@@ -108,10 +122,10 @@ public class Csv extends ResourceLoader {
 
     private <T> T analysisLine(Class<T> klass, String tplFileName, Map<String, Integer> titles, String[] values) {
         T result = ClassUtils.newInstance(klass);
-        /** 使用工具获取，父类的属性也要判定 */
+        /* 使用工具获取，父类的属性也要判定 */
         for (Field field : FieldUtils.getAllField(klass)) {
             TplAttr[] array = field.getAnnotationsByType(TplAttr.class);
-            if (array == null || array.length == 0) {
+            if (array.length == 0) {
                 continue;
             }
 
@@ -137,7 +151,7 @@ public class Csv extends ResourceLoader {
                 }
             }
             // 只有一个配置且有后缀，那也是个多个配置
-            else if (array.length == 1 && suffix != null) {
+            else if (array.length == 1) {
                 // 如果后缀配置小于等于0，那就没得玩了哈...
                 if (suffix.step() <= 0) {
                     throw new ConvertException(klass.getName() + " >> " + field.getName() + " >> TplAttrSuffix#step=" + suffix.step() + "-->" + "不可以小于等于0.");

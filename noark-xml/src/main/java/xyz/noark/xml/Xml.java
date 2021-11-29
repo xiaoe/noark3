@@ -114,7 +114,7 @@ public class Xml extends ResourceLoader {
             throw new TplConfigurationException("这不是XML格式的配置文件类:" + klass.getName());
         }
 
-        try (InputStream is = newInputStream(templatePath, zone, file.value())) {
+        try (InputStream is = newInputStream(templatePath, zone, 0, file.value())) {
             ArrayXmlHandler<T> myHandler = new ArrayXmlHandler<>(klass, file.value());
             SAXParserFactory.newInstance().newSAXParser().parse(is, myHandler);
             return myHandler.getResult();

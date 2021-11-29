@@ -45,7 +45,7 @@ class NoarkJson extends ResourceLoader {
     }
 
     private String readString(String templatePath, String zone, String fileName) throws IOException {
-        try (InputStream is = this.newInputStream(templatePath, zone, fileName)) {
+        try (InputStream is = this.newInputStream(templatePath, zone, 0, fileName)) {
             return StringUtils.readString(is);
         }
     }
@@ -56,7 +56,7 @@ class NoarkJson extends ResourceLoader {
             throw new TplConfigurationException("这不是JSON格式的配置文件类:" + klass.getName());
         }
 
-        try (InputStream is = this.newInputStream(templatePath, zone, file.value())) {
+        try (InputStream is = this.newInputStream(templatePath, zone, 0, file.value())) {
             return JSON.parseObject(is, klass);
         } catch (IOException e) {
             throw new TplConfigurationException("JSON格式的配置文件类:" + klass.getName(), e);
