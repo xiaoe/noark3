@@ -26,6 +26,11 @@ class NoarkLogger extends AbstractLogger implements Logger {
     }
 
     @Override
+    public boolean isDebugEnabled() {
+        return isEnabled(Level.DEBUG);
+    }
+
+    @Override
     public void debug(String msg) {
         logIfEnabled(Level.DEBUG, msg);
     }
@@ -33,6 +38,11 @@ class NoarkLogger extends AbstractLogger implements Logger {
     @Override
     public void debug(String msg, Object... args) {
         logIfEnabled(Level.DEBUG, msg, args);
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return isEnabled(Level.INFO);
     }
 
     @Override
@@ -46,6 +56,11 @@ class NoarkLogger extends AbstractLogger implements Logger {
     }
 
     @Override
+    public boolean isWarnEnabled() {
+        return isEnabled(Level.WARN);
+    }
+
+    @Override
     public void warn(String msg) {
         logIfEnabled(Level.WARN, msg);
     }
@@ -53,6 +68,11 @@ class NoarkLogger extends AbstractLogger implements Logger {
     @Override
     public void warn(String msg, Object... args) {
         logIfEnabled(Level.WARN, msg, args);
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return isEnabled(Level.ERROR);
     }
 
     @Override

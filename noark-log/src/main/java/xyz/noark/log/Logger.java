@@ -24,6 +24,12 @@ package xyz.noark.log;
  * @since 3.0
  */
 public interface Logger {
+    /**
+     * 判定日志级别是否已达标{@link Level#DEBUG}级别
+     *
+     * @return 如果达标则返回true
+     */
+    boolean isDebugEnabled();
 
     /**
      * 输出一条Debug级别的日志.
@@ -45,6 +51,13 @@ public interface Logger {
     void debug(String msg, Object... args);
 
     /**
+     * 判定日志级别是否已达标{@link Level#INFO}级别
+     *
+     * @return 如果达标则返回true
+     */
+    boolean isInfoEnabled();
+
+    /**
      * 输出一条Info级别的日志.
      * <p>
      * 记录行为结果内容，用于查证一些行为或结果相关日志.
@@ -64,6 +77,13 @@ public interface Logger {
     void info(String msg, Object... args);
 
     /**
+     * 判定日志级别是否已达标{@link Level#WARN}级别
+     *
+     * @return 如果达标则返回true
+     */
+    boolean isWarnEnabled();
+
+    /**
      * 输出一条Warn级别的日志.
      * <p>
      * 记录警告异常内容，此类区别于错误日志，有影响但不要命.
@@ -81,6 +101,13 @@ public interface Logger {
      * @param args 参数
      */
     void warn(String msg, Object... args);
+
+    /**
+     * 判定日志级别是否已达标{@link Level#ERROR}级别
+     *
+     * @return 如果达标则返回true
+     */
+    boolean isErrorEnabled();
 
     /**
      * 输出一条Error级别的日志.
