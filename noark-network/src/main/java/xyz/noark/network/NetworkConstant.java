@@ -72,11 +72,16 @@ public class NetworkConstant {
      */
     public static final String WORK_THREADS = "network.workthreads";
     /**
-     * 网络封包日志激活
+     * 网络封包日志处理器是否启用，默认:false=不启动
      */
-    public static final String LOG_ACTIVE = "network.log.active";
+    public static final String LOG_ENABLED = "network.log.enabled";
     /**
-     * EPOLL模型是否激活
+     * 网络封包日志处理器已启动时，是否激活输出功能，默认:true=输出
+     */
+    public static final String LOG_OUTPUT_ACTIVE = "network.log.output.active";
+
+    /**
+     * EPOLL模型是否激活，默认为激活
      */
     public static final String EPOLL_ACTIVE = "network.epoll.active";
     /**
