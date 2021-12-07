@@ -14,7 +14,6 @@
 package xyz.noark.game.template;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 
 import java.util.List;
 
@@ -26,7 +25,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class ReloadManager {
 
     @Autowired

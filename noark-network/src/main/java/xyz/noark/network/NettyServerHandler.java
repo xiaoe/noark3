@@ -18,7 +18,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
@@ -35,7 +34,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 @Sharable
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private final IpManager ipManager = new IpManager();

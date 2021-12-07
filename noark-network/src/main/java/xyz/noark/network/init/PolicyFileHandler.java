@@ -16,7 +16,6 @@ package xyz.noark.network.init;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import xyz.noark.core.annotation.Component;
 import xyz.noark.network.InitializeHandler;
 
 import static xyz.noark.log.LogHelper.logger;
@@ -27,9 +26,8 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Component(name = "<policy-file-request/>\0")
 public class PolicyFileHandler implements InitializeHandler {
-
+    public static final String POLICY_FILE_NAME = "<policy-file-request/>\0";
     private final static byte[] POLICY = "<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"*\"/></cross-domain-policy>\0".getBytes();
 
     @Override

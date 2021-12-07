@@ -24,7 +24,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.FileSize;
@@ -42,7 +41,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Component(name = "NettyServer")
 public class NettyServer implements TcpServer {
     /**
      * Boss线程就用一个线程

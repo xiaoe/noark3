@@ -14,7 +14,6 @@
 package xyz.noark.core;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import java.util.Optional;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class ModularManager {
 
     @Autowired

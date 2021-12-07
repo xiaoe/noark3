@@ -8,7 +8,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.controller.RequestBody;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
@@ -41,7 +40,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-@Service
 @ChannelHandler.Sharable
 public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final ViewResolver viewResolver = new DefaultViewResolver();
@@ -148,8 +146,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
                     throw new UnrealizedQueueIdException(request.getMethod(), request.getUri(), handler.getQueueIdKey());
                 } catch (Exception e) {
                     // 出了异常，那就是参数转化出了问题，提交请求调用者.
-                    throw new ConvertException("HTTP request param error. uri=" + request.getUri() + " >> "
-                            + handler.getQueueIdKey() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
+                    throw new ConvertException("HTTP request param error. uri=" + request.getUri() + " >> " + handler.getQueueIdKey() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
                 }
             }
         }

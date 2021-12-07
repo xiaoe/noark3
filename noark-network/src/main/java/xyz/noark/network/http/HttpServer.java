@@ -25,7 +25,6 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.FileSize;
@@ -41,7 +40,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class HttpServer implements TcpServer {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup(4);

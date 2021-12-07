@@ -11,29 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package xyz.noark.orm;
 
 import xyz.noark.core.Modular;
-import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Configuration;
+import xyz.noark.core.annotation.configuration.Bean;
 
 /**
- * 事件模块.
+ * ORM Starter组件入口.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.5
  */
-public class EventModular implements Modular {
+@Configuration
+public class OrmAutoConfiguration {
 
-    @Autowired
-    private DefaultEventManager eventManager;
-
-    @Override
-    public void init() {
-        eventManager.init();
-    }
-
-    @Override
-    public void destroy() {
-        eventManager.destroy();
+    @Bean(name = Modular.DATA_MODULAR)
+    public DataModular dataModular() {
+        return new DataModular();
     }
 }

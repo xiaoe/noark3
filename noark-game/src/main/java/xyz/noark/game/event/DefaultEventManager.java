@@ -14,7 +14,6 @@
 package xyz.noark.game.event;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.EventManager;
@@ -36,7 +35,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class DefaultEventManager implements EventManager {
     private static final EventMethodManager EVENT_MANAGER = EventMethodManager.getInstance();
     private static final ScheduledMethodManager SCHEDULED_MANAGER = ScheduledMethodManager.getInstance();

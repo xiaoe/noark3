@@ -15,7 +15,6 @@ package xyz.noark.core.thread;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.event.PlayerEvent;
@@ -45,7 +44,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class ThreadDispatcher {
     private static final int SHUTDOWN_MAX_TIME = 10;
     /**

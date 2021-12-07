@@ -1,7 +1,6 @@
 package xyz.noark.network.http;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.util.CollectionUtils;
 
@@ -13,7 +12,6 @@ import java.util.List;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-@Service
 public class HandleInterceptChain {
     @Autowired
     private List<HandlerInterceptor> handlerInterceptorList;

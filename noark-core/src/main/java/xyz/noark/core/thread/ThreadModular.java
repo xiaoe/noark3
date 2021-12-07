@@ -15,7 +15,6 @@ package xyz.noark.core.thread;
 
 import xyz.noark.core.Modular;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 
 /**
@@ -24,7 +23,6 @@ import xyz.noark.core.annotation.Value;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Component(name = Modular.THREAD_MODULAR)
 public class ThreadModular implements Modular {
 
     /**

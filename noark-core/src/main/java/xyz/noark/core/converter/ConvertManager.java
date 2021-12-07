@@ -35,13 +35,30 @@ public class ConvertManager {
 
     static {
         INSTANCE.register(BooleanConverter.class);
-        INSTANCE.register(IntegerConverter.class);
-        INSTANCE.register(LongConverter.class);
-        INSTANCE.register(StringConverter.class);
+        INSTANCE.register(ByteArrayConverter.class);
+        INSTANCE.register(DateConverter.class);
+        INSTANCE.register(DoubleConverter.class);
+        INSTANCE.register(DoubleListConverter.class);
+        INSTANCE.register(FileSizeConverter.class);
         INSTANCE.register(FloatConverter.class);
-        INSTANCE.register(IntListConverter.class);
         INSTANCE.register(FloatListConverter.class);
-        // 使用了IOC功能，有自动扫描功能了，就不再需要手工添加...
+        INSTANCE.register(IntegerConverter.class);
+        INSTANCE.register(IntListConverter.class);
+        INSTANCE.register(IntPairConverter.class);
+        INSTANCE.register(IntRangeConverter.class);
+        INSTANCE.register(IntSectionConverter.class);
+        INSTANCE.register(LocalDateConverter.class);
+        INSTANCE.register(LocalDateTimeConverter.class);
+        INSTANCE.register(LocalTimeArrayConverter.class);
+        INSTANCE.register(LocalTimeConverter.class);
+        INSTANCE.register(LocalTimeSectionConverter.class);
+        INSTANCE.register(LongConverter.class);
+        INSTANCE.register(LongListConverter.class);
+        INSTANCE.register(PointConverter.class);
+        INSTANCE.register(PointListConverter.class);
+        INSTANCE.register(StringConverter.class);
+        INSTANCE.register(StringListConverter.class);
+        INSTANCE.register(TimeRangeConverter.class);
     }
 
     private ConvertManager() {

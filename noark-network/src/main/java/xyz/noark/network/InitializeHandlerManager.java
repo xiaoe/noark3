@@ -14,7 +14,6 @@
 package xyz.noark.network;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.network.init.IllegalRequestHandler;
 import xyz.noark.network.init.SocketInitializeHandler;
@@ -27,7 +26,6 @@ import java.util.Map;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class InitializeHandlerManager {
     /**
      * Socket的接头暗号是否开启，默认是开启状态
