@@ -5,6 +5,7 @@ import xyz.noark.core.annotation.controller.IpAllowList;
 import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.network.HandlerMethod;
 import xyz.noark.core.util.IpUtils;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.http.*;
 
 import java.util.Map;
@@ -33,7 +34,14 @@ public class IpIntercept extends HandlerInterceptorAdapter {
         }
         // 有声明，那就要按规则判定
         else {
-            IpAllowListConfig config = cache.computeIfAbsent(allowList.value(), this::createIpWhiterListConfig);
+            String value = allowList.value();
+
+            // 直接写了个*，那就放过，不拦截了...
+            if (StringUtils.ASTERISK.equals(value)) {
+                return true;
+            }
+
+            IpAllowListConfig config = cache.computeIfAbsent(value, this::createIpWhiterListConfig);
             if (config.notAccess(ip)) {
                 return notAccess(response);
             }
