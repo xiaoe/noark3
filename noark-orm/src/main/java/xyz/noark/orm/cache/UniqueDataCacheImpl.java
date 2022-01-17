@@ -151,6 +151,11 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
         } else {
             T result = wrapper.getEntity();
             wrapper.setEntity(null);
+
+            // 启服载入的实体删除，包装类也要删除，非启服载入还是走原来的超时
+            if (entityMapping.getFetchType() == FetchType.START) {
+                caches.invalidate(entityId);
+            }
             return result;
         }
     }
