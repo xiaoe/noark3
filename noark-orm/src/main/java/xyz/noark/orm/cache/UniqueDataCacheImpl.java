@@ -107,6 +107,13 @@ public class UniqueDataCacheImpl<T, K extends Serializable> extends AbstractData
 
     @Override
     public T load(K entityId) {
+
+        // 启服载入的实体加载，那不能主动创建包装，没人删除...
+        if (entityMapping.getFetchType() == FetchType.START) {
+            DataWrapper<T> wrapper = caches.getIfPresent(entityId);
+            return wrapper == null ? null : wrapper.getEntity();
+        }
+
         return caches.get(entityId).getEntity();
     }
 
