@@ -109,11 +109,13 @@ public class IocLoader {
         try (InputStream is = classLoader.getResourceAsStream(resourceName)) {
             assert is != null;
             try (InputStreamReader isr = new InputStreamReader(is, CharsetUtils.CHARSET_UTF_8); BufferedReader br = new BufferedReader(isr)) {
-
-                final String line = br.readLine();
-
-                // Class快速载入
-                if (StringUtils.isNotEmpty(line)) {
+                String line;
+                while (StringUtils.isNotEmpty(line = br.readLine())) {
+                    // 注释
+                    if (line.startsWith("#")) {
+                        continue;
+                    }
+                    // Class快速载入
                     this.analysisClass(line);
                 }
             }
