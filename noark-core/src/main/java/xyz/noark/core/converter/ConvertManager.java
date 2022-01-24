@@ -101,4 +101,14 @@ public class ConvertManager {
             CONVERTERS.put(targetClass, converter);
         }
     }
+
+    /**
+     * 获取基础转化器实例.
+     * <p>用于初始化时先把这个给初始化了，这是基础，没有这个IOC容器都没法初始化</p>
+     *
+     * @return 基础转化器实例
+     */
+    public Map<Class<?>, Converter<?>> getBaseConverterMap() {
+        return CONVERTERS;
+    }
 }

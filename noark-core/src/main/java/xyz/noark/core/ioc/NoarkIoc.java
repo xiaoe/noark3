@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc;
 
+import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.ioc.manager.EventMethodManager;
 import xyz.noark.core.ioc.wrap.MethodWrapper;
@@ -96,6 +97,9 @@ public class NoarkIoc implements Ioc {
      * 初始化和依赖注入的关系
      */
     private void finishBeanInitialization(IocMaking making, Collection<? extends BeanDefinition> beans) {
+        // 转化器先初始化
+        singletons.putAll(ConvertManager.getInstance().getBaseConverterMap());
+        // Bean初始化
         beans.forEach(bean -> bean.injection(making));
     }
 
