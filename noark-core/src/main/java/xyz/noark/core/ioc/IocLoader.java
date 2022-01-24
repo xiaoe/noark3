@@ -109,19 +109,20 @@ public class IocLoader {
         try (InputStream is = classLoader.getResourceAsStream(resourceName)) {
             assert is != null;
             try (InputStreamReader isr = new InputStreamReader(is, CharsetUtils.CHARSET_UTF_8); BufferedReader br = new BufferedReader(isr)) {
-                String line;
-                while (StringUtils.isNotEmpty(line = br.readLine())) {
-                    // 注释
-                    if (line.startsWith("#")) {
-                        continue;
-                    }
-                    // Class快速载入
-                    this.analysisClass(line);
-                }
+                br.lines().forEach(this::analysisStarterConfigLine);
             }
         } catch (IOException e) {
             throw new ServerBootstrapException("解析Starter配置时", e);
         }
+    }
+
+    private void analysisStarterConfigLine(String line) {
+        // 空行或注释
+        if (StringUtils.isEmpty(line) || line.startsWith("#")) {
+            return;
+        }
+        // Class快速载入
+        this.analysisClass(line);
     }
 
     private void analysisClass(String className) {
