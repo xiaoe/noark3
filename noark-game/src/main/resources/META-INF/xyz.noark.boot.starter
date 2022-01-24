@@ -1,1 +1,7 @@
 xyz.noark.game.NoarkAutoConfiguration
+
+# 静态组件
+xyz.noark.core.network.Sender
+xyz.noark.core.event.EventHelper
+xyz.noark.core.thread.AsyncHelper
+xyz.noark.core.exception.ExceptionHelper

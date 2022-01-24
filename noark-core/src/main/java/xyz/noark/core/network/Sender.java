@@ -14,7 +14,6 @@
 package xyz.noark.core.network;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.core.util.ArrayUtils;
 
@@ -26,7 +25,6 @@ import java.io.Serializable;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@StaticComponent
 public final class Sender {
 
     @Autowired

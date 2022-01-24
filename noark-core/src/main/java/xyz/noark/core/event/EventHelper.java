@@ -1,7 +1,6 @@
 package xyz.noark.core.event;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.StaticComponent;
 
 /**
  * 事件辅助类.
@@ -10,7 +9,6 @@ import xyz.noark.core.annotation.StaticComponent;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-@StaticComponent
 public class EventHelper {
 
     @Autowired(required = false)
