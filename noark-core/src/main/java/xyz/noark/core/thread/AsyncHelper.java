@@ -14,6 +14,7 @@
 package xyz.noark.core.thread;
 
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.StaticComponent;
 
 import java.io.Serializable;
 
@@ -27,6 +28,7 @@ import java.io.Serializable;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
+@StaticComponent
 public class AsyncHelper {
     /**
      * 构建一个ThreadLocal来存放执行期的任务上下文

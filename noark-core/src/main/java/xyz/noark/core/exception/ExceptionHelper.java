@@ -1,6 +1,7 @@
 package xyz.noark.core.exception;
 
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.event.EventManager;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.NetworkPacket;
@@ -11,6 +12,7 @@ import xyz.noark.core.network.Session;
  *
  * @author 小流氓[176543888@qq.com]
  */
+@StaticComponent
 public class ExceptionHelper {
     @Autowired(required = false)
     private static NetworkListener networkListener;
