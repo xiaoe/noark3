@@ -15,6 +15,7 @@ package xyz.noark.core.ioc;
 
 import xyz.noark.core.annotation.*;
 import xyz.noark.core.converter.ConvertManager;
+import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
 import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
@@ -58,6 +59,16 @@ public class IocLoader {
     IocLoader(String profileStr, String... packages) {
         this.profileStr = profileStr;
         ResourceScanning.scanPackage(packages, this::analysisResource);
+
+        // 转化器先初始化
+        this.initConverterLoader();
+    }
+
+    private void initConverterLoader() {
+        for (Converter<?> converter : ConvertManager.getInstance().getAllBaseConverter()) {
+            final Class<?> klass = converter.getClass();
+            beans.put(klass, new DefaultBeanDefinition(profileStr, klass, converter).init());
+        }
     }
 
     /**
