@@ -18,6 +18,7 @@ import xyz.noark.core.converter.impl.*;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.ClassUtils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,7 +109,7 @@ public class ConvertManager {
      *
      * @return 基础转化器实例
      */
-    public Map<Class<?>, Converter<?>> getBaseConverterMap() {
-        return CONVERTERS;
+    public Collection<Converter<?>> getAllBaseConverter() {
+        return CONVERTERS.values();
     }
 }
