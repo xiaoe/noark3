@@ -89,7 +89,8 @@ class NoarkHttpServletResponse implements HttpServletResponse {
      */
     private void fillResponseHeaderInfo(HttpHeaders httpHeaders) {
         httpHeaders.set(HttpHeaderNames.CONTENT_TYPE.toString(), StringUtils.join(contentType, ";charset=", charset));
-        httpHeaders.set(HttpHeaderNames.CONTENT_ENCODING.toString(), charset);
+        // 不能启动这个内容编码，不然压缩将会失效
+        // httpHeaders.set(HttpHeaderNames.CONTENT_ENCODING.toString(), charset);
         httpHeaders.set(HttpHeaderNames.CONTENT_LENGTH.toString(), ByteBufUtils.size(content));
     }
 
