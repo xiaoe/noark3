@@ -16,7 +16,6 @@ package xyz.noark.network.handler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.network.SocketSession;
@@ -27,7 +26,6 @@ import xyz.noark.network.SocketSession;
  * @author 小流氓[176543888@qq.com]
  * @since 3.1
  */
-@Service
 @Sharable
 public class SocketServerHandler extends AbstractServerHandler<NetworkPacket> {
 

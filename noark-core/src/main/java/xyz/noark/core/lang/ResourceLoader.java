@@ -18,6 +18,7 @@ import xyz.noark.core.util.StringUtils;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
@@ -30,14 +31,23 @@ import java.nio.file.StandardOpenOption;
 public class ResourceLoader {
     protected static final String CLASSPATH_URL_PREFIX = "classpath:";
 
-    protected InputStream newInputStream(String path, String zone, String fileName) throws IOException {
+    protected InputStream newInputStream(String path, String zone, int step, String fileName) throws IOException {
         // ClassPath路径
         if (path.startsWith(CLASSPATH_URL_PREFIX)) {
             return newClasspathInputStream(path, zone, fileName);
         }
 
+        // 配置存放目录
+        Path dir = Paths.get(path, zone);
+        for (int i = step; i > 1; i--) {
+            Path resolve = dir.resolve(String.valueOf(i)).resolve(fileName);
+            if (resolve.toFile().exists()) {
+                return Files.newInputStream(resolve, StandardOpenOption.READ);
+            }
+        }
+        
         // 没有前缀
-        return Files.newInputStream(Paths.get(path, zone, fileName), StandardOpenOption.READ);
+        return Files.newInputStream(dir.resolve(fileName), StandardOpenOption.READ);
     }
 
     private InputStream newClasspathInputStream(String path, String zone, String fileName) {
@@ -65,8 +75,8 @@ public class ResourceLoader {
         }
     }
 
-    protected BufferedReader newBufferedReader(String path, String zone, String fileName, Charset charset) throws IOException {
-        InputStream is = this.newInputStream(path, zone, fileName);
+    protected BufferedReader newBufferedReader(String path, String zone, int step, String fileName, Charset charset) throws IOException {
+        InputStream is = this.newInputStream(path, zone, step, fileName);
         return new BufferedReader(new InputStreamReader(is, charset.newDecoder()));
     }
 }

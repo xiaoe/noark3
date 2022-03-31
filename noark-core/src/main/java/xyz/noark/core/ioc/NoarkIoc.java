@@ -55,12 +55,11 @@ public class NoarkIoc implements Ioc {
      * @param profile  环境配置
      */
     public NoarkIoc(String profile, String packager) {
-        String[] packages = Arrays.asList(packager, "xyz.noark").toArray(new String[]{});
-        logger.debug("init ioc, packages={}", packager);
+        logger.debug("init ioc, packager={}", packager);
         IocHolder.setIoc(this);
 
         // 自动注入的实现也交给他去处理...
-        IocLoader loader = new IocLoader(profile, packages);
+        IocLoader loader = new IocLoader(profile, packager);
 
         try (IocMaking making = new IocMaking(loader)) {
             // 优先构建Configuration里的显示申明的Bean.

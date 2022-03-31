@@ -576,11 +576,10 @@ public class StringUtils {
      * @throws IOException If an I/O error occurs
      */
     public static String readString(Reader reader) throws IOException {
-        final StringBuilder sb = new StringBuilder(1024);
+        final StringBuilder sb = new StringBuilder(2048);
         // 申明一次读取缓冲区
-        final char[] array = new char[256];
-        // 这里并没有使用while(true),如果一个文本超过100W，还是放弃后面的算了
-        while (sb.length() < MathUtils.MILLION) {
+        final char[] array = new char[512];
+        while (true) {
             int n = reader.read(array);
             // 读结束了，就GG了
             if (n < 0) {

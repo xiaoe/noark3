@@ -14,6 +14,7 @@
 package xyz.noark.core.util;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Calendar;
@@ -117,6 +118,7 @@ public class DateUtils {
      * WeekFields.ISO代表每周从周一开始算。(建议)<br>
      * WeekFields.SUNDAY_START代表每周从周日开始算。
      * </p>
+     * 如果两天日期相隔天数超过（包含）7天，这两个肯定不是同一周
      *
      * @param date1      第一个日期
      * @param date2      第二个日期
@@ -125,7 +127,8 @@ public class DateUtils {
      */
     public static boolean isSameWeek(final LocalDate date1, final LocalDate date2, WeekFields weekFields) {
         final TemporalField temporalField = weekFields.weekOfWeekBasedYear();
-        return date1.get(temporalField) == date2.get(temporalField);
+        // 周数相同的情况下，还要保证这两个日期相隔天数不能超过（包含）7天
+        return date1.get(temporalField) == date2.get(temporalField) && Math.abs(ChronoUnit.DAYS.between(date1, date2)) < 7;
     }
 
     /**

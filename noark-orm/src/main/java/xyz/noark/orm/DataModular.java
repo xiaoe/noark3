@@ -15,7 +15,6 @@ package xyz.noark.orm;
 
 import xyz.noark.core.Modular;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 import xyz.noark.orm.write.AsyncWriteService;
 
 /**
@@ -24,7 +23,6 @@ import xyz.noark.orm.write.AsyncWriteService;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Component(name = Modular.DATA_MODULAR)
 public class DataModular implements Modular {
     /**
      * 服务器数据存档间隔，单位：秒，默认值：5分钟

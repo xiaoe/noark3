@@ -21,18 +21,14 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
-import io.netty.util.internal.logging.InternalLoggerFactory;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.FileSize;
 import xyz.noark.core.network.TcpServer;
-import xyz.noark.network.log.NettyLoggerFactory;
+import xyz.noark.network.log.NetworkLoggingHandler;
 
 import java.net.BindException;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +41,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Component(name = "NettyServer")
 public class NettyServer implements TcpServer {
     /**
      * Boss线程就用一个线程
@@ -83,8 +78,9 @@ public class NettyServer implements TcpServer {
     /**
      * 网络封包日志激活
      */
-    @Value(NetworkConstant.LOG_ACTIVE)
-    protected boolean logActive = false;
+    @Value(NetworkConstant.LOG_ENABLED)
+    protected boolean logEnabled = false;
+
     /**
      * EPOLL模型是否激活
      */
@@ -152,12 +148,6 @@ public class NettyServer implements TcpServer {
         });
 
         logger.info("game tcp server start on {}", port);
-
-        // 如果封包日志打开的话，需要桥接进Noark日志实现
-        if (logActive) {
-            InternalLoggerFactory.setDefaultFactory(NettyLoggerFactory.INSTANCE);
-        }
-
         try {
             bootstrap.bind(port).sync();
             logger.info("game tcp server start is success.");
@@ -182,8 +172,8 @@ public class NettyServer implements TcpServer {
         }
 
         // 输出具体的Netty接受与发送封包的日志
-        if (logActive) {
-            pipeline.addLast("logger", new LoggingHandler(LogLevel.DEBUG));
+        if (logEnabled) {
+            pipeline.addLast("logger", new NetworkLoggingHandler());
         }
 
         // 统一默认的事件处理...

@@ -11,25 +11,23 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network.log;
+package xyz.noark.orm;
 
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+import xyz.noark.core.Modular;
+import xyz.noark.core.annotation.Configuration;
+import xyz.noark.core.annotation.configuration.Bean;
 
 /**
- * Netty日志工厂类.
+ * ORM Starter组件入口.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.5
  */
-public class NettyLoggerFactory extends InternalLoggerFactory {
-    public static final InternalLoggerFactory INSTANCE = new NettyLoggerFactory();
+@Configuration
+public class OrmAutoConfiguration {
 
-    private NettyLoggerFactory() {
-    }
-
-    @Override
-    public InternalLogger newInstance(String name) {
-        return new NettyLogger();
+    @Bean(name = Modular.DATA_MODULAR)
+    public DataModular dataModular() {
+        return new DataModular();
     }
 }

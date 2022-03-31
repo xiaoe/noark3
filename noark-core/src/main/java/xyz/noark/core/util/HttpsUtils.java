@@ -160,7 +160,7 @@ public class HttpsUtils {
             requestProperty.forEach(connection::setRequestProperty);
 
             // 构建Post参数并发送...
-            HttpUtils.buildPostParamsAndSend(connection, params);
+            HttpUtils.buildPostParamsAndSend(connection, params, requestProperty);
 
             return HttpUtils.handleResponseText(connection, responseCharset);
         } catch (Exception e) {

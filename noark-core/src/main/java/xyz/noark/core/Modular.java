@@ -24,27 +24,27 @@ public interface Modular {
     /**
      * 线程模块.
      */
-    public static final String THREAD_MODULAR = "ThreadModular";
+    String THREAD_MODULAR = "ThreadModular";
     /**
      * 数据存储模块.
      */
-    public static final String DATA_MODULAR = "DataModular";
+    String DATA_MODULAR = "DataModular";
     /**
      * 异步事件模块.
      */
-    public static final String EVENT_MODULAR = "EventModular";
+    String EVENT_MODULAR = "EventModular";
     /**
      * HTTP服务模块.
      */
-    public static final String HTTP_MODULAR = "HttpModular";
+    String HTTP_MODULAR = "HttpModular";
 
     /**
      * 模块初始化.
      */
-    public void init();
+    void init();
 
     /**
      * 模块销毁.
      */
-    public void destroy();
+    void destroy();
 }

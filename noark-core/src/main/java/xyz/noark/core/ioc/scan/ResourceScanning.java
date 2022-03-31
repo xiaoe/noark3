@@ -18,6 +18,7 @@ import xyz.noark.core.exception.ServerBootstrapException;
 import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
@@ -88,7 +89,8 @@ public class ResourceScanning {
                 switch (url.getProtocol()) {
                     // "file"
                     case URL_PROTOCOL_FILE:
-                        doFindFileResources(packagePath, new File(url.getFile()), callback);
+                        // 使用url.toURI().getPath()的方式处理中文与空格问题
+                        doFindFileResources(packagePath, new File(url.toURI().getPath()), callback);
                         break;
                     // "jar"
                     case URL_PROTOCOL_JAR:
@@ -98,7 +100,7 @@ public class ResourceScanning {
                         break;
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new ServerBootstrapException("扫描过程中出异常啦", e);
         }
     }

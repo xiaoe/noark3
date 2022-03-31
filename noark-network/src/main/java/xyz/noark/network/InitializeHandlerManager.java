@@ -13,8 +13,9 @@
  */
 package xyz.noark.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.network.init.IllegalRequestHandler;
 import xyz.noark.network.init.SocketInitializeHandler;
@@ -27,7 +28,6 @@ import java.util.Map;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class InitializeHandlerManager {
     /**
      * Socket的接头暗号是否开启，默认是开启状态
@@ -41,12 +41,23 @@ public class InitializeHandlerManager {
     private SocketInitializeHandler socketInitializeHandler;
 
     /**
-     * 获取一个请求处理器.
+     * 初始化通道.
      *
-     * @param request 请求标识.
-     * @return 处理器
+     * @param ctx      通道上下文
+     * @param protocol 暗号协议
+     * @param in       封包缓冲区
      */
-    public InitializeHandler getHandler(String request) {
-        return handlers.getOrDefault(request, signalActive ? new IllegalRequestHandler(request) : socketInitializeHandler);
+    public void init(ChannelHandlerContext ctx, String protocol, ByteBuf in) {
+        InitializeHandler initializeHandler = socketInitializeHandler;
+        // 开启暗号
+        if (signalActive) {
+            initializeHandler = handlers.getOrDefault(protocol, new IllegalRequestHandler(protocol));
+        }
+        // 关闭暗号，前面用来判定的协议头要还回去.
+        else {
+            in.resetReaderIndex();
+        }
+        // 初始化处理器
+        initializeHandler.handle(ctx);
     }
 }

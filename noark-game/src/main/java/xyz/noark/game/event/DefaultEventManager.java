@@ -14,7 +14,7 @@
 package xyz.noark.game.event;
 
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.EventManager;
@@ -25,6 +25,7 @@ import xyz.noark.core.ioc.manager.ScheduledMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.game.NoarkConstant;
 
 import java.util.List;
 
@@ -36,12 +37,14 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class DefaultEventManager implements EventManager {
     private static final EventMethodManager EVENT_MANAGER = EventMethodManager.getInstance();
     private static final ScheduledMethodManager SCHEDULED_MANAGER = ScheduledMethodManager.getInstance();
     @Autowired
     private static ThreadDispatcher threadDispatcher;
+    @Value(NoarkConstant.SERVER_DEBUG)
+    private static boolean debug = false;
+
     private final DelayEventThread handler = new DelayEventThread(this);
 
     public void init() {
@@ -121,7 +124,9 @@ public class DefaultEventManager implements EventManager {
                 handlers = EVENT_MANAGER.rebuildEventHandler(event.getClass());
             }
             if (handlers.isEmpty()) {
-                logger.warn("No subscription event. class={}", event.getClass());
+                if (debug) {
+                    logger.warn("No subscription event. class={}", event.getClass());
+                }
                 return;
             }
         }

@@ -15,7 +15,6 @@ package xyz.noark.game.event;
 
 import xyz.noark.core.Modular;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 
 /**
  * 事件模块.
@@ -23,7 +22,6 @@ import xyz.noark.core.annotation.Component;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Component(name = Modular.EVENT_MODULAR)
 public class EventModular implements Modular {
 
     @Autowired

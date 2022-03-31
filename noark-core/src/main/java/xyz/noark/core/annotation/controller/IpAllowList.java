@@ -17,6 +17,8 @@ public @interface IpAllowList {
 
     /**
      * 配置文件中的IP白名单的配置Key。
+     * <p>
+     * 如果这里直接就是一个*，那就当他不要权限
      *
      * @return IP白名单的配置Key
      */

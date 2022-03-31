@@ -15,7 +15,6 @@ package xyz.noark.network.http;
 
 import xyz.noark.core.Modular;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 
 /**
  * HTTP服务
@@ -23,7 +22,6 @@ import xyz.noark.core.annotation.Component;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Component(name = Modular.HTTP_MODULAR)
 public class HttpModular implements Modular {
 
     @Autowired

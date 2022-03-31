@@ -21,15 +21,17 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.lang.FileSize;
 import xyz.noark.core.network.TcpServer;
 import xyz.noark.network.NetworkConstant;
+import xyz.noark.network.log.NetworkLoggingHandler;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -39,7 +41,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@Service
 public class HttpServer implements TcpServer {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
@@ -48,15 +49,26 @@ public class HttpServer implements TcpServer {
     private int port = 0;
     @Value(NetworkConstant.HTTP_SECRET_KEY)
     private String secretKey = null;
+    /**
+     * 网络封包日志激活
+     */
+    @Value(NetworkConstant.LOG_ENABLED)
+    protected boolean logEnabled = false;
+    /**
+     * 网络封包日志处理器已启动时，是否激活输出功能
+     */
+    @Value(NetworkConstant.LOG_OUTPUT_ACTIVE)
+    protected boolean outputActive = false;
 
     @Autowired
     private DispatcherServlet dispatcherServlet;
+
 
     /**
      * 向内部提供HTTP服务的最大内容长度（默认：1048576=1M）
      */
     @Value(NetworkConstant.HTTP_MAX_CONTENT_LENGTH)
-    private int maxContentLength = 1048576;
+    private FileSize maxContentLength = new FileSize(1048576);
 
     /**
      * 设置端口.
@@ -90,14 +102,23 @@ public class HttpServer implements TcpServer {
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
 
         bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
+
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) {
-                ChannelPipeline p = ch.pipeline();
-                p.addLast(new HttpServerCodec());
-                p.addLast(new HttpObjectAggregator(maxContentLength));
-                p.addLast(new ChunkedWriteHandler());
-                p.addLast(dispatcherServlet);
+                ChannelPipeline pipeline = ch.pipeline();
+
+                // 启动日志处理器
+                if (logEnabled) {
+                    pipeline.addLast(new NetworkLoggingHandler(outputActive));
+                }
+
+                pipeline.addLast(new HttpServerCodec());
+                pipeline.addLast(new HttpObjectAggregator(maxContentLength.intValue()));
+                pipeline.addLast(new ChunkedWriteHandler());
+                pipeline.addLast(new HttpContentCompressor());
+
+                pipeline.addLast(dispatcherServlet);
             }
         });
 

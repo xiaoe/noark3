@@ -15,6 +15,7 @@ package xyz.noark.core.ioc;
 
 import xyz.noark.core.annotation.*;
 import xyz.noark.core.converter.ConvertManager;
+import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
 import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
@@ -58,6 +59,16 @@ public class IocLoader {
     IocLoader(String profileStr, String... packages) {
         this.profileStr = profileStr;
         ResourceScanning.scanPackage(packages, this::analysisResource);
+
+        // 转化器先初始化
+        this.initConverterLoader();
+    }
+
+    private void initConverterLoader() {
+        for (Converter<?> converter : ConvertManager.getInstance().getAllBaseConverter()) {
+            final Class<?> klass = converter.getClass();
+            beans.put(klass, new DefaultBeanDefinition(profileStr, klass, converter).init());
+        }
     }
 
     /**
@@ -98,17 +109,20 @@ public class IocLoader {
         try (InputStream is = classLoader.getResourceAsStream(resourceName)) {
             assert is != null;
             try (InputStreamReader isr = new InputStreamReader(is, CharsetUtils.CHARSET_UTF_8); BufferedReader br = new BufferedReader(isr)) {
-
-                final String line = br.readLine();
-
-                // Class快速载入
-                if (StringUtils.isNotEmpty(line)) {
-                    this.analysisClass(line);
-                }
+                br.lines().forEach(this::analysisStarterConfigLine);
             }
         } catch (IOException e) {
             throw new ServerBootstrapException("解析Starter配置时", e);
         }
+    }
+
+    private void analysisStarterConfigLine(String line) {
+        // 空行或注释
+        if (StringUtils.isEmpty(line) || line.startsWith("#")) {
+            return;
+        }
+        // Class快速载入
+        this.analysisClass(line);
     }
 
     private void analysisClass(String className) {

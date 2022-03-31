@@ -3,13 +3,12 @@ package xyz.noark.network.http;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import xyz.noark.core.util.CharsetUtils;
+import xyz.noark.core.util.GzipUtils;
 import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.http.exception.UnrealizedMethodException;
@@ -131,15 +130,18 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     }
 
     private void parsePostContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
+        HttpHeaders headers = fhr.headers();
         // KEY的值，大小写无所谓，但Get出来的Value是大小写敏感的
-        String contentType = fhr.headers().get("content-type");
+        String contentType = headers.get(HttpHeaderNames.CONTENT_TYPE);
+        String contentEncoding = headers.get(HttpHeaderNames.CONTENT_ENCODING);
+
         // 有些非正常的请求，可能会没有内容类型
         if (StringUtils.isEmpty(contentType)) {
-            this.parsePostBodyContent(fhr);
+            this.parsePostBodyContent(fhr, contentEncoding);
         }
         // JSON类型的参数格式
         else if ("application/json".equalsIgnoreCase(contentType)) {
-            this.parseJsonContent(fhr, parameterMap);
+            this.parseJsonContent(fhr, parameterMap, contentEncoding);
         }
         // 其他走HTTP常规参数编码key1=val1&key2=val2
         else {
@@ -147,8 +149,12 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
     }
 
-    private void parsePostBodyContent(FullHttpRequest fhr) {
+    private void parsePostBodyContent(FullHttpRequest fhr, String contentEncoding) throws IOException {
         byte[] content = ByteBufUtils.readBytes(fhr.content());
+        // Gzip压缩
+        if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(contentEncoding)) {
+            content = GzipUtils.uncompress(content);
+        }
         this.requestBodyInputStream = new ByteArrayInputStream(content);
     }
 
@@ -168,13 +174,24 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
     }
 
-    private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) {
-        final ByteBuf content = fhr.content();
-        if (content.readableBytes() == 0) {
+    private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap, String contentEncoding) throws IOException {
+        final ByteBuf byteBuf = fhr.content();
+        if (byteBuf.readableBytes() == 0) {
             return;
         }
 
-        JSONObject jsonObject = JSON.parseObject(content.toString(CharsetUtils.CHARSET_UTF_8));
+        JSONObject jsonObject;
+        // Gzip压缩
+        if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(contentEncoding)) {
+            byte[] content = ByteBufUtils.readBytes(fhr.content());
+            content = GzipUtils.uncompress(content);
+            jsonObject = JSON.parseObject(new String(content, CharsetUtils.CHARSET_UTF_8));
+        }
+        // 没有压缩
+        else {
+            jsonObject = JSON.parseObject(byteBuf.toString(CharsetUtils.CHARSET_UTF_8));
+        }
+
         for (Map.Entry<String, Object> e : jsonObject.entrySet()) {
             parameterMap.computeIfAbsent(e.getKey(), key -> new ArrayList<>(1)).add(e.getValue().toString());
         }

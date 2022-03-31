@@ -17,12 +17,15 @@ import xyz.noark.core.exception.HttpAccessException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
@@ -206,7 +209,7 @@ public class HttpUtils {
             requestProperty.forEach(connection::setRequestProperty);
 
             // 构建Post参数并发送...
-            buildPostParamsAndSend(connection, params);
+            buildPostParamsAndSend(connection, params, requestProperty);
 
             return handleResponseText(connection, responseCharset);
         } catch (Exception e) {
@@ -214,7 +217,7 @@ public class HttpUtils {
         }
     }
 
-    static void buildPostParamsAndSend(URLConnection connection, String params) throws IOException {
+    static void buildPostParamsAndSend(URLConnection connection, String params, Map<String, String> requestProperty) throws IOException {
         // 发送POST请求必须设置如下两行
         connection.setDoOutput(true);
         connection.setDoInput(true);
@@ -222,12 +225,24 @@ public class HttpUtils {
         connection.connect();
 
         if (StringUtils.isNotEmpty(params)) {
+            String encoding = requestProperty.get("Content-Encoding");
+            if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(encoding)) {
+                try (OutputStream out = connection.getOutputStream()) {
+                    byte[] bytes = params.getBytes(StandardCharsets.UTF_8);
+                    // 压缩后发送请求参数
+                    out.write(GzipUtils.compress(bytes));
+                    // flush输出流的缓冲
+                    out.flush();
+                }
+            }
             // 获取URLConnection对象对应的输出流
-            try (PrintWriter out = new PrintWriter(connection.getOutputStream())) {
-                // 发送请求参数
-                out.print(params);
-                // flush输出流的缓冲
-                out.flush();
+            else {
+                try (PrintWriter out = new PrintWriter(connection.getOutputStream())) {
+                    // 发送请求参数
+                    out.print(params);
+                    // flush输出流的缓冲
+                    out.flush();
+                }
             }
         }
     }
@@ -253,6 +268,23 @@ public class HttpUtils {
      */
     public static String postJson(String url, String json, int timeout) {
         return post(url, json, timeout, MapUtils.of("Content-Type", "application/json"));
+    }
+
+    /**
+     * 向指定 URL 发送POST方法的请求, 参数格式为Json, 但发送数据会被Gzip压缩
+     * <p>用于大数据上报接口</p>
+     *
+     * @param url     发送请求的 URL
+     * @param json    请求参数
+     * @param timeout 超时时间（单位：毫秒）
+     * @return 所代表远程资源的响应结果
+     */
+    public static String postGzipJson(String url, String json, int timeout) {
+        HashMap<String, String> requestProperty = MapUtils.newHashMap(2);
+        requestProperty.put("Accept-Encoding", "gzip");
+        requestProperty.put("Content-Encoding", "gzip");
+        requestProperty.put("Content-Type", "application/json");
+        return post(url, json, timeout, requestProperty);
     }
 
     /**

@@ -18,6 +18,7 @@ import xyz.noark.core.converter.impl.*;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.ClassUtils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,13 +36,30 @@ public class ConvertManager {
 
     static {
         INSTANCE.register(BooleanConverter.class);
-        INSTANCE.register(IntegerConverter.class);
-        INSTANCE.register(LongConverter.class);
-        INSTANCE.register(StringConverter.class);
+        INSTANCE.register(ByteArrayConverter.class);
+        INSTANCE.register(DateConverter.class);
+        INSTANCE.register(DoubleConverter.class);
+        INSTANCE.register(DoubleListConverter.class);
+        INSTANCE.register(FileSizeConverter.class);
         INSTANCE.register(FloatConverter.class);
-        INSTANCE.register(IntListConverter.class);
         INSTANCE.register(FloatListConverter.class);
-        // 使用了IOC功能，有自动扫描功能了，就不再需要手工添加...
+        INSTANCE.register(IntegerConverter.class);
+        INSTANCE.register(IntListConverter.class);
+        INSTANCE.register(IntPairConverter.class);
+        INSTANCE.register(IntRangeConverter.class);
+        INSTANCE.register(IntSectionConverter.class);
+        INSTANCE.register(LocalDateConverter.class);
+        INSTANCE.register(LocalDateTimeConverter.class);
+        INSTANCE.register(LocalTimeArrayConverter.class);
+        INSTANCE.register(LocalTimeConverter.class);
+        INSTANCE.register(LocalTimeSectionConverter.class);
+        INSTANCE.register(LongConverter.class);
+        INSTANCE.register(LongListConverter.class);
+        INSTANCE.register(PointConverter.class);
+        INSTANCE.register(PointListConverter.class);
+        INSTANCE.register(StringConverter.class);
+        INSTANCE.register(StringListConverter.class);
+        INSTANCE.register(TimeRangeConverter.class);
     }
 
     private ConvertManager() {
@@ -83,5 +101,15 @@ public class ConvertManager {
         for (Class<?> targetClass : annotation.value()) {
             CONVERTERS.put(targetClass, converter);
         }
+    }
+
+    /**
+     * 获取基础转化器实例.
+     * <p>用于初始化时先把这个给初始化了，这是基础，没有这个IOC容器都没法初始化</p>
+     *
+     * @return 基础转化器实例
+     */
+    public Collection<Converter<?>> getAllBaseConverter() {
+        return CONVERTERS.values();
     }
 }

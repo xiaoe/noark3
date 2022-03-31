@@ -1,4 +1,4 @@
 /**
- * Netty日志转接noark-log的实现
+ * 网络封包相关的日志功能
  */
 package xyz.noark.network.log;

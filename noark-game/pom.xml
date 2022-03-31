@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>noark-game</artifactId>
-  <version>3.4.4-SNAPSHOT</version>
+  <version>3.4.5.Final</version>
   <name>noark-game</name>
   <description>This is a game server framework.</description>
   <url>https://noark.xyz</url>
@@ -30,19 +30,19 @@
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-core</artifactId>
-      <version>3.4.4-SNAPSHOT</version>
+      <version>3.4.5.Final</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-network</artifactId>
-      <version>3.4.4-SNAPSHOT</version>
+      <version>3.4.5.Final</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>2.4.16</version>
+      <version>2.4.21</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -60,13 +60,13 @@
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-benchmark</artifactId>
-      <version>3.4.4-SNAPSHOT</version>
+      <version>3.4.5.Final</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-orm</artifactId>
-      <version>3.4.4-SNAPSHOT</version>
+      <version>3.4.5.Final</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -85,6 +85,6 @@
   <parent>
     <groupId>xyz.noark</groupId>
     <artifactId>noark-parent</artifactId>
-    <version>3.4.4-SNAPSHOT</version>
+    <version>3.4.5.Final</version>
   </parent>
 </project>

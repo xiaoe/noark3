@@ -21,7 +21,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.network.NetworkConstant;
 import xyz.noark.network.handler.WebsocketServerHandler;
@@ -34,7 +33,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.1
  */
-@Component(name = WebsocketInitializeHandler.WEBSOCKET_NAME)
 public class WebsocketInitializeHandler extends AbstractInitializeHandler {
     public static final String WEBSOCKET_NAME = "_______websocket_______";
     /**

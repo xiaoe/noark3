@@ -68,7 +68,7 @@ abstract class AbstractLogger implements Logger {
      * @param level 日志级别
      * @return 如果达标则返回true
      */
-    private boolean isEnabled(Level level) {
+    protected boolean isEnabled(Level level) {
         return privateConfig.getIntLevel() <= level.getValue();
     }
 

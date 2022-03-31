@@ -17,7 +17,6 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Component;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.handler.SocketServerHandler;
@@ -30,7 +29,6 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.1
  */
-@Component(name = SocketInitializeHandler.SOCKET_NAME)
 public class SocketInitializeHandler extends AbstractInitializeHandler {
     public static final String SOCKET_NAME = "________socket_________";
     @Autowired

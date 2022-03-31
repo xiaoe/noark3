@@ -61,7 +61,7 @@ public class InitializeDecoder extends ByteToMessageDecoder {
         }
 
         // 处理对应协议相关的解码器
-        initializeHandlerManager.getHandler(protocol).handle(ctx);
+        initializeHandlerManager.init(ctx, protocol, in);
 
         // 移除自己
         ctx.pipeline().remove(this.getClass());
