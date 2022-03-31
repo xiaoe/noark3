@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>noark-core</artifactId>
-  <version>3.4.5.Final</version>
+  <version>3.4.6-SNAPSHOT</version>
   <name>noark-core</name>
   <description>This is a game server framework.</description>
   <url>https://noark.xyz</url>
@@ -30,13 +30,13 @@
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-asm</artifactId>
-      <version>3.4.5.Final</version>
+      <version>3.4.6-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-log</artifactId>
-      <version>3.4.5.Final</version>
+      <version>3.4.6-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -48,7 +48,7 @@
     <dependency>
       <groupId>xyz.noark</groupId>
       <artifactId>noark-benchmark</artifactId>
-      <version>3.4.5.Final</version>
+      <version>3.4.6-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -61,6 +61,6 @@
   <parent>
     <groupId>xyz.noark</groupId>
     <artifactId>noark-parent</artifactId>
-    <version>3.4.5.Final</version>
+    <version>3.4.6-SNAPSHOT</version>
   </parent>
 </project>
