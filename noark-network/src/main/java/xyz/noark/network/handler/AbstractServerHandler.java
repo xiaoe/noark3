@@ -24,9 +24,11 @@ import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.IncodeSession;
 import xyz.noark.network.NetworkConstant;
+import xyz.noark.network.RemotePacketService;
 import xyz.noark.network.filter.PacketCheckFilter;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -56,6 +58,8 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
     private ThreadDispatcher threadDispatcher;
     @Autowired(required = false)
     private PacketCheckFilter packetCheckFilter;
+    @Autowired(required = false)
+    private RemotePacketService remotePacketService;
     /**
      * 接收封包统计预警功能是否激活
      */
@@ -116,8 +120,27 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 
             // 封包检测
             if (this.checkPacket(session, packet)) {
-                threadDispatcher.dispatchPacket(session, packet);
+                this.dispatchPacket(session, packet);
             }
+        }
+    }
+
+    /**
+     * 处理好网络封包后派发逻辑.
+     *
+     * @param session Session对象
+     * @param packet  网络封包
+     */
+    protected void dispatchPacket(Session session, NetworkPacket packet) {
+        Serializable opcode = packet.getOpcode();
+
+        // 如果有跨服封包处理实现且这个编号是跨服封包编码内则交给具体跨服处理方案
+        if (remotePacketService != null && remotePacketService.inScope(opcode)) {
+            remotePacketService.dispatchPacket(session, packet);
+        }
+        // 本地消息，直接由线程池调度
+        else {
+            threadDispatcher.dispatchPacket(session, packet);
         }
     }
 
