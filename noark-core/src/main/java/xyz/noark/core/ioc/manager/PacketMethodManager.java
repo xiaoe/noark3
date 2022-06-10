@@ -14,16 +14,17 @@
 package xyz.noark.core.ioc.manager;
 
 import xyz.noark.core.exception.ServerBootstrapException;
-import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.lang.MutableBoolean;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.PacketHelper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,12 +48,13 @@ public class PacketMethodManager {
         return INSTANCE;
     }
 
-    public void resetPacketHandler(PacketMethodWrapper handler) {
+    public void resetPacketHandler(PacketMethodWrapper methodWrapper) {
         // 如果没有完成初始化判定一下 会不会有重复的Opcode
-        if (handlers.containsKey(handler.getOpcode())) {
-            throw new ServerBootstrapException("重复定义的 Opcode：" + handler.getOpcode());
+        if (!methodWrapper.isRemoteFlag() && handlers.containsKey(methodWrapper.getOpcode())) {
+            throw new ServerBootstrapException("重复定义的 Opcode：" + methodWrapper.getOpcode());
         }
-        handlers.put(handler.getOpcode(), handler);
+
+        handlers.put(methodWrapper.getOpcode(), methodWrapper);
     }
 
     public PacketMethodWrapper getPacketMethodWrapper(Serializable opcode) {
@@ -101,13 +103,15 @@ public class PacketMethodManager {
      * @param maxSize TopN
      */
     public void outputStatInfo(int maxSize) {
-        Map<Serializable, Long> result = new HashMap<>(handlers.size());
+        Map<Serializable, Long> result = MapUtils.newHashMap(handlers.size());
         for (Map.Entry<Serializable, PacketMethodWrapper> e : handlers.entrySet()) {
-            final long num = e.getValue().getCallNum();
-            if (num <= 0) {
-                continue;
+            if (e.getValue() instanceof LocalPacketMethodWrapper) {
+                final long num = ((LocalPacketMethodWrapper) e.getValue()).getCallNum();
+                if (num <= 0) {
+                    continue;
+                }
+                result.put(e.getKey(), num);
             }
-            result.put(e.getKey(), num);
         }
         // 排序后只输出前多少个.
         result.entrySet().stream().sorted(Map.Entry.<Serializable, Long>comparingByValue().reversed()).limit(maxSize).forEachOrdered(e -> {

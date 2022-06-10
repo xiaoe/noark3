@@ -11,25 +11,56 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.network;
+package xyz.noark.core.ioc.wrap;
 
-import xyz.noark.core.ioc.wrap.method.RemotePacketMethodWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 
+import java.io.Serializable;
+
 /**
- * 跨服封包接口类.
+ * 封包方法入口的定义
  *
  * @author 小流氓[176543888@qq.com]
  */
-public interface RemotePacketService {
+public interface PacketMethodWrapper {
 
     /**
-     * 具体的处理跨服封包逻辑
+     * 获取封包编号.
      *
-     * @param session Session对象
-     * @param packet  跨服封包
-     * @param pmw     远程封包处理方法
+     * @return 封包编号
      */
-    void dispatchPacket(Session session, NetworkPacket packet, RemotePacketMethodWrapper pmw);
+    Serializable getOpcode();
+
+    /**
+     * 是否为远程封包
+     *
+     * @return 是否为远程封包
+     */
+    boolean isRemoteFlag();
+
+    /**
+     * 设置当前封包处理方法是否被废弃使用.
+     *
+     * @param deprecated 是否被废弃
+     */
+    void setDeprecated(boolean deprecated);
+
+    /**
+     * 判定当前封包处理方法是否被废弃使用.
+     *
+     * @return 如果被废弃返回true，否则返回false
+     */
+    boolean isDeprecated();
+
+    /**
+     * 把内容转成可直接阅读的信息
+     *
+     * @param session 链接Session
+     * @param packet  封包内容
+     * @return 返回这个封包可阅读字符串
+     */
+    String toString(Session session, NetworkPacket packet);
+
+
 }

@@ -18,6 +18,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
+import xyz.noark.core.ioc.manager.PacketMethodManager;
+import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.RemotePacketMethodWrapper;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.*;
 import xyz.noark.core.thread.ThreadDispatcher;
@@ -132,15 +136,35 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
      * @param packet  网络封包
      */
     protected void dispatchPacket(Session session, NetworkPacket packet) {
-        Serializable opcode = packet.getOpcode();
+        final Serializable opcode = packet.getOpcode();
 
-        // 如果有跨服封包处理实现且这个编号是跨服封包编码内则交给具体跨服处理方案
-        if (remotePacketService != null && remotePacketService.inScope(opcode)) {
-            remotePacketService.dispatchPacket(session, packet);
+        // 查找封包处理方法
+        PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
+        if (pmw == null) {
+            logger.warn("undefined protocol, opcode={}", packet.getOpcode());
+            return;
         }
-        // 本地消息，直接由线程池调度
+
+        // 是否已废弃使用.
+        if (pmw.isDeprecated()) {
+            logger.warn("deprecated protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
+            if (networkListener != null) {
+                networkListener.handleDeprecatedPacket(session, packet);
+            }
+            return;
+        }
+
+        // 本地封包
+        if (pmw instanceof LocalPacketMethodWrapper) {
+            threadDispatcher.dispatchPacket(session, packet, (LocalPacketMethodWrapper) pmw);
+        }
+        // 有跨服的实现方案
+        else if (remotePacketService != null && pmw instanceof RemotePacketMethodWrapper) {
+            remotePacketService.dispatchPacket(session, packet, (RemotePacketMethodWrapper) pmw);
+        }
+        // 其他未知的实现，将来再写扩展方案
         else {
-            threadDispatcher.dispatchPacket(session, packet);
+            logger.warn("undefined protocol, opcode={}, pmw={}", packet.getOpcode(), pmw.getClass().getName());
         }
     }
 
