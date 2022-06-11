@@ -41,6 +41,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     static {
         IGNORE_ANNOTATION_BY_METHODS.add(Deprecated.class);
+        IGNORE_ANNOTATION_BY_METHODS.add(Primary.class);
     }
 
     /**
@@ -57,7 +58,8 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     private Annotation annotation;
     private Class<? extends Annotation> annotationType;
-
+    
+    private boolean primary;
     /**
      * 注入排序值
      */
@@ -71,9 +73,11 @@ public class DefaultBeanDefinition implements BeanDefinition {
         this(profileStr, klass, ClassUtils.newInstance(klass));
     }
 
-    public DefaultBeanDefinition(String profileStr, String beanName, Object object) {
+    public DefaultBeanDefinition(String profileStr, String beanName, Object object, boolean primary) {
         this(profileStr, object.getClass(), object);
         this.beanName = beanName;
+        // 或一下，有一个优先，他就是优先的方案
+        this.primary |= primary;
     }
 
     public DefaultBeanDefinition(String profileStr, Class<?> klass, Object object) {
@@ -84,6 +88,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
         Order order = beanClass.getAnnotation(Order.class);
         this.order = order == null ? Integer.MAX_VALUE : order.value();
+        this.primary = beanClass.isAnnotationPresent(Primary.class);
     }
 
     public DefaultBeanDefinition(String profileStr, Class<?> klass, Annotation annotation, Class<? extends Annotation> annotationType) {
@@ -236,5 +241,9 @@ public class DefaultBeanDefinition implements BeanDefinition {
     public void doAnalysisFunction(NoarkIoc ioc) {
         // 有自定义的注解需要送回来IOC容器中.
         customMethods.forEach((k, list) -> list.forEach(v -> ioc.addCustomMethod(k, new BaseMethodWrapper(single, v.getMethodAccess(), v.getMethodIndex(), v.getOrder()))));
+    }
+
+    public boolean isPrimary() {
+        return primary;
     }
 }

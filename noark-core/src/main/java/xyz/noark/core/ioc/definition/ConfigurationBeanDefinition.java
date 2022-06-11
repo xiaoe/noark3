@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc.definition;
 
+import xyz.noark.core.annotation.Primary;
 import xyz.noark.core.annotation.configuration.Bean;
 import xyz.noark.core.ioc.IocMaking;
 import xyz.noark.core.ioc.definition.method.BeanMethodDefinition;
@@ -43,9 +44,9 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
 
         // 注入完属性，还要建构相关Bean.
         for (BeanMethodDefinition bean : beans) {
-            // FIXME 可以使用参数注入的方式 @Value一起用...
+            boolean primary = bean.getMethod().isAnnotationPresent(Primary.class);
             Object obj = bean.getMethodAccess().invoke(single, bean.getMethodIndex());
-            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(profileStr, bean.getBeanName(), obj).init();
+            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(profileStr, bean.getBeanName(), obj, primary).init();
             making.getLoader().getBeans().put(beanDefinition.getBeanClass(), beanDefinition);
         }
     }

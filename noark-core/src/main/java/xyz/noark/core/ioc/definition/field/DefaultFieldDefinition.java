@@ -21,7 +21,7 @@ import xyz.noark.core.util.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.util.Comparator;
-import java.util.Optional;
+import java.util.List;
 
 /**
  * 一个被IOC容器所管理的JavaBean定义描述类.
@@ -30,6 +30,11 @@ import java.util.Optional;
  * @since 3.0
  */
 public class DefaultFieldDefinition implements FieldDefinition {
+    /**
+     * BeanOrder排序器
+     */
+    private static final Comparator<DefaultBeanDefinition> comparator = Comparator.comparingInt(DefaultBeanDefinition::getOrder);
+
     protected final Field field;
     protected final boolean required;
     protected final Class<?> fieldClass;
@@ -59,10 +64,39 @@ public class DefaultFieldDefinition implements FieldDefinition {
      * @return 需要注入的对象
      */
     protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-        Optional<Object> result = making.findAllImpl(klass).stream().sorted(Comparator.comparingInt(DefaultBeanDefinition::getOrder)).limit(1).map(DefaultBeanDefinition::getSingle).findFirst();
-        if (required) {
-            return result.orElseThrow(() -> new ServerBootstrapException("Class:" + field.getDeclaringClass().getName() + ">>Field:" + field.getName() + " cannot autowired"));
+        // 最佳注入的实现
+        DefaultBeanDefinition target = null;
+
+        // 所有实现
+        List<DefaultBeanDefinition> implList = making.findAllImpl(klass);
+
+        // 只有一个实现，那就是最佳
+        if (implList.size() == 1) {
+            target = implList.get(0);
         }
-        return result.orElse(null);
+        // 有多个实现，找最优的，没有就安排序给一个
+        else if (implList.size() > 1) {
+            target = findPrimaryImpl(implList);
+        }
+        
+        if (target == null) {
+            // 如果是必选的注入，那要抛出一个异常
+            if (required) {
+                throw new ServerBootstrapException("Class:" + field.getDeclaringClass().getName() + ">>Field:" + field.getName() + " cannot autowired");
+            }
+            // 可以没有实现类
+            else {
+                return null;
+            }
+        }
+        return target.getSingle();
+    }
+
+    protected DefaultBeanDefinition findPrimaryImpl(List<DefaultBeanDefinition> implList) {
+        return implList.stream().filter(DefaultBeanDefinition::isPrimary).findFirst().orElseGet(() -> findSortImpl(implList));
+    }
+
+    protected DefaultBeanDefinition findSortImpl(List<DefaultBeanDefinition> implList) {
+        return implList.stream().sorted(comparator).limit(1).findFirst().orElse(null);
     }
 }
