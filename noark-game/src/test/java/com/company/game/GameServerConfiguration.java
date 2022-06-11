@@ -26,7 +26,7 @@ import xyz.noark.core.annotation.configuration.Bean;
 @Configuration
 public class GameServerConfiguration {
 
-    @Bean
+    @Bean(name = "test")
     @Primary
     public TestService2 test() {
         return new TestService2();
