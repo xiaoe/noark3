@@ -64,12 +64,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>xyz.noark</groupId>
-      <artifactId>noark-orm</artifactId>
-      <version>3.4.6-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid</artifactId>
       <version>1.2.6</version>

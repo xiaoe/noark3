@@ -23,6 +23,8 @@ import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
 import xyz.noark.game.Noark;
 
+import javax.annotation.PostConstruct;
+
 import static xyz.noark.log.LogHelper.logger;
 
 /**
@@ -63,6 +65,7 @@ public class GameServerApplication {
         logger.info("处理事件........");
     }
 
+    @PostConstruct
     @EventListener(BuildingUpgradeEvent.class)
     public void handleBuildingUpgradeEvent() {
         logger.info("建筑升级时间到........");
