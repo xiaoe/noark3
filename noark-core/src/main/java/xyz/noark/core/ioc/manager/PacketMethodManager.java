@@ -26,6 +26,7 @@ import xyz.noark.core.util.StringUtils;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -166,5 +167,9 @@ public class PacketMethodManager {
             parsingFailedFlag.setValue(true);
             return "Illegal packet:" + Arrays.toString(packet.getByteArray().array());
         }
+    }
+
+    public Set<Serializable> getOpcodeSet() {
+        return handlers.keySet();
     }
 }
