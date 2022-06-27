@@ -25,13 +25,18 @@ import java.io.Serializable;
  * @author 小流氓[176543888@qq.com]
  */
 public class RemotePacketMethodWrapper implements PacketMethodWrapper {
+    private final String appGroup;
+    private final int appId;
+
     private final Serializable opcode;
     /**
      * 当前方法是否已废弃使用.
      */
     protected boolean deprecated = false;
 
-    public RemotePacketMethodWrapper(Serializable opcode) {
+    public RemotePacketMethodWrapper(String appGroup, int appId, Serializable opcode) {
+        this.appGroup = appGroup;
+        this.appId = appId;
         this.opcode = opcode;
     }
 
@@ -55,8 +60,20 @@ public class RemotePacketMethodWrapper implements PacketMethodWrapper {
         return deprecated;
     }
 
+    public String getAppGroup() {
+        return appGroup;
+    }
+
+    public int getAppId() {
+        return appId;
+    }
+
     @Override
     public String toString(Session session, NetworkPacket packet) {
-        return null;
+        StringBuilder sb = new StringBuilder(128);
+        sb.append("[opcode=").append(opcode).append(',');
+        sb.append("RemotePacket");
+        sb.append(']');
+        return sb.toString();
     }
 }
