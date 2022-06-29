@@ -14,6 +14,7 @@
 package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.ServerId;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
 import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
@@ -77,6 +78,10 @@ public class LocalPacketMethodWrapper extends AbstractControllerMethodWrapper im
         // 玩家ID
         else if (parameter.isAnnotationPresent(PlayerId.class)) {
             this.parameters.add(new PlayerIdParamWrapper());
+        }
+        // 区服ID
+        else if (parameter.isAnnotationPresent(ServerId.class)) {
+            this.parameters.add(new ServerIdParamWrapper());
         }
         // byte[]
         else if (parameter.getType().equals(byte[].class)) {
