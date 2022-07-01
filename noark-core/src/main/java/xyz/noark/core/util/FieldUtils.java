@@ -262,9 +262,9 @@ public class FieldUtils {
      * @param field Map类型的属性
      * @return Key的泛型Class
      */
-    public static Class<?> getMapFieldKeyClass(Field field) {
+    public static Class<?> getMapKeyGenericClass(Field field) {
         // Key是第0位
-        return getGenericTypeClass(field, 0);
+        return getGenericClass(field, 0);
     }
 
     /**
@@ -273,9 +273,9 @@ public class FieldUtils {
      * @param field Map类型的属性
      * @return Value的泛型Class
      */
-    public static Class<?> getMapFieldValueClass(Field field) {
+    public static Class<?> getMapValueGenericClass(Field field) {
         // Value是第1位
-        return getGenericTypeClass(field, 1);
+        return getGenericClass(field, 1);
     }
 
     /**
@@ -284,8 +284,8 @@ public class FieldUtils {
      * @param field List类型的属性
      * @return 泛型Class
      */
-    public static Class<?> getListFieldClass(Field field) {
-        return getGenericTypeClass(field, 0);
+    public static Class<?> getListGenericClass(Field field) {
+        return getGenericClass(field, 0);
     }
 
     /**
@@ -295,8 +295,19 @@ public class FieldUtils {
      * @param index 属性的第几位泛型
      * @return 泛型的指定位置上Class
      */
-    public static Class<?> getGenericTypeClass(Field field, int index) {
+    public static Class<?> getGenericClass(Field field, int index) {
         Type genericType = field.getGenericType();
+        return getGenericClass(genericType, index);
+    }
+
+    /**
+     * 获取泛型的指定位置上Class
+     *
+     * @param genericType 泛型
+     * @param index       属性的第几位泛型
+     * @return 泛型的指定位置上Class
+     */
+    public static Class<?> getGenericClass(Type genericType, int index) {
         if (genericType instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) genericType;
             return (Class<?>) pt.getActualTypeArguments()[index];

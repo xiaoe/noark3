@@ -49,7 +49,7 @@ public class MapFieldDefinition extends DefaultFieldDefinition {
         final Map<Serializable, Object> result = MapUtils.newHashMap(allImpl.size());
         final Map<Serializable, DefaultBeanDefinition> primaryMap = MapUtils.newHashMap(allImpl.size());
 
-        Class<?> keyClass = FieldUtils.getMapFieldKeyClass(field);
+        Class<?> keyClass = FieldUtils.getMapKeyGenericClass(field);
         // Int类型的Key，使用ID
         if (Integer.class.equals(keyClass)) {
             allImpl.forEach(v -> Arrays.stream(v.getIds()).forEach(n -> result.put(n, selectPrimaryImpl(primaryMap, n, v).getSingle())));
