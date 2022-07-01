@@ -17,6 +17,7 @@ import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.UnicodeInputStream;
 import xyz.noark.core.util.BooleanUtils;
+import xyz.noark.core.util.ClassUtils;
 import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.game.config.ConfigCentre;
@@ -135,8 +136,7 @@ class NoarkPropertiesLoader {
                 return;
             }
             // 使用UnicodeInputStream处理带有BOM的配置
-            try (UnicodeInputStream uis = new UnicodeInputStream(in, "UTF-8");
-                 InputStreamReader isr = new InputStreamReader(uis, uis.getEncoding())) {
+            try (UnicodeInputStream uis = new UnicodeInputStream(in, "UTF-8"); InputStreamReader isr = new InputStreamReader(uis, uis.getEncoding())) {
                 Properties props = new Properties();
                 props.load(isr);
 
@@ -160,10 +160,18 @@ class NoarkPropertiesLoader {
         }
     }
 
+    /**
+     * 加载配置中心的配置，本地配置会覆盖远程配置
+     */
     public void loadingConfigCentre() {
-        // 开启配置中心功能,才能加载配置中心里的配置(本地配置会覆盖远程配置)
-        if (BooleanUtils.toBoolean(properties.get(NoarkConstant.NACOS_ENABLED))) {
-            this.loadConfigCentre(properties);
+        // Noark的配置中心
+        if (BooleanUtils.toBoolean(properties.get(NoarkConstant.CONFIG_CENTRE_ENABLED))) {
+            this.loadNoarkConfigCentre(properties);
+            this.loadingConfigAfter(properties);
+        }
+        // Nacos配置中心(老版本，日后要移除)
+        else if (BooleanUtils.toBoolean(properties.get(NoarkConstant.NACOS_ENABLED))) {
+            this.loadNacosConfigCentre(properties);
             this.loadingConfigAfter(properties);
         }
     }
@@ -173,7 +181,26 @@ class NoarkPropertiesLoader {
      *
      * @param result 本地配置
      */
-    private void loadConfigCentre(HashMap<String, String> result) {
+    private void loadNoarkConfigCentre(HashMap<String, String> result) {
+        // 开启了配置中心，那就拿着区别ID，去取配置中心的所有配置
+        String sid = result.get(NoarkConstant.SERVER_ID);
+        if (StringUtils.isEmpty(sid)) {
+            throw new ServerBootstrapException("application.properties文件中必需要配置区服ID," + NoarkConstant.SERVER_ID + "=XXX");
+        }
+        String className = result.getOrDefault(NoarkConstant.CONFIG_CENTRE_CLASS, "xyz.noark.game.config.NacosConfigCentre");
+        logger.info("正在启动配置中心模式 sid={}, className={}", sid, className);
+        // 尝试创建Redis的配置中心读取配置
+        ConfigCentre cc = ClassUtils.newInstance(className, result);
+        // 本地配置会覆盖远程配置
+        cc.loadConfig(sid).forEach(result::putIfAbsent);
+    }
+
+    /**
+     * 加载配置中心的配置(本地配置会覆盖远程配置)
+     *
+     * @param result 本地配置
+     */
+    private void loadNacosConfigCentre(HashMap<String, String> result) {
         // 开启了配置中心，那就拿着区别ID，去取配置中心的所有配置
         String sid = result.get(NoarkConstant.SERVER_ID);
         if (StringUtils.isEmpty(sid)) {
@@ -185,7 +212,7 @@ class NoarkPropertiesLoader {
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
     }
-    
+
     public Map<String, String> getProperties() {
         return properties;
     }

@@ -32,6 +32,11 @@ public class EnvConfigHolder {
      */
     private static Map<String, String> properties;
 
+    /**
+     * 获取所有配置内容，命令行 > 本地配置 > 远程配置
+     *
+     * @return 配置内容
+     */
     public static Map<String, String> getProperties() {
         return properties == null ? Collections.emptyMap() : properties;
     }
