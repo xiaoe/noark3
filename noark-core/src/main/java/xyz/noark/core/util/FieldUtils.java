@@ -257,17 +257,49 @@ public class FieldUtils {
     }
 
     /**
-     * 获取Map类型的属性Key的Class对象.
+     * 获取Map类型的属性Value的泛型Class.
      *
      * @param field Map类型的属性
-     * @return Key的Class对象
+     * @return Key的泛型Class
      */
     public static Class<?> getMapFieldKeyClass(Field field) {
+        // Key是第0位
+        return getGenericTypeClass(field, 0);
+    }
+
+    /**
+     * 获取Map类型的属性Value的泛型Class.
+     *
+     * @param field Map类型的属性
+     * @return Value的泛型Class
+     */
+    public static Class<?> getMapFieldValueClass(Field field) {
+        // Value是第1位
+        return getGenericTypeClass(field, 1);
+    }
+
+    /**
+     * 获取List类型的属性的泛型Class
+     *
+     * @param field List类型的属性
+     * @return 泛型Class
+     */
+    public static Class<?> getListFieldClass(Field field) {
+        return getGenericTypeClass(field, 0);
+    }
+
+    /**
+     * 获取泛型的指定位置上Class
+     *
+     * @param field 属性
+     * @param index 属性的第几位泛型
+     * @return 泛型的指定位置上Class
+     */
+    public static Class<?> getGenericTypeClass(Field field, int index) {
         Type genericType = field.getGenericType();
         if (genericType instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) genericType;
-            // Key是第0位
-            return (Class<?>) pt.getActualTypeArguments()[0];
+            return (Class<?>) pt.getActualTypeArguments()[index];
         }
         return Object.class;
     }
