@@ -26,6 +26,7 @@ import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.*;
+import xyz.noark.core.network.packet.QueueIdPacket;
 import xyz.noark.core.thread.command.PlayerThreadCommand;
 import xyz.noark.core.thread.command.QueueThreadCommand;
 import xyz.noark.core.thread.command.SystemThreadCommand;
@@ -158,7 +159,7 @@ public class ThreadDispatcher {
                 this.dispatchSystemThreadHandle(session, packet, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
                 break;
             case QueueThreadGroup:
-                Object id = session.attr(SessionAttrKey.valueOf(pmw.getQueueIdKey())).get();
+                Object id = this.getQueueId(session, packet, pmw);
                 if (Objects.nonNull(id) && id instanceof Serializable) {
                     this.dispatchHandle(session, packet, (Serializable) id, new QueueThreadCommand(playerId, pmw, args));
                 }
@@ -166,6 +167,13 @@ public class ThreadDispatcher {
             default:
                 throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
         }
+    }
+
+    private Object getQueueId(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw) {
+        if (packet instanceof QueueIdPacket) {
+            return ((QueueIdPacket) packet).getQueueId();
+        }
+        return session.attr(SessionAttrKey.valueOf(pmw.getQueueIdKey())).get();
     }
 
 
