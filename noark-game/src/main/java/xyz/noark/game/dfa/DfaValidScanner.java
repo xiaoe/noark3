@@ -13,9 +13,9 @@
  */
 package xyz.noark.game.dfa;
 
+import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -50,27 +50,27 @@ public class DfaValidScanner extends AbstractDfaScanner {
     /**
      * 构建一个敏感词扫描器.
      *
-     * @param symbols        分隔停顿符
-     * @param sensitivewords 敏感词列表
+     * @param symbols      分隔停顿符
+     * @param maskWordList 屏蔽字列表
      */
-    public DfaValidScanner(String symbols, List<? extends DfaValidWord> sensitivewords) {
-        super(new HashSet<>(symbols.length()), new HashMap<>(sensitivewords.size()));
+    public DfaValidScanner(String symbols, List<? extends DfaValidWord> maskWordList) {
+        super(new HashSet<>(symbols.length()), MapUtils.newHashMap(maskWordList.size()));
         this.initSeparatesSymbol(symbols);
-        this.initSensitiveWords(sensitivewords);
+        this.initMaskWordList(maskWordList);
     }
 
     /**
-     * 初始化敏感词库
+     * 初始化屏蔽字库
      *
-     * @param sensitivewords 敏感词列表
+     * @param maskWordList 屏蔽字列表
      */
-    private void initSensitiveWords(List<? extends DfaValidWord> sensitivewords) {
-        for (DfaValidWord word : sensitivewords) {
+    private void initMaskWordList(List<? extends DfaValidWord> maskWordList) {
+        for (DfaValidWord word : maskWordList) {
             if (StringUtils.isEmpty(word.text())) {
                 continue;
             }
             // 最后这个节点
-            DfaNode node = this.addSensitiveWords(word.text());
+            DfaNode node = this.addMaskWordList(word.text());
             node.setValidTime(word.validTime());
         }
     }

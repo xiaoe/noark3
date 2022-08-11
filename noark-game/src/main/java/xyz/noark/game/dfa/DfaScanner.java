@@ -38,34 +38,34 @@ public class DfaScanner extends AbstractDfaScanner {
      * 默认的分隔停顿符：`~!1@2#3$4%5^6&amp;7*8(9)0_-+={[}]|\\:;\&quot;'&lt;,&gt;.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz
      * </pre>
      *
-     * @param sensitivewords 敏感词库
+     * @param maskWordList 屏蔽字库
      */
-    public DfaScanner(List<String> sensitivewords) {
-        this(" `~!1@2#3$4%5^6&7*8(9)0_-+={[}]|\\:;\"'<,>.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz", sensitivewords);
+    public DfaScanner(List<String> maskWordList) {
+        this(" `~!1@2#3$4%5^6&7*8(9)0_-+={[}]|\\:;\"'<,>.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz", maskWordList);
     }
 
     /**
      * 构建一个敏感词扫描器.
      *
-     * @param symbols        分隔停顿符
-     * @param sensitivewords 敏感词列表
+     * @param symbols      分隔停顿符
+     * @param maskWordList 屏蔽字库
      */
-    public DfaScanner(String symbols, List<String> sensitivewords) {
+    public DfaScanner(String symbols, List<String> maskWordList) {
         this.initSeparatesSymbol(symbols);
-        this.initSensitiveWords(sensitivewords);
+        this.initMaskWordList(maskWordList);
     }
 
     /**
      * 初始化敏感词库
      *
-     * @param sensitivewords 敏感词列表
+     * @param maskWordList 敏感词列表
      */
-    private void initSensitiveWords(List<String> sensitivewords) {
-        for (String word : sensitivewords) {
+    private void initMaskWordList(List<String> maskWordList) {
+        for (String word : maskWordList) {
             if (StringUtils.isEmpty(word)) {
                 continue;
             }
-            this.addSensitiveWords(word);
+            this.addMaskWordList(word);
         }
     }
 }

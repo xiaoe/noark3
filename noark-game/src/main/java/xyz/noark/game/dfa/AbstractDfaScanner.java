@@ -85,25 +85,25 @@ abstract class AbstractDfaScanner {
     }
 
     /**
-     * 向DFA树中添加一个敏感词.
+     * 向DFA树中添加一个屏蔽字.
      *
-     * @param word 敏感词
-     * @return 返回这个敏感词最后一个节点
+     * @param word 屏蔽字
+     * @return 返回这个屏蔽字最后一个节点
      */
-    protected DfaNode addSensitiveWords(String word) {
+    protected DfaNode addMaskWordList(String word) {
         final int first = charConvert(word.charAt(0));
-        DfaNode fnode = nodes.computeIfAbsent(first, key -> new DfaNode(first, word.length() == 1));
+        DfaNode firstNode = nodes.computeIfAbsent(first, key -> new DfaNode(first, word.length() == 1));
         // 长度为1时要修正这个节点为单字节点
         if (word.length() == 1) {
-            fnode.setLast(true);
+            firstNode.setLast(true);
         }
         // 其他情况
         else {
             for (int i = 1, len = word.length(), lastIndex = len - 1; i < len; i++) {
-                fnode = fnode.addIfAbsent(charConvert(word.charAt(i)), i == lastIndex);
+                firstNode = firstNode.addIfAbsent(charConvert(word.charAt(i)), i == lastIndex);
             }
         }
-        return fnode;
+        return firstNode;
     }
 
     /**
@@ -128,6 +128,7 @@ abstract class AbstractDfaScanner {
      * @return 输出结果
      */
     protected int charConvert(char src) {
+        // 全角转化为半角
         int r = qj2bj(src);
         // 大写转化为小写
         return (r >= 'A' && r <= 'Z') ? r + 32 : r;
@@ -190,7 +191,7 @@ abstract class AbstractDfaScanner {
         final char[] array = text.toCharArray();
         for (int i = 0, length = array.length; i < length; i++) {
             // 当前正在检查的字符
-            int cur = charConvert(array[i]);
+            int cur = charConvertAndHandleResemble(array[i]);
             DfaNode node = nodes.get(cur);
             if (node == null) {
                 continue;
@@ -206,7 +207,7 @@ abstract class AbstractDfaScanner {
             int backups = cur;
             DfaNode backupsNode = node;
             for (int k = i + 1; k < length; k++) {
-                int temp = charConvert(array[k]);
+                int temp = charConvertAndHandleResemble(array[k]);
                 // 查找子节点
                 node = backupsNode.querySub(temp);
                 if (node == null) {
@@ -256,5 +257,18 @@ abstract class AbstractDfaScanner {
         result.setExist(flag);
         result.setText(flag ? new String(array) : text);
         return result;
+    }
+
+    /**
+     * Char转化为Int类型以便计算.
+     *
+     * @param src 文本中的一个字符
+     * @return 返回处理后的Int，这里的处理加了一层相似度的处理
+     */
+    protected int charConvertAndHandleResemble(char src) {
+        // 默认全角半角，大小写
+        int key = charConvert(src);
+        // 相似度的处理
+        return DfaResembleManager.getResembleWord(key);
     }
 }
