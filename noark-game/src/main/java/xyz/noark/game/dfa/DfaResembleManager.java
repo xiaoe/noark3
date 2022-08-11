@@ -21,6 +21,7 @@ import java.util.Map;
  * DFA相似度的文字管理类.
  *
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4
  */
 public class DfaResembleManager {
     /**

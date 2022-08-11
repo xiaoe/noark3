@@ -27,7 +27,8 @@ import java.util.List;
  * 2、全角半角<br>
  * 3、停顿词<br>
  * 4、重复词<br>
- * 5、有效时间<br>
+ * 5. 相似字符<br>
+ * 6、有效时间<br>
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
@@ -41,10 +42,10 @@ public class DfaValidScanner extends AbstractDfaScanner {
      * 默认的分隔停顿符：`~!1@2#3$4%5^6&amp;7*8(9)0_-+={[}]|\\:;\&quot;'&lt;,&gt;.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz
      * </pre>
      *
-     * @param sensitivewords 敏感词库
+     * @param maskWordList 屏蔽字列表
      */
-    public DfaValidScanner(List<? extends DfaValidWord> sensitivewords) {
-        this(" `~!1@2#3$4%5^6&7*8(9)0_-+={[}]|\\:;\"'<,>.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz", sensitivewords);
+    public DfaValidScanner(List<? extends DfaValidWord> maskWordList) {
+        this(" `~!1@2#3$4%5^6&7*8(9)0_-+={[}]|\\:;\"'<,>.?/！￥%……｛｝【】abcdefghigklmnopqrstuvwxyz", maskWordList);
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.*;
  * 2、全角半角<br>
  * 3、停顿词<br>
  * 4、重复词<br>
+ * 5. 相似字符
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
