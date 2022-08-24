@@ -37,6 +37,11 @@ public final class DataConstant {
      * 等于65535为Text~64kb，大于就是MEDIUMTEXT了~16M
      */
     public static final int TEXT_MAX_WIDTH = 65535;
+    /**
+     * 最大长度为65,535(216–1)字节的BLOB列。
+     * 等于65535为Text~64kb，大于就是MEDIUMTEXT了~16M
+     */
+    public static final int BLOB_MAX_WIDTH = 65535;
 
     /**
      * 停止服务时存储数据最大等待时间，单位：分钟

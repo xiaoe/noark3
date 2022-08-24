@@ -84,6 +84,11 @@ public abstract class AbstractSqlExpert implements SqlExpert {
                 }
                 return "FLOAT";
             case AsBlob:
+                // 如果大于65535，那就要转化为MEDIUMTEXT，大概能存~16M
+                if (fm.getWidth() > DataConstant.BLOB_MAX_WIDTH) {
+                    return "MEDIUMBLOB";
+                }
+                // 小于65535，就使用Blob
                 return "BLOB";
             default:
                 throw new UnrealizedException("未实现的Java属性转Mysql类型：" + fm.getType());
