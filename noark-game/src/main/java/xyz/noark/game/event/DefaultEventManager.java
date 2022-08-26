@@ -47,6 +47,18 @@ public class DefaultEventManager implements EventManager {
 
     private final DelayEventThread handler = new DelayEventThread(this);
 
+    /**
+     * 断言这个延迟事件不在队列中.
+     * <p>只在研发环境下才会生效</p>
+     *
+     * @param event 延迟事件
+     */
+    public static void assertDebugAndNotInQueue(AbstractDelayEvent event) {
+        if (debug) {
+            DelayEventAsserter.notInQueue(event);
+        }
+    }
+
     public void init() {
         handler.start();
         this.initScheduled();

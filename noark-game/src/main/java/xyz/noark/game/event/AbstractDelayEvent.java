@@ -60,6 +60,7 @@ public class AbstractDelayEvent implements DelayEvent {
     }
 
     public void setEndTime(Date endTime) {
+        DefaultEventManager.assertDebugAndNotInQueue(this);
         this.endTime = endTime;
     }
 

@@ -29,7 +29,7 @@ import static xyz.noark.log.LogHelper.logger;
  */
 class DelayEventThread extends Thread {
     private static final int SHUTDOWN_TIMEOUT = 1;
-    private static final DelayQueue<DelayEvent> QUEUE = new DelayQueue<>();
+    static final DelayQueue<DelayEvent> QUEUE = new DelayQueue<>();
     private final DefaultEventManager eventManager;
     private volatile boolean starting = true;
 
