@@ -30,7 +30,7 @@ public interface DfaValidWord {
      *
      * @return 敏感词文本
      */
-    public String text();
+    String text();
 
     /**
      * 敏感词生效时间配置.
@@ -38,7 +38,7 @@ public interface DfaValidWord {
      * 可能会为空，就没有时间限制
      *
      * @return 生效时间
-     * @see ValidTime
+     * @see ValidTime 时间配置
      */
-    public ValidTime validTime();
+    ValidTime validTime();
 }

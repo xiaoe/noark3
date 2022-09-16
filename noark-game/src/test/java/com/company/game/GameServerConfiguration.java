@@ -13,14 +13,9 @@
  */
 package com.company.game;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import xyz.noark.core.annotation.Configuration;
-import xyz.noark.core.annotation.Value;
+import xyz.noark.core.annotation.Primary;
 import xyz.noark.core.annotation.configuration.Bean;
-import xyz.noark.orm.accessor.DataAccessor;
-import xyz.noark.orm.accessor.sql.mysql.MysqlDataAccessor;
-import xyz.noark.orm.write.AsyncWriteService;
-import xyz.noark.orm.write.impl.DefaultAsyncWriteServiceImpl;
 
 /**
  * 启动配置文件.
@@ -30,40 +25,10 @@ import xyz.noark.orm.write.impl.DefaultAsyncWriteServiceImpl;
  */
 @Configuration
 public class GameServerConfiguration {
-    @Value("data.mysql.ip")
-    private String mysqlIp;
-    @Value("data.mysql.port")
-    private int mysqlPort;
-    @Value("data.mysql.db")
-    private String mysqlDb;
-    @Value("data.mysql.user")
-    private String mysqlUser;
-    @Value("data.mysql.password")
-    private String mysqlPassword;
 
-    @Bean
-    public DataAccessor dataAccessor() {
-        DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUsername(mysqlUser);
-        dataSource.setPassword(mysqlPassword);
-        dataSource.setUrl(String.format("jdbc:mysql://%s:%d/%s?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false", mysqlIp, mysqlPort, mysqlDb));
-        dataSource.setInitialSize(4);
-        dataSource.setMinIdle(4);
-        dataSource.setMaxActive(8);
-        dataSource.setPoolPreparedStatements(false);
-
-        MysqlDataAccessor accessor = new MysqlDataAccessor(dataSource);
-        accessor.setStatementExecutableSqlLogEnable(true);
-        accessor.setStatementParameterSetLogEnable(true);
-        // 执行时间超过1秒的都要记录下.
-        accessor.setSlowQuerySqlMillis(1000);
-        accessor.setAutoAlterTableDropColumn(true);
-        return accessor;
-    }
-
-    @Bean
-    public AsyncWriteService asyncWriteService() {
-        return new DefaultAsyncWriteServiceImpl();
+    @Bean(name = "test")
+    @Primary
+    public TestService2 test() {
+        return new TestService2();
     }
 }

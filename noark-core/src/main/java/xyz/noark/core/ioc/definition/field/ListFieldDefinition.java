@@ -14,9 +14,11 @@
 package xyz.noark.core.ioc.definition.field;
 
 import xyz.noark.core.ioc.IocMaking;
+import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +37,6 @@ public class ListFieldDefinition extends DefaultFieldDefinition {
 
     @Override
     protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-        return making.findAllImpl(fieldClass).stream().sorted((b1, b2) -> b1.getOrder() - b2.getOrder()).map(b -> b.getSingle()).collect(Collectors.toList());
+        return making.findAllImpl(fieldClass).stream().sorted(Comparator.comparingInt(DefaultBeanDefinition::getOrder)).map(DefaultBeanDefinition::getSingle).collect(Collectors.toList());
     }
 }

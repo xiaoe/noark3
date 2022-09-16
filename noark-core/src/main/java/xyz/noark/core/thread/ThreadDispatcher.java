@@ -22,10 +22,11 @@ import xyz.noark.core.event.QueueEvent;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
-import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.*;
+import xyz.noark.core.network.packet.QueueIdPacket;
 import xyz.noark.core.thread.command.PlayerThreadCommand;
 import xyz.noark.core.thread.command.QueueThreadCommand;
 import xyz.noark.core.thread.command.SystemThreadCommand;
@@ -95,23 +96,9 @@ public class ThreadDispatcher {
      *
      * @param session Session对象
      * @param packet  网络封包
+     * @param pmw     本地封包处理方法
      */
-    public void dispatchPacket(Session session, NetworkPacket packet) {
-        PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(packet.getOpcode());
-        if (pmw == null) {
-            logger.warn("undefined protocol, opcode={}", packet.getOpcode());
-            return;
-        }
-
-        // 是否已废弃使用.
-        if (pmw.isDeprecated()) {
-            logger.warn("deprecated protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
-            if (networkListener != null) {
-                networkListener.handleDeprecatedPacket(session, packet);
-            }
-            return;
-        }
-
+    public void dispatchPacket(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw) {
         // 客户端发来的封包，是不可以调用内部处理器的.
         if (pmw.isInner()) {
             logger.warn(" ^0^ inner protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
@@ -128,7 +115,8 @@ public class ThreadDispatcher {
         pmw.incrCallNum();
 
         // 具体分配哪个线程去执行.
-        this.dispatchPacket(session, session.getPlayerId(), packet, pmw, pmw.analysisParam(session, packet));
+        Object[] objects = pmw.analysisParam(session, packet);
+        this.dispatchPacket(session, session.getPlayerId(), packet, pmw, objects);
     }
 
     /**
@@ -139,7 +127,7 @@ public class ThreadDispatcher {
      * @param protocol 协议内容
      */
     public void dispatchInnerPacket(Serializable playerId, Serializable opcode, Object protocol) {
-        PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
+        LocalPacketMethodWrapper pmw = (LocalPacketMethodWrapper) PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
         if (pmw == null) {
             logger.warn("undefined protocol, opcode={}", opcode);
             return;
@@ -155,10 +143,11 @@ public class ThreadDispatcher {
         pmw.incrCallNum();
 
         // 具体分配哪个线程去执行.
-        this.dispatchPacket(null, playerId, null, pmw, pmw.analysisParam(playerId, protocol));
+        Object[] objects = pmw.analysisParam(playerId, protocol);
+        this.dispatchPacket(null, playerId, null, (LocalPacketMethodWrapper) pmw, objects);
     }
 
-    private void dispatchPacket(Session session, Serializable playerId, NetworkPacket packet, PacketMethodWrapper pmw, Object... args) {
+    private void dispatchPacket(Session session, Serializable playerId, NetworkPacket packet, LocalPacketMethodWrapper pmw, Object... args) {
         switch (pmw.threadGroup()) {
             case NettyThreadGroup:
                 this.dispatchNettyThreadHandle(session, packet, pmw, args);
@@ -170,7 +159,7 @@ public class ThreadDispatcher {
                 this.dispatchSystemThreadHandle(session, packet, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
                 break;
             case QueueThreadGroup:
-                Object id = session.attr(SessionAttrKey.valueOf(pmw.getQueueIdKey())).get();
+                Object id = this.getQueueId(session, packet, pmw);
                 if (Objects.nonNull(id) && id instanceof Serializable) {
                     this.dispatchHandle(session, packet, (Serializable) id, new QueueThreadCommand(playerId, pmw, args));
                 }
@@ -180,11 +169,18 @@ public class ThreadDispatcher {
         }
     }
 
+    private Object getQueueId(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw) {
+        if (packet instanceof QueueIdPacket) {
+            return ((QueueIdPacket) packet).getQueueId();
+        }
+        return session.attr(SessionAttrKey.valueOf(pmw.getQueueIdKey())).get();
+    }
+
 
     /**
      * 派发给Netty线程处理的逻辑.
      */
-    void dispatchNettyThreadHandle(Session session, NetworkPacket packet, PacketMethodWrapper protocol, Object... args) {
+    void dispatchNettyThreadHandle(Session session, NetworkPacket packet, LocalPacketMethodWrapper protocol, Object... args) {
         ResultHelper.trySendResult(session, packet, protocol.invoke(args));
     }
 

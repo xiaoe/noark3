@@ -61,7 +61,7 @@ class BlobAdaptor extends AbstractValueAdaptor<Object> {
             array = GzipUtils.compress(array);
             logger.debug("Gzip compress. {}->{}", length, array.length);
         }
-        pstmt.setObject(parameterIndex, array);
+        pstmt.setByteArray(fm, parameterIndex, array);
     }
 
     @Override

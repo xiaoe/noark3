@@ -62,6 +62,16 @@ public class NoarkConstant {
      */
     public static final String NACOS_NAMESPACES = "noark.nacos.namespaces";
 
+
+    /**
+     * Noark配置中心服务是否开启,默认为关闭状态
+     */
+    public static final String CONFIG_CENTRE_ENABLED = "noark.config.centre.enabled";
+    /**
+     * Noark配置中心服务地址
+     */
+    public static final String CONFIG_CENTRE_CLASS = "noark.config.centre.class";
+
     /**
      * 当前游戏进程PID文件位置。
      * <p>

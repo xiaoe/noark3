@@ -80,6 +80,14 @@ public class PreparedStatementProxy {
         pstmt.setObject(parameterIndex, x);
     }
 
+    public void setByteArray(FieldMapping fm, int parameterIndex, byte[] array) throws SQLException {
+        this.setObject(parameterIndex, array);
+        // 只记录Blob类型的
+        if (autoAlterColumnLength) {
+            columnMaxLenMap.put(fm.getColumnName(), array == null ? 0 : array.length);
+        }
+    }
+
     public void setString(FieldMapping fm, int parameterIndex, String x) throws SQLException {
         if (statementParameterSetLogEnable) {
             parameters.add("'" + x + "'");

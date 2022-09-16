@@ -268,4 +268,43 @@ public class MapUtils {
     public static <K> double getPercentageValue(Map<K, Long> map, K... keys) {
         return MapUtils.getRatioValue(map, MathUtils.HUNDRED, keys);
     }
+
+    /**
+     * 从Map中提取指定Key的新Map.
+     *
+     * @param <K>  键的类型
+     * @param <V>  值的类型
+     * @param map  Map对象
+     * @param keys 指定Key列表
+     * @return 新的Map
+     */
+    @SafeVarargs
+    public static <K, V> Map<K, V> selectKeys(Map<K, V> map, K... keys) {
+        HashMap<K, V> resultMap = newHashMap(keys.length);
+        for (K key : keys) {
+            V value = map.get(key);
+            if (value != null) {
+                resultMap.put(key, value);
+            }
+        }
+        return resultMap;
+    }
+
+    /**
+     * 从Map中提取排除指定Key的新Map.
+     *
+     * @param <K>  键的类型
+     * @param <V>  值的类型
+     * @param map  Map对象
+     * @param keys 排除的Key列表
+     * @return 新的Map
+     */
+    @SafeVarargs
+    public static <K, V> Map<K, V> exceptKeys(Map<K, V> map, K... keys) {
+        HashMap<K, V> resultMap = new HashMap<>(map);
+        for (K key : keys) {
+            resultMap.remove(key);
+        }
+        return resultMap;
+    }
 }

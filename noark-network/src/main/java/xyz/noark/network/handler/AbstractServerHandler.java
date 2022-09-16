@@ -18,15 +18,21 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
+import xyz.noark.core.ioc.manager.PacketMethodManager;
+import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.RemotePacketMethodWrapper;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.*;
 import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.IncodeSession;
 import xyz.noark.network.NetworkConstant;
+import xyz.noark.network.RemotePacketService;
 import xyz.noark.network.filter.PacketCheckFilter;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -56,6 +62,8 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
     private ThreadDispatcher threadDispatcher;
     @Autowired(required = false)
     private PacketCheckFilter packetCheckFilter;
+    @Autowired(required = false)
+    private RemotePacketService remotePacketService;
     /**
      * 接收封包统计预警功能是否激活
      */
@@ -116,8 +124,47 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 
             // 封包检测
             if (this.checkPacket(session, packet)) {
-                threadDispatcher.dispatchPacket(session, packet);
+                this.dispatchPacket(session, packet);
             }
+        }
+    }
+
+    /**
+     * 处理好网络封包后派发逻辑.
+     *
+     * @param session Session对象
+     * @param packet  网络封包
+     */
+    protected void dispatchPacket(Session session, NetworkPacket packet) {
+        final Serializable opcode = packet.getOpcode();
+
+        // 查找封包处理方法
+        PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(opcode);
+        if (pmw == null) {
+            logger.warn("undefined protocol, opcode={}", packet.getOpcode());
+            return;
+        }
+
+        // 是否已废弃使用.
+        if (pmw.isDeprecated()) {
+            logger.warn("deprecated protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
+            if (networkListener != null) {
+                networkListener.handleDeprecatedPacket(session, packet);
+            }
+            return;
+        }
+
+        // 本地封包
+        if (pmw instanceof LocalPacketMethodWrapper) {
+            threadDispatcher.dispatchPacket(session, packet, (LocalPacketMethodWrapper) pmw);
+        }
+        // 有跨服的实现方案
+        else if (remotePacketService != null && pmw instanceof RemotePacketMethodWrapper) {
+            remotePacketService.dispatchPacket(session, packet, (RemotePacketMethodWrapper) pmw);
+        }
+        // 其他未知的实现，将来再写扩展方案
+        else {
+            logger.warn("undefined protocol, opcode={}, pmw={}", packet.getOpcode(), pmw.getClass().getName());
         }
     }
 

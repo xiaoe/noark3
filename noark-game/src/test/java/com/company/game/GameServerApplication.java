@@ -23,6 +23,9 @@ import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
 import xyz.noark.game.Noark;
 
+import javax.annotation.PostConstruct;
+import java.util.Map;
+
 import static xyz.noark.log.LogHelper.logger;
 
 /**
@@ -42,6 +45,8 @@ public class GameServerApplication {
     private TestService testService3;
     @Autowired
     private TestService testService4;
+    @Autowired
+    private Map<String, TestService> testServiceMap;
 
     public static void main(String[] args) {
         Noark.run(GameServerBootstrap.class, args);
@@ -63,9 +68,12 @@ public class GameServerApplication {
         logger.info("处理事件........");
     }
 
+    @PostConstruct
     @EventListener(BuildingUpgradeEvent.class)
     public void handleBuildingUpgradeEvent() {
         logger.info("建筑升级时间到........");
+
+        logger.debug("map={}", testServiceMap);
 
         logger.debug("testService1={}", testService1.getClass().getName());
         logger.debug("testService2={}", testService2.getClass().getName());

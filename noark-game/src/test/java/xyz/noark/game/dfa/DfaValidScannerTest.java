@@ -15,9 +15,11 @@ package xyz.noark.game.dfa;
 
 import org.junit.Before;
 import org.junit.Test;
+import xyz.noark.benchmark.Benchmark;
 import xyz.noark.core.converter.impl.TimeRangeConverter;
 import xyz.noark.core.lang.TimeRange;
 import xyz.noark.core.lang.ValidTime;
+import xyz.noark.log.LogManager;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class DfaValidScannerTest {
         // 2019年6月3日起至2019年6月6日24点，需要单个屏蔽的敏感词：8、9、八、九、捌、玖、eight、nine、6、4、六、四、陆、肆、six、four
         sensitiveWordList.add(new DfaValidWordImpl("淘宝", null));
         sensitiveWordList.add(new DfaValidWordImpl("交易", null));
+        sensitiveWordList.add(new DfaValidWordImpl("123", null));
         sensitiveWordList.add(new DfaValidWordImpl("89", timeRange));
         sensitiveWordList.add(new DfaValidWordImpl("八", timeRange));
         sensitiveWordList.add(new DfaValidWordImpl("九", timeRange));
@@ -84,5 +87,23 @@ public class DfaValidScannerTest {
         public ValidTime validTime() {
             return validTime;
         }
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        DfaValidScannerTest test = new DfaValidScannerTest();
+        test.setUp();
+        DfaValidScanner scanner = test.scanner;
+
+        String text = "交123易在word中全角数字①➋叁怎交易么替⑹4换成半角648数字?有些人648分不清全角和半角，但是如果你输入数字的话，两者之间明显不同，那在word中全角数字替换为半角数字，怎么弄呢?下面就为大家详细介绍一下，来看看吧!";
+        System.out.println(scanner.replace(text));
+
+        Benchmark benchmark = new Benchmark();
+        benchmark.doSomething("xx", () -> {
+            scanner.replace(text);
+        });
+
+
+        LogManager.shutdown();
     }
 }

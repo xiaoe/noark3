@@ -27,7 +27,7 @@ import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.manager.ScheduledMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
-import xyz.noark.core.ioc.wrap.method.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.util.StringUtils;
 
@@ -148,6 +148,6 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
      */
     private void doAnalysisPacketHandler() {
         final PacketMethodManager manager = PacketMethodManager.getInstance();
-        pmds.forEach(pmd -> manager.resetPacketHandler(new PacketMethodWrapper(single, pmd, threadGroup, controllerMasterClass, queueId)));
+        pmds.forEach(pmd -> manager.resetPacketHandler(new LocalPacketMethodWrapper(single, pmd, threadGroup, controllerMasterClass, queueId)));
     }
 }

@@ -15,6 +15,9 @@ package xyz.noark.core.converter;
 
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.impl.*;
+import xyz.noark.core.converter.list.ArrayListConverter;
+import xyz.noark.core.converter.list.LinkedListConverter;
+import xyz.noark.core.converter.list.ListConverter;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.ClassUtils;
 
@@ -60,6 +63,13 @@ public class ConvertManager {
         INSTANCE.register(StringConverter.class);
         INSTANCE.register(StringListConverter.class);
         INSTANCE.register(TimeRangeConverter.class);
+        INSTANCE.register(SocketAddressConverter.class);
+
+
+        // List
+        INSTANCE.register(ListConverter.class);
+        INSTANCE.register(ArrayListConverter.class);
+        INSTANCE.register(LinkedListConverter.class);
     }
 
     private ConvertManager() {

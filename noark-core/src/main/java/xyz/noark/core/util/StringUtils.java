@@ -643,4 +643,27 @@ public class StringUtils {
         System.arraycopy(str.toCharArray(), 0, array, pads, str.length());
         return new String(array);
     }
+
+    /**
+     * 替换掉Emoji表情
+     *
+     * @param str 原字符串
+     * @return 替换以后的字符串
+     */
+    public static String replaceEmoji(String str) {
+        if (isEmpty(str)) {
+            return EMPTY;
+        }
+        return str.replaceAll("[\\x{10000}-\\x{10ffff}\ud800-\udfff]", "*");
+    }
+
+    /**
+     * 判定是否存在Emoji表情
+     *
+     * @param str 原字符串
+     * @return 如果存在则返回true
+     */
+    public static boolean containsEmoji(String str) {
+        return !replaceEmoji(str).equals(str);
+    }
 }

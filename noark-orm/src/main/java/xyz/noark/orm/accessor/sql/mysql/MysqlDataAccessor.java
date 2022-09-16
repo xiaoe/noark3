@@ -57,7 +57,7 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
                 for (int i = 1, len = rsmd.getColumnCount(); i <= len; i++) {
                     // 字符串类型的字段，要修正长度的(只能变长，不能变短)
                     final int columnType = rsmd.getColumnType(i);
-                    if (columnType == Types.VARCHAR || columnType == Types.LONGVARCHAR) {
+                    if (columnType == Types.VARCHAR || columnType == Types.LONGVARCHAR || columnType == Types.LONGVARBINARY) {
                         final String columnName = rsmd.getColumnName(i);
                         final int max = rsmd.getColumnDisplaySize(i);
                         final int length = columnMaxLenMap.getOrDefault(columnName, 0);
@@ -75,6 +75,10 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
                                 // Text扩容方式，直接升一级
                                 else if (columnType == Types.LONGVARCHAR) {
                                     width = DataConstant.TEXT_MAX_WIDTH + 1;
+                                }
+                                // Blob的字段
+                                else if (columnType == Types.LONGVARBINARY) {
+                                    width = DataConstant.BLOB_MAX_WIDTH + 1;
                                 }
 
                                 // 有扩容需求

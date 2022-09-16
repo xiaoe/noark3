@@ -13,11 +13,13 @@
  */
 package xyz.noark.core.ioc.definition.field;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.IocMaking;
 import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import xyz.noark.core.util.FieldUtils;
 import xyz.noark.core.util.MapUtils;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
@@ -44,16 +46,42 @@ public class MapFieldDefinition extends DefaultFieldDefinition {
             return Collections.emptyMap();
         }
 
-        final Map<Object, Object> result = MapUtils.newHashMap(allImpl.size());
-        Class<?> keyClass = FieldUtils.getMapFieldKeyClass(field);
+        final Map<Serializable, Object> result = MapUtils.newHashMap(allImpl.size());
+        final Map<Serializable, DefaultBeanDefinition> primaryMap = MapUtils.newHashMap(allImpl.size());
+
+        Class<?> keyClass = FieldUtils.getMapKeyGenericClass(field);
         // Int类型的Key，使用ID
         if (Integer.class.equals(keyClass)) {
-            allImpl.forEach(v -> Arrays.stream(v.getIds()).forEach(n -> result.put(n, v.getSingle())));
+            allImpl.forEach(v -> Arrays.stream(v.getIds()).forEach(n -> result.put(n, selectPrimaryImpl(primaryMap, n, v).getSingle())));
         }
         // 其他类型使用Name
         else {
-            allImpl.forEach(v -> Arrays.stream(v.getNames()).forEach(n -> result.put(n, v.getSingle())));
+            allImpl.forEach(v -> Arrays.stream(v.getNames()).forEach(n -> result.put(n, selectPrimaryImpl(primaryMap, n, v).getSingle())));
         }
         return result;
+    }
+
+    protected DefaultBeanDefinition selectPrimaryImpl(Map<Serializable, DefaultBeanDefinition> primaryMap, Serializable key, DefaultBeanDefinition newImpl) {
+        DefaultBeanDefinition oldImpl = primaryMap.get(key);
+        if (oldImpl == null) {
+            primaryMap.put(key, newImpl);
+            return newImpl;
+        }
+
+        // 这个名称有两个实现，优先级一样，好无语
+        if (oldImpl.isPrimary() == newImpl.isPrimary()) {
+            throw new ServerBootstrapException("Class:" + field.getDeclaringClass().getName() + ">>Field:" + field.getName()
+                    + " map key expected single matching bean but found 2. " +
+                    "class1=" + oldImpl.getBeanClass().getName() + ", class2=" + newImpl.getBeanClass().getName());
+        }
+
+        // 新实现优先
+        if (newImpl.isPrimary()) {
+            primaryMap.put(key, newImpl);
+            return newImpl;
+        }
+
+        // 老实现优先
+        return oldImpl;
     }
 }

@@ -5,7 +5,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.2.78'
 
     testImplementation project(':noark-benchmark')
-    testImplementation project(':noark-orm')
     testImplementation 'com.alibaba:druid:1.2.6'
     testImplementation "mysql:mysql-connector-java:5.1.40"
 }

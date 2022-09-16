@@ -4,4 +4,5 @@ xyz.noark.game.NoarkAutoConfiguration
 xyz.noark.core.network.Sender
 xyz.noark.core.event.EventHelper
 xyz.noark.core.thread.AsyncHelper
+xyz.noark.game.event.DelayEventAsserter
 xyz.noark.core.exception.ExceptionHelper

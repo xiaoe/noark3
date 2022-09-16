@@ -60,6 +60,12 @@ public class AbstractDelayEvent implements DelayEvent {
     }
 
     public void setEndTime(Date endTime) {
+
+        // 优化判定前置条件，如果endTime为空则肯定不会在队列树上.
+        if (this.endTime != null) {
+            DefaultEventManager.assertDebugAndNotInQueue(this);
+        }
+
         this.endTime = endTime;
     }
 

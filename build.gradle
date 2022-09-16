@@ -5,7 +5,7 @@ subprojects {
 	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.4.5.Final'
+	version = '3.4.6.Final'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -43,7 +43,7 @@ subprojects {
 	ext."signing.secretKeyRingFile"=System.getenv('SIGNING_SECRETKEYRINGFILE')
 
 	signing {
-	    sign configurations.archives
+	    //sign configurations.archives
 	}
 
 	uploadArchives {
