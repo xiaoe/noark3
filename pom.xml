@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>xyz.noark</groupId>
   <artifactId>noark-parent</artifactId>
-  <version>3.4.6-SNAPSHOT</version>
+  <version>3.4.6.Final</version>
   <name>noark</name>
   <description>This is a game server framework.</description>
   <url>https://noark.xyz</url>

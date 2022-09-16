@@ -5,7 +5,7 @@ subprojects {
 	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.4.6-SNAPSHOT'
+	version = '3.4.6.Final'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
