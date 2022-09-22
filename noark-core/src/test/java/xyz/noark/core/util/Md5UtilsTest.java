@@ -18,18 +18,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * 16进制工具测试类.
+ * Md5Utils测试类.
  *
  * @author 小流氓[176543888@qq.com]
  */
-public class HexUtilsTest {
+public class Md5UtilsTest {
     @Test
     public void testToHexString() {
-        byte[] array = {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-        String hexSpaceStr = "FF 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10";
-        assertEquals(hexSpaceStr, HexUtils.toHexString(array, true));
-        // 干掉空格的情况
-        String hexStr = hexSpaceStr.replace(" ", "");
-        assertEquals(hexStr, HexUtils.toHexString(array));
+        String password = "34A1E0B45E4D9C6CC55136E884A8C5A4";
+        assertEquals(password, Md5Utils.encrypt("noark"));
     }
 }

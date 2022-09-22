@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.util;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 /**
@@ -22,36 +23,28 @@ import java.security.MessageDigest;
  * @since 3.0
  */
 public class Md5Utils {
-    private static final int STR_LENGTH = 16;
-    /**
-     * 十六进制的字典
-     */
-    private final static char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
     /**
      * 以MD5的方式加密一段文本.
      *
      * @param text 一段文本
      * @return 加密后的结果
      */
-    public static final String encrypt(String text) {
+    public static String encrypt(String text) {
+        // 空文本，直接返回一个空字符串回去
         if (text == null) {
-            return "";
+            return StringUtils.EMPTY;
         }
+
+        // Md5加密方案走一波
         try {
-            byte[] source = text.getBytes("UTF-8");
+            byte[] source = text.getBytes(StandardCharsets.UTF_8);
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             messageDigest.update(source);
-            byte[] tmp = messageDigest.digest();
-            char[] str = new char[16 * 2];
-            for (int i = 0, k = 0; i < STR_LENGTH; i++) {
-                byte byte0 = tmp[i];
-                str[k++] = HEX_DIGITS[byte0 >>> 4 & 0xf];
-                str[k++] = HEX_DIGITS[byte0 & 0xf];
-            }
-            return new String(str);
-        } catch (Exception e) {
+            return HexUtils.toHexString(messageDigest.digest());
+        } catch (Exception ignored) {
         }
-        return "";
+
+        // 异常情况也返回一个空字符串
+        return StringUtils.EMPTY;
     }
 }
