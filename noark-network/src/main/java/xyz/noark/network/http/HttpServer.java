@@ -178,7 +178,12 @@ public class HttpServer implements TcpServer {
      */
     private CorsConfig buildCorsConfig() {
         // 放行哪些原始域
-        CorsConfigBuilder builder = CorsConfigBuilder.forOrigins(corsAllowedOrigins.toArray(new String[]{}));
+        CorsConfigBuilder builder;
+        if (corsAllowedOrigins.stream().anyMatch(StringUtils.ASTERISK::equals)) {
+            builder = CorsConfigBuilder.forAnyOrigin();
+        } else {
+            builder = CorsConfigBuilder.forOrigins(corsAllowedOrigins.toArray(new String[]{}));
+        }
         // 是否发送Cookie信息
         if (corsAllowCredentials) {
             builder.allowCredentials();
