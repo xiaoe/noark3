@@ -107,6 +107,29 @@ public class NetworkConstant {
      */
     public static final String HTTP_MAX_CONTENT_LENGTH = "network.http.max.content.length";
 
+
+    /**
+     * 跨域配置，放行哪些域
+     */
+    public static final String HTTP_CORS_ALLOWED_ORIGINS = "network.http.cors.allowed.origins";
+    /**
+     * 跨域配置，cookie 添加到 CORS 请求中，默认 false
+     */
+    public static final String HTTP_CORS_ALLOW_CREDENTIALS = "network.http.cors.allow.credentials";
+    /**
+     * 跨域配置，放行哪些头部信息
+     */
+    public static final String HTTP_CORS_ALLOWED_HEADERS = "network.http.cors.allowed.headers";
+    /**
+     * 跨域配置，放行哪些请求方式
+     */
+    public static final String HTTP_CORS_ALLOWED_METHODS = "network.http.cors.allowed.methods";
+    /**
+     * 跨域配置，预检响应的最长时间（以秒为单位）
+     */
+    public static final String HTTP_CORS_MAX_AGE = "network.http.cors.max.age";
+
+
     // 接收流量统计相关配置--------------------------------------
     /**
      * 接收封包统计预警功能是否激活，默认：不启用
