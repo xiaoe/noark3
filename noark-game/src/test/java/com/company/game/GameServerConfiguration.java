@@ -15,7 +15,13 @@ package com.company.game;
 
 import xyz.noark.core.annotation.Configuration;
 import xyz.noark.core.annotation.Primary;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.core.annotation.configuration.Bean;
+import xyz.noark.network.rpc.DefaultRpcClient;
+import xyz.noark.network.rpc.RpcClient;
+
+import java.net.SocketAddress;
+import java.util.List;
 
 /**
  * 启动配置文件.
@@ -26,9 +32,18 @@ import xyz.noark.core.annotation.configuration.Bean;
 @Configuration
 public class GameServerConfiguration {
 
+    @Value("rpc.server.address")
+    private List<SocketAddress> addressList;
+
     @Bean(name = "test")
     @Primary
     public TestService2 test() {
         return new TestService2();
+    }
+
+    // 战斗服的RPC
+    @Bean
+    public RpcClient defaultRpcClient() {
+        return new DefaultRpcClient(addressList);
     }
 }

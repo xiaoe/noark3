@@ -14,6 +14,8 @@
 package com.company.game;
 
 import com.company.game.event.BuildingUpgradeEvent;
+import com.company.rpc.proto.TestAck;
+import com.company.rpc.proto.TestReq;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.EventListener;
@@ -22,6 +24,7 @@ import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
 import xyz.noark.game.Noark;
+import xyz.noark.network.rpc.RpcClient;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -47,6 +50,8 @@ public class GameServerApplication {
     private TestService testService4;
     @Autowired
     private Map<String, TestService> testServiceMap;
+    @Autowired
+    private RpcClient rpcClient;;
 
     public static void main(String[] args) {
         Noark.run(GameServerBootstrap.class, args);
@@ -79,5 +84,18 @@ public class GameServerApplication {
         logger.debug("testService2={}", testService2.getClass().getName());
         logger.debug("testService3={}", testService3.getClass().getName());
         logger.debug("testService4={}", testService4.getClass().getName());
+
+        StringBuilder sb = new StringBuilder();
+
+
+        for (int i = 0; i < 10000; i++) {
+            sb.append(i).append("-----------");
+            TestReq req = new TestReq();
+            req.setName("小流氓"+i);
+            req.setText(sb.toString());
+            TestAck ack = rpcClient.syncCall(-10086, req, TestAck.class);
+            System.out.println(ack.getText());
+        }
+
     }
 }

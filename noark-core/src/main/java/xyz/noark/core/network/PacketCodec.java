@@ -35,7 +35,7 @@ public interface PacketCodec {
      * @param klass 协议类
      * @return 协议对象
      */
-    public <T> T decodeProtocol(ByteArray bytes, Class<T> klass);
+    <T> T decodeProtocol(ByteArray bytes, Class<T> klass);
 
     /**
      * 这步是协议转化封包.
@@ -45,5 +45,5 @@ public interface PacketCodec {
      * @param protocol 网络协议
      * @return 封包字节数组
      */
-    public ByteArray encodePacket(NetworkProtocol protocol);
+    ByteArray encodePacket(NetworkProtocol protocol);
 }

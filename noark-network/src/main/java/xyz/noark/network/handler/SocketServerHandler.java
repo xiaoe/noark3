@@ -17,8 +17,11 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session;
 import xyz.noark.network.SocketSession;
+import xyz.noark.network.codec.rpc.RpcPacketCodec;
+import xyz.noark.network.rpc.RpcSession;
 
 /**
  * Socket服务器处理类.
@@ -36,6 +39,11 @@ public class SocketServerHandler extends AbstractServerHandler<NetworkPacket> {
 
     @Override
     protected Session createSession(Channel channel) {
+        // RPC服务器专用的Session，屏蔽鉴权逻辑
+        if (PacketCodecHolder.getPacketCodec() instanceof RpcPacketCodec) {
+            return new RpcSession(channel);
+        }
+        // 常规SocketSession
         return new SocketSession(channel, encrypt, secretKey);
     }
 }

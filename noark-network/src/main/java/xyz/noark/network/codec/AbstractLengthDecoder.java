@@ -48,7 +48,7 @@ public abstract class AbstractLengthDecoder extends ByteToMessageDecoder {
         }
 
         // 不正常的封包，干掉这个人.
-        if (length <= 0 || length > MAX_PACKET_LENGTH) {
+        if (length <= 0 || length > this.getMaxPacketLength()) {
             ctx.close();
             return;
         }
@@ -60,7 +60,27 @@ public abstract class AbstractLengthDecoder extends ByteToMessageDecoder {
         }
 
         // 满足一个封包
-        out.add(packetCodec.decodePacket(in.readRetainedSlice(length)));
+        out.add(packetCodec.decodePacket(this.readSlice(in, length)));
+    }
+
+    /**
+     * 获取一个包最大的长度
+     *
+     * @return 一个包最大的长度
+     */
+    protected int getMaxPacketLength() {
+        return MAX_PACKET_LENGTH;
+    }
+
+    /**
+     * 读取一段切片，默认是保留一次引用，下一层调用者手动清除
+     *
+     * @param in     ByteBuf缓冲区
+     * @param length 要切出来的长度
+     * @return 返回切出来的数据
+     */
+    protected ByteBuf readSlice(ByteBuf in, int length) {
+        return in.readRetainedSlice(length);
     }
 
     /**
