@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 www.noark.xyz All Rights Reserved.
+ * Copyright © 2018 www.noark.xyz All Rights Reserved.
  *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
