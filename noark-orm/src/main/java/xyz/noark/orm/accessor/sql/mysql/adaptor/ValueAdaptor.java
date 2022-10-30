@@ -35,4 +35,15 @@ public interface ValueAdaptor {
      * @throws Exception 可能会出现转化失败的异常
      */
     void parameterToPreparedStatement(EntityMapping<?> em, FieldMapping fm, PreparedStatementProxy pstmt, Object entity, int index) throws Exception;
+
+    /**
+     * 把结果集中的自增主键转化为属性值
+     *
+     * @param em     实体映射描述对象
+     * @param fm     属性映射描述对象
+     * @param rs     结果集
+     * @param result 属性的归属对象
+     * @throws Exception 可能会出现转化失败的异常
+     */
+    void resultSetToPrimaryId(EntityMapping<?> em, FieldMapping fm, ResultSet rs, Object result) throws Exception;
 }

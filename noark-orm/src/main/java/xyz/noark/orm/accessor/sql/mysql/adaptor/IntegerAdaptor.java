@@ -28,11 +28,16 @@ class IntegerAdaptor extends AbstractValueAdaptor<Integer> {
 
     @Override
     protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Integer value, int parameterIndex) throws Exception {
-        pstmt.setInt(parameterIndex, value);
+        pstmt.setInt(parameterIndex, value == null ? 0 : value);
     }
 
     @Override
     protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
         return rs.getInt(fm.getColumnName());
+    }
+
+    @Override
+    protected Object readGeneratedValue(FieldMapping fm, ResultSet rs) throws Exception {
+        return rs.getInt(1);
     }
 }

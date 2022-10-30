@@ -13,6 +13,7 @@
  */
 package xyz.noark.orm.accessor.sql.mysql.adaptor;
 
+import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.sql.PreparedStatementProxy;
@@ -60,4 +61,22 @@ public abstract class AbstractValueAdaptor<T> implements ValueAdaptor {
      * @throws Exception 可能出现SQL异常
      */
     protected abstract Object toParameter(FieldMapping fm, ResultSet rs) throws Exception;
+
+    @Override
+    public void resultSetToPrimaryId(EntityMapping<?> em, FieldMapping fm, ResultSet rs, Object result) throws Exception {
+        Object value = this.readGeneratedValue(fm, rs);
+        em.getMethodAccess().invoke(result, fm.getSetMethodIndex(), value);
+    }
+
+    /**
+     * 从Rs里取出自增主键值.
+     *
+     * @param fm 属性映射对象
+     * @param rs 结果集
+     * @return 返回自增主键值
+     * @throws Exception 可能出现SQL异常
+     */
+    protected Object readGeneratedValue(FieldMapping fm, ResultSet rs) throws Exception {
+        throw new UnrealizedException("此类型不支持自增主键. class=" + fm.getFieldClass().getClass());
+    }
 }

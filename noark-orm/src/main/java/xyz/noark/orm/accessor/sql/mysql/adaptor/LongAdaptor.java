@@ -28,11 +28,16 @@ class LongAdaptor extends AbstractValueAdaptor<Long> {
 
     @Override
     protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, Long value, int parameterIndex) throws Exception {
-        pstmt.setLong(parameterIndex, value);
+        pstmt.setLong(parameterIndex, value == null ? 0L : value);
     }
 
     @Override
     protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
         return rs.getLong(fm.getColumnName());
+    }
+
+    @Override
+    protected Object readGeneratedValue(FieldMapping fm, ResultSet rs) throws Exception {
+        return rs.getLong(1);
     }
 }

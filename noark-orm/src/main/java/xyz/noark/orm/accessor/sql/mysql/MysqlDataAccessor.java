@@ -107,7 +107,13 @@ public class MysqlDataAccessor extends AbstractSqlDataAccessor {
             @Override
             public Integer doInPreparedStatement(PreparedStatementProxy pstmt) throws Exception {
                 buildInsertParameter(em, entity, pstmt);
-                return pstmt.executeUpdate();
+                int result = pstmt.executeUpdate();
+                // 使用了DB自增主键，需要把结果带回来
+                FieldMapping primaryId = em.getPrimaryId();
+                if (primaryId.hasGeneratedValue()) {
+                    pstmt.bindPrimaryIdValue(em, primaryId, entity);
+                }
+                return result;
             }
         }
         return execute(em, new InsertPreparedStatementCallback(), expert.genInsertSql(em), true);

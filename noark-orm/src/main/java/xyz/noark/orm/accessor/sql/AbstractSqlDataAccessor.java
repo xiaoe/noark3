@@ -131,7 +131,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {
         long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
         final Map<String, Integer> columnMaxLenMap = MapUtils.newHashMap(em.getFieldMapping().size());
-        try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+        try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = createPreparedStatement(em, con, sql)) {
             PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable, autoAlterColumnLength, columnMaxLenMap);
 
             // 执行填充参数
@@ -148,6 +148,15 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
             // 不能扩容时，把异常向上抛出去...
             throw new DataAccessException(em.getEntityClass().getName(), e);
         }
+    }
+
+    private PreparedStatement createPreparedStatement(final EntityMapping<?> em, Connection con, String sql) throws SQLException {
+        FieldMapping primaryId = em.getPrimaryId();
+        if (primaryId == null || !primaryId.hasGeneratedValue()) {
+            return con.prepareStatement(sql);
+        }
+        // 5.1.17 之后的版本需要显示增加自增参数
+        return con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
     }
 
     protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {

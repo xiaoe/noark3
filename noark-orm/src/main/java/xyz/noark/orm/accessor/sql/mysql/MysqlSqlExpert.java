@@ -43,6 +43,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
             // 主键的 @Id，应该加入唯一性约束
             if (fm.isPrimaryId()) {
                 sb.append(" UNIQUE NOT NULL");
+                // 自增主键
+                if (fm.hasGeneratedValue()) {
+                    sb.append(" AUTO_INCREMENT");
+                }
             }
             // 普通字段
             else {
@@ -351,6 +355,13 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
                     break;
             }
         }
+
+        // 自增主键
+        if (fm.hasGeneratedValue()) {
+            sb.append(" AUTO_INCREMENT");
+        }
+
+        // 字段描述
         if (fm.hasColumnComment()) {
             sb.append(" COMMENT '").append(fm.getColumnComment()).append("'");
         }
