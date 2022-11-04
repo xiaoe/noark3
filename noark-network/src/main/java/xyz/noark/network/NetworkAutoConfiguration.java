@@ -25,6 +25,7 @@ import xyz.noark.network.http.HttpServer;
 import xyz.noark.network.init.PolicyFileHandler;
 import xyz.noark.network.init.SocketInitializeHandler;
 import xyz.noark.network.init.WebsocketInitializeHandler;
+import xyz.noark.network.init.WebsocketSslInitializeHandler;
 
 /**
  * 网络Starter组件入口.
@@ -67,6 +68,11 @@ public class NetworkAutoConfiguration {
     @Bean(name = SocketInitializeHandler.SOCKET_NAME)
     public SocketInitializeHandler socketInitializeHandler() {
         return new SocketInitializeHandler();
+    }
+
+    @Bean(name = WebsocketSslInitializeHandler.WEBSOCKET_SSL_NAME)
+    public WebsocketSslInitializeHandler websocketSslInitializeHandler() {
+        return new WebsocketSslInitializeHandler();
     }
 
     @Bean(name = WebsocketInitializeHandler.WEBSOCKET_NAME)

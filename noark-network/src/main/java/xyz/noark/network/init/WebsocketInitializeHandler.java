@@ -19,7 +19,6 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
-import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
@@ -49,19 +48,12 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 
     @Autowired
     private WebsocketServerHandler websocketServerHandler;
-    @Autowired(required = false)
-    private SslContext sslContext;
 
     @Override
     public void handle(ChannelHandlerContext ctx) {
-        logger.debug("WebSocket链接...");
         ChannelPipeline pipeline = ctx.pipeline();
 
-        // 业务注入 SslContext
-        // SslContext sslContext = SslContextBuilder.forServer(new File("ssl kcc"), new File("ssl key")).build();
-        if (sslContext != null) {
-            pipeline.addLast(sslContext.newHandler(ctx.alloc()));
-        }
+        this.handleBefore(ctx, pipeline);
 
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new ChunkedWriteHandler());
@@ -69,5 +61,9 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
         pipeline.addLast(new WebSocketFrameAggregator(maxContentLength));
         pipeline.addLast(new WebSocketServerProtocolHandler(websocketPath));
         pipeline.addLast(websocketServerHandler);
+    }
+
+    protected void handleBefore(ChannelHandlerContext ctx, ChannelPipeline pipeline) {
+        logger.debug("WebSocket链接...");
     }
 }
