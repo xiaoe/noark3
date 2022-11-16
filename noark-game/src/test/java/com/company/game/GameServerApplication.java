@@ -27,6 +27,7 @@ import xyz.noark.game.Noark;
 import xyz.noark.network.rpc.RpcClient;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 
 import static xyz.noark.log.LogHelper.logger;
@@ -51,7 +52,9 @@ public class GameServerApplication {
     @Autowired
     private Map<String, TestService> testServiceMap;
     @Autowired
-    private RpcClient rpcClient;;
+    private RpcClient rpcClient;
+    @Autowired
+    private List<TestService> testServiceList;
 
     public static void main(String[] args) {
         Noark.run(GameServerBootstrap.class, args);
@@ -93,9 +96,11 @@ public class GameServerApplication {
             TestReq req = new TestReq();
             req.setName("小流氓"+i);
             req.setText(sb.toString());
-            TestAck ack = rpcClient.syncCall(-10086, req, TestAck.class);
-            System.out.println(ack.getText());
+            //TestAck ack = rpcClient.syncCall(-10086, req, TestAck.class);
+            //System.out.println(ack.getText());
         }
 
+
+        System.out.println(testServiceList);
     }
 }

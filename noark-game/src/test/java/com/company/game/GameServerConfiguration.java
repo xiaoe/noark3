@@ -13,6 +13,9 @@
  */
 package com.company.game;
 
+import com.company.game.bean.HelloService;
+import com.company.game.bean.HelloServiceImpl;
+import xyz.noark.core.annotation.ConditionalOnMissingBean;
 import xyz.noark.core.annotation.Configuration;
 import xyz.noark.core.annotation.Primary;
 import xyz.noark.core.annotation.Value;
@@ -36,7 +39,7 @@ public class GameServerConfiguration {
     private List<SocketAddress> addressList;
 
     @Bean(name = "test")
-    @Primary
+    @ConditionalOnMissingBean
     public TestService2 test() {
         return new TestService2();
     }
@@ -45,5 +48,14 @@ public class GameServerConfiguration {
     @Bean
     public RpcClient defaultRpcClient() {
         return new DefaultRpcClient(addressList);
+    }
+
+    /**
+     * HelloService的默认实现，如果有新的实现，这个默认实现就丢失
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public HelloService helloService() {
+        return new HelloServiceImpl();
     }
 }

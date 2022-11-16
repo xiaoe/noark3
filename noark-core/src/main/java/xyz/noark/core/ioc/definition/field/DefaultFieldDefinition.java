@@ -22,6 +22,7 @@ import xyz.noark.core.util.FieldUtils;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 一个被IOC容器所管理的JavaBean定义描述类.
@@ -76,9 +77,20 @@ public class DefaultFieldDefinition implements FieldDefinition {
         }
         // 有多个实现，找最优的，没有就安排序给一个
         else if (implList.size() > 1) {
-            target = findPrimaryImpl(implList);
+            // 1. Primary+Sort
+            target = findPrimaryAndSortImpl(implList);
+
+            // 2. default + Sort
+            if (target == null) {
+                target = findDefaultAndSortImpl(implList);
+            }
+
+            // 3. ConditionalOnMissingBean + Sort
+            if (target == null) {
+                target = findMissingBeanAndSortImpl(implList);
+            }
         }
-        
+
         if (target == null) {
             // 如果是必选的注入，那要抛出一个异常
             if (required) {
@@ -92,11 +104,32 @@ public class DefaultFieldDefinition implements FieldDefinition {
         return target.getSingle();
     }
 
-    protected DefaultBeanDefinition findPrimaryImpl(List<DefaultBeanDefinition> implList) {
-        return implList.stream().filter(DefaultBeanDefinition::isPrimary).findFirst().orElseGet(() -> findSortImpl(implList));
+
+    /**
+     * 查找带有@Primary和@Sort注解的实现
+     *
+     * @param implList 所有实现列表
+     * @return 查找的最优的实现
+     */
+    private DefaultBeanDefinition findPrimaryAndSortImpl(List<DefaultBeanDefinition> implList) {
+        return implList.stream().filter(DefaultBeanDefinition::isPrimary).min(comparator).orElse(null);
     }
 
-    protected DefaultBeanDefinition findSortImpl(List<DefaultBeanDefinition> implList) {
-        return implList.stream().sorted(comparator).limit(1).findFirst().orElse(null);
+    private DefaultBeanDefinition findDefaultAndSortImpl(List<DefaultBeanDefinition> implList) {
+        return implList.stream().filter(v -> !v.isConditionalOnMissingBean()).min(comparator).orElse(null);
+    }
+
+    private DefaultBeanDefinition findMissingBeanAndSortImpl(List<DefaultBeanDefinition> implList) {
+        return implList.stream().filter(DefaultBeanDefinition::isConditionalOnMissingBean).min(comparator).orElse(null);
+    }
+
+    /**
+     * 查询指定实现中没有被标注@ConditionalOnMissingBean注解的实现
+     *
+     * @param implList 指定实现列表
+     * @return 返回没有@ConditionalOnMissingBean注解的实现列表
+     */
+    protected Stream<DefaultBeanDefinition> findNotMissingBeanImpl(List<DefaultBeanDefinition> implList) {
+        return implList.stream().filter(v -> !v.isConditionalOnMissingBean());
     }
 }
