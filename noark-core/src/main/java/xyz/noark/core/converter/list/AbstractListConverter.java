@@ -13,10 +13,12 @@
  */
 package xyz.noark.core.converter.list;
 
+import xyz.noark.core.annotation.tpl.TplAttrDelimiter;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.util.FieldUtils;
+import xyz.noark.core.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
@@ -42,11 +44,17 @@ public abstract class AbstractListConverter {
     /**
      * 字符串切割逻辑
      *
-     * @param value 字符串
+     * @param delimiter 分隔符注解
+     * @param value     字符串
      * @return 返回列表中每一项的数组
      */
-    private String[] splitValue(String value) {
-        return value.split(",");
+    private String[] splitValue(TplAttrDelimiter delimiter, String value) {
+        // 默认List分隔符为英文的逗号
+        if (delimiter == null) {
+            return value.split(StringUtils.COMMA);
+        }
+        // 如果有注解指定则使用注解指定的分隔符
+        return value.split(delimiter.value());
     }
 
     /**
@@ -59,7 +67,8 @@ public abstract class AbstractListConverter {
      */
     protected List<Object> convert(Field field, String value) throws Exception {
         Converter<?> converter = this.getListGenericConverter(field);
-        String[] array = this.splitValue(value);
+        TplAttrDelimiter delimiter = field.getAnnotation(TplAttrDelimiter.class);
+        String[] array = this.splitValue(delimiter, value);
         List<Object> result = this.createList(array.length);
         for (String s : array) {
             result.add(converter.convert(field, s));
@@ -97,7 +106,8 @@ public abstract class AbstractListConverter {
      */
     protected List<Object> convert(Parameter parameter, String value) throws Exception {
         Converter<?> converter = this.getListGenericConverter(parameter);
-        String[] array = this.splitValue(value);
+        TplAttrDelimiter delimiter = parameter.getAnnotation(TplAttrDelimiter.class);
+        String[] array = this.splitValue(delimiter, value);
         List<Object> result = this.createList(array.length);
         for (String s : array) {
             result.add(converter.convert(parameter, s));
