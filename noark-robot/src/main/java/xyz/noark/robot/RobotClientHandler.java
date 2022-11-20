@@ -31,7 +31,6 @@ import xyz.noark.network.codec.DefaultNetworkPacket;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-@Service
 @Sharable
 public class RobotClientHandler extends SimpleChannelInboundHandler<DefaultNetworkPacket> {
 

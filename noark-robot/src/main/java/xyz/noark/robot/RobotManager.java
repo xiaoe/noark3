@@ -21,7 +21,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.event.EventManager;
 import xyz.noark.core.network.PacketCodecHolder;
@@ -45,9 +44,8 @@ import static xyz.noark.log.LogHelper.logger;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-@Service
 public class RobotManager {
-    private static final Bootstrap BOOTSTRAP = new Bootstrap();
+    private final Bootstrap BOOTSTRAP = new Bootstrap();
     private final ConcurrentMap<String, Robot> robots = new ConcurrentHashMap<>(2048);
     /**
      * 机器人启动数量
@@ -64,13 +62,11 @@ public class RobotManager {
      */
     @Value(RobotConstant.ROBOT_AI_INTERVAL)
     private int aiInterval = 1;
-    /**
-     * 机器人的账号前缀（默认："robot:"）
-     */
-    @Value(RobotConstant.ROBOT_ACCOUNT_PREFIX)
-    private String accountPrefix = "robot:";
+
     @Autowired
     private EventManager eventManager;
+    @Autowired
+    private RobotIdFactory robotIdFactory;
     @Autowired
     private RobotClientHandler robotClientHandler;
 
@@ -95,16 +91,16 @@ public class RobotManager {
             Robot robot = this.createRobot(id, bootstrap);
             robots.put(robot.getPlayerId(), robot);
             eventManager.publish(new RobotAiEvent(robot.getPlayerId(), DateUtils.addSeconds(new Date(), aiInterval)));
-            ThreadUtils.sleep(1L * createInterval * DateUtils.MILLISECOND_PER_SECOND);
+            ThreadUtils.sleep((long) createInterval * DateUtils.MILLISECOND_PER_SECOND);
         }
     }
 
     private Robot createRobot(int id, AbstractRobotBootstrap bootstrap) {
-        logger.info("创建机器人 id={}", id);
-        final String playerId = accountPrefix + id;
+        final String playerId = robotIdFactory.buildPlayerId(id);
+        logger.info("创建机器人 id={}, playerId={}", id, playerId);
         return new Robot(playerId, bootstrap.rebuildAi(playerId));
     }
-
+    
     public Robot getRobot(String playerId) {
         return robots.get(playerId);
     }
