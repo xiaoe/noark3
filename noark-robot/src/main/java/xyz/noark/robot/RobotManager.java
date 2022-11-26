@@ -29,7 +29,6 @@ import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.ThreadUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
-import xyz.noark.network.init.SocketInitializeHandler;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
@@ -100,7 +99,7 @@ public class RobotManager {
         logger.info("创建机器人 id={}, playerId={}", id, playerId);
         return new Robot(playerId, bootstrap.rebuildAi(playerId));
     }
-    
+
     public Robot getRobot(String playerId) {
         return robots.get(playerId);
     }
@@ -112,12 +111,12 @@ public class RobotManager {
     public void connect(String playerId, String ip, int port) throws InterruptedException {
         logger.debug("TCP链接");
         Channel channel = BOOTSTRAP.connect(ip, port).sync().channel();
-        logger.debug("链接成功，发送暗号，请求密钥...");
+        logger.debug("链接成功...");
         RobotSession session = (RobotSession) SessionManager.createSession(channel.id(), key -> new RobotSession(channel));
         session.setPlayerId(playerId);
         session.setState(State.INGAME);
         SessionManager.bindPlayerIdAndSession(session.getPlayerId(), session);
         logger.debug("创建Session={}", session.getId());
-        channel.writeAndFlush(SocketInitializeHandler.SOCKET_NAME);
+        // channel.writeAndFlush(SocketInitializeHandler.SOCKET_NAME);
     }
 }

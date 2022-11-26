@@ -17,13 +17,14 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.Service;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.network.codec.DefaultNetworkPacket;
+
+import static xyz.noark.log.LogHelper.logger;
 
 /**
  * 机器人客户端封包处理器.
@@ -40,6 +41,10 @@ public class RobotClientHandler extends SimpleChannelInboundHandler<DefaultNetwo
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DefaultNetworkPacket packet) {
         PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(packet.getOpcode());
+        if (pmw == null) {
+            logger.warn("undefined protocol, opcode={}", packet.getOpcode());
+            return;
+        }
         threadDispatcher.dispatchPacket(SessionManager.getSession(ctx.channel().id()), packet, (LocalPacketMethodWrapper) pmw);
     }
 }
