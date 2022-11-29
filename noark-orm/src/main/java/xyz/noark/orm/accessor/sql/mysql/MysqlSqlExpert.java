@@ -31,7 +31,7 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
     @Override
     public <T> String genCreateTableSql(EntityMapping<T> em) {
         StringBuilder sb = new StringBuilder(512);
-        sb.append("CREATE TABLE `" + em.getTableName() + "` (");
+        sb.append("CREATE TABLE `").append(em.getTableName()).append("` (");
         // 创建字段
         for (FieldMapping fm : em.getFieldMapping()) {
             sb.append('\n').append('`').append(fm.getColumnName()).append('`');
@@ -101,7 +101,7 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
             sb.setCharAt(sb.length() - 1, ')');
         }
         // 结束表字段设置并设置特殊引擎
-        sb.append("\n )ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        sb.append("\n )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         // 表名注释
         if (!StringUtils.isEmpty(em.getTableComment())) {
             sb.append(" COMMENT='").append(em.getTableComment()).append("'");
