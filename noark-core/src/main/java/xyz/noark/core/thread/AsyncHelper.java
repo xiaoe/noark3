@@ -15,6 +15,8 @@ package xyz.noark.core.thread;
 
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.StaticComponent;
+import xyz.noark.core.thread.task.TaskCallback;
+import xyz.noark.core.thread.task.TaskContext;
 
 import java.io.Serializable;
 
@@ -50,14 +52,14 @@ public class AsyncHelper {
      *
      * @param taskContext 任务执行的上下文
      */
-    static void setTaskContext(TaskContext taskContext) {
+    public static void setTaskContext(TaskContext taskContext) {
         THREAD_LOCAL.set(taskContext);
     }
 
     /**
      * 移除任务执行的上下文
      */
-    static void removeTaskContext() {
+    public static void removeTaskContext() {
         THREAD_LOCAL.remove();
     }
 
@@ -69,7 +71,7 @@ public class AsyncHelper {
      */
     public static void localCall(TaskCallback callback) {
         TaskContext context = THREAD_LOCAL.get();
-        call(context.getQueueId(), callback, context.getPlayerId());
+        call(context.getQueueId(), callback);
     }
 
     /**
@@ -79,9 +81,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void call(Serializable queueId, TaskCallback callback) {
-        TaskContext context = THREAD_LOCAL.get();
-        // 如果没有任务上下文，就用null吧，这个可能是启服时的逻辑里调用的，反正这个参数也只是日志记录
-        call(queueId, callback, context == null ? null : context.getPlayerId());
+        threadDispatcher.dispatch(queueId, callback, true);
     }
 
     /**
@@ -91,11 +91,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void randomCall(TaskCallback callback) {
-        TaskContext context = THREAD_LOCAL.get();
-        call(null, callback, context.getPlayerId());
-    }
-
-    private static void call(Serializable queueId, TaskCallback callback, Serializable playerId) {
-        threadDispatcher.dispatch(queueId, callback, playerId, true);
+        // 不指定队列ID，随机一个空闲线程
+        threadDispatcher.dispatch(null, callback, true);
     }
 }

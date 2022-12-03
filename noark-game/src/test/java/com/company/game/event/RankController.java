@@ -14,9 +14,9 @@
 package com.company.game.event;
 
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.ExceptionHandler;
 import xyz.noark.core.annotation.controller.EventListener;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
-import xyz.noark.core.annotation.controller.Scheduled;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -32,6 +32,8 @@ public class RankController {
     @EventListener
     public void handleAllianceCreateEvent(AllianceEvent event) {
         logger.info("处理联盟排行榜 新加一个联盟={}", event);
+
+     throw new RuntimeException("123");
     }
 
     @EventListener
@@ -47,5 +49,21 @@ public class RankController {
     //@Scheduled(initialDelay = 1000, fixedRate = 20000)
     public void testFixedScheduled() {
         logger.debug("测试定时任务，testFixedScheduled");
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public void handleException(Exception e) {
+        System.out.println("handleException xxx" + e.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public void handleRuntimeException(RuntimeException e) {
+        System.out.println("handleRuntimeException xxxx " + e.getMessage());
+    }
+
+    @ExceptionHandler(ArithmeticException.class)
+    public void handleArithmeticException(ArithmeticException e) {
+        System.out.println("handleArithmeticException  xxx" + e.getMessage());
     }
 }

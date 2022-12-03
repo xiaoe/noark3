@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.thread.command;
 
+import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 import xyz.noark.core.thread.ThreadCommand;
 
@@ -38,6 +39,11 @@ public class AbstractThreadCommand implements ThreadCommand {
     @Override
     public Object exec() {
         return method.invoke(args);
+    }
+
+    @Override
+    public MethodWrapper lookupExceptionHandler(Throwable e) {
+        return method.lookupExceptionHandler(e.getClass());
     }
 
     @Override

@@ -11,46 +11,25 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.thread;
+package xyz.noark.core.ioc.wrap.method;
 
-import xyz.noark.core.ioc.wrap.MethodWrapper;
+import xyz.noark.core.ioc.definition.method.ExceptionMethodDefinition;
 
 /**
- * 线程指令.
+ * 异常处理方法的包装类.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4.7
  */
-public interface ThreadCommand {
-    /**
-     * 执行这个指令.
-     *
-     * @return 返回值
-     */
-    Object exec();
+public class ExceptionMethodWrapper extends BaseMethodWrapper {
+    private final Class<? extends Throwable>[] exceptionClassArray;
 
-    /**
-     * 查找指定类型的异常处理器.
-     * <p>查找一个最优解
-     *
-     * @param e 指定类型的异常类
-     * @return 异常处理器
-     */
-    MethodWrapper lookupExceptionHandler(Throwable e);
+    public ExceptionMethodWrapper(Object single, ExceptionMethodDefinition emd) {
+        super(single, emd.getMethodAccess(), emd.getMethodIndex(), emd.getOrder());
+        this.exceptionClassArray = emd.getExceptionHandler().value();
+    }
 
-    /**
-     * 简单编码.
-     * <p>
-     * 用于日志显示.
-     *
-     * @return 编码
-     */
-    String code();
-
-    /**
-     * 是否输入执行时间日志.
-     *
-     * @return 如果为true则输出日志，false为不输出
-     */
-    boolean isPrintLog();
+    public Class<? extends Throwable>[] getExceptionClassArray() {
+        return exceptionClassArray;
+    }
 }

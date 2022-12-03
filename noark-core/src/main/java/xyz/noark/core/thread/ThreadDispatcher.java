@@ -27,9 +27,11 @@ import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.*;
 import xyz.noark.core.network.packet.QueueIdPacket;
+import xyz.noark.core.thread.command.AsyncThreadCommand;
 import xyz.noark.core.thread.command.PlayerThreadCommand;
 import xyz.noark.core.thread.command.QueueThreadCommand;
 import xyz.noark.core.thread.command.SystemThreadCommand;
+import xyz.noark.core.thread.task.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -144,7 +146,7 @@ public class ThreadDispatcher {
 
         // 具体分配哪个线程去执行.
         Object[] objects = pmw.analysisParam(playerId, protocol);
-        this.dispatchPacket(null, playerId, null, (LocalPacketMethodWrapper) pmw, objects);
+        this.dispatchPacket(null, playerId, null, pmw, objects);
     }
 
     private void dispatchPacket(Session session, Serializable playerId, NetworkPacket packet, LocalPacketMethodWrapper pmw, Object... args) {
@@ -189,7 +191,7 @@ public class ThreadDispatcher {
      */
     void dispatchSystemThreadHandle(Session session, NetworkPacket packet, SystemThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-        taskQueue.submit(new AsyncQueueTask(taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(taskQueue, command, packet, session));
     }
 
     /**
@@ -197,12 +199,12 @@ public class ThreadDispatcher {
      */
     void dispatchPlayerThreadHandle(Session session, NetworkPacket packet, PlayerThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-        taskQueue.submit(new AsyncQueueTask(taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(taskQueue, command, packet, session));
     }
 
     private void dispatchHandle(Session session, NetworkPacket packet, Serializable id, QueueThreadCommand command) {
         TaskQueue taskQueue = businessThreadPoolTaskQueue.get(id);
-        taskQueue.submit(new AsyncQueueTask(taskQueue, command, command.getPlayerId(), packet, session));
+        taskQueue.submit(new AsyncQueueTask(taskQueue, command, packet, session));
     }
 
     /**
@@ -210,18 +212,17 @@ public class ThreadDispatcher {
      *
      * @param queueId  执行队列ID
      * @param callback 一个任务
-     * @param playerId 玩家ID（可以为空）
      * @param printLog 是否输出执行耗时日志
      */
-    public void dispatch(Serializable queueId, TaskCallback callback, Serializable playerId, boolean printLog) {
+    public void dispatch(Serializable queueId, TaskCallback callback, boolean printLog) {
         // 如果没有指定队列ID
         if (queueId == null) {
-            businessThreadPool.execute(new AsyncTask(callback, playerId, printLog));
+            businessThreadPool.execute(new AsyncTask(callback, printLog));
         }
         // 有指定队列
         else {
             final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
-            taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback), playerId));
+            taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback)));
         }
     }
 

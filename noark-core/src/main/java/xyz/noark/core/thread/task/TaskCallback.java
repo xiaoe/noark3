@@ -11,46 +11,18 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.thread;
-
-import xyz.noark.core.ioc.wrap.MethodWrapper;
+package xyz.noark.core.thread.task;
 
 /**
- * 线程指令.
+ * 任务回调接口.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.0
+ * @since 3.4
  */
-public interface ThreadCommand {
+@FunctionalInterface
+public interface TaskCallback {
     /**
-     * 执行这个指令.
-     *
-     * @return 返回值
+     * 做某事...
      */
-    Object exec();
-
-    /**
-     * 查找指定类型的异常处理器.
-     * <p>查找一个最优解
-     *
-     * @param e 指定类型的异常类
-     * @return 异常处理器
-     */
-    MethodWrapper lookupExceptionHandler(Throwable e);
-
-    /**
-     * 简单编码.
-     * <p>
-     * 用于日志显示.
-     *
-     * @return 编码
-     */
-    String code();
-
-    /**
-     * 是否输入执行时间日志.
-     *
-     * @return 如果为true则输出日志，false为不输出
-     */
-    boolean isPrintLog();
+    void doSomething();
 }

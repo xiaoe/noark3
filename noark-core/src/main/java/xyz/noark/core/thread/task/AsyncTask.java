@@ -1,6 +1,4 @@
-package xyz.noark.core.thread;
-
-import java.io.Serializable;
+package xyz.noark.core.thread.task;
 
 /**
  * 一种普通的异步任务.
@@ -12,8 +10,7 @@ public class AsyncTask extends AbstractAsyncTask implements Runnable {
     private final TaskCallback taskCallback;
     private final boolean printLog;
 
-    public AsyncTask(TaskCallback taskCallback, Serializable playerId, boolean printLog) {
-        super(null, playerId);
+    public AsyncTask(TaskCallback taskCallback, boolean printLog) {
         this.taskCallback = taskCallback;
         this.printLog = printLog;
     }

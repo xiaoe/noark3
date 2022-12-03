@@ -11,18 +11,19 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.thread;
+package xyz.noark.core.thread.task;
 
 import xyz.noark.core.exception.ExceptionHelper;
+import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.thread.AsyncHelper;
+import xyz.noark.core.thread.ThreadCommand;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.ThreadUtils;
 
 import java.io.Serializable;
-
-import static xyz.noark.log.LogHelper.logger;
 
 /**
  * 异步任务.
@@ -45,12 +46,19 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
      */
     private Thread currentThread;
 
-    public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId) {
-        this(taskQueue, command, playerId, null, null);
+
+    /**
+     * 队列ID
+     */
+    private final Serializable queueId;
+
+    public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command) {
+        this(taskQueue, command, null, null);
     }
 
-    public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, Serializable playerId, NetworkPacket packet, Session session) {
-        super(taskQueue.getId(), playerId);
+    public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, NetworkPacket packet, Session session) {
+        this.queueId = taskQueue.getId();
+
         this.taskQueue = taskQueue;
         this.command = command;
         this.session = session;
@@ -59,12 +67,13 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
 
 
     @Override
-    protected void execCommandBefore() {
+    protected void doSomethingBefore() {
+        super.doSomethingBefore();
         // 记录当前执行线程
         this.currentThread = Thread.currentThread();
 
         // 设计当前任务上下文
-        super.execCommandBefore();
+        AsyncHelper.setTaskContext(new TaskContext(queueId));
     }
 
     @Override
@@ -74,18 +83,32 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
     }
 
     @Override
-    protected void execCommandException(Throwable e) {
-        super.execCommandException(e);
-        ExceptionHelper.monitor(session, packet, e);
+    protected void doSomethingException(Throwable e) {
+        MethodWrapper exceptionHandler = command.lookupExceptionHandler(e);
+        // 没有找到能处理此异常的处理器
+        if (exceptionHandler == null) {
+            // 记录异常信息
+            logger.error("handle {} exception.{}", logCode(), e);
+            ExceptionHelper.monitor(e);
+
+            super.doSomethingException(e);
+            ExceptionHelper.monitor(session, packet, e);
+        }
+        // 有最优解，那就转给处理器处理
+        else {
+            exceptionHandler.invoke(e);
+        }
     }
 
     @Override
-    protected void execCommandAfter(long startExecuteTime) {
+    protected void doSomethingAfter() {
         // 通知队列完成当前任务，继续后面的逻辑...
         taskQueue.complete();
 
         // 记录日志等业务
-        super.execCommandAfter(startExecuteTime);
+        super.doSomethingAfter();
+
+        AsyncHelper.removeTaskContext();
     }
 
     @Override
@@ -105,13 +128,9 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
      */
     public void logExecTimeoutInfo(boolean outputStack) {
         // 延迟时间与执行时间
-        float delay = DateUtils.formatNanoTime(startExecuteTime - createTime);
-        float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecuteTime);
-        if (playerId == null) {
-            logger.error("exec timeout {},delay={} ms,exec={} ms", command.code(), delay, exec);
-        } else {
-            logger.error("exec timeout {},delay={} ms,exec={} ms playerId={}", command.code(), delay, exec, playerId);
-        }
+        float delay = DateUtils.formatNanoTime(startExecTime - createTime);
+        float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecTime);
+        logger.error("exec timeout {},delay={} ms,exec={} ms", command.code(), delay, exec);
 
         // 输出当前执行线程执行堆栈信息
         if (outputStack) {

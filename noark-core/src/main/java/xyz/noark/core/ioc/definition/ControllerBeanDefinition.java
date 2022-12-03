@@ -14,21 +14,17 @@
 package xyz.noark.core.ioc.definition;
 
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.ExceptionHandler;
 import xyz.noark.core.annotation.ModuleController;
 import xyz.noark.core.annotation.controller.*;
 import xyz.noark.core.ioc.NoarkIoc;
-import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
-import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
-import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
-import xyz.noark.core.ioc.definition.method.ScheduledMethodDefinition;
+import xyz.noark.core.ioc.definition.method.*;
 import xyz.noark.core.ioc.manager.EventMethodManager;
 import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.manager.ScheduledMethodManager;
-import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
-import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
-import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
-import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
+import xyz.noark.core.ioc.wrap.exception.ExceptionHandlerSelector;
+import xyz.noark.core.ioc.wrap.method.*;
 import xyz.noark.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -59,6 +55,7 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
     private final ArrayList<EventMethodDefinition> emds = new ArrayList<>();
     private final ArrayList<HttpMethodDefinition> hmds = new ArrayList<>();
     private final ArrayList<ScheduledMethodDefinition> smds = new ArrayList<>();
+    private final ArrayList<ExceptionMethodDefinition> exceptionMethodList = new ArrayList<>();
 
     public ControllerBeanDefinition(String profileStr, Class<?> klass, Controller controller) {
         this(profileStr, klass, controller.threadGroup(), controller.value(), klass);
@@ -101,6 +98,10 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
         else if (annotationType == Scheduled.class) {
             smds.add(new ScheduledMethodDefinition(methodAccess, method, (Scheduled) annotation));
         }
+        // 异常处理器
+        else if (annotationType == ExceptionHandler.class) {
+            exceptionMethodList.add(new ExceptionMethodDefinition(methodAccess, method, (ExceptionHandler) annotation));
+        }
         // 其他的交给父类去处理
         else {
             super.analysisMethodByAnnotation(annotationType, annotation, method);
@@ -118,6 +119,18 @@ public class ControllerBeanDefinition extends DefaultBeanDefinition {
         this.doAnalysisHttpHandler();
 
         this.doAnalysisScheduledHandler();
+
+        this.doAnalysisExceptionHandler();
+    }
+
+    /**
+     * 分析异常处理入口.
+     */
+    private void doAnalysisExceptionHandler() {
+        final Class<?> controllerClass = single.getClass();
+        for (ExceptionMethodDefinition emd : exceptionMethodList) {
+            ExceptionHandlerSelector.registerExceptionHandler(controllerClass, new ExceptionMethodWrapper(single, emd));
+        }
     }
 
     /**

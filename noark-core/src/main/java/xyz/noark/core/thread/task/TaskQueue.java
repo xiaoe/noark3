@@ -11,7 +11,7 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.thread;
+package xyz.noark.core.thread.task;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -35,7 +35,7 @@ public class TaskQueue {
     /**
      * 任务处理队列
      */
-    private LinkedList<AsyncQueueTask> queue;
+    private final LinkedList<AsyncQueueTask> queue;
 
     public TaskQueue(Serializable id, ExecutorService threadPool) {
         this.id = id;

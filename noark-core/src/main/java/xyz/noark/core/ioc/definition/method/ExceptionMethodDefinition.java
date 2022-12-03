@@ -11,18 +11,28 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.thread;
+package xyz.noark.core.ioc.definition.method;
+
+import xyz.noark.core.annotation.ExceptionHandler;
+import xyz.noark.reflectasm.MethodAccess;
+
+import java.lang.reflect.Method;
 
 /**
- * 任务回调接口.
+ * 异常处理入口的定义.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4
+ * @since 3.4.7
  */
-@FunctionalInterface
-public interface TaskCallback {
-    /**
-     * 做某事...
-     */
-    void doSomething();
+public class ExceptionMethodDefinition extends SimpleMethodDefinition {
+    private final ExceptionHandler exceptionHandler;
+
+    public ExceptionMethodDefinition(MethodAccess methodAccess, Method method, ExceptionHandler exceptionHandler) {
+        super(methodAccess, method);
+        this.exceptionHandler = exceptionHandler;
+    }
+
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
 }

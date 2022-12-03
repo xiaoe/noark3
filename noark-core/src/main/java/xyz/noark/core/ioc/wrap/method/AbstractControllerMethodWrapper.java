@@ -15,6 +15,8 @@ package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.MethodDefinition;
+import xyz.noark.core.ioc.wrap.MethodWrapper;
+import xyz.noark.core.ioc.wrap.exception.ExceptionHandlerSelector;
 
 /**
  * Controller类中的可执行方法.
@@ -31,7 +33,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      * 当前方法是否已废弃使用.
      */
     protected boolean deprecated = false;
-    
+
     /**
      * 执行线程组
      */
@@ -118,5 +120,16 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      */
     public String logCode() {
         return logCode;
+    }
+
+    /**
+     * 查找指定类型的异常处理器.
+     * <p>查找一个最优解
+     *
+     * @param exceptionClass 指定类型的异常类
+     * @return 异常处理器
+     */
+    public MethodWrapper lookupExceptionHandler(Class<? extends Throwable> exceptionClass) {
+        return ExceptionHandlerSelector.selectExceptionHandler(single.getClass(), exceptionClass);
     }
 }
