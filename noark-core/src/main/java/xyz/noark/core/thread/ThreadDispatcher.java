@@ -281,6 +281,7 @@ public class ThreadDispatcher {
             // 模块线程组，队列ID就是模块的主入口类的类名
             case ModuleThreadGroup: {
                 this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(handler, event));
+                break;
             }
 
             // 队列线程组，队列ID就要从QueueEvent里取出来
