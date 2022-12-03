@@ -15,17 +15,14 @@ package xyz.noark.core.thread.command;
 
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 
-import java.io.Serializable;
-
 /**
- * 队列线程处理的指令.
+ * 通用指令.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4
+ * @since 3.4.7
  */
-public class QueueThreadCommand extends AbstractThreadCommand {
-
-    public QueueThreadCommand(Serializable playerId, AbstractControllerMethodWrapper method, Object... args) {
-        super(method, playerId, args);
+public class DefaultCommand extends AbstractThreadCommand {
+    public DefaultCommand(AbstractControllerMethodWrapper method, Object... args) {
+        super(method, args);
     }
 }

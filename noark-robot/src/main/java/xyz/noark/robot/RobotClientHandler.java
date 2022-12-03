@@ -45,6 +45,6 @@ public class RobotClientHandler extends SimpleChannelInboundHandler<DefaultNetwo
             logger.warn("undefined protocol, opcode={}", packet.getOpcode());
             return;
         }
-        threadDispatcher.dispatchPacket(SessionManager.getSession(ctx.channel().id()), packet, (LocalPacketMethodWrapper) pmw);
+        threadDispatcher.dispatchClientPacket(SessionManager.getSession(ctx.channel().id()), packet, (LocalPacketMethodWrapper) pmw);
     }
 }

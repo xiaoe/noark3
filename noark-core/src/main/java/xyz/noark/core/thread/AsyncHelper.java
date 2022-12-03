@@ -81,7 +81,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void call(Serializable queueId, TaskCallback callback) {
-        threadDispatcher.dispatch(queueId, callback, true);
+        threadDispatcher.dispatchTask(queueId, callback, true);
     }
 
     /**
@@ -92,6 +92,6 @@ public class AsyncHelper {
      */
     public static void randomCall(TaskCallback callback) {
         // 不指定队列ID，随机一个空闲线程
-        threadDispatcher.dispatch(null, callback, true);
+        threadDispatcher.dispatchTask(null, callback, true);
     }
 }

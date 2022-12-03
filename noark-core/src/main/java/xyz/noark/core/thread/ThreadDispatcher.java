@@ -28,9 +28,8 @@ import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.*;
 import xyz.noark.core.network.packet.QueueIdPacket;
 import xyz.noark.core.thread.command.AsyncThreadCommand;
-import xyz.noark.core.thread.command.PlayerThreadCommand;
-import xyz.noark.core.thread.command.QueueThreadCommand;
-import xyz.noark.core.thread.command.SystemThreadCommand;
+import xyz.noark.core.thread.command.ClientCommand;
+import xyz.noark.core.thread.command.DefaultCommand;
 import xyz.noark.core.thread.task.*;
 
 import java.io.Serializable;
@@ -58,8 +57,6 @@ public class ThreadDispatcher {
      */
     private TimeoutHashMap<Serializable, TaskQueue> businessThreadPoolTaskQueue;
 
-    @Autowired(required = false)
-    private NetworkListener networkListener;
     @Autowired(required = false)
     private MonitorThreadPool monitorThreadPool;
 
@@ -100,14 +97,14 @@ public class ThreadDispatcher {
      * @param packet  网络封包
      * @param pmw     本地封包处理方法
      */
-    public void dispatchPacket(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw) {
+    public void dispatchClientPacket(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw) {
         // 客户端发来的封包，是不可以调用内部处理器的.
         if (pmw.isInner()) {
             logger.warn(" ^0^ inner protocol. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
             return;
         }
 
-        // 权限
+        // 鉴权
         if (!pmw.isAllState() && !pmw.getStateSet().contains(session.getState())) {
             logger.debug(" ^0^ session state error. opcode={}, playerId={}", packet.getOpcode(), session.getPlayerId());
             return;
@@ -117,8 +114,53 @@ public class ThreadDispatcher {
         pmw.incrCallNum();
 
         // 具体分配哪个线程去执行.
-        Object[] objects = pmw.analysisParam(session, packet);
-        this.dispatchPacket(session, session.getPlayerId(), packet, pmw, objects);
+        Object[] args = pmw.analysisParam(session, packet);
+        this.dispatchClientPacket(session, packet, pmw, args);
+    }
+
+    private void dispatchClientPacket(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw, Object... args) {
+        final ClientCommand command = new ClientCommand(session, packet, pmw, args);
+        switch (pmw.threadGroup()) {
+            // Netty线程组
+            case NettyThreadGroup: {
+                ResultHelper.trySendResult(session, packet, pmw.invoke(args));
+                break;
+            }
+
+            // 玩家线程组，队列ID就是玩家ID
+            case PlayerThreadGroup: {
+                this.dispatchCommand(session.getPlayerId(), command);
+                break;
+            }
+
+            // 模块线程组，队列ID就是模块的主入口类的类名
+            case ModuleThreadGroup: {
+                this.dispatchCommand(pmw.getControllerClassName(), command);
+            }
+
+            // 队列线程组，队列ID就要从Session上找到对应的绑定值
+            case QueueThreadGroup: {
+                Object id = this.analyticalQueueId(session, packet, pmw);
+                if (Objects.nonNull(id) && id instanceof Serializable) {
+                    this.dispatchCommand((Serializable) id, command);
+                }
+                break;
+            }
+
+            // 非法的类型
+            default: {
+                throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
+            }
+        }
+    }
+
+    private Object analyticalQueueId(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw) {
+        // 如果是个队列封包，直接从封包中取队列ID
+        if (packet instanceof QueueIdPacket) {
+            return ((QueueIdPacket) packet).getQueueId();
+        }
+        // 如果是一个客户端请求，那就要从Session的绑定值中找到对应的队列ID
+        return session.attr(SessionAttrKey.valueOf(pmw.getQueueIdKey())).get();
     }
 
     /**
@@ -146,65 +188,18 @@ public class ThreadDispatcher {
 
         // 具体分配哪个线程去执行.
         Object[] objects = pmw.analysisParam(playerId, protocol);
-        this.dispatchPacket(null, playerId, null, pmw, objects);
-    }
-
-    private void dispatchPacket(Session session, Serializable playerId, NetworkPacket packet, LocalPacketMethodWrapper pmw, Object... args) {
-        switch (pmw.threadGroup()) {
-            case NettyThreadGroup:
-                this.dispatchNettyThreadHandle(session, packet, pmw, args);
-                break;
-            case PlayerThreadGroup:
-                this.dispatchPlayerThreadHandle(session, packet, new PlayerThreadCommand(playerId, pmw, args));
-                break;
-            case ModuleThreadGroup:
-                this.dispatchSystemThreadHandle(session, packet, new SystemThreadCommand(playerId, pmw.getModule(), pmw, args));
-                break;
-            case QueueThreadGroup:
-                Object id = this.getQueueId(session, packet, pmw);
-                if (Objects.nonNull(id) && id instanceof Serializable) {
-                    this.dispatchHandle(session, packet, (Serializable) id, new QueueThreadCommand(playerId, pmw, args));
-                }
-                break;
-            default:
-                throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
-        }
-    }
-
-    private Object getQueueId(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw) {
-        if (packet instanceof QueueIdPacket) {
-            return ((QueueIdPacket) packet).getQueueId();
-        }
-        return session.attr(SessionAttrKey.valueOf(pmw.getQueueIdKey())).get();
-    }
-
-
-    /**
-     * 派发给Netty线程处理的逻辑.
-     */
-    void dispatchNettyThreadHandle(Session session, NetworkPacket packet, LocalPacketMethodWrapper protocol, Object... args) {
-        ResultHelper.trySendResult(session, packet, protocol.invoke(args));
+        this.dispatchClientPacket(null, null, pmw, objects);
     }
 
     /**
-     * 派发给系统线程处理的逻辑.
+     * 派发执行指令.
+     *
+     * @param queueId 队列ID
+     * @param command 执行指令
      */
-    void dispatchSystemThreadHandle(Session session, NetworkPacket packet, SystemThreadCommand command) {
-        TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getModule());
-        taskQueue.submit(new AsyncQueueTask(taskQueue, command, packet, session));
-    }
-
-    /**
-     * 派发给玩家线程处理的逻辑.
-     */
-    void dispatchPlayerThreadHandle(Session session, NetworkPacket packet, PlayerThreadCommand command) {
-        TaskQueue taskQueue = businessThreadPoolTaskQueue.get(command.getPlayerId());
-        taskQueue.submit(new AsyncQueueTask(taskQueue, command, packet, session));
-    }
-
-    private void dispatchHandle(Session session, NetworkPacket packet, Serializable id, QueueThreadCommand command) {
-        TaskQueue taskQueue = businessThreadPoolTaskQueue.get(id);
-        taskQueue.submit(new AsyncQueueTask(taskQueue, command, packet, session));
+    public void dispatchCommand(Serializable queueId, ThreadCommand command) {
+        TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
+        taskQueue.submit(new AsyncQueueTask(taskQueue, command));
     }
 
     /**
@@ -214,7 +209,7 @@ public class ThreadDispatcher {
      * @param callback 一个任务
      * @param printLog 是否输出执行耗时日志
      */
-    public void dispatch(Serializable queueId, TaskCallback callback, boolean printLog) {
+    public void dispatchTask(Serializable queueId, TaskCallback callback, boolean printLog) {
         // 如果没有指定队列ID
         if (queueId == null) {
             businessThreadPool.execute(new AsyncTask(callback, printLog));
@@ -234,26 +229,33 @@ public class ThreadDispatcher {
      */
     public void dispatchEvent(EventMethodWrapper handler, Event event) {
         switch (handler.threadGroup()) {
+            // 玩家线程组，队列ID就是玩家ID
             case PlayerThreadGroup: {
                 if (event instanceof PlayerEvent) {
                     PlayerEvent e = (PlayerEvent) event;
-                    this.dispatchPlayerThreadHandle(null, null, new PlayerThreadCommand(e.getPlayerId(), handler, e));
+                    this.dispatchCommand(e.getPlayerId(), new DefaultCommand(handler, e));
                 } else {
                     throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
                 }
                 break;
             }
-            case ModuleThreadGroup:
-                this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler, event));
+
+            // 模块线程组，队列ID就是模块的主入口类的类名
+            case ModuleThreadGroup: {
+                this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(handler, event));
                 break;
-            case QueueThreadGroup:
+            }
+
+            // 队列线程组，队列ID就要从QueueEvent里取出来
+            case QueueThreadGroup: {
                 if (event instanceof QueueEvent) {
-                    QueueEvent e = (QueueEvent) event;
-                    this.dispatchHandle(null, null, ((QueueEvent) event).getQueueId(), new QueueThreadCommand(null, handler, e));
+                    this.dispatchCommand(((QueueEvent) event).getQueueId(), new DefaultCommand(handler, event));
                 } else {
-                    throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
+                    throw new UnrealizedException("队列线程监听的事件，需要实现QueueEvent接口. event=" + event.getClass().getSimpleName());
                 }
                 break;
+            }
+
             default:
                 throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
         }
@@ -267,22 +269,29 @@ public class ThreadDispatcher {
      */
     public void dispatchFixedTimeEvent(EventMethodWrapper handler, FixedTimeEvent event) {
         switch (handler.threadGroup()) {
-            case PlayerThreadGroup:
+            // 玩家线程组，队列ID就是玩家ID
+            case PlayerThreadGroup: {
+                // 当前所有在线的玩家才会收到，离开是不会收到此事件
                 for (Serializable playerId : SessionManager.getOnlinePlayerIdList()) {
-                    this.dispatchPlayerThreadHandle(null, null, new PlayerThreadCommand(playerId, handler, handler.analysisParam(playerId, event)));
+                    this.dispatchCommand(playerId, new DefaultCommand(handler, handler.analysisParam(playerId, event)));
                 }
                 break;
-            case ModuleThreadGroup:
-                this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler, handler.analysisParam(null, event)));
-                break;
-            case QueueThreadGroup:
+            }
+
+            // 模块线程组，队列ID就是模块的主入口类的类名
+            case ModuleThreadGroup: {
+                this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(handler, event));
+            }
+
+            // 队列线程组，队列ID就要从QueueEvent里取出来
+            case QueueThreadGroup: {
                 if (event instanceof QueueEvent) {
-                    QueueEvent e = (QueueEvent) event;
-                    this.dispatchHandle(null, null, ((QueueEvent) event).getQueueId(), new QueueThreadCommand(null, handler, e));
+                    this.dispatchCommand(((QueueEvent) event).getQueueId(), new DefaultCommand(handler, event));
                 } else {
-                    throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
+                    throw new UnrealizedException("队列线程监听的事件，需要实现QueueEvent接口. event=" + event.getClass().getSimpleName());
                 }
                 break;
+            }
             default:
                 throw new UnrealizedException("事件监听发现了非法线程执行组:" + handler.threadGroup());
         }
@@ -295,14 +304,16 @@ public class ThreadDispatcher {
      */
     public void dispatchScheduled(ScheduledMethodWrapper handler) {
         switch (handler.threadGroup()) {
-            case ModuleThreadGroup:
-                this.dispatchSystemThreadHandle(null, null, new SystemThreadCommand(handler.getModule(), handler));
+            // 模块线程组，队列ID就是模块的主入口类的类名
+            case ModuleThreadGroup: {
+                this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(handler));
                 break;
+            }
 
             // 玩家线程组，那就是要所有在线的人都要发一条
             case PlayerThreadGroup: {
                 for (Serializable playerId : SessionManager.getOnlinePlayerIdList()) {
-                    this.dispatchPlayerThreadHandle(null, null, new PlayerThreadCommand(playerId, handler, playerId));
+                    this.dispatchCommand(playerId, new DefaultCommand(handler, playerId));
                 }
                 break;
             }

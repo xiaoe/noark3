@@ -41,7 +41,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     /**
      * 如果是模块串行，模块唯一标识
      */
-    protected final String module;
+    protected final String controllerClassName;
 
     /**
      * 可执行方法的两个属性
@@ -52,9 +52,9 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      */
     protected boolean printLog = false;
 
-    public AbstractControllerMethodWrapper(Object single, ExecThreadGroup threadGroup, String module, String logCode, MethodDefinition md) {
+    public AbstractControllerMethodWrapper(Object single, ExecThreadGroup threadGroup, String controllerClassName, String logCode, MethodDefinition md) {
         super(single, md.getMethodAccess(), md.getMethodIndex(), md.getOrder());
-        this.module = module;
+        this.controllerClassName = controllerClassName;
         this.logCode = logCode;
         this.threadGroup = threadGroup;
     }
@@ -109,8 +109,8 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
         return threadGroup;
     }
 
-    public String getModule() {
-        return module;
+    public String getControllerClassName() {
+        return controllerClassName;
     }
 
     /**

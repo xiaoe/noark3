@@ -13,42 +13,32 @@
  */
 package xyz.noark.core.thread.command;
 
-import xyz.noark.core.ioc.wrap.MethodWrapper;
-import xyz.noark.core.ioc.wrap.exception.ExceptionHandlerSelector;
-import xyz.noark.core.thread.ThreadCommand;
-import xyz.noark.core.thread.task.TaskCallback;
+import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.ResultHelper;
+import xyz.noark.core.network.Session;
 
 /**
- * 异步线程处理指令.
+ * 客户端指令.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4
+ * @since 3.4.7
  */
-public class AsyncThreadCommand implements ThreadCommand {
-    private final TaskCallback callback;
+public class ClientCommand extends DefaultCommand {
+    // 玩家Session
+    private final Session session;
+    // 网络封包
+    private final NetworkPacket packet;
 
-    public AsyncThreadCommand(TaskCallback callback) {
-        this.callback = callback;
+    public ClientCommand(Session session, NetworkPacket packet, LocalPacketMethodWrapper method, Object[] args) {
+        super(method, args);
+        this.session = session;
+        this.packet = packet;
     }
 
     @Override
-    public void exec() {
-        callback.doSomething();
-    }
-
-    @Override
-    public MethodWrapper lookupExceptionHandler(Throwable e) {
-        // 这个是没有Controller入口的，所以直接走全局
-        return ExceptionHandlerSelector.selectExceptionHandler(e.getClass());
-    }
-
-    @Override
-    public String code() {
-        return "async";
-    }
-
-    @Override
-    public boolean isPrintLog() {
-        return false;
+    protected void handleExecResult(Object result) {
+        // 发送执行结果给客户端
+        ResultHelper.trySendResult(session, packet, result);
     }
 }

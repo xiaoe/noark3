@@ -24,10 +24,8 @@ import xyz.noark.core.ioc.wrap.MethodWrapper;
 public interface ThreadCommand {
     /**
      * 执行这个指令.
-     *
-     * @return 返回值
      */
-    Object exec();
+    void exec();
 
     /**
      * 查找指定类型的异常处理器.

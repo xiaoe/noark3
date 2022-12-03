@@ -156,7 +156,7 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 
         // 本地封包
         if (pmw instanceof LocalPacketMethodWrapper) {
-            threadDispatcher.dispatchPacket(session, packet, (LocalPacketMethodWrapper) pmw);
+            threadDispatcher.dispatchClientPacket(session, packet, (LocalPacketMethodWrapper) pmw);
         }
         // 有跨服的实现方案
         else if (remotePacketService != null && pmw instanceof RemotePacketMethodWrapper) {

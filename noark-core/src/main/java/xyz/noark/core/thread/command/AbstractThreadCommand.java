@@ -17,8 +17,6 @@ import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
 import xyz.noark.core.thread.ThreadCommand;
 
-import java.io.Serializable;
-
 /**
  * 抽象的线程处理指令.
  *
@@ -28,17 +26,30 @@ import java.io.Serializable;
 public class AbstractThreadCommand implements ThreadCommand {
     private final AbstractControllerMethodWrapper method;
     private final Object[] args;
-    private final Serializable playerId;
 
-    public AbstractThreadCommand(AbstractControllerMethodWrapper method, Serializable playerId, Object... args) {
+    public AbstractThreadCommand(AbstractControllerMethodWrapper method, Object... args) {
         this.method = method;
         this.args = args;
-        this.playerId = playerId;
     }
 
     @Override
-    public Object exec() {
-        return method.invoke(args);
+    public final void exec() {
+        // 执行业务逻辑
+        Object result = method.invoke(args);
+
+        // 有返回值，交给子类去扩展
+        if (result != null) {
+            this.handleExecResult(result);
+        }
+    }
+
+    /**
+     * 处理执行结果
+     *
+     * @param result 执行结果
+     */
+    protected void handleExecResult(Object result) {
+        // 留给有需要的子类扩展
     }
 
     @Override
@@ -54,9 +65,5 @@ public class AbstractThreadCommand implements ThreadCommand {
     @Override
     public boolean isPrintLog() {
         return method.isPrintLog();
-    }
-
-    public Serializable getPlayerId() {
-        return playerId;
     }
 }

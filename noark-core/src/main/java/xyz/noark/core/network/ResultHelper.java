@@ -35,7 +35,7 @@ public class ResultHelper {
         }
 
         // 没有返回值，那就结束了...
-        if (result == null || result instanceof Void) {
+        if (result == null) {
             return;
         }
 

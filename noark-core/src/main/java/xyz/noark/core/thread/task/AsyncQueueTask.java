@@ -15,9 +15,6 @@ package xyz.noark.core.thread.task;
 
 import xyz.noark.core.exception.ExceptionHelper;
 import xyz.noark.core.ioc.wrap.MethodWrapper;
-import xyz.noark.core.network.NetworkPacket;
-import xyz.noark.core.network.ResultHelper;
-import xyz.noark.core.network.Session;
 import xyz.noark.core.thread.AsyncHelper;
 import xyz.noark.core.thread.ThreadCommand;
 import xyz.noark.core.util.DateUtils;
@@ -34,13 +31,7 @@ import java.io.Serializable;
 public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
     protected final TaskQueue taskQueue;
     private final ThreadCommand command;
-
-    /**
-     * 用于响应请求时
-     */
-    private final NetworkPacket packet;
-    private final Session session;
-
+    
     /**
      * 当前执行的线程，用于监控队列超时输出堆栈信息
      */
@@ -53,16 +44,9 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
     private final Serializable queueId;
 
     public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command) {
-        this(taskQueue, command, null, null);
-    }
-
-    public AsyncQueueTask(TaskQueue taskQueue, ThreadCommand command, NetworkPacket packet, Session session) {
         this.queueId = taskQueue.getId();
-
         this.taskQueue = taskQueue;
         this.command = command;
-        this.session = session;
-        this.packet = packet;
     }
 
 
@@ -71,15 +55,13 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
         super.doSomethingBefore();
         // 记录当前执行线程
         this.currentThread = Thread.currentThread();
-
         // 设计当前任务上下文
         AsyncHelper.setTaskContext(new TaskContext(queueId));
     }
 
     @Override
     protected void doSomething() {
-        // 开始处理协议，并发送结果
-        ResultHelper.trySendResult(session, packet, command.exec());
+        command.exec();
     }
 
     @Override
@@ -87,12 +69,15 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
         MethodWrapper exceptionHandler = command.lookupExceptionHandler(e);
         // 没有找到能处理此异常的处理器
         if (exceptionHandler == null) {
+            //command.catchException();
+
+
             // 记录异常信息
             logger.error("handle {} exception.{}", logCode(), e);
             ExceptionHelper.monitor(e);
 
-            super.doSomethingException(e);
-            ExceptionHelper.monitor(session, packet, e);
+            // super.doSomethingException(e);
+            // ExceptionHelper.monitor(session, packet, e);
         }
         // 有最优解，那就转给处理器处理
         else {
