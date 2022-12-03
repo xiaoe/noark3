@@ -136,6 +136,7 @@ public class ThreadDispatcher {
             // 模块线程组，队列ID就是模块的主入口类的类名
             case ModuleThreadGroup: {
                 this.dispatchCommand(pmw.getControllerClassName(), command);
+                break;
             }
 
             // 队列线程组，队列ID就要从Session上找到对应的绑定值
