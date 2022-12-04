@@ -26,7 +26,7 @@ public interface MethodWrapper {
      *
      * @return 排序值
      */
-    public int getOrder();
+    int getOrder();
 
     /**
      * 执行.
@@ -34,5 +34,5 @@ public interface MethodWrapper {
      * @param args 参数列表
      * @return 返回值
      */
-    public Object invoke(Object... args);
+    Object invoke(Object... args);
 }

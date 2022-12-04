@@ -14,15 +14,57 @@
 package xyz.noark.core.thread.command;
 
 import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.ExceptionMethodWrapper;
 
 /**
- * 通用指令.
+ * 默认实现的一种无特需求的通用指令.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4.7
  */
-public class DefaultCommand extends AbstractThreadCommand {
+public class DefaultCommand extends AbstractCommand {
+
+    private final AbstractControllerMethodWrapper method;
+    private final Object[] args;
+
     public DefaultCommand(AbstractControllerMethodWrapper method, Object... args) {
-        super(method, args);
+        this.method = method;
+        this.args = args;
+    }
+
+    @Override
+    public final void exec() {
+        // 执行业务逻辑
+        Object result = method.invoke(args);
+
+        // 有返回值，交给子类去扩展
+        if (result != null) {
+            this.handleExecResult(result);
+        }
+    }
+
+    /**
+     * 处理执行结果
+     *
+     * @param result 执行结果
+     */
+    protected void handleExecResult(Object result) {
+        // 留给有需要的子类扩展
+    }
+
+    @Override
+    protected ExceptionMethodWrapper lookupExceptionHandler(Throwable e) {
+        // 先查询Controller上的异常处理器，再查询全局处理器
+        return method.lookupExceptionHandler(e.getClass());
+    }
+
+    @Override
+    public String code() {
+        return method.logCode();
+    }
+
+    @Override
+    public boolean isPrintLog() {
+        return method.isPrintLog();
     }
 }

@@ -14,14 +14,13 @@
 package xyz.noark.core.ioc.wrap.param;
 
 import xyz.noark.core.exception.ServerBootstrapException;
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.util.StringUtils;
-
-import java.io.Serializable;
 
 /**
  * 协议编解码包装类.
@@ -41,13 +40,21 @@ public class PacketParamWrapper implements ParamWrapper {
     }
 
     @Override
-    public Object read(Session session, NetworkPacket packet) {
-        return PacketCodecHolder.getPacketCodec().decodeProtocol(packet.getByteArray(), klass);
+    public Object read(MethodParamContext context) {
+        // 有请求封包直接取值
+        if (context.getReqPacket() != null) {
+            return PacketCodecHolder.getPacketCodec().decodeProtocol(context.getReqPacket().getByteArray(), klass);
+        }
+        // 有协议对象基本就是这个直接传进来的
+        if (context.getObject() != null) {
+            return context.getObject();
+        }
+        throw new IllegalArgumentException("未知的参数注入方式，请联系小流氓[176543888@qq.com]");
     }
 
     @Override
     public String toString(Session session, NetworkPacket packet) {
-        Object object = read(session, packet);
+        Object object = read(new MethodParamContext(session, packet));
         if (object == null) {
             return "protocol=null";
         }
@@ -59,10 +66,5 @@ public class PacketParamWrapper implements ParamWrapper {
             protocol = protocol.substring(0, protocol.length() - 1);
         }
         return StringUtils.join("protocol={", protocol, "}");
-    }
-
-    @Override
-    public Object read(Serializable playerId, Object protocol) {
-        return protocol;
     }
 }

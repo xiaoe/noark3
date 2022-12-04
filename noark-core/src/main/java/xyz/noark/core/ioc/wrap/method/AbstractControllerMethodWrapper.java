@@ -15,7 +15,6 @@ package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.MethodDefinition;
-import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.core.ioc.wrap.exception.ExceptionHandlerSelector;
 
 /**
@@ -129,7 +128,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      * @param exceptionClass 指定类型的异常类
      * @return 异常处理器
      */
-    public MethodWrapper lookupExceptionHandler(Class<? extends Throwable> exceptionClass) {
+    public ExceptionMethodWrapper lookupExceptionHandler(Class<? extends Throwable> exceptionClass) {
         return ExceptionHandlerSelector.selectExceptionHandler(single.getClass(), exceptionClass);
     }
 }

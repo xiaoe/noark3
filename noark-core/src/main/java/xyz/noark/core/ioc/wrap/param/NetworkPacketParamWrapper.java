@@ -13,13 +13,12 @@
  */
 package xyz.noark.core.ioc.wrap.param;
 
-import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.util.StringUtils;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -31,13 +30,16 @@ import java.util.Arrays;
 public class NetworkPacketParamWrapper implements ParamWrapper {
 
     @Override
-    public Object read(Session session, NetworkPacket packet) {
-        return packet;
-    }
-
-    @Override
-    public Object read(Serializable playerId, Object protocol) {
-        throw new UnrealizedException("内部指令是不可以注入封包对象.");
+    public Object read(MethodParamContext context) {
+        // 有请求封包直接取值
+        if (context.getReqPacket() != null) {
+            return context.getReqPacket();
+        }
+        // 有协议对象基本就是这个直接传进来的
+        if (context.getObject() != null) {
+            return context.getObject();
+        }
+        throw new IllegalArgumentException("未知的参数注入方式，请联系小流氓[176543888@qq.com]");
     }
 
     @Override

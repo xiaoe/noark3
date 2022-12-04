@@ -13,13 +13,12 @@
  */
 package xyz.noark.core.ioc.wrap.param;
 
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.packet.PlayerIdPacket;
 import xyz.noark.core.util.StringUtils;
-
-import java.io.Serializable;
 
 /**
  * 注入PlayerId.
@@ -30,16 +29,19 @@ import java.io.Serializable;
 public class PlayerIdParamWrapper implements ParamWrapper {
 
     @Override
-    public Object read(Session session, NetworkPacket packet) {
-        if (packet instanceof PlayerIdPacket) {
-            return ((PlayerIdPacket) packet).getPlayerId();
+    public Object read(MethodParamContext context) {
+        // 如果有封包且带有元数据是玩家ID的话
+        if (context.getReqPacket() != null && context.getReqPacket() instanceof PlayerIdPacket) {
+            return ((PlayerIdPacket) context.getReqPacket()).getPlayerId();
         }
-        return session.getPlayerId();
-    }
 
-    @Override
-    public Object read(Serializable playerId, Object protocol) {
-        return playerId;
+        // 如果有Session对象
+        if (context.getSession() != null) {
+            return context.getSession().getPlayerId();
+        }
+
+        // 最后尝试上下文中的玩家ID
+        return context.getPlayerId();
     }
 
     @Override

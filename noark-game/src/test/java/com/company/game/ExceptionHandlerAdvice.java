@@ -2,6 +2,8 @@ package com.company.game;
 
 import xyz.noark.core.annotation.ControllerAdvice;
 import xyz.noark.core.annotation.ExceptionHandler;
+import xyz.noark.core.exception.ErrorMsgException;
+import xyz.noark.core.network.NetworkProtocol;
 
 /**
  * 异常处理器
@@ -26,4 +28,10 @@ public class ExceptionHandlerAdvice {
         System.out.println("handleArithmeticException" + e.getMessage());
     }
 
+    @ExceptionHandler(ErrorMsgException.class)
+    public NetworkProtocol handleErrorMessagesException(ErrorMsgException e) {
+        System.out.println("handleErrorMessagesException" + e.getMessage());
+
+        return new NetworkProtocol(1, "");
+    }
 }

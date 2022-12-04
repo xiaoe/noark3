@@ -13,10 +13,8 @@
  */
 package xyz.noark.core.thread;
 
-import xyz.noark.core.ioc.wrap.MethodWrapper;
-
 /**
- * 线程指令.
+ * 一个线程可执行的指令.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
@@ -28,13 +26,20 @@ public interface ThreadCommand {
     void exec();
 
     /**
-     * 查找指定类型的异常处理器.
-     * <p>查找一个最优解
+     * 捕获执行异常。
      *
-     * @param e 指定类型的异常类
-     * @return 异常处理器
+     * @param e 异常对象
+     * @return 如果正常处理了这个异常则返回true
      */
-    MethodWrapper lookupExceptionHandler(Throwable e);
+    boolean catchExecException(Throwable e);
+
+
+    /**
+     * 是否输入执行时间日志.
+     *
+     * @return 如果为true则输出日志，false为不输出
+     */
+    boolean isPrintLog();
 
     /**
      * 简单编码.
@@ -44,11 +49,4 @@ public interface ThreadCommand {
      * @return 编码
      */
     String code();
-
-    /**
-     * 是否输入执行时间日志.
-     *
-     * @return 如果为true则输出日志，false为不输出
-     */
-    boolean isPrintLog();
 }

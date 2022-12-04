@@ -13,7 +13,9 @@
  */
 package xyz.noark.core.ioc.wrap.exception;
 
+import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.ExceptionMethodWrapper;
 import xyz.noark.core.util.MapUtils;
 
 import java.util.ArrayList;
@@ -31,11 +33,11 @@ public class ExceptionHandlerManager {
     /**
      * 异常处理器
      */
-    private final Map<Class<? extends Throwable>, BaseMethodWrapper> exceptionHandlerMap;
+    private final Map<Class<? extends Throwable>, ExceptionMethodWrapper> exceptionHandlerMap;
     /**
      * 查询缓存
      */
-    private final Map<Class<? extends Throwable>, BaseMethodWrapper> exceptionLookupCache;
+    private final Map<Class<? extends Throwable>, ExceptionMethodWrapper> exceptionLookupCache;
 
     public ExceptionHandlerManager() {
         this.exceptionHandlerMap = MapUtils.newHashMap(16);
@@ -48,11 +50,11 @@ public class ExceptionHandlerManager {
      * @param exceptionClass 异常类型
      * @return 最优处理器
      */
-    public BaseMethodWrapper lookupExceptionHandler(Class<? extends Throwable> exceptionClass) {
+    public ExceptionMethodWrapper lookupExceptionHandler(Class<? extends Throwable> exceptionClass) {
         return exceptionLookupCache.computeIfAbsent(exceptionClass, key -> getMappedMethod(exceptionClass));
     }
 
-    private BaseMethodWrapper getMappedMethod(Class<? extends Throwable> exceptionClass) {
+    private ExceptionMethodWrapper getMappedMethod(Class<? extends Throwable> exceptionClass) {
         // 找到所有能处理此异常的选项
         List<Class<? extends Throwable>> matches = new ArrayList<>();
         for (Class<? extends Throwable> mappedException : exceptionHandlerMap.keySet()) {
@@ -71,10 +73,10 @@ public class ExceptionHandlerManager {
         return null;
     }
 
-    public void addExceptionMapping(Class<? extends Throwable> exceptionType, BaseMethodWrapper method) {
+    public void addExceptionMapping(Class<? extends Throwable> exceptionType, ExceptionMethodWrapper method) {
         BaseMethodWrapper oldMethod = exceptionHandlerMap.put(exceptionType, method);
         if (oldMethod != null && !oldMethod.equals(method)) {
-            throw new IllegalStateException("Ambiguous @ExceptionHandler method mapped for [" + exceptionType + "]: {" + oldMethod + ", " + method + "}");
+            throw new ServerBootstrapException("Ambiguous @ExceptionHandler method mapped for [" + exceptionType + "]: {" + oldMethod + ", " + method + "}");
         }
     }
 }

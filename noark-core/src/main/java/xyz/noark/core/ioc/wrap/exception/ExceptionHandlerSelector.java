@@ -13,7 +13,6 @@
  */
 package xyz.noark.core.ioc.wrap.exception;
 
-import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ExceptionMethodWrapper;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,7 +48,7 @@ public class ExceptionHandlerSelector {
      */
     public static void registerExceptionHandler(Class<?> controllerClass, ExceptionMethodWrapper emd) {
         ExceptionHandlerManager manager = instance.controllerExceptionManager.computeIfAbsent(controllerClass, key -> new ExceptionHandlerManager());
-        for (Class<? extends Throwable> exceptionClass : emd.getExceptionClassArray()) {
+        for (Class<? extends Throwable> exceptionClass : emd.getExceptionClassList()) {
             manager.addExceptionMapping(exceptionClass, emd);
         }
     }
@@ -60,7 +59,7 @@ public class ExceptionHandlerSelector {
      * @param emd 异常处理器
      */
     public static void registerExceptionHandler(ExceptionMethodWrapper emd) {
-        for (Class<? extends Throwable> exceptionClass : emd.getExceptionClassArray()) {
+        for (Class<? extends Throwable> exceptionClass : emd.getExceptionClassList()) {
             instance.globalExceptionManager.addExceptionMapping(exceptionClass, emd);
         }
     }
@@ -72,8 +71,8 @@ public class ExceptionHandlerSelector {
      * @param exceptionClass  指定类型的异常类
      * @return 异常处理器
      */
-    public static MethodWrapper selectExceptionHandler(Class<?> controllerClass, Class<? extends Throwable> exceptionClass) {
-        MethodWrapper exceptionHandler = null;
+    public static ExceptionMethodWrapper selectExceptionHandler(Class<?> controllerClass, Class<? extends Throwable> exceptionClass) {
+        ExceptionMethodWrapper exceptionHandler = null;
 
         // 查找当前Controller的异常处理器
         ExceptionHandlerManager controllerExceptionManager = instance.getControllerManager(controllerClass);
@@ -94,7 +93,7 @@ public class ExceptionHandlerSelector {
      * @param exceptionClass 指定类型的异常类
      * @return 异常处理器
      */
-    public static MethodWrapper selectExceptionHandler(Class<? extends Throwable> exceptionClass) {
+    public static ExceptionMethodWrapper selectExceptionHandler(Class<? extends Throwable> exceptionClass) {
         return instance.globalExceptionManager.lookupExceptionHandler(exceptionClass);
     }
 

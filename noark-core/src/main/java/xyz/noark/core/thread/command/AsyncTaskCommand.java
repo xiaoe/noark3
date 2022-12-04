@@ -13,21 +13,20 @@
  */
 package xyz.noark.core.thread.command;
 
-import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.core.ioc.wrap.exception.ExceptionHandlerSelector;
-import xyz.noark.core.thread.ThreadCommand;
+import xyz.noark.core.ioc.wrap.method.ExceptionMethodWrapper;
 import xyz.noark.core.thread.task.TaskCallback;
 
 /**
- * 异步线程处理指令.
+ * 异步任务处理指令.
  *
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class AsyncThreadCommand implements ThreadCommand {
+public class AsyncTaskCommand extends AbstractCommand {
     private final TaskCallback callback;
 
-    public AsyncThreadCommand(TaskCallback callback) {
+    public AsyncTaskCommand(TaskCallback callback) {
         this.callback = callback;
     }
 
@@ -37,7 +36,7 @@ public class AsyncThreadCommand implements ThreadCommand {
     }
 
     @Override
-    public MethodWrapper lookupExceptionHandler(Throwable e) {
+    public ExceptionMethodWrapper lookupExceptionHandler(Throwable e) {
         // 这个是没有Controller入口的，所以直接走全局
         return ExceptionHandlerSelector.selectExceptionHandler(e.getClass());
     }

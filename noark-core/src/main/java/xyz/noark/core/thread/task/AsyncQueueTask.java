@@ -14,7 +14,6 @@
 package xyz.noark.core.thread.task;
 
 import xyz.noark.core.exception.ExceptionHelper;
-import xyz.noark.core.ioc.wrap.MethodWrapper;
 import xyz.noark.core.thread.AsyncHelper;
 import xyz.noark.core.thread.ThreadCommand;
 import xyz.noark.core.util.DateUtils;
@@ -31,7 +30,7 @@ import java.io.Serializable;
 public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
     protected final TaskQueue taskQueue;
     private final ThreadCommand command;
-    
+
     /**
      * 当前执行的线程，用于监控队列超时输出堆栈信息
      */
@@ -66,23 +65,27 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
 
     @Override
     protected void doSomethingException(Throwable e) {
-        MethodWrapper exceptionHandler = command.lookupExceptionHandler(e);
-        // 没有找到能处理此异常的处理器
-        if (exceptionHandler == null) {
-            //command.catchException();
+        try {
+            // 正常被捕获了异常并正确处理了
+            if (command.catchExecException(e)) {
+                return;
+            }
 
+            // 未能正常处理，那还是要走这个默认兜底方案
+            this.defaultHandleException(e);
+        } catch (Throwable ex) {
+            // 处理异常时发生了异常
+            this.defaultHandleException(e);
 
             // 记录异常信息
-            logger.error("handle {} exception.{}", logCode(), e);
-            ExceptionHelper.monitor(e);
+            super.doSomethingException(ex);
+            logger.error("catch exec exception. {}", ex);
+        }
+    }
 
-            // super.doSomethingException(e);
-            // ExceptionHelper.monitor(session, packet, e);
-        }
-        // 有最优解，那就转给处理器处理
-        else {
-            exceptionHandler.invoke(e);
-        }
+    private void defaultHandleException(Throwable e) {
+        logger.error("handle {} exception. {}", logCode(), e);
+        ExceptionHelper.monitor(e);
     }
 
     @Override

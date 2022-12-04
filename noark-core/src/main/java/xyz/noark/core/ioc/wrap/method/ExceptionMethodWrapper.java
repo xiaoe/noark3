@@ -13,7 +13,19 @@
  */
 package xyz.noark.core.ioc.wrap.method;
 
+import xyz.noark.core.annotation.PlayerId;
+import xyz.noark.core.annotation.ServerId;
 import xyz.noark.core.ioc.definition.method.ExceptionMethodDefinition;
+import xyz.noark.core.ioc.wrap.MethodParamContext;
+import xyz.noark.core.ioc.wrap.ParamWrapper;
+import xyz.noark.core.ioc.wrap.param.*;
+import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.Session;
+
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 异常处理方法的包装类.
@@ -22,14 +34,80 @@ import xyz.noark.core.ioc.definition.method.ExceptionMethodDefinition;
  * @since 3.4.7
  */
 public class ExceptionMethodWrapper extends BaseMethodWrapper {
-    private final Class<? extends Throwable>[] exceptionClassArray;
+    private final List<Class<? extends Throwable>> exceptionClassList;
+    private final ArrayList<ParamWrapper> parameters;
 
     public ExceptionMethodWrapper(Object single, ExceptionMethodDefinition emd) {
         super(single, emd.getMethodAccess(), emd.getMethodIndex(), emd.getOrder());
-        this.exceptionClassArray = emd.getExceptionHandler().value();
+        this.exceptionClassList = emd.getExceptionClassList();
+
+        this.parameters = new ArrayList<>(emd.getParameters().length);
+        Arrays.stream(emd.getParameters()).forEach(this::buildParamWrapper);
     }
 
-    public Class<? extends Throwable>[] getExceptionClassArray() {
-        return exceptionClassArray;
+    public List<Class<? extends Throwable>> getExceptionClassList() {
+        return exceptionClassList;
+    }
+
+    /**
+     * 构建参数
+     */
+    private void buildParamWrapper(Parameter parameter) {
+        // Session
+        if (Session.class.isAssignableFrom(parameter.getType())) {
+            this.parameters.add(new SessionParamWrapper());
+        }
+        // 玩家ID
+        else if (parameter.isAnnotationPresent(PlayerId.class)) {
+            this.parameters.add(new PlayerIdParamWrapper());
+        }
+        // 区服ID
+        else if (parameter.isAnnotationPresent(ServerId.class)) {
+            this.parameters.add(new ServerIdParamWrapper());
+        }
+        // 封包(特别情况需要这个封包里的参数，留给有需要的人吧...)
+        else if (NetworkPacket.class.isAssignableFrom(parameter.getType())) {
+            this.parameters.add(new NetworkPacketParamWrapper());
+        }
+        // 无法识别的就当他是一个对象
+        else {
+            this.parameters.add(new ObjectParamWrapper());
+        }
+    }
+
+    /**
+     * 分析参数.
+     *
+     * @param session Session对象
+     * @param packet  请求封包
+     * @param e       异常对象
+     * @return 参数列表
+     */
+    public Object[] analysisParam(Session session, NetworkPacket packet, Throwable e) {
+        MethodParamContext context = new MethodParamContext(session, packet);
+        context.setObject(e);
+        return this.analysisParam(context);
+    }
+
+    /**
+     * 分析参数.
+     *
+     * @param e 异常对象
+     * @return 参数列表
+     */
+    public Object[] analysisParam(Throwable e) {
+        return this.analysisParam(new MethodParamContext(null, e));
+    }
+
+    private Object[] analysisParam(MethodParamContext context) {
+        if (parameters.isEmpty()) {
+            return new Object[0];
+        }
+
+        List<Object> args = new ArrayList<>(parameters.size());
+        for (ParamWrapper parameter : parameters) {
+            args.add(parameter.read(context));
+        }
+        return args.toArray();
     }
 }

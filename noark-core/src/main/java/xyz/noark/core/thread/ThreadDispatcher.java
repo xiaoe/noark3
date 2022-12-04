@@ -21,13 +21,14 @@ import xyz.noark.core.event.PlayerEvent;
 import xyz.noark.core.event.QueueEvent;
 import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.lang.TimeoutHashMap;
 import xyz.noark.core.network.*;
 import xyz.noark.core.network.packet.QueueIdPacket;
-import xyz.noark.core.thread.command.AsyncThreadCommand;
+import xyz.noark.core.thread.command.AsyncTaskCommand;
 import xyz.noark.core.thread.command.ClientCommand;
 import xyz.noark.core.thread.command.DefaultCommand;
 import xyz.noark.core.thread.task.*;
@@ -114,8 +115,7 @@ public class ThreadDispatcher {
         pmw.incrCallNum();
 
         // 具体分配哪个线程去执行.
-        Object[] args = pmw.analysisParam(session, packet);
-        this.dispatchClientPacket(session, packet, pmw, args);
+        this.dispatchClientPacket(session, packet, pmw, pmw.analysisParam(new MethodParamContext(session, packet)));
     }
 
     private void dispatchClientPacket(Session session, NetworkPacket packet, LocalPacketMethodWrapper pmw, Object... args) {
@@ -188,8 +188,29 @@ public class ThreadDispatcher {
         pmw.incrCallNum();
 
         // 具体分配哪个线程去执行.
-        Object[] objects = pmw.analysisParam(playerId, protocol);
-        this.dispatchClientPacket(null, null, pmw, objects);
+        this.dispatchInnerPacket(pmw, playerId, pmw.analysisParam(new MethodParamContext(playerId, protocol)));
+    }
+
+    private void dispatchInnerPacket(LocalPacketMethodWrapper pmw, Serializable playerId, Object... args) {
+        final DefaultCommand command = new DefaultCommand(pmw, args);
+        switch (pmw.threadGroup()) {
+            // 玩家线程组，队列ID就是玩家ID
+            case PlayerThreadGroup: {
+                this.dispatchCommand(playerId, command);
+                break;
+            }
+
+            // 模块线程组，队列ID就是模块的主入口类的类名
+            case ModuleThreadGroup: {
+                this.dispatchCommand(pmw.getControllerClassName(), command);
+                break;
+            }
+
+            // 非法的类型
+            default: {
+                throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
+            }
+        }
     }
 
     /**
@@ -218,7 +239,7 @@ public class ThreadDispatcher {
         // 有指定队列
         else {
             final TaskQueue taskQueue = businessThreadPoolTaskQueue.get(queueId);
-            taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncThreadCommand(callback)));
+            taskQueue.submit(new AsyncQueueTask(taskQueue, new AsyncTaskCommand(callback)));
         }
     }
 

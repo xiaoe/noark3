@@ -14,14 +14,12 @@
 package xyz.noark.core.ioc.wrap.param;
 
 import xyz.noark.core.env.EnvConfigHolder;
-import xyz.noark.core.exception.UnrealizedException;
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.packet.ServerIdPacket;
 import xyz.noark.core.util.StringUtils;
-
-import java.io.Serializable;
 
 /**
  * 注入ServerId.
@@ -32,24 +30,17 @@ import java.io.Serializable;
 public class ServerIdParamWrapper implements ParamWrapper {
 
     @Override
-    public Object read(Session session, NetworkPacket packet) {
-        return this.getServerId(packet);
-    }
-
-    @Override
-    public Object read(Serializable playerId, Object protocol) {
-        throw new UnrealizedException("会存在此方法吗？");
+    public Object read(MethodParamContext context) {
+        // 如果有封包且带有元数据是玩家ID的话
+        if (context.getReqPacket() != null && context.getReqPacket() instanceof ServerIdPacket) {
+            return ((ServerIdPacket) context.getReqPacket()).getServerId();
+        }
+        // 拿本地区服编号配置
+        return Integer.parseInt(EnvConfigHolder.getString("server.id"));
     }
 
     @Override
     public String toString(Session session, NetworkPacket packet) {
-        return StringUtils.join("serverId=", this.getServerId(packet).toString());
-    }
-
-    private Integer getServerId(NetworkPacket packet) {
-        if (packet instanceof ServerIdPacket) {
-            return ((ServerIdPacket) packet).getServerId();
-        }
-        return Integer.parseInt(EnvConfigHolder.getString("server.id"));
+        return StringUtils.join("serverId=", read(new MethodParamContext(session, packet)).toString());
     }
 }

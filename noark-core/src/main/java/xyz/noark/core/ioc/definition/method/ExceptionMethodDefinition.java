@@ -17,6 +17,10 @@ import xyz.noark.core.annotation.ExceptionHandler;
 import xyz.noark.reflectasm.MethodAccess;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 异常处理入口的定义.
@@ -25,14 +29,31 @@ import java.lang.reflect.Method;
  * @since 3.4.7
  */
 public class ExceptionMethodDefinition extends SimpleMethodDefinition {
-    private final ExceptionHandler exceptionHandler;
+    private final List<Class<? extends Throwable>> exceptionClassList;
 
+    @SuppressWarnings("unchecked")
     public ExceptionMethodDefinition(MethodAccess methodAccess, Method method, ExceptionHandler exceptionHandler) {
         super(methodAccess, method);
-        this.exceptionHandler = exceptionHandler;
+
+        Class<? extends Throwable>[] classArray = exceptionHandler.value();
+        // 如果注解里没有配置，那就尝试分析参数里中的事件对象类型
+        if (classArray.length == 0) {
+            List<Class<? extends Throwable>> classList = new ArrayList<>();
+            // 遍历去找异常配置的类型
+            for (Parameter parameter : parameters) {
+                if (Throwable.class.isAssignableFrom(parameter.getType())) {
+                    classList.add((Class<? extends Throwable>) parameter.getType());
+                }
+            }
+            this.exceptionClassList = classList;
+        }
+        //直接使用注解里配置项
+        else {
+            this.exceptionClassList = Arrays.asList(classArray);
+        }
     }
 
-    public ExceptionHandler getExceptionHandler() {
-        return exceptionHandler;
+    public List<Class<? extends Throwable>> getExceptionClassList() {
+        return exceptionClassList;
     }
 }
