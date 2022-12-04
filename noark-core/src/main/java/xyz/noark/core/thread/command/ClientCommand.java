@@ -14,6 +14,7 @@
 package xyz.noark.core.thread.command;
 
 import xyz.noark.core.exception.ErrorMsgException;
+import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.method.ExceptionMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.network.NetworkPacket;
@@ -67,6 +68,10 @@ public class ClientCommand extends DefaultCommand {
         // 如果是异常提示，那要把这个请求封包给补上
         if (e instanceof ErrorMsgException) {
             ((ErrorMsgException) e).setReqPacket(reqPacket);
+        }
+        // 非错误提示异常，那要记录下封包请求
+        else {
+            PacketMethodManager.getInstance().logPacket(session, reqPacket);
         }
     }
 }
