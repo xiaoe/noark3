@@ -11,38 +11,26 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.log;
+package xyz.noark.log.pattern;
 
-import xyz.noark.log.message.Message;
-
-import java.util.Map;
+import xyz.noark.log.LogEvent;
 
 /**
- * 异步日志事件
+ * MDC中取值样式格式化实现
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4.3
+ * @since 3.4.7
  */
-public class AsyncLogEvent extends LogEvent implements Runnable {
-    private final PrivateConfig privateConfig;
-    /**
-     * 异步日志那是要克隆出来的值
-     */
-    private final Map<String, Object> mdcValueMap;
+class MdcPatternFormatter extends AbstractPatternFormatter {
+    private final String key;
 
-    AsyncLogEvent(AbstractLogger logger, Level level, Message message) {
-        super(logger, level, message);
-        this.privateConfig = logger.getPrivateConfig();
-        this.mdcValueMap = MDC.getCopyOfContextMap();
+    public MdcPatternFormatter(FormattingInfo formattingInfo, String options) {
+        super(formattingInfo, options);
+        this.key = options;
     }
 
     @Override
-    public void run() {
-        privateConfig.processLogEvent(this);
-    }
-
-    @Override
-    public Object getMdcValue(String key) {
-        return mdcValueMap.get(key);
+    public void doFormat(LogEvent event, StringBuilder toAppendTo) {
+        toAppendTo.append(event.getMdcValue(key));
     }
 }
