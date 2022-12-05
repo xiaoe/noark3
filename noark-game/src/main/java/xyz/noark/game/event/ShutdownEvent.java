@@ -13,6 +13,7 @@
  */
 package xyz.noark.game.event;
 
+import xyz.noark.core.event.AbstractEvent;
 import xyz.noark.core.event.DelayEvent;
 
 import java.util.Date;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public class ShutdownEvent implements DelayEvent {
+public class ShutdownEvent extends AbstractEvent implements DelayEvent {
     private final CountDownLatch countDownLatch;
     private final Date endTime = new Date();
 

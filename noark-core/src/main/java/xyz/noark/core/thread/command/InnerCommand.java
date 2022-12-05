@@ -11,21 +11,20 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.event;
+package xyz.noark.core.thread.command;
 
-import xyz.noark.core.lang.LocalTimeArray;
+import xyz.noark.core.ioc.wrap.method.AbstractControllerMethodWrapper;
+import xyz.noark.core.thread.TraceIdFactory;
 
 /**
- * 定时任务事件接口.
+ * 内部指令
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.3.9
+ * @since 3.4.7
  */
-public interface FixedTimeEvent extends Event {
-    /**
-     * 获取定时触发的时间配置
-     *
-     * @return 定时触发的时间配置
-     */
-    LocalTimeArray getTrigger();
+public class InnerCommand extends DefaultCommand {
+    public InnerCommand(AbstractControllerMethodWrapper method, Object... args) {
+        // 内部指令，那也是由其他业务发起的
+        super(TraceIdFactory.getMdcTraceId(), method, args);
+    }
 }

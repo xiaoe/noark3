@@ -11,35 +11,34 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.thread.task;
+package xyz.noark.core.thread;
+
+import xyz.noark.log.MDC;
+
+import java.util.UUID;
 
 /**
- * 一种普通的异步任务.
+ * TraceId工厂类
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4
+ * @since 3.4.7
  */
-public class AsyncTask extends AbstractAsyncTask implements Runnable {
-    private final TaskCallback taskCallback;
-    private final boolean printLog;
-
-    public AsyncTask(TaskCallback taskCallback, boolean printLog) {
-        this.taskCallback = taskCallback;
-        this.printLog = printLog;
+public class TraceIdFactory {
+    /**
+     * 从MDC中获取链路追踪ID之traceId
+     *
+     * @return 链路追踪ID
+     */
+    public static String getMdcTraceId() {
+        return String.valueOf(MDC.get(MdcKeyConstant.TRACE_ID));
     }
 
-    @Override
-    protected void doSomething() {
-        taskCallback.doSomething();
-    }
-
-    @Override
-    protected String logCode() {
-        return "async task";
-    }
-
-    @Override
-    protected boolean isPrintLog() {
-        return printLog;
+    /**
+     * 随机生成一个链路追踪ID
+     *
+     * @return 链路追踪ID
+     */
+    public static String randomTraceId() {
+        return UUID.randomUUID().toString();
     }
 }

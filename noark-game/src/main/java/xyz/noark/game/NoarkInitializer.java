@@ -14,9 +14,12 @@
 package xyz.noark.game;
 
 import xyz.noark.core.env.EnvConfigHolder;
+import xyz.noark.core.thread.MdcKeyConstant;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.game.bootstrap.ServerBootstrap;
 import xyz.noark.log.LogManager;
+import xyz.noark.log.MDC;
 
 import java.util.Map;
 
@@ -35,6 +38,9 @@ class NoarkInitializer {
      * @param args  Main方法的启动参数
      */
     public void init(Class<? extends ServerBootstrap> klass, String... args) {
+        // 为启动服务器的主线程也绑定一个traceId
+        MDC.put(MdcKeyConstant.TRACE_ID, TraceIdFactory.randomTraceId());
+
         // 载入配置
         EnvConfigHolder.setProperties(this.loadProperties(args));
 

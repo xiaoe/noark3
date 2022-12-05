@@ -11,21 +11,21 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.event;
-
-import xyz.noark.core.lang.LocalTimeArray;
+package xyz.noark.core.thread;
 
 /**
- * 定时任务事件接口.
+ * Mdc的Key常量类.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.3.9
+ * @since 3.4.7
  */
-public interface FixedTimeEvent extends Event {
+public class MdcKeyConstant {
     /**
-     * 获取定时触发的时间配置
-     *
-     * @return 定时触发的时间配置
+     * 链路追踪ID = traceId
      */
-    LocalTimeArray getTrigger();
+    public static final String TRACE_ID = "traceId";
+    /**
+     * 队列ID = queueId
+     */
+    public static final String QUEUE_ID = "queueId";
 }

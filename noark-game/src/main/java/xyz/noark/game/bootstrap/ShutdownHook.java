@@ -13,6 +13,10 @@
  */
 package xyz.noark.game.bootstrap;
 
+import xyz.noark.core.thread.MdcKeyConstant;
+import xyz.noark.core.thread.TraceIdFactory;
+import xyz.noark.log.MDC;
+
 /**
  * 停服信号勾子.
  *
@@ -30,6 +34,7 @@ public class ShutdownHook extends Thread {
 
     @Override
     public void run() {
+        MDC.put(MdcKeyConstant.TRACE_ID, TraceIdFactory.randomTraceId());
         this.serverStartup.stop();
     }
 }

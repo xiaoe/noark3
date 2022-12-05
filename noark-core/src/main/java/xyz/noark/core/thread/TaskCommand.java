@@ -11,21 +11,48 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.event;
-
-import xyz.noark.core.lang.LocalTimeArray;
+package xyz.noark.core.thread;
 
 /**
- * 定时任务事件接口.
+ * 一个线程可执行的任务指令.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.3.9
+ * @since 3.0
  */
-public interface FixedTimeEvent extends Event {
+public interface TaskCommand {
     /**
-     * 获取定时触发的时间配置
-     *
-     * @return 定时触发的时间配置
+     * 执行这个指令.
      */
-    LocalTimeArray getTrigger();
+    void exec();
+
+    /**
+     * 尝试捕获执行异常。
+     *
+     * @param e 异常对象
+     * @return 如果正常处理了这个异常则返回true
+     */
+    boolean tryCatchExecException(Throwable e);
+
+    /**
+     * 是否输入执行时间日志.
+     *
+     * @return 如果为true则输出日志，false为不输出
+     */
+    boolean isPrintLog();
+
+    /**
+     * 简单编码.
+     * <p>
+     * 用于日志显示.
+     *
+     * @return 编码
+     */
+    String code();
+
+    /**
+     * 获取链路追踪ID
+     *
+     * @return 链路追踪ID
+     */
+    String getTraceId();
 }

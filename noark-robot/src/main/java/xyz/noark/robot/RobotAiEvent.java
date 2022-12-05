@@ -13,6 +13,7 @@
  */
 package xyz.noark.robot;
 
+import xyz.noark.core.event.AbstractEvent;
 import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.PlayerEvent;
 
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class RobotAiEvent implements DelayEvent, PlayerEvent {
+public class RobotAiEvent extends AbstractEvent implements DelayEvent, PlayerEvent {
     private String playerId;
     private Date endTime;
 

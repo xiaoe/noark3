@@ -15,6 +15,7 @@ package xyz.noark.core.thread.command;
 
 import xyz.noark.core.ioc.wrap.exception.ExceptionHandlerSelector;
 import xyz.noark.core.ioc.wrap.method.ExceptionMethodWrapper;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.thread.task.TaskCallback;
 
 /**
@@ -27,6 +28,8 @@ public class AsyncTaskCommand extends AbstractCommand {
     private final TaskCallback callback;
 
     public AsyncTaskCommand(TaskCallback callback) {
+        // 异步任务都是由其他业务执行产生的
+        super(TraceIdFactory.getMdcTraceId());
         this.callback = callback;
     }
 
@@ -48,6 +51,6 @@ public class AsyncTaskCommand extends AbstractCommand {
 
     @Override
     public boolean isPrintLog() {
-        return false;
+        return true;
     }
 }

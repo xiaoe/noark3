@@ -13,7 +13,7 @@
  */
 package xyz.noark.core.exception;
 
-import xyz.noark.core.event.Event;
+import xyz.noark.core.event.AbstractEvent;
 
 /**
  * 异常事件.
@@ -21,7 +21,7 @@ import xyz.noark.core.event.Event;
  *
  * @author 小流氓[176543888@qq.com]
  */
-public class ExceptionEvent implements Event {
+public class ExceptionEvent extends AbstractEvent {
     private final Throwable exception;
 
     public ExceptionEvent(Throwable exception) {

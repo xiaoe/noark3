@@ -13,8 +13,10 @@
  */
 package xyz.noark.game.event;
 
+import xyz.noark.core.event.AbstractEvent;
 import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.lang.LocalTimeArray;
+import xyz.noark.core.thread.TraceIdFactory;
 
 /**
  * 定时执行的延迟任务事件.
@@ -22,13 +24,14 @@ import xyz.noark.core.lang.LocalTimeArray;
  * @author 小流氓[176543888@qq.com]
  * @since 3.3.9
  */
-public abstract class AbstractFixedTimeEvent implements FixedTimeEvent {
+public abstract class AbstractFixedTimeEvent extends AbstractEvent implements FixedTimeEvent {
     /**
      * 定时执行任务时间数组
      */
     private final LocalTimeArray trigger;
 
     public AbstractFixedTimeEvent(LocalTimeArray trigger) {
+        super(TraceIdFactory.randomTraceId());
         this.trigger = trigger;
     }
 

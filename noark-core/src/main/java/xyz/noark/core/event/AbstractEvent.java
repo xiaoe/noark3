@@ -13,19 +13,36 @@
  */
 package xyz.noark.core.event;
 
-import xyz.noark.core.lang.LocalTimeArray;
+import xyz.noark.core.thread.TraceIdFactory;
 
 /**
- * 定时任务事件接口.
+ * 抽象的事件
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.3.9
+ * @since 3.4.7
  */
-public interface FixedTimeEvent extends Event {
+public class AbstractEvent implements Event {
+    private final String traceId;
+
     /**
-     * 获取定时触发的时间配置
-     *
-     * @return 定时触发的时间配置
+     * 抽象的事件，此类事件的默认traceId则Mdc上下文中获取
      */
-    LocalTimeArray getTrigger();
+    public AbstractEvent() {
+        // 走事件逻辑，这个traceId就要从DMC中取出来
+        this(TraceIdFactory.getMdcTraceId());
+    }
+
+    /**
+     * 特别情况下可以自定义traceId
+     *
+     * @param traceId 追踪ID
+     */
+    public AbstractEvent(String traceId) {
+        this.traceId = traceId;
+    }
+
+    @Override
+    public String getTraceId() {
+        return traceId;
+    }
 }

@@ -46,5 +46,5 @@ class LogConstant {
     /**
      * 默认的显示布局
      */
-    static final String DEFAULT_LAYOUT_PATTERN = "%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n";
+    static final String DEFAULT_LAYOUT_PATTERN = "%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread]<%X{traceId}>[%file:%line] - %msg%n";
 }

@@ -21,7 +21,7 @@ import java.util.Map;
  * MDC（Mapped Diagnostic Context，映射调试上下文）
  *
  * @author 小流氓[176543888@qq.com]
- * @see 3.4.7
+ * @since 3.4.7
  */
 public class MDC {
     private static final ThreadLocal<Map<String, Object>> localMap = new ThreadLocal<>();

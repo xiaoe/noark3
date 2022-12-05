@@ -27,7 +27,8 @@ public class DefaultCommand extends AbstractCommand {
     private final AbstractControllerMethodWrapper method;
     private final Object[] args;
 
-    public DefaultCommand(AbstractControllerMethodWrapper method, Object... args) {
+    public DefaultCommand(String traceId, AbstractControllerMethodWrapper method, Object... args) {
+        super(traceId);
         this.method = method;
         this.args = args;
     }

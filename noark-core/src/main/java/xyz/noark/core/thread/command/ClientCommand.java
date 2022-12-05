@@ -20,6 +20,7 @@ import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.ResultHelper;
 import xyz.noark.core.network.Session;
+import xyz.noark.core.thread.TraceIdFactory;
 
 /**
  * 客户端指令.
@@ -34,7 +35,7 @@ public class ClientCommand extends DefaultCommand {
     private final NetworkPacket reqPacket;
 
     public ClientCommand(Session session, NetworkPacket reqPacket, LocalPacketMethodWrapper method, Object[] args) {
-        super(method, args);
+        super(TraceIdFactory.randomTraceId(), method, args);
         this.session = session;
         this.reqPacket = reqPacket;
     }

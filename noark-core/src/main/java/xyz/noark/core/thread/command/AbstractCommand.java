@@ -14,7 +14,7 @@
 package xyz.noark.core.thread.command;
 
 import xyz.noark.core.ioc.wrap.method.ExceptionMethodWrapper;
-import xyz.noark.core.thread.ThreadCommand;
+import xyz.noark.core.thread.TaskCommand;
 
 /**
  * 抽象的线程处理指令.
@@ -22,10 +22,23 @@ import xyz.noark.core.thread.ThreadCommand;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-public abstract class AbstractCommand implements ThreadCommand {
+public abstract class AbstractCommand implements TaskCommand {
+    /**
+     * 链路追踪ID, 用于排查问题时在日志中把相关业务给串联起来
+     */
+    private final String traceId;
+
+    protected AbstractCommand(String traceId) {
+        this.traceId = traceId;
+    }
 
     @Override
-    public boolean catchExecException(Throwable e) {
+    public String getTraceId() {
+        return traceId;
+    }
+
+    @Override
+    public boolean tryCatchExecException(Throwable e) {
         // 尝试查找到此异常的最优处理器
         ExceptionMethodWrapper exceptionHandler = this.lookupExceptionHandler(e);
 

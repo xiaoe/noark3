@@ -13,9 +13,14 @@
  */
 package xyz.noark.core.thread.task;
 
+import xyz.noark.core.event.EventHelper;
+import xyz.noark.core.exception.ExceptionEvent;
+import xyz.noark.core.thread.MdcKeyConstant;
+import xyz.noark.core.thread.TaskCommand;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.log.Logger;
 import xyz.noark.log.LoggerFactory;
+import xyz.noark.log.MDC;
 
 /**
  * 抽象的异步任务.
@@ -26,6 +31,10 @@ import xyz.noark.log.LoggerFactory;
 public abstract class AbstractAsyncTask implements Runnable {
     protected static final Logger logger = LoggerFactory.getLogger(AbstractAsyncTask.class);
     /**
+     * 可执行的任务指令
+     */
+    private final TaskCommand command;
+    /**
      * 任务创建时间
      */
     protected final long createTime;
@@ -34,27 +43,37 @@ public abstract class AbstractAsyncTask implements Runnable {
      */
     protected long startExecTime;
 
-    public AbstractAsyncTask() {
+    public AbstractAsyncTask(TaskCommand command) {
+        this.command = command;
         this.createTime = System.nanoTime();
     }
 
     @Override
     public void run() {
-        // 记录开始执行时间
-        startExecTime = System.nanoTime();
-
-        // 做某事之前的处理
-        this.doSomethingBefore();
-
-        // 开始做某事
         try {
+            this.doRun();
+        }
+        // 兜底保护方案
+        catch (Throwable e) {
+            // 记录日志并以事件的形式丢出去...
+            logger.error("handle {} exception. {}", logCode(), e);
+            EventHelper.publish(new ExceptionEvent(e));
+        }
+    }
+
+    private void doRun() throws Throwable {
+        try {
+            // 1. 做某事之前的处理
+            this.doSomethingBefore();
+
+            // 2. 开始做某事
             this.doSomething();
         }
-        // 如果发生了异常情况
+        // 3. 如果发生了异常情况
         catch (Throwable e) {
             this.doSomethingException(e);
         }
-        // 做某事之后的处理
+        // 4. 做某事之后的处理
         finally {
             this.doSomethingAfter();
         }
@@ -64,19 +83,33 @@ public abstract class AbstractAsyncTask implements Runnable {
      * 执行业务逻辑之前的扩展接口.
      */
     protected void doSomethingBefore() {
+        // 记录开始执行时间
+        this.startExecTime = System.nanoTime();
+        // 设计链路追踪ID
+        MDC.put(MdcKeyConstant.TRACE_ID, command.getTraceId());
     }
 
     /**
      * 异步任务做具体的业务逻辑
      */
-    protected abstract void doSomething();
+    protected void doSomething() {
+        command.exec();
+    }
 
     /**
      * 执行业务逻辑中发生了异常情况
      *
      * @param e 异常信息
+     * @throws Throwable 如果未能正常捕获，则继续向上抛出此异常
      */
-    protected void doSomethingException(Throwable e) {
+    protected void doSomethingException(Throwable e) throws Throwable {
+        // 尝试捕获异常并处理
+        if (command.tryCatchExecException(e)) {
+            return;
+        }
+
+        // 处理指令未能正常捕获并处理那继续向上抛
+        throw e;
     }
 
     /**
@@ -89,20 +122,26 @@ public abstract class AbstractAsyncTask implements Runnable {
             float exec = DateUtils.formatNanoTime(System.nanoTime() - startExecTime);
             logger.info("handle {},delay={} ms,exec={} ms", logCode(), delay, exec);
         }
-    }
 
+        // 清除所有MDC信息
+        MDC.clear();
+    }
 
     /**
      * 记录日志这个异步任务的编号.
      *
      * @return 异步任务的编号
      */
-    protected abstract String logCode();
+    protected String logCode() {
+        return command.code();
+    }
 
     /**
      * 是否记录相关执行日志
      *
      * @return 是否记录相关执行日志
      */
-    protected abstract boolean isPrintLog();
+    protected boolean isPrintLog() {
+        return command.isPrintLog();
+    }
 }

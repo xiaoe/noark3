@@ -13,6 +13,7 @@
  */
 package com.company.game;
 
+import xyz.noark.core.event.AbstractEvent;
 import xyz.noark.core.event.Event;
 
 /**
@@ -21,6 +22,6 @@ import xyz.noark.core.event.Event;
  * @author 小流氓[176543888@qq.com]
  * @since 3.2
  */
-public class LoginEvent implements Event {
+public class LoginEvent extends AbstractEvent implements Event {
     // 没有任何功能，只是用于测试
 }

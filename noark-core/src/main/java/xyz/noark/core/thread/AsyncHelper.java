@@ -16,7 +16,7 @@ package xyz.noark.core.thread;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.thread.task.TaskCallback;
-import xyz.noark.core.thread.task.TaskContext;
+import xyz.noark.log.MDC;
 
 import java.io.Serializable;
 
@@ -32,11 +32,6 @@ import java.io.Serializable;
  */
 @StaticComponent
 public class AsyncHelper {
-    /**
-     * 构建一个ThreadLocal来存放执行期的任务上下文
-     */
-    private static final ThreadLocal<TaskContext> THREAD_LOCAL = new ThreadLocal<>();
-
     @Autowired
     private static ThreadDispatcher threadDispatcher;
 
@@ -46,23 +41,6 @@ public class AsyncHelper {
     private AsyncHelper() {
     }
 
-
-    /**
-     * 设置任务执行的上下文
-     *
-     * @param taskContext 任务执行的上下文
-     */
-    public static void setTaskContext(TaskContext taskContext) {
-        THREAD_LOCAL.set(taskContext);
-    }
-
-    /**
-     * 移除任务执行的上下文
-     */
-    public static void removeTaskContext() {
-        THREAD_LOCAL.remove();
-    }
-
     /**
      * 异步化一段逻辑.
      * <p>就是在当前队列中执行，可以理解为本线程执行完当前逻辑再去执行那异步逻辑</p>
@@ -70,8 +48,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void localCall(TaskCallback callback) {
-        TaskContext context = THREAD_LOCAL.get();
-        call(context.getQueueId(), callback);
+        call((Serializable) MDC.get(MdcKeyConstant.QUEUE_ID), callback);
     }
 
     /**
