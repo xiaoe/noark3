@@ -45,6 +45,14 @@ public class TraceIdFactory {
     }
 
     /**
+     * 初始化一个固定的调度线程TraceId标识
+     */
+    public static void initFixedTraceIdBySchedulingThread() {
+        MDC.put(TRACE_ID, "scheduling-thread");
+    }
+
+
+    /**
      * 从MDC中获取链路追踪ID之traceId
      *
      * @return 链路追踪ID
