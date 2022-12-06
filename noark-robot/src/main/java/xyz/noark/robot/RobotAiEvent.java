@@ -13,13 +13,11 @@
  */
 package xyz.noark.robot;
 
-import xyz.noark.core.event.AbstractEvent;
 import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.PlayerEvent;
+import xyz.noark.game.event.AbstractDelayEvent;
 
 import java.util.Date;
-import java.util.concurrent.Delayed;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 机器人AI事件
@@ -27,13 +25,12 @@ import java.util.concurrent.TimeUnit;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-public class RobotAiEvent extends AbstractEvent implements DelayEvent, PlayerEvent {
+public class RobotAiEvent extends AbstractDelayEvent implements DelayEvent, PlayerEvent {
     private String playerId;
-    private Date endTime;
 
     public RobotAiEvent(String playerId, Date endTime) {
         this.playerId = playerId;
-        this.endTime = endTime;
+        this.setEndTime(endTime);
     }
 
     @Override
@@ -43,24 +40,5 @@ public class RobotAiEvent extends AbstractEvent implements DelayEvent, PlayerEve
 
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
-    }
-
-    @Override
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    @Override
-    public int compareTo(Delayed o) {
-        return endTime.compareTo(((DelayEvent) o).getEndTime());
-    }
-
-    @Override
-    public long getDelay(TimeUnit unit) {
-        return unit.convert(endTime.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 }

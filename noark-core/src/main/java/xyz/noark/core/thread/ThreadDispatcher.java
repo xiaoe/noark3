@@ -248,6 +248,7 @@ public class ThreadDispatcher {
     /**
      * 派发事件任务给线程池.
      *
+     * @param traceId 链路追踪ID
      * @param handler 事件处理方法
      * @param event   事件对象
      */
