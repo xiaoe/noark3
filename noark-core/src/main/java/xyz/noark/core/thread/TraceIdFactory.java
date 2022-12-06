@@ -51,6 +51,13 @@ public class TraceIdFactory {
         MDC.put(TRACE_ID, "scheduling-thread");
     }
 
+    /**
+     * 初始化一个固定的监控服务TraceId标识
+     */
+    public static void initFixedTraceIdByMonitorService() {
+        MDC.put(TRACE_ID, "monitor-service");
+    }
+
 
     /**
      * 从MDC中获取链路追踪ID之traceId
