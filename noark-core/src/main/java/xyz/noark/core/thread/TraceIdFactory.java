@@ -24,13 +24,26 @@ import java.util.UUID;
  * @since 3.4.7
  */
 public class TraceIdFactory {
+
+    /**
+     * 链路追踪ID = traceId
+     */
+    public static final String TRACE_ID = "traceId";
+
+    /**
+     * 初始化一个固定的启动服务器标识
+     */
+    public static void initFixedTraceIdByStartingServer() {
+        MDC.put(TRACE_ID, "starting-server");
+    }
+
     /**
      * 从MDC中获取链路追踪ID之traceId
      *
      * @return 链路追踪ID
      */
     public static String getMdcTraceId() {
-        return String.valueOf(MDC.get(MdcKeyConstant.TRACE_ID));
+        return String.valueOf(MDC.get(TRACE_ID));
     }
 
     /**

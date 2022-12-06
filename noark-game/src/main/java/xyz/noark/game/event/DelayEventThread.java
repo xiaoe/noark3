@@ -14,7 +14,6 @@
 package xyz.noark.game.event;
 
 import xyz.noark.core.event.DelayEvent;
-import xyz.noark.core.thread.MdcKeyConstant;
 import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.log.MDC;
 
@@ -43,7 +42,7 @@ class DelayEventThread extends Thread {
 
     @Override
     public void run() {
-        MDC.put(MdcKeyConstant.TRACE_ID, TraceIdFactory.randomTraceId());
+        MDC.put(TraceIdFactory.TRACE_ID, TraceIdFactory.randomTraceId());
         logger.info("延迟任务调度线程开始啦...");
         while (starting) {
             try {

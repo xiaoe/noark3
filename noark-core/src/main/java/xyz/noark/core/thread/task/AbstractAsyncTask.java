@@ -15,8 +15,8 @@ package xyz.noark.core.thread.task;
 
 import xyz.noark.core.event.EventHelper;
 import xyz.noark.core.exception.ExceptionEvent;
-import xyz.noark.core.thread.MdcKeyConstant;
 import xyz.noark.core.thread.TaskCommand;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.log.Logger;
 import xyz.noark.log.LoggerFactory;
@@ -86,7 +86,7 @@ public abstract class AbstractAsyncTask implements Runnable {
         // 记录开始执行时间
         this.startExecTime = System.nanoTime();
         // 设计链路追踪ID
-        MDC.put(MdcKeyConstant.TRACE_ID, command.getTraceId());
+        MDC.put(TraceIdFactory.TRACE_ID, command.getTraceId());
     }
 
     /**

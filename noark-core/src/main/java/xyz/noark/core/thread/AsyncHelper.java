@@ -16,6 +16,7 @@ package xyz.noark.core.thread;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.thread.task.TaskCallback;
+import xyz.noark.core.thread.task.TaskQueue;
 import xyz.noark.log.MDC;
 
 import java.io.Serializable;
@@ -48,7 +49,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void localCall(TaskCallback callback) {
-        call((Serializable) MDC.get(MdcKeyConstant.QUEUE_ID), callback);
+        call((Serializable) MDC.get(TaskQueue.QUEUE_ID), callback);
     }
 
     /**

@@ -14,7 +14,6 @@
 package xyz.noark.core.thread.task;
 
 import xyz.noark.core.thread.TaskCommand;
-import xyz.noark.core.thread.MdcKeyConstant;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.ThreadUtils;
 import xyz.noark.log.MDC;
@@ -41,7 +40,7 @@ public class AsyncQueueTask extends AbstractAsyncTask implements Runnable {
     protected void doSomethingBefore() {
         super.doSomethingBefore();
         // 设计当前任务上下文
-        MDC.put(MdcKeyConstant.QUEUE_ID, taskQueue.getId());
+        MDC.put(TaskQueue.QUEUE_ID, taskQueue.getId());
         // 记录当前执行线程
         this.currentThread = Thread.currentThread();
     }

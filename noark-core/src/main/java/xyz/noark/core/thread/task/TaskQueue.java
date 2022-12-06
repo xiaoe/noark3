@@ -25,6 +25,11 @@ import java.util.concurrent.ExecutorService;
  */
 public class TaskQueue {
     /**
+     * 队列ID = queueId
+     */
+    public static final String QUEUE_ID = "queueId";
+
+    /**
      * 队列ID
      */
     private final Serializable id;
