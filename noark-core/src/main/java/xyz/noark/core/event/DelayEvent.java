@@ -33,4 +33,11 @@ public interface DelayEvent extends Event, Delayed {
      * @return 结束时间
      */
     Date getEndTime();
+
+    /**
+     * 获取此事件的链路追踪ID
+     *
+     * @return 链路追踪ID
+     */
+    String getTraceId();
 }

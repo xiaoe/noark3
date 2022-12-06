@@ -16,6 +16,7 @@ package xyz.noark.game.event;
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.event.DelayEvent;
+import xyz.noark.core.thread.TraceIdFactory;
 
 import java.util.Date;
 import java.util.concurrent.Delayed;
@@ -38,6 +39,10 @@ public class AbstractDelayEvent implements DelayEvent {
 
     @Column(name = "end_time", nullable = false, comment = "结束时间", defaultValue = "2018-01-01 00:00:00")
     private Date endTime;
+
+    public AbstractDelayEvent() {
+        this.setTraceId(TraceIdFactory.getMdcTraceId());
+    }
 
     @Override
     public int compareTo(Delayed o) {
@@ -77,6 +82,11 @@ public class AbstractDelayEvent implements DelayEvent {
         return traceId;
     }
 
+    /**
+     * 此Set方法主要用于存储读写，不理解需求的情况下不建议主动给值
+     *
+     * @param traceId 链路追踪ID
+     */
     public void setTraceId(String traceId) {
         this.traceId = traceId;
     }

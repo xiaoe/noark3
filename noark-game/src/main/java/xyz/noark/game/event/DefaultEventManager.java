@@ -25,6 +25,7 @@ import xyz.noark.core.ioc.manager.ScheduledMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.game.NoarkConstant;
 
 import java.util.List;
@@ -82,7 +83,7 @@ public class DefaultEventManager implements EventManager {
 
     @Override
     public void publish(Event event) {
-        this.notifyListeners(event);
+        this.notifyListeners(TraceIdFactory.getMdcTraceId(), event);
     }
 
     @Override
@@ -128,7 +129,7 @@ public class DefaultEventManager implements EventManager {
      *
      * @param event 事件源
      */
-    void notifyListeners(Event event) {
+    void notifyListeners(String traceId, Event event) {
         List<EventMethodWrapper> handlers = EVENT_MANAGER.getEventMethodWrappers(event.getClass());
         if (handlers.isEmpty()) {
             // 如果有只监听了接口而无子类时，就在这里尝试重构这个子类的所对应的方法
@@ -147,7 +148,7 @@ public class DefaultEventManager implements EventManager {
             try {
                 // 异步执行，投递进线程池中派发
                 if (handler.isAsync()) {
-                    threadDispatcher.dispatchEvent(handler, event);
+                    threadDispatcher.dispatchEvent(traceId, handler, event);
                 }
                 // 有一些特别的情况需要同步执行.
                 else {
@@ -175,11 +176,11 @@ public class DefaultEventManager implements EventManager {
      * @param event 事件源
      */
     void notifyFixedTimeEventHandler(FixedTimeEventWrapper event) {
-        this.notifyListeners(event.getSource());
+        this.notifyListeners(event.getTraceId(), event.getSource());
         this.resetEndTimeAndPublish(event);
     }
 
-    void notifyListeners(FixedTimeEvent event) {
+    void notifyListeners(String traceId, FixedTimeEvent event) {
         List<EventMethodWrapper> handlers = EVENT_MANAGER.getEventMethodWrappers(event.getClass());
         if (handlers.isEmpty()) {
             logger.warn("No subscription event. class={}", event.getClass());
@@ -188,7 +189,7 @@ public class DefaultEventManager implements EventManager {
 
         for (EventMethodWrapper handler : handlers) {
             try {
-                threadDispatcher.dispatchFixedTimeEvent(handler, event);
+                threadDispatcher.dispatchFixedTimeEvent(traceId, handler, event);
             } catch (Exception e) {
                 logger.warn("handle event exception. {}", e);
             }

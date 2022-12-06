@@ -67,7 +67,7 @@ class DelayEventThread extends Thread {
 
                 // 延迟事件
                 else {
-                    eventManager.notifyListeners(event);
+                    eventManager.notifyListeners(event.getTraceId(), event);
                 }
             } catch (Throwable e) {
                 logger.error("调度线程异常", e);

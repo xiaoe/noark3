@@ -20,10 +20,4 @@ package xyz.noark.core.event;
  * @since 3.0
  */
 public interface Event {
-    /**
-     * 获取链路追踪ID
-     *
-     * @return 链路追踪ID
-     */
-    String getTraceId();
 }

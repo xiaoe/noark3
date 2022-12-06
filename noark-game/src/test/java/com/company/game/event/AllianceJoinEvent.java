@@ -13,7 +13,6 @@
  */
 package com.company.game.event;
 
-import xyz.noark.core.event.AbstractEvent;
 import xyz.noark.core.event.Event;
 
 /**
@@ -22,7 +21,7 @@ import xyz.noark.core.event.Event;
  * @author 小流氓[176543888@qq.com]
  * @since 3.2.6
  */
-public class AllianceJoinEvent extends AbstractEvent implements Event, AllianceEvent {
+public class AllianceJoinEvent implements Event, AllianceEvent {
     private final long playerId;
     private final String allianceName;
 

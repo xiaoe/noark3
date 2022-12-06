@@ -251,13 +251,13 @@ public class ThreadDispatcher {
      * @param handler 事件处理方法
      * @param event   事件对象
      */
-    public void dispatchEvent(EventMethodWrapper handler, Event event) {
+    public void dispatchEvent(String traceId, EventMethodWrapper handler, Event event) {
         switch (handler.threadGroup()) {
             // 玩家线程组，队列ID就是玩家ID
             case PlayerThreadGroup: {
                 if (event instanceof PlayerEvent) {
                     PlayerEvent e = (PlayerEvent) event;
-                    this.dispatchCommand(e.getPlayerId(), new DefaultCommand(event.getTraceId(), handler, e));
+                    this.dispatchCommand(e.getPlayerId(), new DefaultCommand(traceId, handler, e));
                 } else {
                     throw new UnrealizedException("玩家线程监听的事件，需要实现PlayerEvent接口. event=" + event.getClass().getSimpleName());
                 }
@@ -266,14 +266,14 @@ public class ThreadDispatcher {
 
             // 模块线程组，队列ID就是模块的主入口类的类名
             case ModuleThreadGroup: {
-                this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(event.getTraceId(), handler, event));
+                this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(traceId, handler, event));
                 break;
             }
 
             // 队列线程组，队列ID就要从QueueEvent里取出来
             case QueueThreadGroup: {
                 if (event instanceof QueueEvent) {
-                    this.dispatchCommand(((QueueEvent) event).getQueueId(), new DefaultCommand(event.getTraceId(), handler, event));
+                    this.dispatchCommand(((QueueEvent) event).getQueueId(), new DefaultCommand(traceId, handler, event));
                 } else {
                     throw new UnrealizedException("队列线程监听的事件，需要实现QueueEvent接口. event=" + event.getClass().getSimpleName());
                 }
@@ -288,30 +288,31 @@ public class ThreadDispatcher {
     /**
      * 派发定时事件任务给线程池.
      *
+     * @param traceId 追踪ID
      * @param handler 事件处理方法
      * @param event   事件对象
      */
-    public void dispatchFixedTimeEvent(EventMethodWrapper handler, FixedTimeEvent event) {
+    public void dispatchFixedTimeEvent(String traceId, EventMethodWrapper handler, FixedTimeEvent event) {
         switch (handler.threadGroup()) {
             // 玩家线程组，队列ID就是玩家ID
             case PlayerThreadGroup: {
                 // 当前所有在线的玩家才会收到，离开是不会收到此事件
                 for (Serializable playerId : SessionManager.getOnlinePlayerIdList()) {
-                    this.dispatchCommand(playerId, new DefaultCommand(event.getTraceId(), handler, handler.analysisParam(playerId, event)));
+                    this.dispatchCommand(playerId, new DefaultCommand(traceId, handler, handler.analysisParam(playerId, event)));
                 }
                 break;
             }
 
             // 模块线程组，队列ID就是模块的主入口类的类名
             case ModuleThreadGroup: {
-                this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(event.getTraceId(), handler, event));
+                this.dispatchCommand(handler.getControllerClassName(), new DefaultCommand(traceId, handler, event));
                 break;
             }
 
             // 队列线程组，队列ID就要从QueueEvent里取出来
             case QueueThreadGroup: {
                 if (event instanceof QueueEvent) {
-                    this.dispatchCommand(((QueueEvent) event).getQueueId(), new DefaultCommand(event.getTraceId(), handler, event));
+                    this.dispatchCommand(((QueueEvent) event).getQueueId(), new DefaultCommand(traceId, handler, event));
                 } else {
                     throw new UnrealizedException("队列线程监听的事件，需要实现QueueEvent接口. event=" + event.getClass().getSimpleName());
                 }

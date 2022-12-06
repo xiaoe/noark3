@@ -13,7 +13,6 @@
  */
 package com.company.game.event;
 
-import xyz.noark.core.event.AbstractEvent;
 import xyz.noark.core.event.Event;
 
 /**
@@ -22,6 +21,6 @@ import xyz.noark.core.event.Event;
  * @author 小流氓[176543888@qq.com]
  * @since 3.3.6
  */
-public class TestOrderEvent extends AbstractEvent implements Event {
-    
+public class TestOrderEvent implements Event {
+
 }
