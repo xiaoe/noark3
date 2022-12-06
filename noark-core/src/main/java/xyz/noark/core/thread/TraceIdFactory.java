@@ -31,10 +31,17 @@ public class TraceIdFactory {
     public static final String TRACE_ID = "traceId";
 
     /**
-     * 初始化一个固定的启动服务器标识
+     * 初始化一个固定的启动服务器TraceId标识
      */
-    public static void initFixedTraceIdByStartingServer() {
-        MDC.put(TRACE_ID, "starting-server");
+    public static void initFixedTraceIdByStartServer() {
+        MDC.put(TRACE_ID, "start-server");
+    }
+
+    /**
+     * 初始化一个固定的停止服务器TraceId标识
+     */
+    public static void initFixedTraceIdByStopServer() {
+        MDC.put(TRACE_ID, "stop-server");
     }
 
     /**

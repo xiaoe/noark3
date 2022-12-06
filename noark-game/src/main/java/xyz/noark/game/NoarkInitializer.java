@@ -37,7 +37,7 @@ class NoarkInitializer {
      */
     public void init(Class<? extends ServerBootstrap> klass, String... args) {
         // 为启动服务器的主线程也绑定一个traceId
-        TraceIdFactory.initFixedTraceIdByStartingServer();
+        TraceIdFactory.initFixedTraceIdByStartServer();
 
         // 载入配置
         EnvConfigHolder.setProperties(this.loadProperties(args));

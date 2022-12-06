@@ -20,6 +20,7 @@ import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.thread.NamedThreadFactory;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.BooleanUtils;
 import xyz.noark.core.util.FileUtils;
 import xyz.noark.core.util.StringUtils;
@@ -115,6 +116,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             singleThreadPool.execute(() -> {
                 try {
                     final int read = System.in.read();
+                    TraceIdFactory.initFixedTraceIdByStopServer();
                     logger.debug("收到信息：{}", read);
                 } catch (Exception e) {
                     logger.error("{}", e);
