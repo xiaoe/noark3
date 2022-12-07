@@ -30,6 +30,7 @@ import xyz.noark.network.util.ByteBufUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -144,9 +145,26 @@ class NoarkHttpServletRequest implements HttpServletRequest {
 
     private void parsePostContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
         HttpHeaders headers = fhr.headers();
+
         // KEY的值，大小写无所谓，但Get出来的Value是大小写敏感的
         String contentType = headers.get(HttpHeaderNames.CONTENT_TYPE);
+        String charset = CharsetUtils.UTF_8;
         String contentEncoding = headers.get(HttpHeaderNames.CONTENT_ENCODING);
+
+        // application/json;charset=utf-8
+        if (StringUtils.isNotEmpty(contentType)) {
+            String[] array = contentType.split(";", 2);
+            if (array.length == 2) {
+                contentType = array[0].trim();
+                // 附加参数
+                String[] parameterArray = array[1].split("=");
+                for (int i = 0; i < parameterArray.length; i = i + 2) {
+                    if ("charset".equalsIgnoreCase(parameterArray[i].trim())) {
+                        charset = parameterArray[i + 1].trim();
+                    }
+                }
+            }
+        }
 
         // 有些非正常的请求，可能会没有内容类型
         if (StringUtils.isEmpty(contentType)) {
@@ -154,7 +172,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
         // JSON类型的参数格式
         else if ("application/json".equalsIgnoreCase(contentType)) {
-            this.parseJsonContent(fhr, parameterMap, contentEncoding);
+            this.parseJsonContent(fhr, parameterMap, contentEncoding, charset);
         }
         // 其他走HTTP常规参数编码key1=val1&key2=val2
         else {
@@ -187,7 +205,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
     }
 
-    private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap, String contentEncoding) throws IOException {
+    private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap, String contentEncoding, String charset) throws IOException {
         final ByteBuf byteBuf = fhr.content();
         if (byteBuf.readableBytes() == 0) {
             return;
@@ -198,11 +216,11 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(contentEncoding)) {
             byte[] content = ByteBufUtils.readBytes(fhr.content());
             content = GzipUtils.uncompress(content);
-            jsonObject = JSON.parseObject(new String(content, CharsetUtils.CHARSET_UTF_8));
+            jsonObject = JSON.parseObject(new String(content, charset));
         }
         // 没有压缩
         else {
-            jsonObject = JSON.parseObject(byteBuf.toString(CharsetUtils.CHARSET_UTF_8));
+            jsonObject = JSON.parseObject(byteBuf.toString(Charset.forName(charset)));
         }
 
         for (Map.Entry<String, Object> e : jsonObject.entrySet()) {

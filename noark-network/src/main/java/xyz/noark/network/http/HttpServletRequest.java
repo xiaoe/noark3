@@ -78,5 +78,11 @@ public interface HttpServletRequest {
      */
     Map<String, String[]> getParameterMap();
 
+    /**
+     * 获取HTTP的输入流，用于取POST内容
+     *
+     * @return 返回HTTP的输入流
+     * @throws Exception 如果不可读则会出现此类异常
+     */
     InputStream getInputStream() throws Exception;
 }
