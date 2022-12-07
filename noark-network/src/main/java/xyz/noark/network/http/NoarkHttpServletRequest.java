@@ -24,7 +24,6 @@ import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.GzipUtils;
 import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.StringUtils;
-import xyz.noark.network.http.exception.UnrealizedMethodException;
 import xyz.noark.network.util.ByteBufUtils;
 
 import java.io.ByteArrayInputStream;
@@ -44,6 +43,10 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     private final String uri;
     private final String method;
     private final String ip;
+    /**
+     * 请求头部的参数Map
+     */
+    private Map<String, String> headerMap;
     /**
      * 请求参数Map
      */
@@ -101,6 +104,11 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
+    public String getHeader(String name) {
+        return headerMap.get(name);
+    }
+
+    @Override
     public String getRemoteAddr() {
         return ip;
     }
@@ -117,22 +125,22 @@ class NoarkHttpServletRequest implements HttpServletRequest {
      * @param decoder URI中参数解析器
      * @throws IOException 解析中可能会抛出IO异常
      */
-    public void parse(FullHttpRequest fhr, QueryStringDecoder decoder) throws IOException {
+    void parse(FullHttpRequest fhr, QueryStringDecoder decoder) throws IOException {
+        // 先解析出请求头中的参数
+        this.parseHeaderMap(fhr);
+        // 再处理常规参数
+        this.parseParameterMap(fhr, decoder);
+    }
+
+    private void parseParameterMap(FullHttpRequest fhr, QueryStringDecoder decoder) throws IOException {
         final HttpMethod method = fhr.method();
         final Map<String, List<String>> parameterMap = MapUtils.newHashMap(16);
+        // 1. 解析出URL中的参数
+        this.parseUrlParameter(decoder, parameterMap);
 
-        // GET请求
-        if (HttpMethod.GET == method) {
-            parseGetRequestParameter(decoder, parameterMap);
-        }
-        // POST请求
-        else if (HttpMethod.POST == method) {
-            parseGetRequestParameter(decoder, parameterMap);
-            parsePostContent(fhr, parameterMap);
-        }
-        // 不支持其它方法，有需求再实现
-        else {
-            throw new UnrealizedMethodException(method.name(), decoder.path());
+        // 2. POST请求还有一个请求体的参数
+        if (HttpMethod.POST == method) {
+            this.parsePostContent(fhr, parameterMap);
         }
 
         // 转化为Request的参数格式
@@ -141,6 +149,16 @@ class NoarkHttpServletRequest implements HttpServletRequest {
             result.put(e.getKey(), e.getValue().toArray(new String[0]));
         }
         this.parameterMap = result;
+    }
+
+    private void parseHeaderMap(FullHttpRequest fhr) {
+        final HttpHeaders headers = fhr.headers();
+        this.headerMap = MapUtils.newHashMap(headers.size());
+        Iterator<Entry<String, String>> it = headers.iteratorAsString();
+        while (it.hasNext()) {
+            Entry<String, String> next = it.next();
+            headerMap.put(next.getKey(), next.getValue());
+        }
     }
 
     private void parsePostContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
@@ -172,7 +190,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
         // JSON类型的参数格式
         else if ("application/json".equalsIgnoreCase(contentType)) {
-            this.parseJsonContent(fhr, parameterMap, contentEncoding, charset);
+            this.parsePostJsonContent(fhr, parameterMap, contentEncoding, charset);
         }
         // 其他走HTTP常规参数编码key1=val1&key2=val2
         else {
@@ -205,7 +223,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
     }
 
-    private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap, String contentEncoding, String charset) throws IOException {
+    private void parsePostJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap, String contentEncoding, String charset) throws IOException {
         final ByteBuf byteBuf = fhr.content();
         if (byteBuf.readableBytes() == 0) {
             return;
@@ -228,7 +246,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
     }
 
-    private void parseGetRequestParameter(QueryStringDecoder decoder, Map<String, List<String>> parameterMap) {
+    private void parseUrlParameter(QueryStringDecoder decoder, Map<String, List<String>> parameterMap) {
         for (Map.Entry<String, List<String>> e : decoder.parameters().entrySet()) {
             parameterMap.computeIfAbsent(e.getKey(), key -> new ArrayList<>(e.getValue().size())).addAll(e.getValue());
         }

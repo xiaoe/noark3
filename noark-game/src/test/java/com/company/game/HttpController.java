@@ -1,6 +1,7 @@
 package com.company.game;
 
 import xyz.noark.core.annotation.Controller;
+import xyz.noark.core.annotation.controller.RequestHeader;
 import xyz.noark.core.annotation.controller.RequestMapping;
 import xyz.noark.core.annotation.controller.RequestMethod;
 import xyz.noark.core.annotation.controller.RequestParam;
@@ -17,14 +18,14 @@ import static xyz.noark.log.LogHelper.logger;
 @Controller
 public class HttpController {
 
-    private Set<Integer> id = new HashSet<  >();
+    private Set<Integer> id = new HashSet<>();
 
-    @RequestMapping(path = "/test", method = RequestMethod.GET, queueId = "playerId")
-    public synchronized String haha(@RequestParam(name = "a")int a) {
-        logger.debug("test={},", a);
-       if( !id.add(a)){
-           logger.warn("重复ID={}", a);
-       }
+    @RequestMapping(path = "/test", method = RequestMethod.GET)
+    public synchronized String haha(@RequestParam(name = "a") int a, @RequestHeader(name = "Accept-Language") String x) {
+        logger.debug("test={}, x={}", a, x);
+        if (!id.add(a)) {
+            logger.warn("重复ID={}", a);
+        }
         return "test";
     }
 

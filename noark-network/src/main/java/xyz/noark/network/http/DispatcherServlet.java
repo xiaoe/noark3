@@ -21,7 +21,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.controller.RequestBody;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
@@ -239,7 +238,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         viewResolver.resolveView(request, response, handler, result);
     }
 
-    private Object[] analysisParam(HttpMethodWrapper handler, HttpServletRequest request) {
+    private Object[] analysisParam(HttpMethodWrapper handler, HttpServletRequest request) throws Exception {
         // 如果没有参数，返回null.
         if (handler.getParameters().isEmpty()) {
             return new Object[0];
@@ -253,29 +252,8 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
             }
             // 其他转化器参数
             else {
+                String data = this.readParameter(request, param);
                 final Converter<?> converter = this.getConverter(param.getParameter());
-
-                String data;
-                RequestBody requestBody = param.getRequestBody();
-                // 没有RequestBody，从请求参数中拿值
-                if (requestBody == null) {
-                    data = request.getParameter(param.getName());
-                }
-                // 有RequestBody，就要取出请求内容
-                else {
-                    try (InputStream inputStream = request.getInputStream()) {
-                        data = StringUtils.readString(inputStream);
-                    } catch (Exception e) {
-                        data = null;
-                        e.printStackTrace();
-                    }
-
-                    // 请求内容必需有值
-                    if (requestBody.required() && data == null) {
-                        throw new ConvertException("HTTP request body error. uri=" + request.getUri() + "," + param.getName() + " is required.");
-                    }
-                }
-
                 if (data == null) {
                     // 必选参数必需有值
                     if (param.isRequired()) {
@@ -299,6 +277,23 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
             }
         }
         return args.toArray();
+    }
+
+    private String readParameter(HttpServletRequest request, HttpParamWrapper param) throws Exception {
+        // 标识为@RequestBody
+        if (param.isRequestBody()) {
+            try (InputStream inputStream = request.getInputStream()) {
+                return StringUtils.readString(inputStream);
+            }
+        }
+        // 请求头部参数
+        else if (param.isRequestHeader()) {
+            return request.getHeader(param.getName());
+        }
+        // 默认就从请求体中找参数
+        else {
+            return request.getParameter(param.getName());
+        }
     }
 
     private Converter<?> getConverter(Parameter field) {

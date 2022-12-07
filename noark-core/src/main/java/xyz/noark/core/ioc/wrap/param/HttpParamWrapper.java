@@ -14,6 +14,7 @@
 package xyz.noark.core.ioc.wrap.param;
 
 import xyz.noark.core.annotation.controller.RequestBody;
+import xyz.noark.core.annotation.controller.RequestHeader;
 import xyz.noark.core.annotation.controller.RequestParam;
 import xyz.noark.core.util.StringUtils;
 
@@ -27,23 +28,45 @@ import java.lang.reflect.Parameter;
  */
 public class HttpParamWrapper {
     private final Parameter parameter;
-    private final RequestBody requestBody;
-    private final boolean required;
+
     private final String name;
+    private final boolean required;
     private final String defaultValue;
 
-    public HttpParamWrapper(RequestParam requestParam, Parameter parameter) {
-        this.parameter = parameter;
-        this.requestBody = parameter.getAnnotation(RequestBody.class);
+    private boolean requestHeader = false;
+    private boolean requestBody = false;
 
-        if (requestParam == null) {
-            this.required = false;
-            this.name = parameter.getName();
-            this.defaultValue = StringUtils.EMPTY;
-        } else {
+    public HttpParamWrapper(Parameter parameter) {
+        this.parameter = parameter;
+
+        // 标识为@RequestParam
+        if (parameter.isAnnotationPresent(RequestParam.class)) {
+            RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
             this.name = requestParam.name();
             this.required = requestParam.required();
             this.defaultValue = requestParam.defaultValue();
+        }
+        // 标识为@RequestHeader
+        else if (parameter.isAnnotationPresent(RequestHeader.class)) {
+            this.requestHeader = true;
+            RequestHeader requestHeader = parameter.getAnnotation(RequestHeader.class);
+            this.name = requestHeader.name();
+            this.required = requestHeader.required();
+            this.defaultValue = requestHeader.defaultValue();
+        }
+        // 标识为@RequestBody
+        else if (parameter.isAnnotationPresent(RequestBody.class)) {
+            this.requestBody = true;
+            this.name = parameter.getName();
+            this.defaultValue = StringUtils.EMPTY;
+            RequestBody requestBody = parameter.getAnnotation(RequestBody.class);
+            this.required = requestBody.required();
+        }
+        // 默认给个规则解析
+        else {
+            this.required = false;
+            this.name = parameter.getName();
+            this.defaultValue = StringUtils.EMPTY;
         }
     }
 
@@ -63,7 +86,11 @@ public class HttpParamWrapper {
         return defaultValue;
     }
 
-    public RequestBody getRequestBody() {
+    public boolean isRequestHeader() {
+        return requestHeader;
+    }
+
+    public boolean isRequestBody() {
         return requestBody;
     }
 }
