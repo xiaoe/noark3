@@ -16,10 +16,13 @@ package xyz.noark.network.rpc;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelPipeline;
 import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.MapUtils;
+import xyz.noark.network.codec.rpc.RpcSignalEncoder;
+import xyz.noark.network.init.SocketInitializeHandler;
 import xyz.noark.network.rpc.stub.RpcStub;
 import xyz.noark.network.rpc.stub.RpcSyncStub;
 
@@ -97,6 +100,8 @@ public class RpcConnector {
 
             // 链接通道
             this.channel = cf.channel();
+            this.trySendSignal(channel);
+
             // 把RPC处理器给挂上去
             this.channel.pipeline().addLast(new RpcConnectorHandler(this));
             // 重置失败计次
@@ -107,6 +112,17 @@ public class RpcConnector {
             // 失败计次++
             this.fails++;
         }
+    }
+
+    private void trySendSignal(Channel channel) {
+        ChannelPipeline pipeline = channel.pipeline();
+        // 先增加一个暗号编码器
+        String signalKey = RpcSignalEncoder.class.getSimpleName();
+        pipeline.addLast(signalKey, new RpcSignalEncoder());
+        // 发送暗号
+        channel.writeAndFlush(SocketInitializeHandler.SOCKET_NAME);
+        // 用完移除掉这个编码器
+        pipeline.remove(signalKey);
     }
 
     public boolean isConnected() {
