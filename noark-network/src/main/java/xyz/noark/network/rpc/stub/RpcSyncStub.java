@@ -13,11 +13,13 @@
  */
 package xyz.noark.network.rpc.stub;
 
-import com.alibaba.fastjson.JSON;
 import xyz.noark.core.exception.RpcTimeoutException;
 import xyz.noark.network.codec.rpc.RpcPacket;
+import xyz.noark.network.util.CodecUtils;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @since 3.4.7
  */
 public class RpcSyncStub<T> extends RpcStub {
+    private static final ConcurrentHashMap<Class<?>, Method> CACHES = new ConcurrentHashMap<>(1024);
     private final Integer reqId;
     private final Class<T> ackClass;
     private final ArrayBlockingQueue<RpcPacket> awaitQueue;
@@ -53,7 +56,8 @@ public class RpcSyncStub<T> extends RpcStub {
             if (packet == null) {
                 throw new RpcTimeoutException("Rpc超时 reqId=" + reqId);
             }
-            return JSON.parseObject(packet.getByteArray().array(), ackClass);
+
+            return CodecUtils.deserialize(packet.getByteArray().array(), ackClass);
         } catch (Exception e) {
             throw new RpcTimeoutException("Rpc超时 reqId=" + reqId, e);
         }

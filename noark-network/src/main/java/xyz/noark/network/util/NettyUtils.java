@@ -23,6 +23,7 @@ import xyz.noark.core.util.StringUtils;
  * Netty相关的工具类.
  *
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4.7
  */
 public class NettyUtils {
     private static final String UNKNOWN = "unknown";
