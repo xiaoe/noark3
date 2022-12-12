@@ -13,7 +13,6 @@
  */
 package xyz.noark.game.event;
 
-import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.Event;
@@ -41,13 +40,13 @@ import static xyz.noark.log.LogHelper.logger;
 public class DefaultEventManager implements EventManager {
     private static final EventMethodManager EVENT_MANAGER = EventMethodManager.getInstance();
     private static final ScheduledMethodManager SCHEDULED_MANAGER = ScheduledMethodManager.getInstance();
-    @Autowired
-    private static ThreadDispatcher threadDispatcher;
+    private static final ThreadDispatcher threadDispatcher = ThreadDispatcher.getInstance();
+
     @Value(NoarkConstant.SERVER_DEBUG)
     private static boolean debug = false;
 
     private final DelayEventThread handler = new DelayEventThread(this);
-
+    
     /**
      * 断言这个延迟事件不在队列中.
      * <p>只在研发环境下才会生效</p>

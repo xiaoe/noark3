@@ -17,7 +17,6 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
-import xyz.noark.core.lang.ByteArray;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.MapUtils;
@@ -45,7 +44,7 @@ public class RpcConnector {
     private final PacketCodec packetCodec;
     private final SocketAddress address;
 
-    private Channel channel;
+    private RpcClientSession session;
 
     public RpcConnector(Bootstrap bootstrap, PacketCodec packetCodec, SocketAddress address) {
         this.bootstrap = bootstrap;
@@ -88,8 +87,7 @@ public class RpcConnector {
 
     private void send(RpcReqProtocol protocol) {
         // 使用封包编码器去编码
-        ByteArray packet = packetCodec.encodePacket(protocol);
-        channel.writeAndFlush(packet, channel.voidPromise());
+        session.send(packetCodec.encodePacket(protocol));
     }
 
     public synchronized void connect() {
@@ -99,11 +97,12 @@ public class RpcConnector {
             ChannelFuture cf = bootstrap.connect(address).sync();
 
             // 链接通道
-            this.channel = cf.channel();
+            final Channel channel = cf.channel();
+            this.session = new RpcClientSession(channel);
             this.trySendSignal(channel);
 
             // 把RPC处理器给挂上去
-            this.channel.pipeline().addLast(new RpcConnectorHandler(this));
+            channel.pipeline().addLast(new RpcConnectorHandler(this));
             // 重置失败计次
             this.fails = 0;
         } catch (Throwable e) {
@@ -126,7 +125,11 @@ public class RpcConnector {
     }
 
     public boolean isConnected() {
-        return channel != null && channel.isActive();
+        return session != null && session.isActive();
+    }
+
+    public RpcClientSession getSession() {
+        return session;
     }
 
     /**

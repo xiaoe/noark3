@@ -13,8 +13,6 @@
  */
 package xyz.noark.core.thread;
 
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.thread.task.TaskCallback;
 import xyz.noark.core.thread.task.TaskQueue;
 import xyz.noark.log.MDC;
@@ -31,10 +29,7 @@ import java.io.Serializable;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-@StaticComponent
 public class AsyncHelper {
-    @Autowired
-    private static ThreadDispatcher threadDispatcher;
 
     /**
      * 私有化构造函数
@@ -59,7 +54,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void call(Serializable queueId, TaskCallback callback) {
-        threadDispatcher.dispatchTask(queueId, callback, true);
+        ThreadDispatcher.getInstance().dispatchTask(queueId, callback, true);
     }
 
     /**
@@ -70,6 +65,6 @@ public class AsyncHelper {
      */
     public static void randomCall(TaskCallback callback) {
         // 不指定队列ID，随机一个空闲线程
-        threadDispatcher.dispatchTask(null, callback, true);
+        ThreadDispatcher.getInstance().dispatchTask(null, callback, true);
     }
 }

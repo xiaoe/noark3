@@ -17,7 +17,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
+import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
 import xyz.noark.core.lang.ByteArray;
+import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.network.codec.rpc.RpcPacket;
 import xyz.noark.network.rpc.stub.RpcStub;
 
@@ -28,7 +30,7 @@ import xyz.noark.network.rpc.stub.RpcStub;
  * @since 3.4.7
  */
 public class RpcConnectorHandler extends SimpleChannelInboundHandler<RpcPacket> {
-    public final RpcConnector client;
+    private final RpcConnector client;
 
     public RpcConnectorHandler(RpcConnector client) {
         this.client = client;
@@ -40,7 +42,7 @@ public class RpcConnectorHandler extends SimpleChannelInboundHandler<RpcPacket> 
             // 请求
             if (packet.isReqFlag()) {
                 PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(packet.getOpcode());
-                //threadDispatcher.dispatchPacket(SessionManager.getSession(ctx.channel().id()), packet, (LocalPacketMethodWrapper) pmw);
+                ThreadDispatcher.getInstance().dispatchClientPacket(client.getSession(), packet, (LocalPacketMethodWrapper) pmw);
             }
             // 响应
             else {

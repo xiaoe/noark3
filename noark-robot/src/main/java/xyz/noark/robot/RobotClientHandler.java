@@ -16,10 +16,10 @@ package xyz.noark.robot;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.ioc.manager.PacketMethodManager;
 import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.LocalPacketMethodWrapper;
+import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.network.codec.DefaultNetworkPacket;
@@ -35,9 +35,6 @@ import static xyz.noark.log.LogHelper.logger;
 @Sharable
 public class RobotClientHandler extends SimpleChannelInboundHandler<DefaultNetworkPacket> {
 
-    @Autowired
-    private ThreadDispatcher threadDispatcher;
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DefaultNetworkPacket packet) {
         PacketMethodWrapper pmw = PacketMethodManager.getInstance().getPacketMethodWrapper(packet.getOpcode());
@@ -45,6 +42,7 @@ public class RobotClientHandler extends SimpleChannelInboundHandler<DefaultNetwo
             logger.warn("undefined protocol, opcode={}", packet.getOpcode());
             return;
         }
-        threadDispatcher.dispatchClientPacket(SessionManager.getSession(ctx.channel().id()), packet, (LocalPacketMethodWrapper) pmw);
+        Session session = SessionManager.getSession(ctx.channel().id());
+        ThreadDispatcher.getInstance().dispatchClientPacket(session, packet, (LocalPacketMethodWrapper) pmw);
     }
 }

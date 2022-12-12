@@ -13,8 +13,6 @@
  */
 package xyz.noark.core.network;
 
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.StaticComponent;
 import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.core.util.ArrayUtils;
 
@@ -26,11 +24,7 @@ import java.io.Serializable;
  * @author 小流氓[176543888@qq.com]
  * @since 3.0
  */
-@StaticComponent
 public final class Sender {
-
-    @Autowired
-    private static ThreadDispatcher threadDispatcher;
 
     /**
      * 给全服在线玩家转发一个封包.
@@ -78,6 +72,6 @@ public final class Sender {
      * @param protocol 协议对象
      */
     public static void innerRelayPacket(Serializable playerId, Serializable opcode, Object protocol) {
-        threadDispatcher.dispatchInnerPacket(playerId, opcode, protocol);
+        ThreadDispatcher.getInstance().dispatchInnerPacket(playerId, opcode, protocol);
     }
 }

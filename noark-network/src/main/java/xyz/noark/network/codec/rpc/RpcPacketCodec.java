@@ -14,6 +14,7 @@
 package xyz.noark.network.codec.rpc;
 
 import com.alibaba.fastjson.JSON;
+import com.google.protobuf.GeneratedMessageV3;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -22,12 +23,15 @@ import xyz.noark.core.lang.ImmutableByteArray;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.NetworkProtocol;
 import xyz.noark.core.util.GzipUtils;
+import xyz.noark.core.util.MethodUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.rpc.RpcReqProtocol;
 import xyz.noark.network.util.ByteBufUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Json封包解码器.
@@ -37,16 +41,34 @@ import java.io.IOException;
  * @since 3.4.7
  */
 public class RpcPacketCodec extends AbstractPacketCodec {
+    private static final ConcurrentHashMap<Class<?>, Method> CACHES = new ConcurrentHashMap<>(1024);
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T decodeProtocol(ByteArray bytes, Class<T> klass) {
+        // Protobuf
+        if (GeneratedMessageV3.class.isAssignableFrom(klass)) {
+            Method method = CACHES.computeIfAbsent(klass, key -> MethodUtils.getMethod(key, "parseFrom", byte[].class));
+            return (T) MethodUtils.invoke(null, method, bytes.array());
+        }
+        // JSON
         return JSON.parseObject(bytes.array(), klass);
     }
 
     @Override
     public ByteArray encodePacket(NetworkProtocol networkProtocol) {
+        byte[] bytes;
+        // Protobuf
+        if (networkProtocol.getProtocol() instanceof GeneratedMessageV3) {
+            bytes = ((GeneratedMessageV3) networkProtocol.getProtocol()).toByteArray();
+        }
+        // JSON
+        else {
+            bytes = JSON.toJSONBytes(networkProtocol.getProtocol());
+        }
+
+        // 压缩
         int compressFlag = 0;
-        byte[] bytes = JSON.toJSONBytes(networkProtocol.getProtocol());
         if (bytes.length > 1024) {
             try {
                 bytes = GzipUtils.compress(bytes);

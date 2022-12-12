@@ -56,8 +56,6 @@ import static xyz.noark.log.LogHelper.logger;
 public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final ViewResolver viewResolver = new DefaultViewResolver();
     @Autowired
-    private ThreadDispatcher threadDispatcher;
-    @Autowired
     private HandleInterceptChain handleInterceptChain;
 
     @Override
@@ -123,7 +121,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         final Serializable queueId = this.getQueueId(handler, request);
         // 异步派发
         final long createTime = System.nanoTime();
-        threadDispatcher.dispatchTask(queueId, () -> this.exec(request, response, handler, createTime), false);
+        ThreadDispatcher.getInstance().dispatchTask(queueId, () -> this.exec(request, response, handler, createTime), false);
     }
 
     /**

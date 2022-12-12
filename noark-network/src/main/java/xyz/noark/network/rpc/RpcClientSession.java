@@ -11,31 +11,24 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.game.event;
+package xyz.noark.network.rpc;
 
-import xyz.noark.core.event.DelayEvent;
-
-import java.util.concurrent.DelayQueue;
+import io.netty.channel.Channel;
+import xyz.noark.network.SocketSession;
 
 /**
- * 延迟事件断言类.
+ * RPC客户端的Session.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4.6
+ * @since 3.4.7
  */
-public class DelayEventAsserter {
-    /**
-     * 断言这个事件不在延迟队列中.
-     * <p>这里的不在，是使用的==判定，并不是equals</p>
-     *
-     * @param event 延迟事件
-     */
-    public static void notInQueue(AbstractDelayEvent event) {
-        DelayQueue<DelayEvent> queue = DelayEventThread.QUEUE;
-        for (DelayEvent next : queue) {
-            if (event == next) {
-                throw new IllegalStateException("这个事件已在队列中，不可以直接修改结束时间... class=" + event.getClass().getName());
-            }
-        }
+public class RpcClientSession extends SocketSession {
+
+    public RpcClientSession(Channel channel) {
+        super(channel, false, null);
+    }
+
+    public boolean isActive() {
+        return channel.isActive();
     }
 }

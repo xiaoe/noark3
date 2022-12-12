@@ -14,7 +14,6 @@
 package xyz.noark.core.thread;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
-import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.event.Event;
 import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.event.PlayerEvent;
@@ -49,7 +48,9 @@ import static xyz.noark.log.LogHelper.logger;
  * @since 3.0
  */
 public class ThreadDispatcher {
+    private static final ThreadDispatcher instance = new ThreadDispatcher();
     private static final int SHUTDOWN_MAX_TIME = 10;
+
     /**
      * 处理业务逻辑的线程池...
      */
@@ -59,29 +60,31 @@ public class ThreadDispatcher {
      */
     private TimeoutHashMap<Serializable, TaskQueue> threadPoolTaskQueue;
 
-    @Autowired(required = false)
-    private MonitorThreadPool monitorThreadPool;
+    private ThreadDispatcher() {
+    }
 
-    public ThreadDispatcher() {
+    public static ThreadDispatcher getInstance() {
+        return instance;
     }
 
     /**
      * 初始线程调度器的配置.
      *
-     * @param poolSize         处理业务逻辑的线程数量
-     * @param threadNamePrefix 线程名称前缀
-     * @param timeout          队列超时销毁时间，单位：分钟
-     * @param execTimeout      任务执行超时，单位：秒
-     * @param outputStack      任务执行超时输出线程执行堆栈信息，默认开启
+     * @param poolSize          处理业务逻辑的线程数量
+     * @param threadNamePrefix  线程名称前缀
+     * @param timeout           队列超时销毁时间，单位：分钟
+     * @param execTimeout       任务执行超时，单位：秒
+     * @param outputStack       任务执行超时输出线程执行堆栈信息，默认开启
+     * @param monitorThreadPool 监控线程池
      */
-    public void init(int poolSize, String threadNamePrefix, int timeout, int execTimeout, boolean outputStack) {
+    public void init(int poolSize, String threadNamePrefix, int timeout, int execTimeout, boolean outputStack, MonitorThreadPool monitorThreadPool) {
         BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         ThreadFactory threadFactory = new NamedThreadFactory(threadNamePrefix);
         this.businessThreadPool = new ThreadPoolExecutor(poolSize, poolSize, 0L, TimeUnit.MILLISECONDS, workQueue, threadFactory);
-        this.threadPoolTaskQueue = new TimeoutHashMap<>(timeout, TimeUnit.MINUTES, buildLoader(execTimeout, outputStack));
+        this.threadPoolTaskQueue = new TimeoutHashMap<>(timeout, TimeUnit.MINUTES, buildLoader(execTimeout, outputStack, monitorThreadPool));
     }
 
-    private CacheLoader<Serializable, TaskQueue> buildLoader(int execTimeout, boolean outputStack) {
+    private CacheLoader<Serializable, TaskQueue> buildLoader(int execTimeout, boolean outputStack, MonitorThreadPool monitorThreadPool) {
         // 启动监控的任务队列
         if (execTimeout > 0) {
             return (id) -> new MonitorTaskQueue(id, monitorThreadPool, businessThreadPool, execTimeout, outputStack);
