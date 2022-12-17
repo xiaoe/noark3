@@ -58,6 +58,12 @@ public class TraceIdFactory {
         MDC.put(TRACE_ID, "monitor-service");
     }
 
+    /**
+     * 初始化一个的随机的TraceId标识
+     */
+    public static void initRandomTraceId() {
+        MDC.put(TRACE_ID, randomTraceId());
+    }
 
     /**
      * 从MDC中获取链路追踪ID之traceId
@@ -76,4 +82,6 @@ public class TraceIdFactory {
     public static String randomTraceId() {
         return UUID.randomUUID().toString();
     }
+
+
 }
