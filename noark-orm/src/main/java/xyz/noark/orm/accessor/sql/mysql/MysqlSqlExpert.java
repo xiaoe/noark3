@@ -67,7 +67,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
                         case AsAtomicLong:
                         case AsFloat:
                         case AsDouble:
-                            sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
+                            sb.append(" DEFAULT ").append(fm.getDefaultValue());
+                            break;
+                        // Blob是不可以有默认值的
+                        case AsBlob:
                             break;
                         default:
                             // 超过这个值当Text啦，Text是不可以有默认值的.
@@ -345,7 +348,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
                 case AsAtomicLong:
                 case AsFloat:
                 case AsDouble:
-                    sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
+                    sb.append(" DEFAULT ").append(fm.getDefaultValue());
+                    break;
+                //Blob是不会有默认值的
+                case AsBlob:
                     break;
                 default:
                     // 超过这个值当Text啦，Text是不可以有默认值的.
