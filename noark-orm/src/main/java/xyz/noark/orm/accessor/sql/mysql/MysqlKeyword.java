@@ -29,8 +29,7 @@ public class MysqlKeyword {
             // B开头的.
             "before", "between", "bigint", "binary", "blob", "both", "by",
             // C开头的.
-            "call", "cascade", "case", "change", "char", "character", "check", "collate", "column", "condition", "connection", "constraint", "continue", "convert", "create", "cross", "current_date", "current_time", "current_timestamp", "current_user",
-            "cursor",
+            "call", "cascade", "case", "change", "char", "character", "check", "collate", "column", "condition", "connection", "constraint", "continue", "convert", "create", "cross", "current_date", "current_time", "current_timestamp", "current_user", "cursor",
             // D开头的.
             "database", "databases", "day_hour", "day_microsecond", "day_minute", "day_second", "dec", "decimal", "declare", "default", "delayed", "delete", "desc", "describe", "deterministic", "distinct", "distinctrow", "div", "double", "drop", "dual",
             // E开头的.
@@ -58,8 +57,7 @@ public class MysqlKeyword {
             // R开头的.
             "raid0", "range", "read", "reads", "real", "references", "regexp", "release", "rename", "repeat", "replace", "require", "restrict", "return", "revoke", "right", "rlike",
             // S开头的.
-            "schema", "schemas", "second_microsecond", "select", "sensitive", "separator", "set", "show", "smallint", "spatial", "specific", "sql", "sqlexception", "sqlstate", "sqlwarning", "sql_big_result", "sql_calc_found_rows", "sql_small_result",
-            "ssl", "starting", "straight_join",
+            "schema", "schemas", "second_microsecond", "select", "sensitive", "separator", "set", "show", "smallint", "spatial", "specific", "sql", "sqlexception", "sqlstate", "sqlwarning", "sql_big_result", "sql_calc_found_rows", "sql_small_result", "ssl", "starting", "straight_join", "system",
             // T开头的.
             "table", "terminated", "then", "tinyblob", "tinyint", "tinytext", "to", "trailing", "trigger", "true",
             // U开头的.
