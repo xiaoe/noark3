@@ -55,15 +55,15 @@ public class MysqlKeyword {
             // P开头的.
             "precision", "primary", "procedure", "purge",
             // R开头的.
-            "raid0", "range", "read", "reads", "real", "references", "regexp", "release", "rename", "repeat", "replace", "require", "restrict", "return", "revoke", "right", "rlike",
+            "rank", "raid0", "range", "read", "reads", "real", "references", "regexp", "release", "rename", "repeat", "replace", "require", "restrict", "return", "revoke", "right", "rlike",
             // S开头的.
             "schema", "schemas", "second_microsecond", "select", "sensitive", "separator", "set", "show", "smallint", "spatial", "specific", "sql", "sqlexception", "sqlstate", "sqlwarning", "sql_big_result", "sql_calc_found_rows", "sql_small_result", "ssl", "starting", "straight_join", "system",
             // T开头的.
-            "table", "terminated", "then", "tinyblob", "tinyint", "tinytext", "to", "trailing", "trigger", "true", "times",
+            "table", "terminated", "then", "tinyblob", "tinyint", "tinytext", "to", "trailing", "trigger", "true",
             // U开头的.
             "undo", "union", "unique", "unlock", "unsigned", "update", "usage", "use", "using", "utc_date", "utc_time", "utc_timestamp",
             // V开头的.
-            "value", "values", "varbinary", "varchar", "varcharacter", "varying",
+            "values", "varbinary", "varchar", "varcharacter", "varying",
             // WXYZ开头的.
             "when", "where", "while", "with", "write", "x509", "xor", "year_month", "zerofill"));
 
