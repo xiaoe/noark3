@@ -13,9 +13,16 @@
  */
 package xyz.noark.core.util;
 
+import xyz.noark.core.exception.UnrealizedException;
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 文件操作工具类.
@@ -37,8 +44,8 @@ public class FileUtils {
      */
     public static Optional<String> loadFileText(String fileName) {
         try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)) {
-            return Optional.ofNullable(StringUtils.readString(is));
-        } catch (Exception e) {
+            return Optional.of(StringUtils.readString(is));
+        } catch (Exception ignored) {
         }
         // 文件不存在等其他情况返回null
         return Optional.empty();
@@ -82,8 +89,7 @@ public class FileUtils {
      * @throws IOException If an I/O error occurs
      */
     public static void writeFileText(String fileName, boolean append, String content) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(fileName, append);
-             OutputStreamWriter osw = new OutputStreamWriter(fos, CharsetUtils.CHARSET_UTF_8)) {
+        try (FileOutputStream fos = new FileOutputStream(fileName, append); OutputStreamWriter osw = new OutputStreamWriter(fos, CharsetUtils.CHARSET_UTF_8)) {
             osw.write(content);
             osw.flush();
         }
@@ -93,8 +99,7 @@ public class FileUtils {
     public static void writerFile(String fileName, byte[] data, boolean append) throws IOException {
         File file = new File(fileName);
         createNewFile(file);
-        try (FileOutputStream fos = new FileOutputStream(file, append);
-             OutputStream out = new BufferedOutputStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(file, append); OutputStream out = new BufferedOutputStream(fos)) {
             out.write(data);
             out.flush();
         }
@@ -149,4 +154,122 @@ public class FileUtils {
         return file.createNewFile();
     }
 
+    /**
+     * 复制指定文件或目录到目标文件或目录.
+     *
+     * @param srcPath    指定文件或目录
+     * @param targetPath 目标文件或目录
+     * @throws IOException 创建文件或目录时可能会抛出此异常
+     */
+    public static void copy(String srcPath, String targetPath) throws IOException {
+        copy(new File(srcPath), new File(targetPath), Collections.emptySet(), Collections.emptySet());
+    }
+
+    /**
+     * 复制指定文件或目录到目标文件或目录.
+     *
+     * @param srcPath    指定文件或目录
+     * @param targetPath 目标文件或目录
+     * @param checklist  只处理指定的文件清单，如果为空则为全部
+     * @throws IOException 创建文件或目录时可能会抛出此异常
+     */
+    public static void copy(String srcPath, String targetPath, Set<String> checklist) throws IOException {
+        copy(new File(srcPath), new File(targetPath), checklist, Collections.emptySet());
+    }
+
+    /**
+     * 复制指定文件或目录到目标文件或目录.
+     *
+     * @param srcPath      指定文件或目录
+     * @param targetPath   目标文件或目录
+     * @param checklist    只处理指定的文件清单，如果为空则为全部
+     * @param ignoreDirSet 忽略目录名称的列表，如果为空则不忽略
+     * @throws IOException 创建文件或目录时可能会抛出此异常
+     */
+    public static void copy(String srcPath, String targetPath, Set<String> checklist, Set<String> ignoreDirSet) throws IOException {
+        copy(new File(srcPath), new File(targetPath), checklist, ignoreDirSet);
+    }
+
+    /**
+     * 复制指定文件或目录到目标文件或目录.
+     *
+     * @param srcFile      指定文件或目录
+     * @param targetFile   目标文件或目录
+     * @param checklist    只处理指定的文件清单，如果为空则为全部
+     * @param ignoreDirSet 忽略目录名称的列表，如果为空则不忽略
+     * @throws IOException 创建文件或目录时可能会抛出此异常
+     */
+    public static void copy(File srcFile, File targetFile, Set<String> checklist, Set<String> ignoreDirSet) throws IOException {
+        // 0. src不存在，你复制什么呢???
+        if (!srcFile.exists()) {
+            throw new FileNotFoundException(srcFile.getPath());
+        }
+
+        // 1. src是个文件
+        if (srcFile.isFile()) {
+            // 1.1 target 不存在，自动创建
+            if (!targetFile.exists()) {
+                createNewFile(targetFile);
+                Files.copy(srcFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            // 1.2 target 存在，覆盖
+            else if (targetFile.isFile()) {
+                Files.copy(srcFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            // 1.3 target 是个目录
+            else if (targetFile.isDirectory()) {
+                // 创建新文件
+                File newFile = new File(targetFile.getPath(), srcFile.getName());
+                newFile.createNewFile();
+                Files.copy(srcFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            // 未实现的情况
+            else {
+                throw new UnrealizedException("未知实现 targetFile=" + targetFile.getPath());
+            }
+        }
+        // 2. src 是个目录
+        else if (srcFile.isDirectory()) {
+            // 2.1 target 不存在，自动创建目标进行复制
+            if (!targetFile.exists()) {
+                targetFile.mkdirs();
+                copyDir(srcFile, targetFile, checklist, ignoreDirSet);
+            }
+            // 2.2 target 也是一个目录，覆盖此目录
+            else if (targetFile.isDirectory()) {
+                copyDir(srcFile, targetFile, checklist, ignoreDirSet);
+            }
+            // 其他情况都是不正常情况
+            else {
+                throw new UnrealizedException("目录不能复制到文件中 targetFile=" + targetFile.getPath());
+            }
+        }
+        // 未实现的情况
+        else {
+            throw new UnrealizedException("未实现的文件类型复制 srcFile=" + srcFile.getPath());
+        }
+    }
+
+    private static void copyDir(File srcFile, File target, Set<String> fileNameSet, Set<String> ignoreSet) throws IOException {
+        for (File file : Objects.requireNonNull(srcFile.listFiles(v -> v.isDirectory() || fileNameSet.isEmpty() || fileNameSet.contains(v.getName())))) {
+            // 忽略复制那就丢掉
+            if (ignoreSet.contains(file.getName())) {
+                continue;
+            }
+            // 复制文件
+            if (file.isFile()) {
+                // 创建新文件
+                File newFile = new File(target.getPath(), file.getName());
+                newFile.createNewFile();
+                Files.copy(file.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            // 递归复制目录
+            else if (file.isDirectory()) {
+                // 创建子目录
+                File subDir = new File(target.getPath(), file.getName());
+                subDir.mkdirs();
+                copyDir(file, subDir, fileNameSet, ignoreSet);
+            }
+        }
+    }
 }
