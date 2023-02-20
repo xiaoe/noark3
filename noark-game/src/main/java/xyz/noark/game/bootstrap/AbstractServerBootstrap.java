@@ -94,8 +94,11 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 
             float interval = (System.nanoTime() - startTime) / 1000_000f;
             logger.info("{} is running, interval={} ms", this.getServerName(), interval);
-            System.out.println(this.getServerName() + " is running, interval=" + interval + " ms");
 
+            // 打印启动信息
+            this.printStartInfo(interval);
+
+            // 打印Banner
             if (this.showBanner()) {
                 FileUtils.loadFileText(bannerFileName()).ifPresent(this::printBanner);
             }
@@ -104,6 +107,10 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             logger.error("failed to starting service:{}, exception={}", this.getServerName(), e);
             System.exit(1);
         }
+    }
+
+    protected void printStartInfo(float interval) {
+        System.out.println(this.getServerName() + " is running, interval=" + interval + " ms");
     }
 
     protected void onBeginStart() {
@@ -190,8 +197,9 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
         logger.info("stopping service: {}", this.getServerName());
         try {
             logger.info("goodbye {}", this.getServerName());
-            System.out.println("goodbye " + this.getServerName());
-
+            // 打印停止事件
+            this.printStopInfo();
+            // 停止逻辑
             this.onStop();
         } catch (Exception e) {
             logger.error("failed to stopping service:{}", this.getServerName(), e);
@@ -206,6 +214,10 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             // 删除PID文件
             this.deletePidFile();
         }
+    }
+
+    protected void printStopInfo() {
+        System.out.println("goodbye " + this.getServerName());
     }
 
     /**
