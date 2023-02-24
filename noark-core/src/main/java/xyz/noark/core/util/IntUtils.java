@@ -13,6 +13,10 @@
  */
 package xyz.noark.core.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Int工具类，目前只是放一些常量，用于消除P3C的警告.
  *
@@ -26,4 +30,26 @@ public class IntUtils {
     public static final int NUM_4 = 4;
     public static final int NUM_5 = 5;
     public static final int NUM_10 = 10;
+
+    /**
+     * 切割分组，给定一个数字，比如100，现在切成N份，随机一下，让切割效果看起来还不错的分法
+     *
+     * @param num   给定的一个数字
+     * @param limit 分割的份数
+     * @return 返回分割后的结果
+     */
+    public static List<Integer> split(int num, int limit) {
+        List<Integer> result = new ArrayList<>(limit);
+        // 前N-1次都是在一半+1中随机
+        for (int i = 0; i < limit - 1; i++) {
+            int random = RandomUtils.nextInt(0, num / 2 + 1);
+            num -= random;
+            result.add(random);
+        }
+        // 加上剩的
+        result.add(num);
+        // 洗牌，随出的结果会好看些
+        Collections.shuffle(result);
+        return result;
+    }
 }
