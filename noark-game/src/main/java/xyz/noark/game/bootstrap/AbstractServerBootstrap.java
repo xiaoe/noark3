@@ -21,10 +21,7 @@ import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.thread.NamedThreadFactory;
 import xyz.noark.core.thread.TraceIdFactory;
-import xyz.noark.core.util.BooleanUtils;
-import xyz.noark.core.util.FileUtils;
-import xyz.noark.core.util.StringUtils;
-import xyz.noark.core.util.SystemUtils;
+import xyz.noark.core.util.*;
 import xyz.noark.game.NoarkConstant;
 import xyz.noark.log.LogManager;
 
@@ -92,7 +89,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             // 启动逻辑
             this.onStart();
 
-            float interval = (System.nanoTime() - startTime) / 1000_000f;
+            float interval = DateUtils.formatNanoTime(System.nanoTime() - startTime);
             logger.info("{} is running, interval={} ms", this.getServerName(), interval);
 
             // 打印启动信息

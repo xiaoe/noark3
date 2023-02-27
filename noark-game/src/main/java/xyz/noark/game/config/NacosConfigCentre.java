@@ -20,11 +20,9 @@ import xyz.noark.core.util.RandomUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.game.NoarkConstant;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 基于Nacos实现的配置中心.
@@ -32,6 +30,10 @@ import java.util.Map;
  * @author 小流氓[176543888@qq.com]
  */
 public class NacosConfigCentre extends AbstractConfigCentre {
+    /**
+     * Nacos中dataId参数，对应游戏里就是配置文件名称
+     */
+    private static final String DEFAULT_DATA_ID = "application.properties";
     private static final String DEFAULT_GROUP = "DEFAULT_GROUP";
     private final List<String> serverAddrList;
     private final String username;
@@ -39,8 +41,6 @@ public class NacosConfigCentre extends AbstractConfigCentre {
     private final String tenant;
 
     public NacosConfigCentre(HashMap<String, String> basicConfig) {
-        super(basicConfig);
-
         String addr = basicConfig.getOrDefault(NoarkConstant.NACOS_SERVER_ADDR, "127.0.0.1:8848");
         String[] array = StringUtils.split(addr, ";");
         List<String> serverAddr = new ArrayList<>(array.length);
@@ -57,29 +57,38 @@ public class NacosConfigCentre extends AbstractConfigCentre {
     }
 
     @Override
-    public Map<String, String> loadConfig(String sid) {
-        Map<String, String> result = new HashMap<>(32);
-        // 加载通用配置
-        result.putAll(nacosLoadConfig("application.properties"));
-        // 再取本服配置的覆盖默认配置
-        result.putAll(nacosLoadConfig(StringUtils.join("application-", sid, ".properties")));
-        // 最终结果返回
-        return result;
+    protected Map<String, String> doLoadConfig(String sid) {
+        return this.nacosLoadConfig(DEFAULT_DATA_ID, sid);
     }
 
-    private Map<String, String> nacosLoadConfig(String dataId) {
+    @Override
+    protected Map<String, String> doLoadConfig() {
+        return this.nacosLoadConfig(DEFAULT_DATA_ID, DEFAULT_GROUP);
+    }
+
+    private Map<String, String> nacosLoadConfig(String dataId, String group) {
         String serverAddr = RandomUtils.randomList(serverAddrList);
         String url;
         if (StringUtils.isNotEmpty(username)) {
-            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId,
-                    "&group=", DEFAULT_GROUP, "&tenant=", tenant, "&username=", username, "&password=", password);
+            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", DEFAULT_GROUP, "&tenant=", tenant, "&username=", username, "&password=", password);
         } else {
             url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", DEFAULT_GROUP, "&tenant=", tenant);
         }
 
         try {
             return toMap(HttpUtils.get(url));
-        } catch (IOException e) {
+        }
+        // 未配置指定dataId的配置文件
+        catch (FileNotFoundException e) {
+            // 通用配置那是必需要存在
+            if (DEFAULT_GROUP.equalsIgnoreCase(group)) {
+                throw new ServerBootstrapException("加载Nacos配置中心配置时文件不存在", e);
+            }
+            // 本服私服可能可以为空的
+            return Collections.emptyMap();
+        }
+        // 未知情况
+        catch (IOException e) {
             throw new ServerBootstrapException("加载Nacos配置中心配置时发生了异常情况", e);
         }
     }

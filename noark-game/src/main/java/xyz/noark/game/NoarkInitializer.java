@@ -53,7 +53,6 @@ class NoarkInitializer {
      * 根据启动参数分析加载相应的配置文件
      */
     private Map<String, String> loadProperties(String... args) {
-        // 载入配置文件...
         NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
         // 加载命令行参数
         loader.loadingArgs(args);

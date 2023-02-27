@@ -28,5 +28,5 @@ public interface ConfigCentre {
      * @param sid 区服ID
      * @return 配置参数
      */
-    public Map<String, String> loadConfig(String sid);
+    Map<String, String> loadConfig(String sid);
 }

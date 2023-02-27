@@ -122,7 +122,7 @@ class NoarkPropertiesLoader {
     }
 
     private HashMap<String, String> loadingFile(String filename, String profile) {
-        HashMap<String, String> config = MapUtils.newHashMap(128);
+        HashMap<String, String> config = MapUtils.newHashMap(32);
         this.loadingFile(filename + PROPERTIES_SUFFIX, config);
 
         // 加载指定的Profile
@@ -194,7 +194,8 @@ class NoarkPropertiesLoader {
             this.loadNoarkConfigCentre(properties);
             this.loadingConfigAfter(properties);
         }
-        // Nacos配置中心(老版本，日后要移除)
+
+        // Nacos配置中心
         else if (BooleanUtils.toBoolean(properties.get(NoarkConstant.NACOS_ENABLED))) {
             this.loadNacosConfigCentre(properties);
             this.loadingConfigAfter(properties);

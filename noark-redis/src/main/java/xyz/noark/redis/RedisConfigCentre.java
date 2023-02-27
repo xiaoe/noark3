@@ -33,10 +33,8 @@ public class RedisConfigCentre extends AbstractConfigCentre {
     protected final String configPathDefault;
 
     public RedisConfigCentre(HashMap<String, String> basicConfig) {
-        super(basicConfig);
         this.configPathPrefix = basicConfig.getOrDefault("NoarkConstant.CONFIG_PATH", "/noark/config/game/");
         this.configPathDefault = StringUtils.pathJoin(configPathPrefix, "default");
-
 
         String host = basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_HOST, "127.0.0.1");
         int port = Integer.parseInt(basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_PORT, "6379"));
@@ -50,13 +48,12 @@ public class RedisConfigCentre extends AbstractConfigCentre {
     }
 
     @Override
-    public Map<String, String> loadConfig(String sid) {
-        Map<String, String> result = new HashMap<>(32);
-        // 先要拿一个默认配置
-        result.putAll(redis.hgetAll(configPathDefault));
-        // 再取本服配置的覆盖默认配置
-        result.putAll(redis.hgetAll(StringUtils.pathJoin(configPathPrefix, sid)));
-        // 最终结果返回
-        return result;
+    protected Map<String, String> doLoadConfig(String sid) {
+        return redis.hgetAll(StringUtils.pathJoin(configPathPrefix, sid));
+    }
+
+    @Override
+    protected Map<String, String> doLoadConfig() {
+        return redis.hgetAll(configPathDefault);
     }
 }
