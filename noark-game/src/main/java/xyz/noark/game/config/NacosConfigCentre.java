@@ -70,9 +70,9 @@ public class NacosConfigCentre extends AbstractConfigCentre {
         String serverAddr = RandomUtils.randomList(serverAddrList);
         String url;
         if (StringUtils.isNotEmpty(username)) {
-            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", DEFAULT_GROUP, "&tenant=", tenant, "&username=", username, "&password=", password);
+            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", group, "&tenant=", tenant, "&username=", username, "&password=", password);
         } else {
-            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", DEFAULT_GROUP, "&tenant=", tenant);
+            url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs?dataId=", dataId, "&group=", group, "&tenant=", tenant);
         }
 
         try {
