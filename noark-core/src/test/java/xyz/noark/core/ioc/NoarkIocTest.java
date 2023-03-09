@@ -16,8 +16,7 @@ package xyz.noark.core.ioc;
 import org.junit.Test;
 import xyz.noark.core.ioc.demo.BagService;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * IOC测试.
@@ -36,12 +35,12 @@ public class NoarkIocTest {
         assertNotNull(bagService.getItemService());
         assertNotNull(bagService.getVipService());
         assertNotNull(bagService.getCommands());
-        assertTrue(bagService.getCommands().size() == 3);
-        assertTrue(bagService.getCommandList().size() == 3);
+        assertEquals(3, bagService.getCommands().size());
+        assertEquals(3, bagService.getCommandList().size());
         // Map注入...
-        assertTrue("rmb".equals(bagService.getCommands().get("// add rmb").doSomething()));
-        assertTrue("item".equals(bagService.getCommands().get("// add item").doSomething()));
-        assertTrue("exp".equals(bagService.getCommands().get("// add exp").doSomething()));
+        assertEquals("rmb", bagService.getCommands().get("// add rmb").doSomething());
+        assertEquals("item", bagService.getCommands().get("// add item").doSomething());
+        assertEquals("exp", bagService.getCommands().get("// add exp").doSomething());
 
         System.out.println(bagService.getCommandList());
     }
