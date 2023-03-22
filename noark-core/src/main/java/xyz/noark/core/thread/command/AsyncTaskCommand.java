@@ -33,7 +33,7 @@ public class AsyncTaskCommand extends AbstractCommand {
      * 缓存lambda表达式的异步对应的入口，Key=Lambda的实现类名，Value=对应的父方法与行号<br>
      * 注：这里的缓存保留1天，如果1天还没有人调用，那就清了吧...
      */
-    private static final TimeoutHashMap<String, String> cacheStackTraceMap = new TimeoutHashMap<>(24, TimeUnit.HOURS, AsyncTaskCommand::createLogCode);
+    private static final TimeoutHashMap<String, String> cacheLogCodeMap = new TimeoutHashMap<>(24, TimeUnit.HOURS, AsyncTaskCommand::createLogCode);
 
     /**
      * lambda表达式包裹的回调方法
@@ -49,7 +49,7 @@ public class AsyncTaskCommand extends AbstractCommand {
         super(TraceIdFactory.getMdcTraceId());
         this.callback = callback;
         // LogCode增加一层缓存
-        this.logCode = cacheStackTraceMap.get(callback.getClass().getName());
+        this.logCode = cacheLogCodeMap.get(callback.getClass().getName());
     }
 
     private static String createLogCode(String callbackClassName) {
