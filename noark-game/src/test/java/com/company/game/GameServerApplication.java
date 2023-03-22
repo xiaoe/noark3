@@ -14,7 +14,6 @@
 package com.company.game;
 
 import com.company.game.event.BuildingUpgradeEvent;
-import com.company.rpc.proto.TestAck;
 import com.company.rpc.proto.TestReq;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Controller;
@@ -23,6 +22,7 @@ import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.PacketMapping;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.Session.State;
+import xyz.noark.core.thread.AsyncHelper;
 import xyz.noark.game.Noark;
 import xyz.noark.network.rpc.RpcClient;
 
@@ -91,16 +91,22 @@ public class GameServerApplication {
         StringBuilder sb = new StringBuilder();
 
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100; i++) {
             sb.append(i).append("-----------");
             TestReq req = new TestReq();
-            req.setName("小流氓"+i);
+            req.setName("小流氓" + i);
             req.setText(sb.toString());
             //TestAck ack = rpcClient.syncCall(-10086, req, TestAck.class);
             //System.out.println(ack.getText());
+
         }
 
-
         System.out.println(testServiceList);
+        this.testLambda();
+    }
+
+    public void testLambda() {
+        AsyncHelper.localCall(() -> System.out.println("1111111111111111111"));
+        AsyncHelper.localCall(() -> System.out.println("1111111111111111111"));
     }
 }

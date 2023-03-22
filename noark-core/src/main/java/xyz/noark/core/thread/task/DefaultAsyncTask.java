@@ -28,11 +28,6 @@ public class DefaultAsyncTask extends AbstractAsyncTask implements Runnable {
         super(command);
         this.printLog = printLog;
     }
-    
-    @Override
-    protected String logCode() {
-        return "async task";
-    }
 
     @Override
     protected boolean isPrintLog() {
