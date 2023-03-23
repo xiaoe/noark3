@@ -387,7 +387,8 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
         StringBuilder sb = new StringBuilder(64);
         sb.append("UPDATE ");
         this.append(sb, em.getTableName()).append(" SET ");
-        this.append(sb, fm.getColumnName()).append("='").append(fm.getDefaultValue()).append("'");
+        // 使用占位符的方式更新
+        this.append(sb, fm.getColumnName()).append("=?");
         return sb.toString();
     }
 

@@ -26,6 +26,7 @@ import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.AbstractDataAccessor;
 
 import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -312,7 +313,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
                     // 字段不存在，修补字段
                     if (index == null) {
                         autoAlterTableAddColumn(em, fm);
-                        tryRepairTextDefaultValue(em, fm);
+                        tryRepairTextOrBlobDefaultValue(em, fm);
                         continue;
                     }
 
@@ -366,12 +367,29 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     /**
      * 如果是Text智能修补一下默认值
      */
-    private <T> void tryRepairTextDefaultValue(final EntityMapping<T> em, final FieldMapping fm) {
-        // 修正Text字段的默认值.
-        if (fm.getWidth() >= DataConstant.VARCHAT_MAX_WIDTH && fm.hasDefaultValue()) {
-            final String sql = expert.genUpdateDefaultValueSql(em, fm);
-            logger.warn("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
-            this.executeStatement((stmt) -> stmt.executeUpdate(sql));
+    private <T> void tryRepairTextOrBlobDefaultValue(final EntityMapping<T> em, final FieldMapping fm) {
+        if (fm.hasDefaultValue()) {
+            // Blob字段 或 Text以上的字段
+            if (fm.isBlob() || fm.getWidth() >= DataConstant.VARCHAT_MAX_WIDTH) {
+                final String sql = expert.genUpdateDefaultValueSql(em, fm);
+                logger.warn("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
+                class RepairTextOrBlobDefaultValueCallback implements PreparedStatementCallback<Integer> {
+                    @Override
+                    public Integer doInPreparedStatement(PreparedStatementProxy pstmt) throws SQLException {
+                        // Blob字段
+                        if (fm.isBlob()) {
+                            pstmt.setObject(1, fm.getDefaultValue().getBytes(StandardCharsets.UTF_8));
+                        }
+                        // 其他就当Text处理
+                        else {
+                            pstmt.setObject(1, fm.getDefaultValue());
+                        }
+
+                        return pstmt.executeUpdate();
+                    }
+                }
+                this.execute(em, new RepairTextOrBlobDefaultValueCallback(), sql, false);
+            }
         }
     }
 
