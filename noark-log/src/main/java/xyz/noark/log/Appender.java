@@ -51,16 +51,18 @@ interface Appender {
      */
     class FileAppender implements Appender {
         private final LogPath path;
+        private final LogDay day;
         private final LogFileWriterManager writerManager;
 
-        public FileAppender(LogPath path) {
+        public FileAppender(LogPath path, LogDay day) {
             this.path = path;
+            this.day = day;
             this.writerManager = LogManager.getWriterManager();
         }
 
         @Override
         public void output(LogEvent event, char[] text) {
-            writerManager.getWriter(path).output(event, text);
+            writerManager.getWriter(path, day).output(event, text);
         }
     }
 }

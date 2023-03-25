@@ -37,7 +37,10 @@ class LogConstant {
      * 文件日志存储目录(默认:/data/log/game/1/game.{yyyy-MM-dd-HH}.log)
      */
     static final String LOG_PATH = "log.path";
-
+    /**
+     * 文件日志自动删除时间（默认值：永久保留, 可自定义：30D，7d, 12H）
+     */
+    static final String LOG_DELETE_TIME = "log.delete.time";
 
     /**
      * 默认的日志名称，长度为0的字符串

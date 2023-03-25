@@ -29,6 +29,9 @@ class LogConfig {
     private boolean pathInitialized = false;
     private LogPath path = null;
 
+    private boolean dayInitialized = false;
+    private LogDay day;
+
     private boolean patternInitialized = false;
     private String layoutPattern = LogConstant.DEFAULT_LAYOUT_PATTERN;
 
@@ -67,6 +70,15 @@ class LogConfig {
         this.pathInitialized = true;
     }
 
+    public void setDay(LogDay day) {
+        this.day = day;
+        this.dayInitialized = true;
+    }
+
+    public LogDay getDay() {
+        return day;
+    }
+
     public String getLayoutPattern() {
         return layoutPattern;
     }
@@ -82,7 +94,7 @@ class LogConfig {
      * @return 如果需要修正返回true
      */
     public boolean ifNeedFix() {
-        return !levelInitialized || !consoleInitialized || !pathInitialized || !patternInitialized;
+        return !levelInitialized || !consoleInitialized || !pathInitialized || !patternInitialized || !dayInitialized;
     }
 
     /**
@@ -101,6 +113,10 @@ class LogConfig {
 
         if (!pathInitialized) {
             this.setPath(parentConfig.getPath());
+        }
+
+        if (!dayInitialized) {
+            this.setDay(parentConfig.getDay());
         }
 
         if (!patternInitialized) {
