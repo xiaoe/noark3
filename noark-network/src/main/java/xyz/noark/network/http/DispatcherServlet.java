@@ -30,8 +30,10 @@ import xyz.noark.core.ioc.manager.HttpMethodManager;
 import xyz.noark.core.ioc.wrap.method.HttpMethodWrapper;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.StringUtils;
+import xyz.noark.log.MDC;
 import xyz.noark.network.http.exception.HandlerDeprecatedException;
 import xyz.noark.network.http.exception.NoHandlerFoundException;
 import xyz.noark.network.http.exception.UnrealizedQueueIdException;
@@ -60,11 +62,13 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        MDC.put(TraceIdFactory.TRACE_ID, ctx.channel().id().asShortText());
         logger.debug("http client active. channel={}", ctx.channel());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
+        MDC.put(TraceIdFactory.TRACE_ID, ctx.channel().id().asShortText());
         logger.debug("http client inactive. channel={}", ctx.channel());
     }
 
@@ -79,6 +83,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest fhr) {
+        TraceIdFactory.initRandomTraceId();
         final String ip = NettyUtils.analyzeIp(fhr, ctx);
         final QueryStringDecoder decoder = new QueryStringDecoder(fhr.uri());
         // HTTP请求
