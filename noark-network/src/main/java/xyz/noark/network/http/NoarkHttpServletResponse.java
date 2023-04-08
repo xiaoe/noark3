@@ -38,6 +38,7 @@ import static io.netty.handler.codec.http.HttpHeaderValues.KEEP_ALIVE;
 class NoarkHttpServletResponse implements HttpServletResponse {
     private final ChannelHandlerContext ctx;
     private final boolean keepAlive;
+    private final boolean logEnabled;
 
     private HttpResponseStatus status = HttpResponseStatus.OK;
     /**
@@ -46,10 +47,15 @@ class NoarkHttpServletResponse implements HttpServletResponse {
     private ByteBuf content;
     private String charset = CharsetUtils.UTF_8;
     private String contentType = "application/json";
+    /**
+     * 缓存一个返回内容，用于日志记录
+     */
+    private String cacheContent = StringUtils.EMPTY;
 
-    NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive) {
+    NoarkHttpServletResponse(ChannelHandlerContext ctx, boolean keepAlive, boolean logEnabled) {
         this.ctx = ctx;
         this.keepAlive = keepAlive;
+        this.logEnabled = logEnabled;
     }
 
     @Override
@@ -69,6 +75,7 @@ class NoarkHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void writeString(String str) {
+        this.cacheContent = str;
         this.content = Unpooled.copiedBuffer(str, Charset.forName(charset));
     }
 
@@ -92,6 +99,10 @@ class NoarkHttpServletResponse implements HttpServletResponse {
         } else {
             response.headers().set(CONNECTION, CLOSE);
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        }
+
+        if (logEnabled) {
+            HttpOutputManager.logResponse(response, cacheContent);
         }
     }
 

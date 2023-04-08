@@ -75,10 +75,6 @@ public class NetworkConstant {
      * 网络封包日志处理器是否启用，默认:false=不启动
      */
     public static final String LOG_ENABLED = "network.log.enabled";
-    /**
-     * 网络封包日志处理器已启动时，是否激活输出功能，默认:true=输出
-     */
-    public static final String LOG_OUTPUT_ACTIVE = "network.log.output.active";
 
     /**
      * EPOLL模型是否激活，默认为激活
@@ -106,7 +102,10 @@ public class NetworkConstant {
      * 向内部提供HTTP服务的最大内容长度（默认：1048576=1M）
      */
     public static final String HTTP_MAX_CONTENT_LENGTH = "network.http.max.content.length";
-
+    /**
+     * HTTP报文是否输出，默认不输出
+     */
+    public static final String HTTP_LOG_ENABLED = "network.http.log.enabled";
 
     /**
      * 跨域配置，放行哪些域

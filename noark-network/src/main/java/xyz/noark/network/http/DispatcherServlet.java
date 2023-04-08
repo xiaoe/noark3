@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import xyz.noark.core.annotation.Autowired;
+import xyz.noark.core.annotation.Value;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ConvertException;
@@ -34,6 +35,7 @@ import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.DateUtils;
 import xyz.noark.core.util.StringUtils;
 import xyz.noark.log.MDC;
+import xyz.noark.network.NetworkConstant;
 import xyz.noark.network.http.exception.HandlerDeprecatedException;
 import xyz.noark.network.http.exception.NoHandlerFoundException;
 import xyz.noark.network.http.exception.UnrealizedQueueIdException;
@@ -59,6 +61,11 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
     private final ViewResolver viewResolver = new DefaultViewResolver();
     @Autowired
     private HandleInterceptChain handleInterceptChain;
+    /**
+     * HTTP报文是否输出，默认不输出
+     */
+    @Value(NetworkConstant.HTTP_LOG_ENABLED)
+    private boolean logEnabled = false;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -85,11 +92,18 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest fhr) {
         TraceIdFactory.initRandomTraceId();
         final String ip = NettyUtils.analyzeIp(fhr, ctx);
+
+        // 再申明一次，是保证输出同步
+        final boolean logEnabled = this.logEnabled;
+        if (logEnabled) {
+            HttpOutputManager.logRequest(fhr, ip);
+        }
+
         final QueryStringDecoder decoder = new QueryStringDecoder(fhr.uri());
         // HTTP请求
         NoarkHttpServletRequest request = new NoarkHttpServletRequest(decoder.path(), fhr.method(), ip);
         // HTTP响应
-        HttpServletResponse response = new NoarkHttpServletResponse(ctx, HttpUtil.isKeepAlive(fhr));
+        HttpServletResponse response = new NoarkHttpServletResponse(ctx, HttpUtil.isKeepAlive(fhr), logEnabled);
         // 获取URI对应的处理器
         HttpMethodWrapper handler = HttpMethodManager.getHttpHandler(request.getMethod(), request.getUri());
 
@@ -97,6 +111,10 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         try {
             // 解析请求参数
             request.parse(fhr, decoder);
+            if (logEnabled) {
+                HttpOutputManager.logParameter(request);
+            }
+
             // 线程调度
             this.doDispatch(request, response, handler);
         }
