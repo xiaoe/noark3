@@ -13,14 +13,9 @@
  */
 package xyz.noark.core.ioc.definition.field;
 
-import xyz.noark.core.converter.ConvertManager;
-import xyz.noark.core.converter.Converter;
-import xyz.noark.core.env.EnvConfigHolder;
-import xyz.noark.core.exception.ConvertException;
-import xyz.noark.core.exception.UnrealizedException;
 import xyz.noark.core.ioc.IocMaking;
-import xyz.noark.core.util.FieldUtils;
-import xyz.noark.core.util.StringUtils;
+import xyz.noark.core.ioc.manager.ValueFieldManager;
+import xyz.noark.core.ioc.wrap.field.ValueFieldWrapper;
 
 import java.lang.reflect.Field;
 
@@ -32,12 +27,17 @@ import java.lang.reflect.Field;
  */
 public class ValueFieldDefinition extends DefaultFieldDefinition {
     /**
+     * 此属性归属Bean的Class
+     */
+    private final Class<?> beanClass;
+    /**
      * 对应配置文件中的Key...
      */
     private final String key;
 
-    public ValueFieldDefinition(Field field, String key) {
+    public ValueFieldDefinition(Class<?> beanClass, Field field, String key) {
         super(field, false);
+        this.beanClass = beanClass;
         this.key = key;
     }
 
@@ -46,18 +46,8 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
      */
     @Override
     public void injection(Object single, IocMaking making) {
-        String value = EnvConfigHolder.getString(key);
-        if (StringUtils.isNotEmpty(value)) {
-            Converter<?> converter = ConvertManager.getInstance().getConverter(field.getType());
-            if (converter != null) {
-                try {
-                    FieldUtils.writeField(single, field, converter.convert(field, value));
-                } catch (Exception e) {
-                    throw new ConvertException(single.getClass().getName() + " >> " + field.getName() + " >> " + value + "-->" + converter.buildErrorMsg(), e);
-                }
-            } else {
-                throw new UnrealizedException("类：" + single.getClass().getName() + "中的属性：" + field.getName() + "类型未实现此转化器");
-            }
-        }
+        ValueFieldWrapper wrapper = new ValueFieldWrapper(beanClass, field, key, single);
+        ValueFieldManager.register(key, wrapper);
+        wrapper.injection();
     }
 }

@@ -235,7 +235,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
         }
         // @Value注入配置属性.
         else {
-            autowiredFields.add(new ValueFieldDefinition(field, value.value()));
+            autowiredFields.add(new ValueFieldDefinition(beanClass, field, value.value()));
         }
     }
 
@@ -245,7 +245,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
     }
 
     /**
-     * 分析此用的功能用途.
+     * 分析此类的功能用途.
      *
      * @param ioc 容器
      */
