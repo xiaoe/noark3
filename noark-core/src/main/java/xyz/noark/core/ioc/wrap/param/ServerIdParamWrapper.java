@@ -36,7 +36,7 @@ public class ServerIdParamWrapper implements ParamWrapper {
             return ((ServerIdPacket) context.getReqPacket()).getServerId();
         }
         // 拿本地区服编号配置
-        return Integer.parseInt(EnvConfigHolder.getString("server.id"));
+        return EnvConfigHolder.getInt("server.id");
     }
 
     @Override

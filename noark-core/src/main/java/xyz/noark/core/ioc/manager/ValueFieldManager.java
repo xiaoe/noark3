@@ -13,6 +13,7 @@
  */
 package xyz.noark.core.ioc.manager;
 
+import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.ioc.wrap.field.ValueFieldWrapper;
 import xyz.noark.core.util.MapUtils;
 
@@ -36,6 +37,7 @@ public class ValueFieldManager {
      * 重新刷新@Value的属性注入
      */
     public static void refresh() {
+        EnvConfigHolder.reload();
         for (LinkedList<ValueFieldWrapper> wrappers : fieldMap.values()) {
             for (ValueFieldWrapper wrapper : wrappers) {
                 wrapper.refresh();

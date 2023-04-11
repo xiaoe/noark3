@@ -18,6 +18,7 @@ import xyz.noark.core.util.BooleanUtils;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 系统配置.
@@ -26,11 +27,34 @@ import java.util.Map;
  * @since 3.0
  */
 public class EnvConfigHolder {
-
+    /**
+     * 载入配置的方法
+     */
+    private static Supplier<Map<String, String>> loadFunction;
     /**
      * 处理过的系统配置参数...
      */
     private static Map<String, String> properties;
+
+    private EnvConfigHolder() {
+    }
+
+    /**
+     * 绑定载入配置的方法.
+     *
+     * @param loadFunction 载入配置的方法
+     */
+    public static void buildLoadFunction(Supplier<Map<String, String>> loadFunction) {
+        EnvConfigHolder.loadFunction = loadFunction;
+        reload();
+    }
+
+    /**
+     * 重新载入配置
+     */
+    public static void reload() {
+        EnvConfigHolder.properties = loadFunction.get();
+    }
 
     /**
      * 获取所有配置内容，优先级：命令行 &gt; 本地配置 &gt; 远程配置
@@ -61,8 +85,14 @@ public class EnvConfigHolder {
         return BooleanUtils.toBoolean(getString(key));
     }
 
-    public static void setProperties(Map<String, String> properties) {
-        EnvConfigHolder.properties = properties;
+    /**
+     * 根据Key值去配置中获取一个Int值
+     *
+     * @param key Key值
+     * @return Int值
+     */
+    public static int getInt(String key) {
+        return Integer.parseInt(getString(key));
     }
 
     /**

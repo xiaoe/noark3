@@ -40,7 +40,7 @@ class NoarkInitializer {
         TraceIdFactory.initFixedTraceIdByStartServer();
 
         // 载入配置
-        EnvConfigHolder.setProperties(this.loadProperties(args));
+        EnvConfigHolder.buildLoadFunction(() -> this.loadProperties(args));
 
         // 初始化日志系统
         LogManager.init(EnvConfigHolder.getProperties());
