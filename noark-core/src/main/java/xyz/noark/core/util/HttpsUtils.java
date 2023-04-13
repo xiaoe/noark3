@@ -82,6 +82,7 @@ public class HttpsUtils {
             HttpsURLConnection connection = createHttpsUrlConnection(url);
             connection.setRequestMethod("GET");
             connection.setReadTimeout(timeout);
+            connection.setConnectTimeout(timeout);
             requestProperty.forEach(connection::setRequestProperty);
 
             // 取出HTTP响应结果
@@ -157,6 +158,7 @@ public class HttpsUtils {
             HttpsURLConnection connection = createHttpsUrlConnection(url);
             connection.setRequestMethod("POST");
             connection.setReadTimeout(timeout);
+            connection.setConnectTimeout(timeout);
             requestProperty.forEach(connection::setRequestProperty);
 
             // 构建Post参数并发送...

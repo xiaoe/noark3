@@ -118,6 +118,7 @@ public class HttpUtils {
         // 打开和URL之间的连接
         URLConnection connection = new URL(url).openConnection();
         connection.setReadTimeout(timeout);
+        connection.setConnectTimeout(timeout);
         requestProperty.forEach(connection::setRequestProperty);
 
         // 建立实际的连接
@@ -206,6 +207,7 @@ public class HttpUtils {
 
             // 设置通用的请求属性
             connection.setReadTimeout(timeout);
+            connection.setConnectTimeout(timeout);
             requestProperty.forEach(connection::setRequestProperty);
 
             // 构建Post参数并发送...
