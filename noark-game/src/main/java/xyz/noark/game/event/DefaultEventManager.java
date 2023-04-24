@@ -44,9 +44,14 @@ public class DefaultEventManager implements EventManager {
 
     @Value(NoarkConstant.SERVER_DEBUG)
     private static boolean debug = false;
+    /**
+     * 事件Take的最小时间间隔, 单位：毫秒，默认值：1000
+     */
+    @Value(NoarkConstant.EVENT_TAKE_MAX_DELAY)
+    private static int maxDelay = 1000;
 
     private final DelayEventThread handler = new DelayEventThread(this);
-    
+
     /**
      * 断言这个延迟事件不在队列中.
      * <p>只在研发环境下才会生效</p>
@@ -57,6 +62,21 @@ public class DefaultEventManager implements EventManager {
         if (debug) {
             DelayEventAsserter.notInQueue(event);
         }
+    }
+
+    /**
+     * 计算最大延迟间隔，单位：毫秒
+     *
+     * @param delay 延迟间隔
+     * @return 延迟间隔
+     */
+    public static long calculateMaxDelay(long delay) {
+        // 如果研发环境下才会生效
+        if (debug && delay > maxDelay) {
+            return maxDelay;
+        }
+        // 正常延迟
+        return delay;
     }
 
     public void init() {

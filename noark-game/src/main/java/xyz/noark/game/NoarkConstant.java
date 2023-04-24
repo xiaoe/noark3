@@ -106,4 +106,9 @@ public class NoarkConstant {
      * Banner默认图案为Noark的Logo
      */
     public static final String BANNER_DEFAULT = "noark.banner";
+
+    /**
+     * 事件Take的最小时间间隔, 单位：毫秒，默认值：1000
+     */
+    public static final String EVENT_TAKE_MAX_DELAY = "event.take.max.delay";
 }

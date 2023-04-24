@@ -51,7 +51,10 @@ public class AbstractDelayEvent implements DelayEvent {
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(endTime.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        // 需要延迟的毫秒数
+        long delay = endTime.getTime() - System.currentTimeMillis();
+        // 转化为目标指定时间单位
+        return unit.convert(DefaultEventManager.calculateMaxDelay(delay), TimeUnit.MILLISECONDS);
     }
 
     public long getId() {
