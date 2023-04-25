@@ -14,15 +14,19 @@
 package xyz.noark.game.config;
 
 import xyz.noark.core.exception.ServerBootstrapException;
-import xyz.noark.core.util.HttpUtils;
-import xyz.noark.core.util.MapUtils;
-import xyz.noark.core.util.RandomUtils;
-import xyz.noark.core.util.StringUtils;
+import xyz.noark.core.ioc.manager.ValueFieldManager;
+import xyz.noark.core.lang.PairHashMap;
+import xyz.noark.core.thread.NamedThreadFactory;
+import xyz.noark.core.thread.TraceIdFactory;
+import xyz.noark.core.util.*;
 import xyz.noark.game.NoarkConstant;
+import xyz.noark.log.Logger;
+import xyz.noark.log.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * 基于Nacos实现的配置中心.
@@ -30,6 +34,7 @@ import java.util.*;
  * @author 小流氓[176543888@qq.com]
  */
 public class NacosConfigCentre extends AbstractConfigCentre {
+    private static final Logger logger = LoggerFactory.getLogger(NacosConfigCentre.class);
     /**
      * Nacos中dataId参数，对应游戏里就是配置文件名称
      */
@@ -39,6 +44,28 @@ public class NacosConfigCentre extends AbstractConfigCentre {
     private final String username;
     private final String password;
     private final String tenant;
+
+    /**
+     * 监听头部参数
+     */
+    private static final Map<String, String> listenerHeader = MapUtils.of("Long-Pulling-Timeout", "30000");
+    /**
+     * 字段分隔符
+     */
+    private static final String FIELD_SEPARATOR = "%02";
+    /**
+     * 配置分隔符
+     */
+    private static final String CONFIG_SEPARATOR = "%01";
+    /**
+     * 热更监听线程池
+     */
+    private final ScheduledThreadPoolExecutor listenerExecutor;
+    /**
+     * 缓存目标配置的Md5值，用于监听配置变化, KeyL = dataId, KeyR = group, Value = Md5
+     */
+    private final PairHashMap<String, String, String> cacheConfigMd5Map = new PairHashMap<>(2);
+
 
     public NacosConfigCentre(HashMap<String, String> basicConfig) {
         String addr = basicConfig.getOrDefault(NoarkConstant.NACOS_SERVER_ADDR, "127.0.0.1:8848");
@@ -54,6 +81,8 @@ public class NacosConfigCentre extends AbstractConfigCentre {
         this.tenant = basicConfig.getOrDefault(NoarkConstant.NACOS_NAMESPACES, "public");
         this.username = basicConfig.get(NoarkConstant.NACOS_USERNAME);
         this.password = basicConfig.get(NoarkConstant.NACOS_PASSWORD);
+
+        this.listenerExecutor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("nacos-listener", false));
     }
 
     @Override
@@ -76,7 +105,12 @@ public class NacosConfigCentre extends AbstractConfigCentre {
         }
 
         try {
-            return toMap(HttpUtils.get(url));
+            String config = HttpUtils.get(url);
+
+            // 缓存配置的MD5
+            cacheConfigMd5Map.put(dataId, group, Md5Utils.encrypt(config).toLowerCase());
+
+            return toMap(config);
         }
         // 未配置指定dataId的配置文件
         catch (FileNotFoundException e) {
@@ -117,5 +151,58 @@ public class NacosConfigCentre extends AbstractConfigCentre {
             }
         }
         return configMap;
+    }
+
+    @Override
+    public void listenerConfig(String sid) {
+        listenerExecutor.execute(new NacosListenerTask(this));
+    }
+
+    /**
+     * 启动监听器
+     */
+    void listenerStart() {
+        TraceIdFactory.initFixedTraceIdByStartServer();
+        logger.debug("config listener ...");
+
+        boolean flag;
+        try {
+            flag = doListenerStart();
+        }
+        // 出现异常情况，那递归监听
+        catch (Throwable e) {
+            flag = true;
+        }
+
+        // 继续监听
+        if (flag) {
+            this.listenerStart();
+        }
+    }
+
+    private boolean doListenerStart() {
+        String serverAddr = RandomUtils.randomList(serverAddrList);
+        String url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs/listener");
+
+        // Listening-Configs=dataId^2Group^2contentMD5^2tenant^1
+        // Listening-Configs=dataId%02group%02contentMD5%02tenant%01
+        StringBuilder sb = new StringBuilder(128);
+        sb.append("Listening-Configs=");
+        cacheConfigMd5Map.forEach((k, v) -> {
+            sb.append(k.getLeft()).append(FIELD_SEPARATOR);
+            sb.append(k.getRight()).append(FIELD_SEPARATOR);
+            sb.append(v).append(FIELD_SEPARATOR);
+            sb.append(tenant).append(CONFIG_SEPARATOR);
+        });
+
+        String result = HttpUtils.post(url, sb.toString(), 30000, listenerHeader);
+        if (StringUtils.isNotEmpty(result)) {
+            logger.debug("config changes, start refreshing...");
+            ValueFieldManager.refresh();
+            return false;
+        }
+
+        // 继续监听...
+        return true;
     }
 }

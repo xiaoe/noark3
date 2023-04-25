@@ -177,10 +177,7 @@ class NoarkPropertiesLoader {
                 }
 
                 // 收录这个新的配置
-                String value = e.getValue().toString().trim();
-                if (config.put(key, value) != null) {
-                    System.err.println("覆盖配置 >>" + key + "=" + value);
-                }
+                config.put(key, e.getValue().toString().trim());
             }
         }
     }
@@ -214,11 +211,13 @@ class NoarkPropertiesLoader {
             throw new ServerBootstrapException("application.properties文件中必需要配置区服ID," + NoarkConstant.SERVER_ID + "=XXX");
         }
         String className = result.getOrDefault(NoarkConstant.CONFIG_CENTRE_CLASS, "xyz.noark.game.config.NacosConfigCentre");
-        logger.info("正在启动配置中心模式 sid={}, className={}", sid, className);
+        logger.info("load nacos config centre. sid={}", sid);
         // 尝试创建Redis的配置中心读取配置
         ConfigCentre cc = ClassUtils.newInstance(className, result);
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
+        // 监听配置的扩展接口
+        cc.listenerConfig(sid);
     }
 
     /**
@@ -232,11 +231,13 @@ class NoarkPropertiesLoader {
         if (StringUtils.isEmpty(sid)) {
             throw new ServerBootstrapException("application.properties文件中必需要配置区服ID," + NoarkConstant.SERVER_ID + "=XXX");
         }
-        logger.info("正在启动配置中心模式 sid={}", sid);
+        logger.info("load nacos config centre. sid={}", sid);
         // 尝试创建Redis的配置中心读取配置
         ConfigCentre cc = new NacosConfigCentre(result);
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
+        // 监听配置的扩展接口
+        cc.listenerConfig(sid);
     }
 
     public Map<String, String> getProperties() {

@@ -13,28 +13,21 @@
  */
 package xyz.noark.game.config;
 
-import java.util.Map;
-
 /**
- * 配置中心
+ * Nacos监听任务
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4
  */
-public interface ConfigCentre {
+class NacosListenerTask implements Runnable {
 
-    /**
-     * 根据区服ID来获取配置中心里的配置参数
-     *
-     * @param sid 区服ID
-     * @return 配置参数
-     */
-    Map<String, String> loadConfig(String sid);
+    private final NacosConfigCentre configCentre;
 
-    /**
-     * 根据区服ID来监听配置中心里的配置参数
-     *
-     * @param sid 区服ID
-     */
-    void listenerConfig(String sid);
+    NacosListenerTask(NacosConfigCentre configCentre) {
+        this.configCentre = configCentre;
+    }
+
+    @Override
+    public void run() {
+        configCentre.listenerStart();
+    }
 }
