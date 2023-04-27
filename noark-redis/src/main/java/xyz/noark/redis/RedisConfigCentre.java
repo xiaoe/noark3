@@ -58,7 +58,7 @@ public class RedisConfigCentre extends AbstractConfigCentre {
     }
 
     @Override
-    public void listenerConfig(String sid) {
+    public void listenerConfig() {
         // TODO Redis的简单版本的配置中心日后再实现
     }
 }

@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 基于Nacos实现的配置中心.
@@ -46,9 +47,13 @@ public class NacosConfigCentre extends AbstractConfigCentre {
     private final String tenant;
 
     /**
+     * 一次监听超时时间，单位：毫秒，默认值：30秒
+     */
+    private static final int timeout = 30000;
+    /**
      * 监听头部参数
      */
-    private static final Map<String, String> listenerHeader = MapUtils.of("Long-Pulling-Timeout", "30000");
+    private static final Map<String, String> listenerHeader = MapUtils.of("Long-Pulling-Timeout", String.valueOf(timeout));
     /**
      * 字段分隔符
      */
@@ -65,7 +70,10 @@ public class NacosConfigCentre extends AbstractConfigCentre {
      * 缓存目标配置的Md5值，用于监听配置变化, KeyL = dataId, KeyR = group, Value = Md5
      */
     private final PairHashMap<String, String, String> cacheConfigMd5Map = new PairHashMap<>(2);
-
+    /**
+     * 下次可监听的时间
+     */
+    private long nextListenerTime;
 
     public NacosConfigCentre(HashMap<String, String> basicConfig) {
         String addr = basicConfig.getOrDefault(NoarkConstant.NACOS_SERVER_ADDR, "127.0.0.1:8848");
@@ -154,8 +162,10 @@ public class NacosConfigCentre extends AbstractConfigCentre {
     }
 
     @Override
-    public void listenerConfig(String sid) {
-        listenerExecutor.execute(new NacosListenerTask(this));
+    public void listenerConfig() {
+        // 丢一个监听任务给监听线程池
+        long delay = nextListenerTime - System.currentTimeMillis();
+        listenerExecutor.schedule(new NacosListenerTask(this), delay, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -176,13 +186,20 @@ public class NacosConfigCentre extends AbstractConfigCentre {
 
         // 继续监听
         if (flag) {
-            this.listenerStart();
+            this.listenerConfig();
         }
     }
 
     private boolean doListenerStart() {
+        // 记录一个下次可监听间隔时间
+        this.nextListenerTime = System.currentTimeMillis() + timeout;
+
         String serverAddr = RandomUtils.randomList(serverAddrList);
         String url = StringUtils.join("http://", serverAddr, "/nacos/v1/cs/configs/listener");
+        // 有配置账号密码
+        if (StringUtils.isNotEmpty(username)) {
+            url = StringUtils.join(url, "?username=", username, "&password=", password);
+        }
 
         // Listening-Configs=dataId^2Group^2contentMD5^2tenant^1
         // Listening-Configs=dataId%02group%02contentMD5%02tenant%01
@@ -195,7 +212,7 @@ public class NacosConfigCentre extends AbstractConfigCentre {
             sb.append(tenant).append(CONFIG_SEPARATOR);
         });
 
-        String result = HttpUtils.post(url, sb.toString(), 30000, listenerHeader);
+        String result = HttpUtils.post(url, sb.toString(), timeout, listenerHeader);
         if (StringUtils.isNotEmpty(result)) {
             logger.debug("config changes, start refreshing...");
             ValueFieldManager.refresh();

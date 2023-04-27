@@ -217,7 +217,7 @@ class NoarkPropertiesLoader {
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
         // 监听配置的扩展接口
-        cc.listenerConfig(sid);
+        cc.listenerConfig();
     }
 
     /**
@@ -237,7 +237,7 @@ class NoarkPropertiesLoader {
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
         // 监听配置的扩展接口
-        cc.listenerConfig(sid);
+        cc.listenerConfig();
     }
 
     public Map<String, String> getProperties() {

@@ -32,9 +32,7 @@ public interface ConfigCentre {
     Map<String, String> loadConfig(String sid);
 
     /**
-     * 根据区服ID来监听配置中心里的配置参数
-     *
-     * @param sid 区服ID
+     * 监听配置
      */
-    void listenerConfig(String sid);
+    void listenerConfig();
 }
