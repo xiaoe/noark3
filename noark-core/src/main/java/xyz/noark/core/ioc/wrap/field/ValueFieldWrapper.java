@@ -37,6 +37,7 @@ public class ValueFieldWrapper {
     private final Class<?> beanClass;
     private final Field field;
     private final String key;
+    private boolean autoRefreshed;
     private final Object owner;
 
     private final Converter<?> converter;
@@ -45,10 +46,11 @@ public class ValueFieldWrapper {
      */
     private final Object defaultValue;
 
-    public ValueFieldWrapper(Class<?> beanClass, Field field, String key, Object owner) {
+    public ValueFieldWrapper(Class<?> beanClass, Field field, String key, boolean autoRefreshed, Object owner) {
         this.beanClass = beanClass;
         this.field = field;
         this.key = key;
+        this.autoRefreshed = autoRefreshed;
         this.owner = owner;
 
         this.converter = ConvertManager.getInstance().getConverter(field.getType());
@@ -58,6 +60,15 @@ public class ValueFieldWrapper {
 
         // 默认值需要克隆出来
         this.defaultValue = FieldUtils.readField(owner, field);
+    }
+
+    public boolean isAutoRefreshed() {
+        return autoRefreshed;
+    }
+
+    public void setAutoRefreshed(final boolean autoRefreshed) {
+        logger.info("reset  @Value field auto refresh. beanClass={}, key={}, {} >> {}", beanClass.getName(), key, this.autoRefreshed, autoRefreshed);
+        this.autoRefreshed = autoRefreshed;
     }
 
     public void injection() {

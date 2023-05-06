@@ -17,7 +17,9 @@ import xyz.noark.core.env.EnvConfigHolder;
 import xyz.noark.core.ioc.wrap.field.ValueFieldWrapper;
 import xyz.noark.core.util.MapUtils;
 
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,21 +29,41 @@ import java.util.Map;
  * @since 3.4.8
  */
 public class ValueFieldManager {
-    private static final Map<String, LinkedList<ValueFieldWrapper>> fieldMap = MapUtils.newConcurrentHashMap(256);
+    private static final Map<String, List<ValueFieldWrapper>> fieldMap = MapUtils.newConcurrentHashMap(256);
 
     public static void register(String key, ValueFieldWrapper wrapper) {
         fieldMap.computeIfAbsent(key, k -> new LinkedList<>()).add(wrapper);
     }
 
     /**
-     * 重新刷新@Value的属性注入
+     * 重新刷新&#064;Value的属性注入
      */
     public static void refresh() {
+        // 重载配置
         EnvConfigHolder.reload();
-        for (LinkedList<ValueFieldWrapper> wrappers : fieldMap.values()) {
+
+        // 开始刷新
+        for (List<ValueFieldWrapper> wrappers : fieldMap.values()) {
             for (ValueFieldWrapper wrapper : wrappers) {
-                wrapper.refresh();
+                // 标识了要刷新，才会刷会，其他的忽略
+                if (wrapper.isAutoRefreshed()) {
+                    wrapper.refresh();
+                }
             }
+        }
+    }
+
+    /**
+     * 重置Value属性要不要响应自动刷新.
+     * <p>
+     * 留给脚本救火的，哪怕你忘了加自动刷新，也可以在线补救
+     *
+     * @param key             &#064;Value中的Key
+     * @param isAutoRefreshed 是否自动刷新的状态
+     */
+    public static void resetAutoRefreshed(String key, boolean isAutoRefreshed) {
+        for (ValueFieldWrapper wrapper : fieldMap.getOrDefault(key, Collections.emptyList())) {
+            wrapper.setAutoRefreshed(isAutoRefreshed);
         }
     }
 }

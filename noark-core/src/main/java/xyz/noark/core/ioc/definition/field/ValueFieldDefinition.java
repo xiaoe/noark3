@@ -34,11 +34,16 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
      * 对应配置文件中的Key...
      */
     private final String key;
+    /**
+     * 是否自动刷新
+     */
+    private final boolean autoRefreshed;
 
-    public ValueFieldDefinition(Class<?> beanClass, Field field, String key) {
+    public ValueFieldDefinition(Class<?> beanClass, Field field, String key, boolean autoRefreshed) {
         super(field, false);
         this.beanClass = beanClass;
         this.key = key;
+        this.autoRefreshed = autoRefreshed;
     }
 
     /**
@@ -46,7 +51,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
      */
     @Override
     public void injection(Object single, IocMaking making) {
-        ValueFieldWrapper wrapper = new ValueFieldWrapper(beanClass, field, key, single);
+        ValueFieldWrapper wrapper = new ValueFieldWrapper(beanClass, field, key, autoRefreshed, single);
         ValueFieldManager.register(key, wrapper);
         wrapper.injection();
     }

@@ -235,7 +235,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
         }
         // @Value注入配置属性.
         else {
-            autowiredFields.add(new ValueFieldDefinition(beanClass, field, value.value()));
+            autowiredFields.add(new ValueFieldDefinition(beanClass, field, value.value(), value.autoRefreshed()));
         }
     }
 
