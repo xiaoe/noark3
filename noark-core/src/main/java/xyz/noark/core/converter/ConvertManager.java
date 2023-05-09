@@ -18,6 +18,9 @@ import xyz.noark.core.converter.impl.*;
 import xyz.noark.core.converter.list.ArrayListConverter;
 import xyz.noark.core.converter.list.LinkedListConverter;
 import xyz.noark.core.converter.list.ListConverter;
+import xyz.noark.core.converter.map.HashMapConverter;
+import xyz.noark.core.converter.map.LinkedMapConverter;
+import xyz.noark.core.converter.map.MapConverter;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.util.ClassUtils;
 
@@ -70,6 +73,11 @@ public class ConvertManager {
         INSTANCE.register(ListConverter.class);
         INSTANCE.register(ArrayListConverter.class);
         INSTANCE.register(LinkedListConverter.class);
+
+        // Map
+        INSTANCE.register(MapConverter.class);
+        INSTANCE.register(HashMapConverter.class);
+        INSTANCE.register(LinkedMapConverter.class);
     }
 
     private ConvertManager() {
