@@ -36,7 +36,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.92.Final</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -48,7 +48,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.16.1</version>
+      <version>3.21.12</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
