@@ -57,32 +57,32 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     /**
      * 是否输出执行SQL日志
      */
-    @Value(DataModular.DATA_SQL_LOG_ENABLE)
+    @Value(value = DataModular.DATA_SQL_LOG_ENABLE, autoRefreshed = true)
     protected boolean statementExecutableSqlLogEnable = false;
     /**
      * 是否输出执行SQL的参数日志(上一个必需要true)
      */
-    @Value(DataModular.DATA_SQL_LOG_PARAMETER_ENABLE)
+    @Value(value = DataModular.DATA_SQL_LOG_PARAMETER_ENABLE, autoRefreshed = true)
     protected boolean statementParameterSetLogEnable = false;
     /**
      * 慢查询时间阀值(单位：毫秒),如果为0则不监控
      */
-    @Value(DataModular.DATA_SLOW_QUERY_SQL_MILLIS)
+    @Value(value = DataModular.DATA_SLOW_QUERY_SQL_MILLIS, autoRefreshed = true)
     protected int slowQuerySqlMillis = 0;
     /**
      * 服务器数据是否智能修正文本字段的长度，默认：true
      */
-    @Value(DataModular.DATA_AUTO_ALTER_COLUMN_LENGTH)
+    @Value(value = DataModular.DATA_AUTO_ALTER_COLUMN_LENGTH, autoRefreshed = true)
     protected boolean autoAlterColumnLength = true;
     /**
      * 服务器数据是否智能转化EMOJI的字段，默认：true
      */
-    @Value(DataModular.DATA_AUTO_ALTER_EMOJI_COLUMN)
+    @Value(value = DataModular.DATA_AUTO_ALTER_EMOJI_COLUMN, autoRefreshed = true)
     protected boolean autoAlterEmojiColumn = true;
     /**
      * 自动删除表中多余的字段
      */
-    @Value(DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN)
+    @Value(value = DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN, autoRefreshed = true)
     private boolean autoAlterTableDropColumn = false;
 
     public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {

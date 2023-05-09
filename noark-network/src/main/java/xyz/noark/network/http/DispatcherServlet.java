@@ -64,7 +64,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
     /**
      * HTTP报文是否输出，默认不输出
      */
-    @Value(NetworkConstant.HTTP_LOG_ENABLED)
+    @Value(value = NetworkConstant.HTTP_LOG_ENABLED, autoRefreshed = true)
     private boolean logEnabled = false;
 
     @Override

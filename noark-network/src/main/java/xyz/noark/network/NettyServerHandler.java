@@ -42,12 +42,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 心跳功能，默认值为0，则不生效
      */
-    @Value(NetworkConstant.HEARTBEAT)
+    @Value(value = NetworkConstant.HEARTBEAT, autoRefreshed = true)
     protected int heartbeat = 0;
     /**
      * 网络安全之相同IP最大链接数，默认为：256
      */
-    @Value(NetworkConstant.SOME_IP_MAX)
+    @Value(value = NetworkConstant.SOME_IP_MAX, autoRefreshed = true)
     protected int maxSomeIp = 256;
 
     @Autowired(required = false)
