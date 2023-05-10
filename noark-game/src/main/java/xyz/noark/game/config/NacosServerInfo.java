@@ -13,21 +13,42 @@
  */
 package xyz.noark.game.config;
 
+import xyz.noark.core.util.RandomUtils;
+
+import java.util.List;
+
 /**
- * Nacos监听任务
+ * Nacos服务器信息
  *
  * @author 小流氓[176543888@qq.com]
+ * @since 3.4.8
  */
-class NacosListenerTask implements Runnable {
+public class NacosServerInfo {
+    private final List<String> serverAddrList;
+    private final String username;
+    private final String password;
+    private final String tenant;
 
-    private final NacosConfigCentre configCentre;
-
-    NacosListenerTask(NacosConfigCentre configCentre) {
-        this.configCentre = configCentre;
+    public NacosServerInfo(List<String> serverAddrList, String username, String password, String tenant) {
+        this.serverAddrList = serverAddrList;
+        this.username = username;
+        this.password = password;
+        this.tenant = tenant;
     }
 
-    @Override
-    public void run() {
-        configCentre.listenerStart();
+    public String randomServerAddr() {
+        return RandomUtils.randomList(serverAddrList);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getTenant() {
+        return tenant;
     }
 }

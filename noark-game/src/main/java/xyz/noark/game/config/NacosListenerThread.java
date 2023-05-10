@@ -13,21 +13,29 @@
  */
 package xyz.noark.game.config;
 
-import java.util.Map;
+import xyz.noark.core.thread.TraceIdFactory;
+import xyz.noark.core.util.ThreadUtils;
 
 /**
- * 配置中心
+ * Nacos监听线程
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4
+ * @since 3.4.8
  */
-public interface ConfigCentre {
+public class NacosListenerThread extends Thread {
 
-    /**
-     * 根据区服ID来获取配置中心里的配置参数
-     *
-     * @param sid 区服ID
-     * @return 配置参数
-     */
-    Map<String, String> loadConfig(String sid);
+    public NacosListenerThread() {
+        super("nacos-listener");
+    }
+
+    @Override
+    public void run() {
+        TraceIdFactory.initFixedTraceIdByStartServer();
+        NacosConfigManager configManager = NacosConfigManager.getInstance();
+        // 监听就是一个死循环哎...
+        while (true) {
+            long sleepMillis = configManager.processListener();
+            ThreadUtils.sleep(Math.max(1, sleepMillis));
+        }
+    }
 }

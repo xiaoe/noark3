@@ -216,8 +216,6 @@ class NoarkPropertiesLoader {
         ConfigCentre cc = ClassUtils.newInstance(className, result);
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
-        // 监听配置的扩展接口
-        cc.listenerConfig();
     }
 
     /**
@@ -236,8 +234,6 @@ class NoarkPropertiesLoader {
         ConfigCentre cc = new NacosConfigCentre(result);
         // 本地配置会覆盖远程配置
         cc.loadConfig(sid).forEach(result::putIfAbsent);
-        // 监听配置的扩展接口
-        cc.listenerConfig();
     }
 
     public Map<String, String> getProperties() {
