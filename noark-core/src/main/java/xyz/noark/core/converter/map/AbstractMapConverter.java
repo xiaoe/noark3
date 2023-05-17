@@ -39,6 +39,11 @@ public abstract class AbstractMapConverter extends AbstractArrayConverter {
     }
 
     public Map<Object, Object> convert(Field field, String value) throws Exception {
+        // 没值那就给个空的Map
+        if (StringUtils.isBlank(value)) {
+            return Collections.emptyMap();
+        }
+
         Converter<?> keyGenericConverter = this.getMapKeyGenericConverter(field);
         Converter<?> valueGenericConverter = this.getMapValueGenericConverter(field);
 
@@ -47,6 +52,10 @@ public abstract class AbstractMapConverter extends AbstractArrayConverter {
 
         Map<Object, Object> result = this.createMap(array.length);
         for (String s : array) {
+            // 如果多了一个分隔符则忽略那些空的情况
+            if (StringUtils.isBlank(s)) {
+                continue;
+            }
             // 一个英文冒号(有需要日后再增加一个注解修正)
             String[] split = s.split(StringUtils.COLON, 2);
             Object keyObject = keyGenericConverter.convert(field, split[0]);
@@ -57,6 +66,11 @@ public abstract class AbstractMapConverter extends AbstractArrayConverter {
     }
 
     public Map<Object, Object> convert(Parameter parameter, String value) throws Exception {
+        // 没值那就给个空的Map
+        if (StringUtils.isBlank(value)) {
+            return Collections.emptyMap();
+        }
+
         Converter<?> keyGenericConverter = this.getMapKeyGenericConverter(parameter);
         Converter<?> valueGenericConverter = this.getMapValueGenericConverter(parameter);
 
@@ -65,6 +79,10 @@ public abstract class AbstractMapConverter extends AbstractArrayConverter {
 
         Map<Object, Object> result = this.createMap(array.length);
         for (String s : array) {
+            // 如果多了一个分隔符则忽略那些空的情况
+            if (StringUtils.isBlank(s)) {
+                continue;
+            }
             // 一个英文冒号(有需要日后再增加一个注解修正)
             String[] split = s.split(StringUtils.COLON, 2);
             Object keyObject = keyGenericConverter.convert(parameter, split[0]);
