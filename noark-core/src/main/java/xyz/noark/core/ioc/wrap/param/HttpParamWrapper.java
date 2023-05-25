@@ -16,6 +16,7 @@ package xyz.noark.core.ioc.wrap.param;
 import xyz.noark.core.annotation.controller.RequestBody;
 import xyz.noark.core.annotation.controller.RequestHeader;
 import xyz.noark.core.annotation.controller.RequestParam;
+import xyz.noark.core.annotation.orm.Json;
 import xyz.noark.core.util.StringUtils;
 
 import java.lang.reflect.Parameter;
@@ -36,8 +37,14 @@ public class HttpParamWrapper {
     private boolean requestHeader = false;
     private boolean requestBody = false;
 
+    /**
+     * 使用JSON转化器
+     */
+    private final boolean useJsonConvert;
+
     public HttpParamWrapper(Parameter parameter) {
         this.parameter = parameter;
+        this.useJsonConvert = parameter.isAnnotationPresent(Json.class);
 
         // 标识为@RequestParam
         if (parameter.isAnnotationPresent(RequestParam.class)) {
@@ -92,5 +99,9 @@ public class HttpParamWrapper {
 
     public boolean isRequestBody() {
         return requestBody;
+    }
+
+    public boolean isUseJsonConvert() {
+        return useJsonConvert;
     }
 }

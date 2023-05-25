@@ -169,7 +169,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         // 如果有值，需要使用Handler里的参数修正类型，以确保拿到参数最终状态，不然这个调度队列就是错的，比如玩家IDLong类型与参数String
         for (HttpParamWrapper param : handler.getParameters()) {
             if (handler.getQueueIdKey().equals(param.getName())) {
-                Converter<?> converter = this.getConverter(param.getParameter());
+                Converter<?> converter = this.getConverter(param);
                 try {
                     Object result = converter.convert(param.getParameter(), value);
                     if (result instanceof Serializable) {
@@ -274,7 +274,7 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
             // 其他转化器参数
             else {
                 String data = this.readParameter(request, param);
-                final Converter<?> converter = this.getConverter(param.getParameter());
+                final Converter<?> converter = this.getConverter(param);
                 if (data == null) {
                     // 必选参数必需有值
                     if (param.isRequired()) {
@@ -317,7 +317,15 @@ public class DispatcherServlet extends SimpleChannelInboundHandler<FullHttpReque
         }
     }
 
-    private Converter<?> getConverter(Parameter field) {
+    private Converter<?> getConverter(HttpParamWrapper param) {
+
+        // 使用JSON转化器
+        if (param.isUseJsonConvert()) {
+            return new HttpParamJsonConverter();
+        }
+
+        // 默认方案
+        final Parameter field = param.getParameter();
         Converter<?> result = ConvertManager.getInstance().getConverter(field.getType());
         if (result == null) {
             throw new UnrealizedException("未实现的注入(" + field.getType().getName() + ")" + field.getName());

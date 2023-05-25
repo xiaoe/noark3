@@ -24,8 +24,8 @@ import java.lang.annotation.*;
  * @since 3.0
  */
 @Documented
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 public @interface Json {
     /**
      * 是否写入类名.
