@@ -45,7 +45,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     /**
      * MYSQL字段数据过长异常类名称
      */
-    private static final String MYSQL_DATA_TRUNCATION_CLASS_NAME = "com.mysql.jdbc.MysqlDataTruncation";
+    private static final String MYSQL_DATA_TRUNCATION_CLASS_SIMPLE_NAME = "MysqlDataTruncation";
     /**
      * MYSQL存档时字符串值不正确，基本认定为Emoji表情搞得鬼
      */
@@ -196,7 +196,9 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     private boolean tryFixDataSaveException(boolean flag, EntityMapping<?> em, Map<String, Integer> columnMaxLenMap, Exception e) {
         // 1.尝试修复数据库字段过长的问题，自动扩容
         // Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation: Data too long for column 'json' at row 1
-        if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
+        // Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column 'name' at row 1
+        // 不同版本的驱动，截断异常的名称是一样的，但他的包名不一样，所以判定时需要注意
+        if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_SIMPLE_NAME.equals(e.getClass().getSimpleName())) {
             synchronized (this) {
                 this.handleDataTooLongException(em, columnMaxLenMap);
             }
