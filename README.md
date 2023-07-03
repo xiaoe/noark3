@@ -29,9 +29,9 @@ Noark是一个游戏服务器端框架，可快速开发出一个易维护、易
 
 Gradle
 ```
-implementation "xyz.noark:noark-game:3.4.7.Final"
+implementation "xyz.noark:noark-game:3.4.8.Final"
 ```
-当前需要Jdk1.8，Noark版本最新已是3.4.7了
+当前需要Jdk1.8，Noark版本最新已是3.4.8了
 
 引入Noark，按照历史惯例，先来一个Hello Kitty...
 
@@ -86,7 +86,7 @@ public class GameServerConfiguration {}
 2018-08-16 18:23:38.607 [main] INFO NettyServer.java:128 - game tcp server start is success.
 game-server is running, interval=427.21872 ms
 2018-08-16 18:23:38.607 [main] INFO AbstractServerBootstrap.java:76 - game-server is running, interval=427.21872 ms
-2018-08-16 18:23:38.609 [main] INFO AbstractServerBootstrap.java:166 - :: Noark :: 3.4.7.Final
+2018-08-16 18:23:38.609 [main] INFO AbstractServerBootstrap.java:166 - :: Noark :: 3.4.8.Final
   _   _     U  ___ u    _       ____      _  __   _____  
  | \ |"|     \/"_ \/U  /"\  uU |  _"\ u  |"|/ /  |___"/u 
 <|  \| |>    | | | | \/ _ \/  \| |_) |/  | ' /   U_|_ \/ 
