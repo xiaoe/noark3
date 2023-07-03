@@ -169,9 +169,10 @@ public class PreparedStatementProxy {
      * @throws Exception 可能会抛出DB相关的异常
      */
     public <T> void bindPrimaryIdValue(EntityMapping<T> em, FieldMapping primaryId, final T entity) throws Exception {
-        ResultSet rs = pstmt.getGeneratedKeys();
-        if (rs.next()) {
-            ValueAdaptorManager.getValueAdaptor(primaryId.getType()).resultSetToPrimaryId(em, primaryId, rs, entity);
+        try (ResultSet rs = pstmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                ValueAdaptorManager.getValueAdaptor(primaryId.getType()).resultSetToPrimaryId(em, primaryId, rs, entity);
+            }
         }
     }
 }
