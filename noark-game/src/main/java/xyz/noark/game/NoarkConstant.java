@@ -56,7 +56,7 @@ public class NoarkConstant {
     /**
      * Nacos的密码
      */
-    public static final String NACOS_PASSWORD = "noark.nacos.password";
+    public static final String NACOS_PWD = "noark.nacos.password";
     /**
      * Nacos的命名空间
      */

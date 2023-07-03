@@ -45,7 +45,7 @@ public class NacosConfigCentre extends AbstractConfigCentre {
         }
         String tenant = basicConfig.getOrDefault(NoarkConstant.NACOS_NAMESPACES, "public");
         String username = basicConfig.get(NoarkConstant.NACOS_USERNAME);
-        String password = basicConfig.get(NoarkConstant.NACOS_PASSWORD);
+        String password = basicConfig.get(NoarkConstant.NACOS_PWD);
         NacosConfigManager.bindServerInfo(new NacosServerInfo(serverAddrList, username, password, tenant));
     }
 
