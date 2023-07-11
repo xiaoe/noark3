@@ -21,6 +21,7 @@ import xyz.noark.core.event.DistributedDelayEvent;
 import xyz.noark.core.event.DistributedEventManager;
 import xyz.noark.core.event.EventManager;
 import xyz.noark.core.thread.NamedThreadFactory;
+import xyz.noark.core.util.CollectionUtils;
 import xyz.noark.core.util.IntUtils;
 import xyz.noark.core.util.ThreadUtils;
 import xyz.noark.game.NoarkConstant;
@@ -158,7 +159,12 @@ public class RedisDistributedEventManager implements DistributedEventManager {
     private void doTake() {
         logger.debug("Take队列，进入一小时等待期...");
         List<String> jobJsonList = redisTemplate.opsForList().brpop(60 * 60, KEY_DELAY_QUEUE);
-        if (jobJsonList.size() == IntUtils.NUM_2) {
+        // 轮空
+        if (CollectionUtils.isEmpty(jobJsonList)) {
+            logger.info("Take队列，一小时轮空.");
+        }
+        // 正常数据
+        else if (jobJsonList.size() == IntUtils.NUM_2) {
             eventManager.publish(JSON.parseObject(jobJsonList.get(1), DistributedDelayEvent.class));
         }
         // 非法情况
