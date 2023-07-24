@@ -31,7 +31,7 @@ import java.util.Map;
 public class ArrayListConverter extends AbstractListConverter implements Converter<ArrayList<Object>> {
 
     @Override
-    protected ArrayList<Object> createList(int length) {
+    protected ArrayList<Object> createCollection(int length) {
         return new ArrayList<>(length);
     }
 

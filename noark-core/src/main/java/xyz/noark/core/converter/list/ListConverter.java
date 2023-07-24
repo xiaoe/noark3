@@ -33,23 +33,23 @@ import java.util.Map;
 public class ListConverter extends AbstractListConverter implements Converter<List<Object>> {
 
     @Override
-    protected List<Object> createList(int length) {
+    protected List<Object> createCollection(int length) {
         return new ArrayList<>(length);
     }
 
     @Override
     public List<Object> convert(Field field, String value) throws Exception {
-        return Collections.unmodifiableList(super.convert(field, value));
+        return Collections.unmodifiableList((List<Object>) super.convert(field, value));
     }
 
     @Override
     public List<Object> convert(Parameter parameter, String value) throws Exception {
-        return Collections.unmodifiableList(super.convert(parameter, value));
+        return Collections.unmodifiableList((List<Object>) super.convert(parameter, value));
     }
 
     @Override
     public List<Object> convert(Field field, Map<String, String> data) throws Exception {
-        return Collections.unmodifiableList(super.convert(field, data));
+        return Collections.unmodifiableList((List<Object>) super.convert(field, data));
     }
 
     @Override

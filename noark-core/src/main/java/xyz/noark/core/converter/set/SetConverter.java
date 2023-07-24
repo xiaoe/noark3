@@ -11,43 +11,46 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.converter.list;
+package xyz.noark.core.converter.set;
 
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.Converter;
+import xyz.noark.core.util.MapUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * LinkedList转化器.
+ * Set转化器.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4.6
+ * @since 3.4.9
  */
-@TemplateConverter(LinkedList.class)
-public class LinkedListConverter extends AbstractListConverter implements Converter<LinkedList<Object>> {
+@TemplateConverter(Set.class)
+public class SetConverter extends AbstractSetConverter implements Converter<Set<Object>> {
 
     @Override
-    protected LinkedList<Object> createCollection(int length) {
-        return new LinkedList<>();
+    protected Set<Object> createCollection(int length) {
+        return length > 0 ? new HashSet<>(MapUtils.calculateInitialCapacity(length)) : Collections.emptySet();
     }
 
     @Override
-    public LinkedList<Object> convert(Field field, String value) throws Exception {
-        return (LinkedList<Object>) super.convert(field, value);
+    public Set<Object> convert(Field field, String value) throws Exception {
+        return Collections.unmodifiableSet((Set<?>) super.convert(field, value));
     }
 
     @Override
-    public LinkedList<Object> convert(Parameter parameter, String value) throws Exception {
-        return (LinkedList<Object>) super.convert(parameter, value);
+    public Set<Object> convert(Parameter parameter, String value) throws Exception {
+        return Collections.unmodifiableSet((Set<?>) super.convert(parameter, value));
     }
 
     @Override
-    public LinkedList<Object> convert(Field field, Map<String, String> data) throws Exception {
-        return (LinkedList<Object>) super.convert(field, data);
+    public Set<Object> convert(Field field, Map<String, String> data) throws Exception {
+        return Collections.unmodifiableSet((Set<?>) super.convert(field, data));
     }
 
     @Override

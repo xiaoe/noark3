@@ -22,7 +22,7 @@ import xyz.noark.core.util.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -32,14 +32,13 @@ import java.util.Map;
  * @since 3.4.6
  */
 public abstract class AbstractListConverter extends AbstractArrayConverter {
-
     /**
      * 创建一个List的实例对象
      *
      * @param length List的长度
      * @return 返回实例对象
      */
-    protected abstract List<Object> createList(int length);
+    protected abstract Collection<Object> createCollection(int length);
 
     /**
      * 字符串转化为List列表.
@@ -49,11 +48,11 @@ public abstract class AbstractListConverter extends AbstractArrayConverter {
      * @return 返回List列表
      * @throws Exception 转化字符串时可能出现不可知异常情况
      */
-    protected List<Object> convert(Field field, String value) throws Exception {
+    protected Collection<Object> convert(Field field, String value) throws Exception {
         Converter<?> converter = this.getListGenericConverter(field);
         TplAttrDelimiter delimiter = field.getAnnotation(TplAttrDelimiter.class);
         String[] array = this.splitArray(delimiter, value);
-        List<Object> result = this.createList(array.length);
+        Collection<Object> result = this.createCollection(array.length);
         for (String s : array) {
             result.add(converter.convert(field, s));
         }
@@ -68,12 +67,12 @@ public abstract class AbstractListConverter extends AbstractArrayConverter {
      * @return 返回List列表
      * @throws Exception 转化字符串时可能出现不可知异常情况
      */
-    protected List<Object> convert(Field field, Map<String, String> data) throws Exception {
+    protected Collection<Object> convert(Field field, Map<String, String> data) throws Exception {
         if (data.isEmpty()) {
-            return this.createList(0);
+            return this.createCollection(0);
         }
         Converter<?> converter = this.getListGenericConverter(field);
-        List<Object> result = this.createList(data.size());
+        Collection<Object> result = this.createCollection(data.size());
         for (String value : data.values()) {
             result.add(converter.convert(field, value));
         }
@@ -88,11 +87,11 @@ public abstract class AbstractListConverter extends AbstractArrayConverter {
      * @return 返回List列表
      * @throws Exception 转化字符串时可能出现不可知异常情况
      */
-    protected List<Object> convert(Parameter parameter, String value) throws Exception {
+    protected Collection<Object> convert(Parameter parameter, String value) throws Exception {
         Converter<?> converter = this.getListGenericConverter(parameter);
         TplAttrDelimiter delimiter = parameter.getAnnotation(TplAttrDelimiter.class);
         String[] array = this.splitArray(delimiter, value);
-        List<Object> result = this.createList(array.length);
+        Collection<Object> result = this.createCollection(array.length);
         for (String s : array) {
             result.add(converter.convert(parameter, s));
         }

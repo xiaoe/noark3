@@ -11,43 +11,44 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.converter.list;
+package xyz.noark.core.converter.set;
 
 import xyz.noark.core.annotation.TemplateConverter;
 import xyz.noark.core.converter.Converter;
+import xyz.noark.core.util.MapUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
- * LinkedList转化器.
+ * HashSet转化器.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4.6
+ * @since 3.4.9
  */
-@TemplateConverter(LinkedList.class)
-public class LinkedListConverter extends AbstractListConverter implements Converter<LinkedList<Object>> {
+@TemplateConverter(HashSet.class)
+public class HashSetConverter extends AbstractSetConverter implements Converter<HashSet<Object>> {
 
     @Override
-    protected LinkedList<Object> createCollection(int length) {
-        return new LinkedList<>();
+    protected HashSet<Object> createCollection(int length) {
+        return length > 0 ? new HashSet<>(MapUtils.calculateInitialCapacity(length)) : new HashSet<>();
     }
 
     @Override
-    public LinkedList<Object> convert(Field field, String value) throws Exception {
-        return (LinkedList<Object>) super.convert(field, value);
+    public HashSet<Object> convert(Field field, String value) throws Exception {
+        return (HashSet<Object>) super.convert(field, value);
     }
 
     @Override
-    public LinkedList<Object> convert(Parameter parameter, String value) throws Exception {
-        return (LinkedList<Object>) super.convert(parameter, value);
+    public HashSet<Object> convert(Parameter parameter, String value) throws Exception {
+        return (HashSet<Object>) super.convert(parameter, value);
     }
 
     @Override
-    public LinkedList<Object> convert(Field field, Map<String, String> data) throws Exception {
-        return (LinkedList<Object>) super.convert(field, data);
+    public HashSet<Object> convert(Field field, Map<String, String> data) throws Exception {
+        return (HashSet<Object>) super.convert(field, data);
     }
 
     @Override

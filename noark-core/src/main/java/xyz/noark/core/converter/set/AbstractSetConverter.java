@@ -11,31 +11,24 @@
  * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
  * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
  */
-package xyz.noark.core.converter;
+package xyz.noark.core.converter.set;
 
-import xyz.noark.core.annotation.tpl.TplAttrDelimiter;
-import xyz.noark.core.util.StringUtils;
+import xyz.noark.core.converter.list.AbstractListConverter;
+
+import java.util.Set;
 
 /**
- * 抽象的数组转化器，主要用来切割分组
+ * 抽象的Set转化器.
  *
  * @author 小流氓[176543888@qq.com]
- * @since 3.4.8
+ * @since 3.4.9
  */
-public abstract class AbstractArrayConverter {
-    /**
-     * 字符串切割逻辑
-     *
-     * @param delimiter 分隔符注解
-     * @param value     字符串
-     * @return 返回列表中每一项的数组
-     */
-    protected String[] splitArray(TplAttrDelimiter delimiter, String value) {
-        // 默认List分隔符为英文的逗号
-        if (delimiter == null) {
-            return value.split(StringUtils.COMMA);
-        }
-        // 如果有注解指定则使用注解指定的分隔符
-        return value.split(delimiter.value());
+public abstract class AbstractSetConverter extends AbstractListConverter {
+
+    @Override
+    protected abstract Set<Object> createCollection(int length);
+
+    protected String buildErrorMsg() {
+        return "Set转化器是以英文逗号分隔噢. 例=struct,struct,struct";
     }
 }
