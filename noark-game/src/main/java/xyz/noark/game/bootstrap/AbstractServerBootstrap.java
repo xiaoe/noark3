@@ -131,6 +131,12 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
 
         // 写入PID文件....
         this.pidFileName = EnvConfigHolder.getString(NoarkConstant.PID_FILE);
+
+        // 对文件后缀进行白名单控制，拒绝包含了恶意的符号或空字节。
+        if (StringUtils.isNotEmpty(pidFileName) && !pidFileName.endsWith(".pid")) {
+            throw new ServerBootstrapException("PID文件名称后续必需为.pid ->> " + pidFileName);
+        }
+
         this.createPidFile();
     }
 
