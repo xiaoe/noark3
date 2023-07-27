@@ -154,27 +154,27 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
      */
     protected void createPidFile() {
         if (StringUtils.isNotEmpty(pidFileName)) {
-            // 对文件后缀进行白名单控制，拒绝包含了恶意的符号或空字节。
-            if (StringUtils.isNotEmpty(pidFileName) && !pidFileName.endsWith(".pid")) {
-                throw new ServerBootstrapException("PID文件名称后续必需为.pid ->> " + pidFileName);
-            }
-
             try {
                 File pidFile = new File(pidFileName);
-                if (FileUtils.createNewFile(pidFile)) {
-                    logger.debug("PID文件创建成功.");
-                }
-                // PID文件已存在...
-                else {
-                    final String fileName = pidFileName;
+                // PID文件已存在
+                if (pidFile.exists()) {
                     this.pidFileName = null;
-                    throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + fileName);
+                    throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + pidFile.getPath());
                 }
 
-                // 写入PID
-                try (FileWriter fileWriter = new FileWriter(pidFile, false)) {
-                    fileWriter.write(SystemUtils.getPidStr());
-                    fileWriter.flush();
+                // 创建文件
+                if (FileUtils.createNewFile(pidFile)) {
+                    logger.debug("PID文件创建成功. file={}", pidFile.getPath());
+
+                    // 写入PID
+                    try (FileWriter fileWriter = new FileWriter(pidFile, false)) {
+                        fileWriter.write(SystemUtils.getPidStr());
+                        fileWriter.flush();
+                    }
+                }
+                // 创建失败
+                else {
+                    throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFile.getPath());
                 }
             } catch (IOException e) {
                 throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFileName, e);
