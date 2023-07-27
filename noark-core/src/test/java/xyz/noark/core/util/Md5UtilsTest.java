@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 public class Md5UtilsTest {
     @Test
     public void testToHexString() {
-        String pwd = "34A1E0B45E4D9C6CC55136E884A8C5A4";
-        assertEquals(pwd, Md5Utils.encrypt("noark"));
+        String text = "34A1E0B45E4D9C6CC55136E884A8C5A4";
+        assertEquals(text, Md5Utils.encrypt("noark"));
     }
 }

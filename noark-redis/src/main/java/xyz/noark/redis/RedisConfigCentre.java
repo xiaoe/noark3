@@ -38,7 +38,7 @@ public class RedisConfigCentre extends AbstractConfigCentre {
 
         String host = basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_HOST, "127.0.0.1");
         int port = Integer.parseInt(basicConfig.getOrDefault(RedisConstant.CONFIG_REDIS_PORT, "6379"));
-        String password = basicConfig.get(RedisConstant.CONFIG_REDIS_PWD);
+        String password = basicConfig.get(RedisConstant.CONFIG_REDIS_MM);
         if (StringUtils.isBlank(password)) {
             password = null;
         }
