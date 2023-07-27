@@ -60,7 +60,7 @@ class LogConfigurator {
     private LogConfig getParentConfig(String name) {
         LogConfig config;
         do {
-            int index = name.lastIndexOf(".");
+            int index = name.lastIndexOf('.');
             // 没有点了，那就使用根配置
             if (index == -1) {
                 name = LogConstant.DEFAULT_LOGGER_NAME;

@@ -63,7 +63,7 @@ public class AsyncTaskCommand extends AbstractCommand {
             }
 
             // 对className进行修正，去掉包名
-            int index = className.lastIndexOf(".");
+            int index = className.lastIndexOf('.');
             if (index >= 0) {
                 className = className.substring(index + 1);
             }

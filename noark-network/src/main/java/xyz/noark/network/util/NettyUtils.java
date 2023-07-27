@@ -46,7 +46,7 @@ public class NettyUtils {
         // 这是按组比较容易伪造，需要注意
         ip = headers.get("X-Forwarded-For");
         if (StringUtils.isNotEmpty(ip) && !UNKNOWN.equalsIgnoreCase(ip)) {
-            int index = ip.indexOf(",");
+            int index = ip.indexOf(',');
             if (index != -1) {
                 return ip.substring(0, index);
             } else {

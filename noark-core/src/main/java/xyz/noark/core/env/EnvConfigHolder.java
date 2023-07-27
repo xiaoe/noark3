@@ -119,7 +119,7 @@ public class EnvConfigHolder {
         }
         int startIndex = value.indexOf("${");
         while (startIndex >= 0) {
-            int endIndex = value.indexOf("}", startIndex);
+            int endIndex = value.indexOf('}', startIndex);
             if (endIndex > 0) {
                 String elKey = value.substring(startIndex + 2, endIndex);
                 String elValue = config.get(elKey);

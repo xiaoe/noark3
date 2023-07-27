@@ -37,8 +37,8 @@ class LogPath {
         this.activate = path != null && !"".equals(path);
 
         if (activate) {
-            int start = path.indexOf("{");
-            int end = path.lastIndexOf("}");
+            int start = path.indexOf('{');
+            int end = path.lastIndexOf('}');
 
             // 有配置日期格式后缀
             if (start > 0 && end > start) {
