@@ -13,7 +13,7 @@
  */
 package xyz.noark.core.thread.task;
 
-import xyz.noark.core.thread.command.AsyncTaskCommand;
+import xyz.noark.core.thread.TaskCommand;
 
 /**
  * 一种普通的异步任务.
@@ -24,7 +24,12 @@ import xyz.noark.core.thread.command.AsyncTaskCommand;
 public class DefaultAsyncTask extends AbstractAsyncTask implements Runnable {
     private final boolean printLog;
 
-    public DefaultAsyncTask(AsyncTaskCommand command, boolean printLog) {
+    public DefaultAsyncTask(TaskCommand command) {
+        super(command);
+        this.printLog = command.isPrintLog();
+    }
+
+    public DefaultAsyncTask(TaskCommand command, boolean printLog) {
         super(command);
         this.printLog = printLog;
     }

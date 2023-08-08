@@ -34,7 +34,6 @@ import xyz.noark.core.thread.command.InnerCommand;
 import xyz.noark.core.thread.task.*;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.concurrent.*;
 
 import static xyz.noark.log.LogHelper.logger;
@@ -146,7 +145,12 @@ public class ThreadDispatcher {
             // 队列线程组，队列ID就要从Session上找到对应的绑定值
             case QueueThreadGroup: {
                 Object id = this.analyticalQueueId(session, packet, pmw);
-                if (Objects.nonNull(id) && id instanceof Serializable) {
+                // 没有指定队列, 直接异步执行
+                if (id == null) {
+                    this.dispatchCommand(command);
+                }
+                // 指定队列ID，那将进行排队执行
+                else if (id instanceof Serializable) {
                     this.dispatchCommand((Serializable) id, command);
                 }
                 break;
@@ -215,6 +219,10 @@ public class ThreadDispatcher {
                 throw new UnrealizedException("非法线程执行组:" + pmw.threadGroup());
             }
         }
+    }
+
+    private void dispatchCommand(ClientCommand command) {
+        businessThreadPool.execute(new DefaultAsyncTask(command));
     }
 
     /**

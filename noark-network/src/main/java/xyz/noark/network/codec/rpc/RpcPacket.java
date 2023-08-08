@@ -14,7 +14,10 @@
 package xyz.noark.network.codec.rpc;
 
 import xyz.noark.core.network.NetworkPacket;
+import xyz.noark.core.network.packet.QueueIdPacket;
 import xyz.noark.network.codec.DefaultNetworkPacket;
+
+import java.io.Serializable;
 
 /**
  * Rpc封包。
@@ -22,7 +25,7 @@ import xyz.noark.network.codec.DefaultNetworkPacket;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4.7
  */
-public class RpcPacket extends DefaultNetworkPacket implements NetworkPacket {
+public class RpcPacket extends DefaultNetworkPacket implements NetworkPacket, QueueIdPacket {
     /**
      * 请求标识，true=请求，false=响应
      */
@@ -46,5 +49,11 @@ public class RpcPacket extends DefaultNetworkPacket implements NetworkPacket {
 
     public void setReqId(int reqId) {
         this.reqId = reqId;
+    }
+
+    @Override
+    public Serializable getQueueId() {
+        // 系统内置的RPC，不需要排队
+        return null;
     }
 }
