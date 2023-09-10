@@ -88,9 +88,9 @@ public class HtmlUtils {
                 }
                 sb.setLength(0);
             } else if (cur == ':') {
-                if ("color".equals(sb.toString())) {
+                if ("color".contentEquals(sb)) {
                     color = true;
-                } else if ("font-size".equals(sb.toString())) {
+                } else if ("font-size".contentEquals(sb)) {
                     size = true;
                 }
                 sb.setLength(0);

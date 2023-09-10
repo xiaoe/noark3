@@ -199,7 +199,7 @@ public class ArrayUtils {
      * @return int数组
      */
     public static int[] toIntArray(String[] array) {
-        return Arrays.stream(array).mapToInt(s -> Integer.parseInt(s)).toArray();
+        return Arrays.stream(array).mapToInt(Integer::parseInt).toArray();
     }
 
     /**
@@ -219,7 +219,7 @@ public class ArrayUtils {
      * @return long数组
      */
     public static long[] toLongArray(String[] array) {
-        return Arrays.stream(array).mapToLong(s -> Long.parseLong(s)).toArray();
+        return Arrays.stream(array).mapToLong(Long::parseLong).toArray();
     }
 
     /**
