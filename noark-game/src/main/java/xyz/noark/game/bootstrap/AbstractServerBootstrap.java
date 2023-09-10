@@ -28,9 +28,6 @@ import xyz.noark.log.LogManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -157,17 +154,20 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
      */
     protected void createPidFile() {
         if (StringUtils.isNotEmpty(pidFileName)) {
-            Path path = Paths.get(pidFileName);
+            // 预防路径遍历的威胁
+            if (pidFileName.contains("..")) {
+                throw new ServerBootstrapException("PID文件路径不可以使用..方式 >> " + pidFileName);
+            }
+
+            final File pidFile = new File(pidFileName);
             // PID文件已存在
-            if (Files.exists(path)) {
+            if (pidFile.exists()) {
                 this.pidFileName = null;
-                String absolutePath = path.toFile().getAbsolutePath();
+                String absolutePath = pidFile.getAbsolutePath();
                 throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + absolutePath);
             }
 
             try {
-                final File pidFile = path.toFile();
-
                 // 创建文件
                 if (FileUtils.createNewFile(pidFile)) {
                     logger.debug("PID文件创建成功. file={}", pidFile.getPath());
