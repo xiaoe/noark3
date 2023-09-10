@@ -33,12 +33,12 @@ public class IpUtils {
      * B类 172.16.0.0-172.31.255.255 <br>
      * C类 192.168.0.0-192.168.255.255<br>
      **/
-    private static long A_BEGIN = ipToLong("10.0.0.0");
-    private static long A_END = ipToLong("10.255.255.255");
-    private static long B_BEGIN = ipToLong("172.16.0.0");
-    private static long B_END = ipToLong("172.31.255.255");
-    private static long C_BEGIN = ipToLong("192.168.0.0");
-    private static long C_END = ipToLong("192.168.255.255");
+    private static final long A_BEGIN = ipToLong("10.0.0.0");
+    private static final long A_END = ipToLong("10.255.255.255");
+    private static final long B_BEGIN = ipToLong("172.16.0.0");
+    private static final long B_END = ipToLong("172.31.255.255");
+    private static final long C_BEGIN = ipToLong("192.168.0.0");
+    private static final long C_END = ipToLong("192.168.255.255");
 
     /**
      * IP转化为Long类型的数字.

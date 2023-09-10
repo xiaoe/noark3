@@ -28,6 +28,9 @@ import xyz.noark.log.LogManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -154,23 +157,21 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
      */
     protected void createPidFile() {
         if (StringUtils.isNotEmpty(pidFileName)) {
-            // 预防路径遍历的威胁
-            if (pidFileName.contains("..")) {
-                throw new ServerBootstrapException("PID文件路径不可以使用..方式 >> " + pidFileName);
-            }
+            // 清理路径的方式预防路径遍历的威胁
+            Path pidPath = Paths.get(pidFileName).normalize();
 
-            final File pidFile = new File(pidFileName);
             // PID文件已存在
-            if (pidFile.exists()) {
+            if (Files.exists(pidPath)) {
                 this.pidFileName = null;
-                String absolutePath = pidFile.getAbsolutePath();
+                String absolutePath = pidPath.toFile().getAbsolutePath();
                 throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + absolutePath);
             }
 
             try {
+                final File pidFile = pidPath.toFile();
                 // 创建文件
                 if (FileUtils.createNewFile(pidFile)) {
-                    logger.debug("PID文件创建成功. file={}", pidFile.getPath());
+                    logger.debug("PID文件创建成功. file={}", pidFile.getAbsolutePath());
 
                     // 写入PID
                     try (FileWriter fileWriter = new FileWriter(pidFile, false)) {
@@ -180,7 +181,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
                 }
                 // 创建失败
                 else {
-                    throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFile.getPath());
+                    throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFile.getAbsolutePath());
                 }
             } catch (IOException e) {
                 throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFileName, e);
