@@ -16,6 +16,8 @@ package xyz.noark.log;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 一个路径对应的输出类.
@@ -29,6 +31,10 @@ public class LogFileWriter {
      */
     private final LogPath path;
     /**
+     * 配置的存档保留时间
+     */
+    private final LogDay day;
+    /**
      * 当前正在记录的文件引用
      */
     private LogFile logFile = null;
@@ -37,8 +43,9 @@ public class LogFileWriter {
      */
     private int lastWriterHour = -1;
 
-    public LogFileWriter(LogPath path) {
+    public LogFileWriter(LogPath path, LogDay day) {
         this.path = path;
+        this.day = day;
     }
 
     /**
@@ -83,6 +90,15 @@ public class LogFileWriter {
         final File file = this.createNewFile(path.getPath(logTime));
         this.logFile = new LogFile(file);
         this.lastWriterHour = logTime.getHour();
+
+        // 启动一个删除过期日志的异步任务(夜里3点多随机一个时间，每天处理一次就够了)
+        // 今天3点多停服了吗？那就明天再删呗，这个任务又不需要那么严谨...
+        if (lastWriterHour == 3 && day != null) {
+            AsyncLoggerDisruptor loggerDisruptor = LogManager.getAsyncLoggerDisruptor();
+            // 03:00:03 到 03:00:10
+            final int delay = new Random().nextInt(8) + 3;
+            loggerDisruptor.schedule(new LogDeleteTask(file.getParentFile(), day), delay, TimeUnit.SECONDS);
+        }
     }
 
     void flushAndClose() throws IOException {

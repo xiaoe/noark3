@@ -58,8 +58,7 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
      */
     @Value(NetworkConstant.SECRET_KEY)
     protected byte[] secretKey = StringUtils.utf8Bytes("do{ManyLeavesFly();YangtzeRiverFlows();}while(1==1);");
-    @Autowired
-    private ThreadDispatcher threadDispatcher;
+
     @Autowired(required = false)
     private PacketCheckFilter packetCheckFilter;
     @Autowired(required = false)
@@ -156,7 +155,7 @@ public abstract class AbstractServerHandler<T> extends SimpleChannelInboundHandl
 
         // 本地封包
         if (pmw instanceof LocalPacketMethodWrapper) {
-            threadDispatcher.dispatchPacket(session, packet, (LocalPacketMethodWrapper) pmw);
+            ThreadDispatcher.getInstance().dispatchClientPacket(session, packet, (LocalPacketMethodWrapper) pmw);
         }
         // 有跨服的实现方案
         else if (remotePacketService != null && pmw instanceof RemotePacketMethodWrapper) {

@@ -29,11 +29,16 @@ class AtomicLongAdaptor extends AbstractValueAdaptor<AtomicLong> {
 
     @Override
     protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, AtomicLong value, int parameterIndex) throws Exception {
-        pstmt.setLong(parameterIndex, value.longValue());
+        pstmt.setLong(parameterIndex, value == null ? 0L : value.longValue());
     }
 
     @Override
     protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
         return new AtomicLong(rs.getLong(fm.getColumnName()));
+    }
+
+    @Override
+    protected Object readGeneratedValue(FieldMapping fm, ResultSet rs) throws Exception {
+        return new AtomicLong(rs.getLong(1));
     }
 }

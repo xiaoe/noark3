@@ -39,7 +39,7 @@ public class LocalTimeArray {
     /**
      * 每天最大的秒数
      */
-    private static final int MAX_SECOND_BY_DAY = 24 * 60 * 60 - 1;
+    private static final int MAX_SECOND_BY_DAY = 24 * 60 * 60;
 
     private final LocalTime[] array;
 
@@ -91,26 +91,32 @@ public class LocalTimeArray {
         // 有指定开始日期且在今天之后
         boolean flag = start != null && start.isAfter(LocalDate.now());
 
-        // 计算出来最小的那个时间
-        int minSecond = MAX_SECOND_BY_DAY;
-        int nextSecond = MAX_SECOND_BY_DAY;
-        final int todaySecond = now.toSecondOfDay();
-        for (LocalTime time : array) {
-            int targetSecond = time.toSecondOfDay();
-            minSecond = Math.min(minSecond, targetSecond);
+        // 所有节点中最小的那个节点，用于计算跨天的时间
+        int minSecond = Integer.MAX_VALUE;
+        // 推算出节点中在当前时间之后的那个节点所距的秒数
+        boolean hasNext = false;
+        int nextSecond = Integer.MAX_VALUE;
 
-            if (!flag && targetSecond > todaySecond) {
-                nextSecond = Math.min(nextSecond, targetSecond - todaySecond);
+        // 当前时间对应的今天第几秒
+        final int nowTodaySecond = now.toSecondOfDay();
+        for (LocalTime node : array) {
+            // 每一个节点时间对应的今天第几秒
+            int nodeTodaySecond = node.toSecondOfDay();
+            minSecond = Math.min(minSecond, nodeTodaySecond);
+
+            // 在当前时间之后的那个节点
+            if (!flag && nodeTodaySecond > nowTodaySecond) {
+                hasNext = true;
+                nextSecond = Math.min(nextSecond, nodeTodaySecond - nowTodaySecond);
             }
         }
 
-        // 还是初始值，那就计算过天的下个时间
-        if (nextSecond == MAX_SECOND_BY_DAY) {
-            nextSecond = MAX_SECOND_BY_DAY + 1 - todaySecond + minSecond;
+        // 没有下个节点，那就计算过天的下个节点时间
+        if (!hasNext) {
+            nextSecond = MAX_SECOND_BY_DAY - nowTodaySecond + minSecond;
         }
 
         Calendar calendar = Calendar.getInstance();
-
         // 对日期有要求的
         if (flag) {
             calendar.set(Calendar.YEAR, start.getYear());
@@ -121,6 +127,7 @@ public class LocalTimeArray {
         calendar.set(Calendar.HOUR_OF_DAY, now.getHour());
         calendar.set(Calendar.MINUTE, now.getMinute());
         calendar.set(Calendar.SECOND, now.getSecond());
+        calendar.set(Calendar.MILLISECOND, 0);
         calendar.add(Calendar.SECOND, nextSecond);
         return calendar.getTime();
     }

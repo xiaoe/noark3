@@ -19,6 +19,9 @@ import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.network.init.IllegalRequestHandler;
 import xyz.noark.network.init.SocketInitializeHandler;
+import xyz.noark.network.init.WebsocketInitializeHandler;
+import xyz.noark.network.init.WebsocketSslInitializeHandler;
+import xyz.noark.network.util.ByteBufUtils;
 
 import java.util.Map;
 
@@ -30,6 +33,14 @@ import java.util.Map;
  */
 public class InitializeHandlerManager {
     /**
+     * 默认暗号长度为23，为什么是23呢？你来问我啊，不问我就当你是知道的
+     */
+    private static final int MAX_LENGTH = 23;
+    /**
+     * WebSocket握手的协议前缀
+     */
+    private static final String WEBSOCKET_PREFIX = "GET /";
+    /**
      * Socket的接头暗号是否开启，默认是开启状态
      */
     @Value(NetworkConstant.SOCKET_SIGNAL_ACTIVE)
@@ -39,24 +50,59 @@ public class InitializeHandlerManager {
     private Map<String, InitializeHandler> handlers;
     @Autowired
     private SocketInitializeHandler socketInitializeHandler;
+    @Autowired
+    private WebsocketSslInitializeHandler websocketSslInitializeHandler;
 
     /**
      * 初始化通道.
      *
-     * @param ctx      通道上下文
-     * @param protocol 暗号协议
-     * @param in       封包缓冲区
+     * @param ctx 通道上下文
+     * @param in  封包缓冲区
      */
-    public void init(ChannelHandlerContext ctx, String protocol, ByteBuf in) {
-        InitializeHandler initializeHandler = socketInitializeHandler;
-        // 开启暗号
+    public void init(ChannelHandlerContext ctx, ByteBuf in) {
+        // 开启接口暗号，那就尝试分析
         if (signalActive) {
-            initializeHandler = handlers.getOrDefault(protocol, new IllegalRequestHandler(protocol));
+            this.doAnalyzeSignal(ctx, in);
         }
-        // 关闭暗号，前面用来判定的协议头要还回去.
+        // 没有开启暗号，那就当Socket处理了
         else {
+            this.doInitSocketHandler(ctx, in);
+        }
+    }
+
+    private void doInitSocketHandler(ChannelHandlerContext ctx, ByteBuf in) {
+        this.socketInitializeHandler.handle(ctx);
+    }
+
+    private void doAnalyzeSignal(ChannelHandlerContext ctx, ByteBuf in) {
+        // 取出接头暗号
+        int length = Math.min(in.readableBytes(), MAX_LENGTH);
+        String protocol = ByteBufUtils.readString(in, length);
+
+        // 如果是使用WS链接，修正一个名称
+        if (protocol.startsWith(WEBSOCKET_PREFIX)) {
+            protocol = WebsocketInitializeHandler.WEBSOCKET_NAME;
+        }
+
+        InitializeHandler initializeHandler = handlers.get(protocol);
+
+        // 没有命中规定的方案
+        if (initializeHandler == null) {
+            // 配置了SSL，那要尝试走一次WSS连接
+            if (websocketSslInitializeHandler.isConfigSslContext()) {
+                initializeHandler = websocketSslInitializeHandler;
+            }
+            // 没配置，就不用尝试了，当非法请求处理
+            else {
+                initializeHandler = new IllegalRequestHandler(protocol);
+            }
+        }
+
+        // 如果目标是WebSocket的话，那还归还刚刚取出来的判定信息
+        if (initializeHandler instanceof WebsocketInitializeHandler) {
             in.resetReaderIndex();
         }
+
         // 初始化处理器
         initializeHandler.handle(ctx);
     }

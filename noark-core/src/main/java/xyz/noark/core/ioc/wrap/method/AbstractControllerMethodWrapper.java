@@ -15,6 +15,7 @@ package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.MethodDefinition;
+import xyz.noark.core.ioc.wrap.exception.ExceptionHandlerSelector;
 
 /**
  * Controller类中的可执行方法.
@@ -31,7 +32,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      * 当前方法是否已废弃使用.
      */
     protected boolean deprecated = false;
-    
+
     /**
      * 执行线程组
      */
@@ -39,7 +40,7 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
     /**
      * 如果是模块串行，模块唯一标识
      */
-    protected final String module;
+    protected final String controllerClassName;
 
     /**
      * 可执行方法的两个属性
@@ -50,9 +51,9 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      */
     protected boolean printLog = false;
 
-    public AbstractControllerMethodWrapper(Object single, ExecThreadGroup threadGroup, String module, String logCode, MethodDefinition md) {
+    public AbstractControllerMethodWrapper(Object single, ExecThreadGroup threadGroup, String controllerClassName, String logCode, MethodDefinition md) {
         super(single, md.getMethodAccess(), md.getMethodIndex(), md.getOrder());
-        this.module = module;
+        this.controllerClassName = controllerClassName;
         this.logCode = logCode;
         this.threadGroup = threadGroup;
     }
@@ -107,8 +108,8 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
         return threadGroup;
     }
 
-    public String getModule() {
-        return module;
+    public String getControllerClassName() {
+        return controllerClassName;
     }
 
     /**
@@ -118,5 +119,16 @@ public abstract class AbstractControllerMethodWrapper extends BaseMethodWrapper 
      */
     public String logCode() {
         return logCode;
+    }
+
+    /**
+     * 查找指定类型的异常处理器.
+     * <p>查找一个最优解
+     *
+     * @param exceptionClass 指定类型的异常类
+     * @return 异常处理器
+     */
+    public ExceptionMethodWrapper lookupExceptionHandler(Class<? extends Throwable> exceptionClass) {
+        return ExceptionHandlerSelector.selectExceptionHandler(single.getClass(), exceptionClass);
     }
 }

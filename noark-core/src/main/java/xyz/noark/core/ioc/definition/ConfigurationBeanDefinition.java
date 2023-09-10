@@ -13,7 +13,6 @@
  */
 package xyz.noark.core.ioc.definition;
 
-import xyz.noark.core.annotation.Primary;
 import xyz.noark.core.annotation.configuration.Bean;
 import xyz.noark.core.ioc.IocMaking;
 import xyz.noark.core.ioc.definition.method.BeanMethodDefinition;
@@ -43,10 +42,9 @@ public class ConfigurationBeanDefinition extends DefaultBeanDefinition {
         super.injection(making);
 
         // 注入完属性，还要建构相关Bean.
-        for (BeanMethodDefinition bean : beans) {
-            boolean primary = bean.getMethod().isAnnotationPresent(Primary.class);
-            Object obj = bean.getMethodAccess().invoke(single, bean.getMethodIndex());
-            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(profileStr, bean.getBeanName(), obj, primary).init();
+        for (BeanMethodDefinition bmd : beans) {
+            Object obj = bmd.getMethodAccess().invoke(single, bmd.getMethodIndex());
+            DefaultBeanDefinition beanDefinition = new DefaultBeanDefinition(profileStr, bmd, obj).init();
             making.getLoader().getBeans().put(beanDefinition.getBeanClass(), beanDefinition);
         }
     }

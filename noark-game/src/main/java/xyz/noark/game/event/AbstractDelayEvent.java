@@ -16,6 +16,7 @@ package xyz.noark.game.event;
 import xyz.noark.core.annotation.orm.Column;
 import xyz.noark.core.annotation.orm.Id;
 import xyz.noark.core.event.DelayEvent;
+import xyz.noark.core.thread.TraceIdFactory;
 
 import java.util.Date;
 import java.util.concurrent.Delayed;
@@ -33,8 +34,15 @@ public class AbstractDelayEvent implements DelayEvent {
     @Column(name = "id", nullable = false, comment = "事件ID")
     private long id;
 
+    @Column(name = "trace_id", nullable = false, comment = "链路追踪ID", defaultValue = "0")
+    private String traceId;
+
     @Column(name = "end_time", nullable = false, comment = "结束时间", defaultValue = "2018-01-01 00:00:00")
     private Date endTime;
+
+    public AbstractDelayEvent() {
+        this.setTraceId(TraceIdFactory.getMdcTraceId());
+    }
 
     @Override
     public int compareTo(Delayed o) {
@@ -43,7 +51,10 @@ public class AbstractDelayEvent implements DelayEvent {
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(endTime.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        // 需要延迟的毫秒数
+        long delay = endTime.getTime() - System.currentTimeMillis();
+        // 转化为目标指定时间单位
+        return unit.convert(DefaultEventManager.calculateMaxDelay(delay), TimeUnit.MILLISECONDS);
     }
 
     public long getId() {
@@ -70,6 +81,20 @@ public class AbstractDelayEvent implements DelayEvent {
     }
 
     @Override
+    public String getTraceId() {
+        return traceId;
+    }
+
+    /**
+     * 此Set方法主要用于存储读写，不理解需求的情况下不建议主动给值
+     *
+     * @param traceId 链路追踪ID
+     */
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -89,9 +114,6 @@ public class AbstractDelayEvent implements DelayEvent {
             return false;
         }
         AbstractDelayEvent other = (AbstractDelayEvent) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id == other.id;
     }
 }

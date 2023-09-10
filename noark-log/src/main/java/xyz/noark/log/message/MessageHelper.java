@@ -28,10 +28,7 @@ import java.util.Date;
  * @since 3.3.9
  */
 class MessageHelper {
-    /**
-     * 拼接时是单线程，这个不会被并发
-     */
-    private static final SimpleDateFormat DEFAULT_PATTERN = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final ThreadLocal<SimpleDateFormat> threadLocal = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 
     private MessageHelper() {
     }
@@ -46,7 +43,7 @@ class MessageHelper {
      */
     static Object preprocessingEnteringLogThreadBefore(Object object) {
         if (object == null) {
-            return object;
+            return null;
         }
 
         // 基本数据类型
@@ -94,20 +91,20 @@ class MessageHelper {
      */
     static void append(StringBuilder sb, Object object) {
         if (object == null) {
-            sb.append(object);
+            sb.append((Object) null);
         }
         // 异常类型的输出...
         else if (object instanceof Throwable) {
             try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
                 ((Throwable) object).printStackTrace(pw);
-                sb.append("\n").append(sw.toString());
+                sb.append("\n").append(sw);
             } catch (Exception e) {
                 sb.append(object);
             }
         }
         // 时间类型的，需要格式化一下
         else if (object instanceof Date) {
-            sb.append(DEFAULT_PATTERN.format(object));
+            sb.append(threadLocal.get().format(object));
         }
         // 默认的交给StringBuilder
         else {

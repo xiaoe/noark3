@@ -17,10 +17,7 @@ import xyz.noark.core.annotation.*;
 import xyz.noark.core.converter.ConvertManager;
 import xyz.noark.core.converter.Converter;
 import xyz.noark.core.exception.ServerBootstrapException;
-import xyz.noark.core.ioc.definition.ConfigurationBeanDefinition;
-import xyz.noark.core.ioc.definition.ControllerBeanDefinition;
-import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
-import xyz.noark.core.ioc.definition.StaticComponentBeanDefinition;
+import xyz.noark.core.ioc.definition.*;
 import xyz.noark.core.ioc.scan.Resource;
 import xyz.noark.core.ioc.scan.ResourceScanning;
 import xyz.noark.core.util.*;
@@ -170,6 +167,10 @@ public class IocLoader {
         // 协议入口控制类(模块化)
         else if (annotationType == ModuleController.class) {
             analytical(klass, (ModuleController) annotation);
+        }
+        // ControllerAdvice
+        else if (annotationType == ControllerAdvice.class) {
+            beans.put(klass, new ControllerAdviceBeanDefinition(profileStr, klass).init());
         }
         // 静态组件
         else if (annotationType == StaticComponent.class) {

@@ -5,7 +5,8 @@ subprojects {
 	apply plugin: 'jacoco'
 	
 	group = 'xyz.noark'
-	version = '3.4.6.Final'
+
+	version = '3.4.9-SNAPSHOT'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -19,6 +20,8 @@ subprojects {
 
     dependencies {
 		testImplementation 'junit:junit:4.12'
+		testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+		testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
     }
 
     jar {
@@ -43,7 +46,7 @@ subprojects {
 	ext."signing.secretKeyRingFile"=System.getenv('SIGNING_SECRETKEYRINGFILE')
 
 	signing {
-	    //sign configurations.archives
+	    sign configurations.archives
 	}
 
 	uploadArchives {
@@ -55,10 +58,9 @@ subprojects {
 	                authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
 	            }
 	
-				//快照版本还是内网速度快，稳定再发布正式版本给大家使用
-				//https://oss.sonatype.org/content/repositories/snapshots
-	            snapshotRepository(url: "http://192.168.0.235:8089/repository/maven-snapshots/") {
-	                authentication(userName: 'admin', password: 'admin123')
+				//快照版本
+	            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+					authentication(userName: System.getenv('OSSRH_USER'), password: System.getenv('OSSRH_PASSWORD'))
 	            }
 	            
 	            pom.project {

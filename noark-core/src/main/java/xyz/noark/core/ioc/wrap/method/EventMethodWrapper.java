@@ -16,8 +16,8 @@ package xyz.noark.core.ioc.wrap.method;
 import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.event.Event;
-import xyz.noark.core.event.FixedTimeEvent;
 import xyz.noark.core.ioc.definition.method.EventMethodDefinition;
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.ObjectParamWrapper;
 import xyz.noark.core.ioc.wrap.param.PlayerIdParamWrapper;
@@ -84,10 +84,15 @@ public class EventMethodWrapper extends AbstractControllerMethodWrapper implemen
         }
     }
 
-    public Object[] analysisParam(Serializable playerId, FixedTimeEvent event) {
+    public Object[] analysisParam(Serializable playerId, Event event) {
+        if (parameters.isEmpty()) {
+            return new Object[0];
+        }
+
+        MethodParamContext context = new MethodParamContext(playerId, event);
         List<Object> args = new ArrayList<>(parameters.size());
         for (ParamWrapper parameter : parameters) {
-            args.add(parameter.read(playerId, event));
+            args.add(parameter.read(context));
         }
         return args.toArray();
     }

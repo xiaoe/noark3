@@ -35,7 +35,7 @@ class AppenderFactory {
         }
         // 文件输出
         if (config.getPath() != null && config.getPath().isActivate()) {
-            appenderList.add(new FileAppender(config.getPath()));
+            appenderList.add(new FileAppender(config.getPath(), config.getDay()));
         }
         return appenderList;
     }

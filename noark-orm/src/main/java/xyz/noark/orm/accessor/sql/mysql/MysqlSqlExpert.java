@@ -31,7 +31,7 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
     @Override
     public <T> String genCreateTableSql(EntityMapping<T> em) {
         StringBuilder sb = new StringBuilder(512);
-        sb.append("CREATE TABLE `" + em.getTableName() + "` (");
+        sb.append("CREATE TABLE `").append(em.getTableName()).append("` (");
         // 创建字段
         for (FieldMapping fm : em.getFieldMapping()) {
             sb.append('\n').append('`').append(fm.getColumnName()).append('`');
@@ -43,6 +43,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
             // 主键的 @Id，应该加入唯一性约束
             if (fm.isPrimaryId()) {
                 sb.append(" UNIQUE NOT NULL");
+                // 自增主键
+                if (fm.hasGeneratedValue()) {
+                    sb.append(" AUTO_INCREMENT");
+                }
             }
             // 普通字段
             else {
@@ -63,7 +67,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
                         case AsAtomicLong:
                         case AsFloat:
                         case AsDouble:
-                            sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
+                            sb.append(" DEFAULT ").append(fm.getDefaultValue());
+                            break;
+                        // Blob是不可以有默认值的
+                        case AsBlob:
                             break;
                         default:
                             // 超过这个值当Text啦，Text是不可以有默认值的.
@@ -97,7 +104,7 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
             sb.setCharAt(sb.length() - 1, ')');
         }
         // 结束表字段设置并设置特殊引擎
-        sb.append("\n )ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        sb.append("\n )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         // 表名注释
         if (!StringUtils.isEmpty(em.getTableComment())) {
             sb.append(" COMMENT='").append(em.getTableComment()).append("'");
@@ -341,7 +348,10 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
                 case AsAtomicLong:
                 case AsFloat:
                 case AsDouble:
-                    sb.append(" DEFAULT ").append(fm.getDefaultValue()).append("");
+                    sb.append(" DEFAULT ").append(fm.getDefaultValue());
+                    break;
+                //Blob是不会有默认值的
+                case AsBlob:
                     break;
                 default:
                     // 超过这个值当Text啦，Text是不可以有默认值的.
@@ -351,6 +361,13 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
                     break;
             }
         }
+
+        // 自增主键
+        if (fm.hasGeneratedValue()) {
+            sb.append(" AUTO_INCREMENT");
+        }
+
+        // 字段描述
         if (fm.hasColumnComment()) {
             sb.append(" COMMENT '").append(fm.getColumnComment()).append("'");
         }
@@ -370,7 +387,8 @@ public class MysqlSqlExpert extends AbstractSqlExpert {
         StringBuilder sb = new StringBuilder(64);
         sb.append("UPDATE ");
         this.append(sb, em.getTableName()).append(" SET ");
-        this.append(sb, fm.getColumnName()).append("='").append(fm.getDefaultValue()).append("'");
+        // 使用占位符的方式更新
+        this.append(sb, fm.getColumnName()).append("=?");
         return sb.toString();
     }
 

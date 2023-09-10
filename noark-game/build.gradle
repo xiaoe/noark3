@@ -2,9 +2,9 @@ dependencies {
     compile project(':noark-core')
     implementation project(':noark-network')
     implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.21'
-    implementation 'com.alibaba:fastjson:1.2.78'
+    implementation 'com.alibaba:fastjson:1.2.83'
 
     testImplementation project(':noark-benchmark')
     testImplementation 'com.alibaba:druid:1.2.6'
-    testImplementation "mysql:mysql-connector-java:5.1.40"
+    testImplementation 'mysql:mysql-connector-java:8.0.28'
 }

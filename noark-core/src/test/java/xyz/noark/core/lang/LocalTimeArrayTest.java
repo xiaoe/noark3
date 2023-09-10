@@ -19,6 +19,7 @@ import xyz.noark.core.util.DateUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -105,5 +106,16 @@ public class LocalTimeArrayTest {
             final Date lastTriggerTime = sdf.parse("2019-12-01 08:00:00");
             assertEquals(34, array.triggerTimes(lastTriggerTime, now));
         }
+    }
+
+    @Test
+    public void testDoNext() {
+        List<LocalTime> times = new ArrayList<>();
+        times.add(LocalTime.of(23, 59, 59));
+        LocalTimeArray array = new LocalTimeArray(times.toArray(new LocalTime[]{}));
+
+        LocalTime now = LocalTime.of(0, 0, 0);
+        LocalDateTime want = LocalDate.now().atTime(LocalTime.of(23, 59, 59));
+        assertEquals(want, DateUtils.toLocalDateTime(array.doNext(now)));
     }
 }

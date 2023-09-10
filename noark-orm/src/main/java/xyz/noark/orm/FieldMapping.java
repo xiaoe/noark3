@@ -34,6 +34,7 @@ public class FieldMapping {
     private final Field field;
     private final Type klass;
     private final Id id;
+    private final GeneratedValue generatedValue;
     private final Column column;
     private final PlayerId playerId;
     private final Json json;
@@ -65,6 +66,7 @@ public class FieldMapping {
 
         // 所有注解
         this.id = field.getAnnotation(Id.class);
+        this.generatedValue = field.getAnnotation(GeneratedValue.class);
         this.column = field.getAnnotation(Column.class);
         this.collate = field.getAnnotation(Collate.class);
         this.playerId = field.getAnnotation(PlayerId.class);
@@ -112,6 +114,10 @@ public class FieldMapping {
 
     void setType(FieldType type) {
         this.type = type;
+    }
+
+    public boolean hasGeneratedValue() {
+        return generatedValue != null;
     }
 
     public boolean isPrimaryId() {
@@ -226,7 +232,7 @@ public class FieldMapping {
         return gzip != null;
     }
 
-    public int getGzipThreshold(){
+    public int getGzipThreshold() {
         return gzip.threshold();
     }
 }

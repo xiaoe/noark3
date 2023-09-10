@@ -13,6 +13,8 @@
  */
 package xyz.noark.game.bootstrap;
 
+import xyz.noark.core.thread.TraceIdFactory;
+
 /**
  * 停服信号勾子.
  *
@@ -30,6 +32,7 @@ public class ShutdownHook extends Thread {
 
     @Override
     public void run() {
+        TraceIdFactory.initFixedTraceIdByStopServer();
         this.serverStartup.stop();
     }
 }

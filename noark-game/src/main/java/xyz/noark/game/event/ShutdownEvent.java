@@ -14,6 +14,7 @@
 package xyz.noark.game.event;
 
 import xyz.noark.core.event.DelayEvent;
+import xyz.noark.core.thread.TraceIdFactory;
 
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
@@ -29,9 +30,11 @@ import java.util.concurrent.TimeUnit;
 public class ShutdownEvent implements DelayEvent {
     private final CountDownLatch countDownLatch;
     private final Date endTime = new Date();
+    private final String traceId;
 
     public ShutdownEvent(CountDownLatch countDownLatch) {
         this.countDownLatch = countDownLatch;
+        this.traceId = TraceIdFactory.getMdcTraceId();
     }
 
     @Override
@@ -47,6 +50,11 @@ public class ShutdownEvent implements DelayEvent {
     @Override
     public Date getEndTime() {
         return endTime;
+    }
+
+    @Override
+    public String getTraceId() {
+        return traceId;
     }
 
     public void countDown() {

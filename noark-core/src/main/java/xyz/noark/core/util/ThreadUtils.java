@@ -44,7 +44,7 @@ public class ThreadUtils {
      */
     public static String printStackTrace(Thread thread) {
         final StackTraceElement[] st = thread.getStackTrace();
-        StringBuffer sb = new StringBuffer(2048);
+        StringBuilder sb = new StringBuilder(1024);
         sb.append("\n");
         for (StackTraceElement e : st) {
             sb.append("\tat ").append(e).append("\n");

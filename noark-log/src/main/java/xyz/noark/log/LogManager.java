@@ -63,7 +63,7 @@ public class LogManager {
     }
 
     /**
-     * 重新配置，然后还要更新所有Logger对象
+     * 重置配置，然后还要更新所有Logger对象
      *
      * @param config 配置
      */

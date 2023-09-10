@@ -73,4 +73,8 @@ public class ByteBufWrapper implements ByteArray {
             array[index] = value;
         }
     }
+
+    public ByteBuf getByteBuf() {
+        return byteBuf;
+    }
 }

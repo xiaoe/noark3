@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015 www.noark.xyz All Rights Reserved.
+ * Copyright © 2018 www.noark.xyz All Rights Reserved.
  *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -30,8 +31,9 @@ import static xyz.noark.log.LogHelper.logger;
 public class LogTest {
     @Before
     public void setUp() throws Exception {
-        HashMap<String, String> config = new HashMap<>(16, 1);
+        HashMap<String, String> config = new HashMap<>();
         config.put("log.console", "false");
+        config.put("log.layout.pattern", "%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread]<traceId=%X{traceId}>[%file:%line] - %msg%n");
         LogManager.init(config);
     }
 
@@ -42,6 +44,7 @@ public class LogTest {
 
     @Test
     public void test() {
+        MDC.put("traceId", UUID.randomUUID());
         logger.debug("haha{}", 123, "abc");
         logger.info("haha");
         logger.warn("123123123, {},{}", 1L, null);
@@ -50,5 +53,6 @@ public class LogTest {
         logger.debug("array={}", 1, 2, 3);
         logger.debug("array={}", new byte[]{1, 2});
         logger.debug("array={}", new int[]{1, 2});
+        MDC.clear();
     }
 }

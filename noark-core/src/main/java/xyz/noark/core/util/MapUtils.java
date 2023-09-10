@@ -13,9 +13,9 @@
  */
 package xyz.noark.core.util;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -61,7 +61,7 @@ public class MapUtils {
      * @param size 要存放数量
      * @return 初始化容量
      */
-    static int calculateInitialCapacity(int size) {
+    public static int calculateInitialCapacity(int size) {
         // see java.util.HashMap.putMapEntries
         // float ft = ((float)s / loadFactor) + 1.0F;
         return (int) (size / 0.75F + 1.0F);
@@ -126,7 +126,34 @@ public class MapUtils {
         }
 
         // Key不存在的情况，那就找到Key刚好小于他且是最大的那个值.
-        return map.entrySet().stream().filter(x -> x.getKey() < key).max(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getValue).orElse(null);
+        return map.entrySet().stream().filter(x -> x.getKey() < key).max(Entry.comparingByKey()).map(Entry::getValue).orElse(null);
+    }
+
+    /**
+     * 从map中获取指定的Key，如果Key对应的值不存在，那就获取最大的Key所对应的值.
+     * <p>
+     * 常用于策划配置次数，比如获取20次所对应的资源，如果只配置到15，那就使用15对应的资源<br>
+     * 1=10<br>
+     * 2=15<br>
+     * 3=20<br>
+     * 4=25<br>
+     * 5=30<br>
+     * 10=100<br>
+     * 如此配置，如果参数为6，应该返回是30，如果参数是12，应该返回100
+     *
+     * @param <V> 值的类型
+     * @param map 配置Map
+     * @param key 指定Key
+     * @return 只要配置了值肯定会返回一个最近的值...
+     */
+    public static <V> V getOrMaxKey(final Map<Long, V> map, Long key) {
+        V v = map.get(key);
+        if (v != null) {
+            return v;
+        }
+
+        // Key不存在的情况，那就找到Key刚好小于他且是最大的那个值.
+        return map.entrySet().stream().filter(x -> x.getKey() < key).max(Entry.comparingByKey()).map(Entry::getValue).orElse(null);
     }
 
     /**
@@ -140,7 +167,7 @@ public class MapUtils {
      */
     public static <K> void addByIntValue(Map<K, Integer> source, Map<K, Integer> value) {
         if (MapUtils.isNotEmpty(value)) {
-            value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> MathUtils.addExact(v1, v2)));
+            value.forEach((k, v) -> source.merge(k, v, MathUtils::addExact));
         }
     }
 
@@ -155,7 +182,7 @@ public class MapUtils {
      */
     public static <K> void addByLongValue(Map<K, Long> source, Map<K, Long> value) {
         if (MapUtils.isNotEmpty(value)) {
-            value.forEach((k, v) -> source.merge(k, v, (v1, v2) -> MathUtils.addExact(v1, v2)));
+            value.forEach((k, v) -> source.merge(k, v, MathUtils::addExact));
         }
     }
 

@@ -29,13 +29,20 @@ class LongAdderAdaptor extends AbstractValueAdaptor<LongAdder> {
 
     @Override
     protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, LongAdder value, int parameterIndex) throws Exception {
-        pstmt.setLong(parameterIndex, value.longValue());
+        pstmt.setLong(parameterIndex, value == null ? 0L : value.longValue());
     }
 
     @Override
     protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
         final LongAdder adder = new LongAdder();
         adder.add(rs.getLong(fm.getColumnName()));
+        return adder;
+    }
+
+    @Override
+    protected Object readGeneratedValue(FieldMapping fm, ResultSet rs) throws Exception {
+        final LongAdder adder = new LongAdder();
+        adder.add(rs.getLong(1));
         return adder;
     }
 }

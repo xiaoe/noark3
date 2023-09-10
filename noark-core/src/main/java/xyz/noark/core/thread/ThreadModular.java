@@ -73,16 +73,16 @@ public class ThreadModular implements Modular {
     @Value(ThreadModular.THREAD_TASK_EXEC_STACK)
     private boolean outputStack = true;
 
-    @Autowired
-    private ThreadDispatcher threadDispatcher;
+    @Autowired(required = false)
+    private MonitorThreadPool monitorThreadPool;
 
     @Override
     public void init() {
-        threadDispatcher.init(poolSize, threadNamePrefix, timeout, execTimeout, outputStack);
+        ThreadDispatcher.getInstance().init(poolSize, threadNamePrefix, timeout, execTimeout, outputStack, monitorThreadPool);
     }
 
     @Override
     public void destroy() {
-        threadDispatcher.shutdown();
+        ThreadDispatcher.getInstance().shutdown();
     }
 }

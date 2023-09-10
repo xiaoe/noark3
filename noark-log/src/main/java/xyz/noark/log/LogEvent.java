@@ -113,4 +113,15 @@ public class LogEvent {
     public int getLineNumber() {
         return lineNumber;
     }
+
+    /**
+     * 获取MDC中存储的Key对应值
+     *
+     * @param key 指定Key
+     * @return 返回Key对应的值
+     */
+    public Object getMdcValue(String key) {
+        // 同步日志直接取值，异步由子类重写
+        return MDC.get(key);
+    }
 }

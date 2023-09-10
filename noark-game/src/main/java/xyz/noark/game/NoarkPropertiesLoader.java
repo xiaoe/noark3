@@ -24,9 +24,11 @@ import xyz.noark.game.config.ConfigCentre;
 import xyz.noark.game.config.NacosConfigCentre;
 import xyz.noark.game.crypto.StringEncryptor;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -120,7 +122,7 @@ class NoarkPropertiesLoader {
     }
 
     private HashMap<String, String> loadingFile(String filename, String profile) {
-        HashMap<String, String> config = MapUtils.newHashMap(128);
+        HashMap<String, String> config = MapUtils.newHashMap(32);
         this.loadingFile(filename + PROPERTIES_SUFFIX, config);
 
         // 加载指定的Profile
@@ -130,33 +132,53 @@ class NoarkPropertiesLoader {
         return config;
     }
 
+    /**
+     * 加载配置文件.
+     * Jar包同级目录的配置优先级应该高于Jar内的配置文件
+     *
+     * @param filename 配置文件名称
+     * @param config   收集配置项Map
+     */
     private void loadingFile(String filename, Map<String, String> config) {
-        try (InputStream in = loader.getResourceAsStream(filename)) {
-            if (in == null) {
-                return;
+        // 1. Jar包同级目录的配置优先
+        File file = new File(System.getProperty("user.dir"), filename);
+        if (file.exists()) {
+            try (InputStream in = Files.newInputStream(file.toPath())) {
+                this.loadingFileByInputStream(in, config);
+            } catch (IOException e) {
+                throw new ServerBootstrapException("配置文件格式异常... filename=" + filename);
             }
-            // 使用UnicodeInputStream处理带有BOM的配置
-            try (UnicodeInputStream uis = new UnicodeInputStream(in, "UTF-8"); InputStreamReader isr = new InputStreamReader(uis, uis.getEncoding())) {
-                Properties props = new Properties();
-                props.load(isr);
-
-                for (Entry<Object, Object> e : props.entrySet()) {
-                    String key = e.getKey().toString().trim();
-
-                    // 有更高优化级的配置，忽略这个配置
-                    if (properties.containsKey(key)) {
-                        continue;
-                    }
-
-                    // 收录这个新的配置
-                    String value = e.getValue().toString().trim();
-                    if (config.put(key, value) != null) {
-                        System.err.println("覆盖配置 >>" + key + "=" + value);
-                    }
+        }
+        // 2. Jar的同级目录中不存在此配置文件，再尝试到类路径下找找
+        else {
+            try (InputStream in = loader.getResourceAsStream(filename)) {
+                if (in == null) {
+                    return;
                 }
+                this.loadingFileByInputStream(in, config);
+            } catch (IOException e) {
+                throw new ServerBootstrapException("配置文件格式异常... filename=" + filename);
             }
-        } catch (IOException e) {
-            throw new ServerBootstrapException("配置文件格式异常... filename=" + filename);
+        }
+    }
+
+    private void loadingFileByInputStream(InputStream in, Map<String, String> config) throws IOException {
+        // 使用UnicodeInputStream处理带有BOM的配置
+        try (UnicodeInputStream uis = new UnicodeInputStream(in, "UTF-8"); InputStreamReader isr = new InputStreamReader(uis, uis.getEncoding())) {
+            Properties props = new Properties();
+            props.load(isr);
+
+            for (Entry<Object, Object> e : props.entrySet()) {
+                String key = e.getKey().toString().trim();
+
+                // 有更高优化级的配置，忽略这个配置
+                if (properties.containsKey(key)) {
+                    continue;
+                }
+
+                // 收录这个新的配置
+                config.put(key, e.getValue().toString().trim());
+            }
         }
     }
 
@@ -169,7 +191,8 @@ class NoarkPropertiesLoader {
             this.loadNoarkConfigCentre(properties);
             this.loadingConfigAfter(properties);
         }
-        // Nacos配置中心(老版本，日后要移除)
+
+        // Nacos配置中心
         else if (BooleanUtils.toBoolean(properties.get(NoarkConstant.NACOS_ENABLED))) {
             this.loadNacosConfigCentre(properties);
             this.loadingConfigAfter(properties);
@@ -188,7 +211,7 @@ class NoarkPropertiesLoader {
             throw new ServerBootstrapException("application.properties文件中必需要配置区服ID," + NoarkConstant.SERVER_ID + "=XXX");
         }
         String className = result.getOrDefault(NoarkConstant.CONFIG_CENTRE_CLASS, "xyz.noark.game.config.NacosConfigCentre");
-        logger.info("正在启动配置中心模式 sid={}, className={}", sid, className);
+        logger.info("load nacos config centre. sid={}", sid);
         // 尝试创建Redis的配置中心读取配置
         ConfigCentre cc = ClassUtils.newInstance(className, result);
         // 本地配置会覆盖远程配置
@@ -206,7 +229,7 @@ class NoarkPropertiesLoader {
         if (StringUtils.isEmpty(sid)) {
             throw new ServerBootstrapException("application.properties文件中必需要配置区服ID," + NoarkConstant.SERVER_ID + "=XXX");
         }
-        logger.info("正在启动配置中心模式 sid={}", sid);
+        logger.info("load nacos config centre. sid={}", sid);
         // 尝试创建Redis的配置中心读取配置
         ConfigCentre cc = new NacosConfigCentre(result);
         // 本地配置会覆盖远程配置

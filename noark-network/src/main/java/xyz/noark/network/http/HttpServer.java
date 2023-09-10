@@ -22,16 +22,24 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.cors.CorsConfig;
+import io.netty.handler.codec.http.cors.CorsConfigBuilder;
+import io.netty.handler.codec.http.cors.CorsHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.lang.FileSize;
 import xyz.noark.core.network.TcpServer;
+import xyz.noark.core.util.CollectionUtils;
+import xyz.noark.core.util.StringUtils;
 import xyz.noark.network.NetworkConstant;
-import xyz.noark.network.log.NetworkLoggingHandler;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -49,20 +57,8 @@ public class HttpServer implements TcpServer {
     private int port = 0;
     @Value(NetworkConstant.HTTP_SECRET_KEY)
     private String secretKey = null;
-    /**
-     * 网络封包日志激活
-     */
-    @Value(NetworkConstant.LOG_ENABLED)
-    protected boolean logEnabled = false;
-    /**
-     * 网络封包日志处理器已启动时，是否激活输出功能
-     */
-    @Value(NetworkConstant.LOG_OUTPUT_ACTIVE)
-    protected boolean outputActive = false;
-
     @Autowired
     private DispatcherServlet dispatcherServlet;
-
 
     /**
      * 向内部提供HTTP服务的最大内容长度（默认：1048576=1M）
@@ -107,16 +103,15 @@ public class HttpServer implements TcpServer {
             @Override
             public void initChannel(SocketChannel ch) {
                 ChannelPipeline pipeline = ch.pipeline();
-
-                // 启动日志处理器
-                if (logEnabled) {
-                    pipeline.addLast(new NetworkLoggingHandler(outputActive));
-                }
-
                 pipeline.addLast(new HttpServerCodec());
                 pipeline.addLast(new HttpObjectAggregator(maxContentLength.intValue()));
                 pipeline.addLast(new ChunkedWriteHandler());
                 pipeline.addLast(new HttpContentCompressor());
+
+                // 如果有跨域配置的情况下增加跨服配置
+                if (CollectionUtils.isNotEmpty(corsAllowedOrigins)) {
+                    pipeline.addLast(new CorsHandler(buildCorsConfig()));
+                }
 
                 pipeline.addLast(dispatcherServlet);
             }
@@ -128,6 +123,72 @@ public class HttpServer implements TcpServer {
         } catch (Exception e) {
             throw new ServerBootstrapException("目标端口已被占用 port=" + port, e);
         }
+    }
+
+    /**
+     * 跨域配置，放行哪些域
+     */
+    @Value(NetworkConstant.HTTP_CORS_ALLOWED_ORIGINS)
+    protected List<String> corsAllowedOrigins = null;
+    /**
+     * 跨域配置，是否发送Cookie信息
+     */
+    @Value(NetworkConstant.HTTP_CORS_ALLOW_CREDENTIALS)
+    protected boolean corsAllowCredentials = false;
+
+    /**
+     * 跨域配置，放行哪些头部信息
+     */
+    @Value(NetworkConstant.HTTP_CORS_ALLOWED_HEADERS)
+    protected List<String> corsAllowedHeaders = null;
+    /**
+     * 跨域配置，放行哪些请求方式
+     */
+    @Value(NetworkConstant.HTTP_CORS_ALLOWED_METHODS)
+    protected List<String> corsAllowedMethods = null;
+    /**
+     * 跨域配置，预检响应的最长时间（以秒为单位）
+     */
+    @Value(NetworkConstant.HTTP_CORS_MAX_AGE)
+    private int corsMaxAge = 0;
+
+    /**
+     * 构建跨域配置.
+     *
+     * @return 跨域配置
+     */
+    private CorsConfig buildCorsConfig() {
+        // 放行哪些原始域
+        CorsConfigBuilder builder;
+        if (corsAllowedOrigins.stream().anyMatch(StringUtils.ASTERISK::equals)) {
+            builder = CorsConfigBuilder.forAnyOrigin();
+        } else {
+            builder = CorsConfigBuilder.forOrigins(corsAllowedOrigins.toArray(new String[]{}));
+        }
+        // 是否发送Cookie信息
+        if (corsAllowCredentials) {
+            builder.allowCredentials();
+        }
+        // 放行哪些头部信息
+        if (CollectionUtils.isNotEmpty(corsAllowedHeaders)) {
+            builder.allowedRequestHeaders(corsAllowedHeaders.toArray(new String[]{}));
+        }
+        // 放行哪些请求方式
+        if (CollectionUtils.isNotEmpty(corsAllowedMethods)) {
+            // 配置了 * 号
+            if (corsAllowedMethods.stream().anyMatch(StringUtils.ASTERISK::equals)) {
+                builder.allowedRequestMethods(HttpMethod.OPTIONS, HttpMethod.GET, HttpMethod.HEAD, HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE, HttpMethod.TRACE, HttpMethod.CONNECT);
+            }
+            // 没有通配符，那就指定对应的方法
+            else {
+                builder.allowedRequestMethods(corsAllowedMethods.stream().map(HttpMethod::valueOf).collect(Collectors.toList()).toArray(new HttpMethod[]{}));
+            }
+        }
+        // 预检响应的最长时间（以秒为单位）
+        if (corsMaxAge > 0) {
+            builder.maxAge(corsMaxAge);
+        }
+        return builder.build();
     }
 
     @Override

@@ -19,6 +19,7 @@ import xyz.noark.core.util.MapUtils;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -83,6 +84,15 @@ public class PairHashMap<L, R, V> implements PairMap<L, R, V> {
     @Override
     public Collection<V> values() {
         return hashmap.values();
+    }
+
+    /**
+     * 提供一个遍历方法
+     *
+     * @param action 遍历元素时的逻辑
+     */
+    public void forEach(BiConsumer<Pair<L, R>, V> action) {
+        hashmap.forEach(action);
     }
 
     @Override

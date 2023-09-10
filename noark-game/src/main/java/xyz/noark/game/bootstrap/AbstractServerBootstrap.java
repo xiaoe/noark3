@@ -20,16 +20,17 @@ import xyz.noark.core.ioc.NoarkIoc;
 import xyz.noark.core.network.PacketCodec;
 import xyz.noark.core.network.PacketCodecHolder;
 import xyz.noark.core.thread.NamedThreadFactory;
-import xyz.noark.core.util.BooleanUtils;
-import xyz.noark.core.util.FileUtils;
-import xyz.noark.core.util.StringUtils;
-import xyz.noark.core.util.SystemUtils;
+import xyz.noark.core.thread.TraceIdFactory;
+import xyz.noark.core.util.*;
 import xyz.noark.game.NoarkConstant;
 import xyz.noark.log.LogManager;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -91,10 +92,13 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             // 启动逻辑
             this.onStart();
 
-            float interval = (System.nanoTime() - startTime) / 1000_000f;
+            float interval = DateUtils.formatNanoTime(System.nanoTime() - startTime);
             logger.info("{} is running, interval={} ms", this.getServerName(), interval);
-            System.out.println(this.getServerName() + " is running, interval=" + interval + " ms");
 
+            // 打印启动信息
+            this.printStartInfo(interval);
+
+            // 打印Banner
             if (this.showBanner()) {
                 FileUtils.loadFileText(bannerFileName()).ifPresent(this::printBanner);
             }
@@ -103,6 +107,10 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             logger.error("failed to starting service:{}, exception={}", this.getServerName(), e);
             System.exit(1);
         }
+    }
+
+    protected void printStartInfo(float interval) {
+        System.out.println(this.getServerName() + " is running, interval=" + interval + " ms");
     }
 
     protected void onBeginStart() {
@@ -115,6 +123,7 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             singleThreadPool.execute(() -> {
                 try {
                     final int read = System.in.read();
+                    TraceIdFactory.initFixedTraceIdByStopServer();
                     logger.debug("收到信息：{}", read);
                 } catch (Exception e) {
                     logger.error("{}", e);
@@ -148,22 +157,31 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
      */
     protected void createPidFile() {
         if (StringUtils.isNotEmpty(pidFileName)) {
-            try {
-                File pidFile = new File(pidFileName);
-                if (FileUtils.createNewFile(pidFile)) {
-                    logger.debug("PID文件创建成功.");
-                }
-                // PID文件已存在...
-                else {
-                    final String fileName = pidFileName;
-                    this.pidFileName = null;
-                    throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + fileName);
-                }
+            // 清理路径的方式预防路径遍历的威胁
+            Path pidPath = Paths.get(pidFileName).normalize();
 
-                // 写入PID
-                try (FileWriter fileWriter = new FileWriter(pidFile, false)) {
-                    fileWriter.write(SystemUtils.getPidStr());
-                    fileWriter.flush();
+            // PID文件已存在
+            if (Files.exists(pidPath)) {
+                this.pidFileName = null;
+                String absolutePath = pidPath.toFile().getAbsolutePath();
+                throw new ServerBootstrapException("PID文件已存在，如果异常停服，请手动删除PID文件 >> " + absolutePath);
+            }
+
+            try {
+                final File pidFile = pidPath.toFile();
+                // 创建文件
+                if (FileUtils.createNewFile(pidFile)) {
+                    logger.debug("PID文件创建成功. file={}", pidFile.getAbsolutePath());
+
+                    // 写入PID
+                    try (FileWriter fileWriter = new FileWriter(pidFile, false)) {
+                        fileWriter.write(SystemUtils.getPidStr());
+                        fileWriter.flush();
+                    }
+                }
+                // 创建失败
+                else {
+                    throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFile.getAbsolutePath());
                 }
             } catch (IOException e) {
                 throw new ServerBootstrapException("PID文件创建失败，请确认一下权限是否正常 >> " + pidFileName, e);
@@ -188,8 +206,9 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
         logger.info("stopping service: {}", this.getServerName());
         try {
             logger.info("goodbye {}", this.getServerName());
-            System.out.println("goodbye " + this.getServerName());
-
+            // 打印停止事件
+            this.printStopInfo();
+            // 停止逻辑
             this.onStop();
         } catch (Exception e) {
             logger.error("failed to stopping service:{}", this.getServerName(), e);
@@ -204,6 +223,10 @@ public abstract class AbstractServerBootstrap implements ServerBootstrap {
             // 删除PID文件
             this.deletePidFile();
         }
+    }
+
+    protected void printStopInfo() {
+        System.out.println("goodbye " + this.getServerName());
     }
 
     /**

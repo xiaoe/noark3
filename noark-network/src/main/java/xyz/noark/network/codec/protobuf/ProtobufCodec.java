@@ -24,15 +24,13 @@ import xyz.noark.core.lang.ByteArrayOutputStream;
 import xyz.noark.core.lang.ImmutableByteArray;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.NetworkProtocol;
-import xyz.noark.core.util.MethodUtils;
 import xyz.noark.core.util.UnsignedUtils;
 import xyz.noark.network.codec.AbstractPacketCodec;
 import xyz.noark.network.codec.ByteBufWrapper;
 import xyz.noark.network.codec.DefaultNetworkPacket;
+import xyz.noark.network.util.CodecUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ProtobufV3版本的编码解码器.
@@ -41,13 +39,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 3.1
  */
 public class ProtobufCodec extends AbstractPacketCodec {
-    private static final ConcurrentHashMap<Class<?>, Method> CACHES = new ConcurrentHashMap<>(1024);
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T decodeProtocol(ByteArray bytes, Class<T> klass) {
-        Method method = CACHES.computeIfAbsent(klass, key -> MethodUtils.getMethod(key, "parseFrom", byte[].class));
-        return (T) MethodUtils.invoke(null, method, bytes.array());
+        return CodecUtils.deserialize(bytes.array(), klass);
     }
 
     @Override

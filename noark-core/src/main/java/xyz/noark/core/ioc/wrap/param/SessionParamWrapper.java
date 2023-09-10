@@ -13,13 +13,12 @@
  */
 package xyz.noark.core.ioc.wrap.param;
 
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
 import xyz.noark.core.util.StringUtils;
-
-import java.io.Serializable;
 
 /**
  * Session对象.
@@ -30,17 +29,20 @@ import java.io.Serializable;
 public class SessionParamWrapper implements ParamWrapper {
 
     @Override
-    public Object read(Session session, NetworkPacket packet) {
-        return session;
+    public Object read(MethodParamContext context) {
+        // 有Session对象
+        if (context.getSession() != null) {
+            return context.getSession();
+        }
+        // 没有Session有玩家ID
+        if (context.getPlayerId() != null) {
+            return SessionManager.getSessionByPlayerId(context.getPlayerId());
+        }
+        throw new IllegalArgumentException("未知的参数注入方式，请联系小流氓[176543888@qq.com]");
     }
 
     @Override
     public String toString(Session session, NetworkPacket packet) {
         return StringUtils.join("session=", session.getId().toString());
-    }
-
-    @Override
-    public Object read(Serializable playerId, Object protocol) {
-        return SessionManager.getSessionByPlayerId(playerId);
     }
 }

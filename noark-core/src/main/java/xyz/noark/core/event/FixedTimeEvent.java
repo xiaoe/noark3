@@ -27,5 +27,5 @@ public interface FixedTimeEvent extends Event {
      *
      * @return 定时触发的时间配置
      */
-    public LocalTimeArray getTrigger();
+    LocalTimeArray getTrigger();
 }

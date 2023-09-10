@@ -14,6 +14,7 @@
 package xyz.noark.game;
 
 import xyz.noark.core.env.EnvConfigHolder;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.ClassUtils;
 import xyz.noark.game.bootstrap.ServerBootstrap;
 import xyz.noark.log.LogManager;
@@ -35,8 +36,11 @@ class NoarkInitializer {
      * @param args  Main方法的启动参数
      */
     public void init(Class<? extends ServerBootstrap> klass, String... args) {
+        // 为启动服务器的主线程也绑定一个traceId
+        TraceIdFactory.initFixedTraceIdByStartServer();
+
         // 载入配置
-        EnvConfigHolder.setProperties(this.loadProperties(args));
+        EnvConfigHolder.buildLoadFunction(() -> this.loadProperties(args));
 
         // 初始化日志系统
         LogManager.init(EnvConfigHolder.getProperties());
@@ -49,7 +53,6 @@ class NoarkInitializer {
      * 根据启动参数分析加载相应的配置文件
      */
     private Map<String, String> loadProperties(String... args) {
-        // 载入配置文件...
         NoarkPropertiesLoader loader = new NoarkPropertiesLoader();
         // 加载命令行参数
         loader.loadingArgs(args);

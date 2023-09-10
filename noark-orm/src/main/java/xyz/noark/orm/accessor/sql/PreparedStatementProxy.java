@@ -13,7 +13,9 @@
  */
 package xyz.noark.orm.accessor.sql;
 
+import xyz.noark.orm.EntityMapping;
 import xyz.noark.orm.FieldMapping;
+import xyz.noark.orm.accessor.sql.mysql.adaptor.ValueAdaptorManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -155,5 +157,22 @@ public class PreparedStatementProxy {
 
     public List<List<Object>> getBatchParameterList() {
         return batchParameterList;
+    }
+
+    /**
+     * 绑定自增主键对应的值
+     *
+     * @param em        实体描述对象
+     * @param primaryId 主键
+     * @param entity    实体对象
+     * @param <T>       实体对象类
+     * @throws Exception 可能会抛出DB相关的异常
+     */
+    public <T> void bindPrimaryIdValue(EntityMapping<T> em, FieldMapping primaryId, final T entity) throws Exception {
+        try (ResultSet rs = pstmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                ValueAdaptorManager.getValueAdaptor(primaryId.getType()).resultSetToPrimaryId(em, primaryId, rs, entity);
+            }
+        }
     }
 }

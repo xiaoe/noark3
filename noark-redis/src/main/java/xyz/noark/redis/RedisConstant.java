@@ -31,7 +31,7 @@ public class RedisConstant {
     /**
      * Redis实现配置中心连接密码Key,默认没有密码
      */
-    public static final String CONFIG_REDIS_PASSWORD = "noark.config.redis.password";
+    public static final String CONFIG_REDIS_MM = "noark.config.redis.password";
     /**
      * Redis实现配置中心连接库编号Key,默认值为0
      */

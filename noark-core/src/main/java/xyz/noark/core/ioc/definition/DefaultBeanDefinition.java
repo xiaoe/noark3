@@ -20,6 +20,7 @@ import xyz.noark.core.ioc.definition.field.DefaultFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ListFieldDefinition;
 import xyz.noark.core.ioc.definition.field.MapFieldDefinition;
 import xyz.noark.core.ioc.definition.field.ValueFieldDefinition;
+import xyz.noark.core.ioc.definition.method.BeanMethodDefinition;
 import xyz.noark.core.ioc.definition.method.SimpleMethodDefinition;
 import xyz.noark.core.ioc.wrap.method.BaseMethodWrapper;
 import xyz.noark.core.util.*;
@@ -58,12 +59,20 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     private Annotation annotation;
     private Class<? extends Annotation> annotationType;
-    
+
+    /**
+     * 是否标有@Primary注解
+     */
     private boolean primary;
     /**
      * 注入排序值
      */
     private final int order;
+    /**
+     * 是否标有@ConditionalOnMissingBean注解
+     */
+    private boolean conditionalOnMissingBean;
+
     /**
      * 所有需要注入的属性
      */
@@ -73,11 +82,12 @@ public class DefaultBeanDefinition implements BeanDefinition {
         this(profileStr, klass, ClassUtils.newInstance(klass));
     }
 
-    public DefaultBeanDefinition(String profileStr, String beanName, Object object, boolean primary) {
+    public DefaultBeanDefinition(String profileStr, BeanMethodDefinition bmd, Object object) {
         this(profileStr, object.getClass(), object);
-        this.beanName = beanName;
+        this.beanName = bmd.getBeanName();
         // 或一下，有一个优先，他就是优先的方案
-        this.primary |= primary;
+        this.primary |= bmd.getMethod().isAnnotationPresent(Primary.class);
+        this.conditionalOnMissingBean |= bmd.getMethod().isAnnotationPresent(ConditionalOnMissingBean.class);
     }
 
     public DefaultBeanDefinition(String profileStr, Class<?> klass, Object object) {
@@ -89,6 +99,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
         Order order = beanClass.getAnnotation(Order.class);
         this.order = order == null ? Integer.MAX_VALUE : order.value();
         this.primary = beanClass.isAnnotationPresent(Primary.class);
+        this.conditionalOnMissingBean = beanClass.isAnnotationPresent(ConditionalOnMissingBean.class);
     }
 
     public DefaultBeanDefinition(String profileStr, Class<?> klass, Annotation annotation, Class<? extends Annotation> annotationType) {
@@ -224,7 +235,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
         }
         // @Value注入配置属性.
         else {
-            autowiredFields.add(new ValueFieldDefinition(field, value.value()));
+            autowiredFields.add(new ValueFieldDefinition(beanClass, field, value.value(), value.autoRefreshed()));
         }
     }
 
@@ -234,7 +245,7 @@ public class DefaultBeanDefinition implements BeanDefinition {
     }
 
     /**
-     * 分析此用的功能用途.
+     * 分析此类的功能用途.
      *
      * @param ioc 容器
      */
@@ -245,5 +256,9 @@ public class DefaultBeanDefinition implements BeanDefinition {
 
     public boolean isPrimary() {
         return primary;
+    }
+
+    public boolean isConditionalOnMissingBean() {
+        return conditionalOnMissingBean;
     }
 }

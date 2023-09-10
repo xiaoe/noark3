@@ -26,6 +26,7 @@ import xyz.noark.orm.FieldMapping;
 import xyz.noark.orm.accessor.AbstractDataAccessor;
 
 import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     /**
      * MYSQL字段数据过长异常类名称
      */
-    private static final String MYSQL_DATA_TRUNCATION_CLASS_NAME = "com.mysql.jdbc.MysqlDataTruncation";
+    private static final String MYSQL_DATA_TRUNCATION_CLASS_SIMPLE_NAME = "MysqlDataTruncation";
     /**
      * MYSQL存档时字符串值不正确，基本认定为Emoji表情搞得鬼
      */
@@ -56,32 +57,32 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     /**
      * 是否输出执行SQL日志
      */
-    @Value(DataModular.DATA_SQL_LOG_ENABLE)
+    @Value(value = DataModular.DATA_SQL_LOG_ENABLE, autoRefreshed = true)
     protected boolean statementExecutableSqlLogEnable = false;
     /**
      * 是否输出执行SQL的参数日志(上一个必需要true)
      */
-    @Value(DataModular.DATA_SQL_LOG_PARAMETER_ENABLE)
+    @Value(value = DataModular.DATA_SQL_LOG_PARAMETER_ENABLE, autoRefreshed = true)
     protected boolean statementParameterSetLogEnable = false;
     /**
      * 慢查询时间阀值(单位：毫秒),如果为0则不监控
      */
-    @Value(DataModular.DATA_SLOW_QUERY_SQL_MILLIS)
+    @Value(value = DataModular.DATA_SLOW_QUERY_SQL_MILLIS, autoRefreshed = true)
     protected int slowQuerySqlMillis = 0;
     /**
      * 服务器数据是否智能修正文本字段的长度，默认：true
      */
-    @Value(DataModular.DATA_AUTO_ALTER_COLUMN_LENGTH)
+    @Value(value = DataModular.DATA_AUTO_ALTER_COLUMN_LENGTH, autoRefreshed = true)
     protected boolean autoAlterColumnLength = true;
     /**
      * 服务器数据是否智能转化EMOJI的字段，默认：true
      */
-    @Value(DataModular.DATA_AUTO_ALTER_EMOJI_COLUMN)
+    @Value(value = DataModular.DATA_AUTO_ALTER_EMOJI_COLUMN, autoRefreshed = true)
     protected boolean autoAlterEmojiColumn = true;
     /**
      * 自动删除表中多余的字段
      */
-    @Value(DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN)
+    @Value(value = DataModular.DATA_AUTO_ALTER_TABLE_DROP_COLUMN, autoRefreshed = true)
     private boolean autoAlterTableDropColumn = false;
 
     public AbstractSqlDataAccessor(SqlExpert expert, DataSource dataSource) {
@@ -131,7 +132,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     protected <T> T execute(final EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {
         long startTime = slowQuerySqlMillis > 0 ? System.nanoTime() : 0;
         final Map<String, Integer> columnMaxLenMap = MapUtils.newHashMap(em.getFieldMapping().size());
-        try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+        try (Connection con = dataSource.getConnection(); PreparedStatement pstmt = createPreparedStatement(em, con, sql)) {
             PreparedStatementProxy proxy = new PreparedStatementProxy(pstmt, statementParameterSetLogEnable, autoAlterColumnLength, columnMaxLenMap);
 
             // 执行填充参数
@@ -148,6 +149,15 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
             // 不能扩容时，把异常向上抛出去...
             throw new DataAccessException(em.getEntityClass().getName(), e);
         }
+    }
+
+    private PreparedStatement createPreparedStatement(final EntityMapping<?> em, Connection con, String sql) throws SQLException {
+        FieldMapping primaryId = em.getPrimaryId();
+        if (primaryId == null || !primaryId.hasGeneratedValue()) {
+            return con.prepareStatement(sql);
+        }
+        // 5.1.17 之后的版本需要显示增加自增参数
+        return con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
     }
 
     protected <T> T executeBatch(EntityMapping<?> em, PreparedStatementCallback<T> action, String sql, boolean flag) {
@@ -186,7 +196,9 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     private boolean tryFixDataSaveException(boolean flag, EntityMapping<?> em, Map<String, Integer> columnMaxLenMap, Exception e) {
         // 1.尝试修复数据库字段过长的问题，自动扩容
         // Caused by: com.mysql.jdbc.MysqlDataTruncation: Data truncation: Data too long for column 'json' at row 1
-        if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_NAME.equals(e.getClass().getName())) {
+        // Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column 'name' at row 1
+        // 不同版本的驱动，截断异常的名称是一样的，但他的包名不一样，所以判定时需要注意
+        if (flag && autoAlterColumnLength && MYSQL_DATA_TRUNCATION_CLASS_SIMPLE_NAME.equals(e.getClass().getSimpleName())) {
             synchronized (this) {
                 this.handleDataTooLongException(em, columnMaxLenMap);
             }
@@ -303,7 +315,7 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
                     // 字段不存在，修补字段
                     if (index == null) {
                         autoAlterTableAddColumn(em, fm);
-                        tryRepairTextDefaultValue(em, fm);
+                        tryRepairTextOrBlobDefaultValue(em, fm);
                         continue;
                     }
 
@@ -357,12 +369,29 @@ public abstract class AbstractSqlDataAccessor extends AbstractDataAccessor {
     /**
      * 如果是Text智能修补一下默认值
      */
-    private <T> void tryRepairTextDefaultValue(final EntityMapping<T> em, final FieldMapping fm) {
-        // 修正Text字段的默认值.
-        if (fm.getWidth() >= DataConstant.VARCHAT_MAX_WIDTH && fm.hasDefaultValue()) {
-            final String sql = expert.genUpdateDefaultValueSql(em, fm);
-            logger.warn("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
-            this.executeStatement((stmt) -> stmt.executeUpdate(sql));
+    private <T> void tryRepairTextOrBlobDefaultValue(final EntityMapping<T> em, final FieldMapping fm) {
+        if (fm.hasDefaultValue()) {
+            // Blob字段 或 Text以上的字段
+            if (fm.isBlob() || fm.getWidth() >= DataConstant.VARCHAT_MAX_WIDTH) {
+                final String sql = expert.genUpdateDefaultValueSql(em, fm);
+                logger.warn("实体类[{}]中的字段[{}]不支持默认值，准备自动修补默认值，SQL如下:\n{}", em.getEntityClass(), fm.getColumnName(), sql);
+                class RepairTextOrBlobDefaultValueCallback implements PreparedStatementCallback<Integer> {
+                    @Override
+                    public Integer doInPreparedStatement(PreparedStatementProxy pstmt) throws SQLException {
+                        // Blob字段
+                        if (fm.isBlob()) {
+                            pstmt.setObject(1, fm.getDefaultValue().getBytes(StandardCharsets.UTF_8));
+                        }
+                        // 其他就当Text处理
+                        else {
+                            pstmt.setObject(1, fm.getDefaultValue());
+                        }
+
+                        return pstmt.executeUpdate();
+                    }
+                }
+                this.execute(em, new RepairTextOrBlobDefaultValueCallback(), sql, false);
+            }
         }
     }
 

@@ -1,3 +1,16 @@
+/*
+ * Copyright © 2018 www.noark.xyz All Rights Reserved.
+ *
+ * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
+ * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
+ *
+ *        http://www.noark.xyz/LICENSE
+ *
+ * 1.未经许可，任何公司及个人不得以任何方式或理由对本框架进行修改、使用和传播;
+ * 2.禁止在本项目或任何子项目的基础上发展任何派生版本、修改版本或第三方版本;
+ * 3.无论你对源代码做出任何修改和改进，版权都归Noark研发团队所有，我们保留所有权利;
+ * 4.凡侵犯Noark版权等知识产权的，必依法追究其法律责任，特此郑重法律声明！
+ */
 package xyz.noark.network.http;
 
 import com.alibaba.fastjson.JSON;
@@ -11,12 +24,12 @@ import xyz.noark.core.util.CharsetUtils;
 import xyz.noark.core.util.GzipUtils;
 import xyz.noark.core.util.MapUtils;
 import xyz.noark.core.util.StringUtils;
-import xyz.noark.network.http.exception.UnrealizedMethodException;
 import xyz.noark.network.util.ByteBufUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -30,6 +43,10 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     private final String uri;
     private final String method;
     private final String ip;
+    /**
+     * 请求头部的参数Map
+     */
+    private Map<String, String> headerMap;
     /**
      * 请求参数Map
      */
@@ -87,6 +104,11 @@ class NoarkHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
+    public String getHeader(String name) {
+        return headerMap.get(name);
+    }
+
+    @Override
     public String getRemoteAddr() {
         return ip;
     }
@@ -103,22 +125,22 @@ class NoarkHttpServletRequest implements HttpServletRequest {
      * @param decoder URI中参数解析器
      * @throws IOException 解析中可能会抛出IO异常
      */
-    public void parse(FullHttpRequest fhr, QueryStringDecoder decoder) throws IOException {
+    void parse(FullHttpRequest fhr, QueryStringDecoder decoder) throws IOException {
+        // 先解析出请求头中的参数
+        this.parseHeaderMap(fhr);
+        // 再处理常规参数
+        this.parseParameterMap(fhr, decoder);
+    }
+
+    private void parseParameterMap(FullHttpRequest fhr, QueryStringDecoder decoder) throws IOException {
         final HttpMethod method = fhr.method();
         final Map<String, List<String>> parameterMap = MapUtils.newHashMap(16);
+        // 1. 解析出URL中的参数
+        this.parseUrlParameter(decoder, parameterMap);
 
-        // GET请求
-        if (HttpMethod.GET == method) {
-            parseGetRequestParameter(decoder, parameterMap);
-        }
-        // POST请求
-        else if (HttpMethod.POST == method) {
-            parseGetRequestParameter(decoder, parameterMap);
-            parsePostContent(fhr, parameterMap);
-        }
-        // 不支持其它方法，有需求再实现
-        else {
-            throw new UnrealizedMethodException(method.name(), decoder.path());
+        // 2. POST请求还有一个请求体的参数
+        if (HttpMethod.POST == method) {
+            this.parsePostContent(fhr, parameterMap);
         }
 
         // 转化为Request的参数格式
@@ -129,11 +151,38 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         this.parameterMap = result;
     }
 
+    private void parseHeaderMap(FullHttpRequest fhr) {
+        final HttpHeaders headers = fhr.headers();
+        this.headerMap = MapUtils.newHashMap(headers.size());
+        Iterator<Entry<String, String>> it = headers.iteratorAsString();
+        while (it.hasNext()) {
+            Entry<String, String> next = it.next();
+            headerMap.put(next.getKey(), next.getValue());
+        }
+    }
+
     private void parsePostContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap) throws IOException {
         HttpHeaders headers = fhr.headers();
+
         // KEY的值，大小写无所谓，但Get出来的Value是大小写敏感的
         String contentType = headers.get(HttpHeaderNames.CONTENT_TYPE);
+        String charset = CharsetUtils.UTF_8;
         String contentEncoding = headers.get(HttpHeaderNames.CONTENT_ENCODING);
+
+        // application/json;charset=utf-8
+        if (StringUtils.isNotEmpty(contentType)) {
+            String[] array = contentType.split(";", 2);
+            if (array.length == 2) {
+                contentType = array[0].trim();
+                // 附加参数
+                String[] parameterArray = array[1].split("=");
+                for (int i = 0; i < parameterArray.length; i = i + 2) {
+                    if ("charset".equalsIgnoreCase(parameterArray[i].trim())) {
+                        charset = parameterArray[i + 1].trim();
+                    }
+                }
+            }
+        }
 
         // 有些非正常的请求，可能会没有内容类型
         if (StringUtils.isEmpty(contentType)) {
@@ -141,7 +190,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
         // JSON类型的参数格式
         else if ("application/json".equalsIgnoreCase(contentType)) {
-            this.parseJsonContent(fhr, parameterMap, contentEncoding);
+            this.parsePostJsonContent(fhr, parameterMap, contentEncoding, charset);
         }
         // 其他走HTTP常规参数编码key1=val1&key2=val2
         else {
@@ -174,7 +223,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
     }
 
-    private void parseJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap, String contentEncoding) throws IOException {
+    private void parsePostJsonContent(FullHttpRequest fhr, Map<String, List<String>> parameterMap, String contentEncoding, String charset) throws IOException {
         final ByteBuf byteBuf = fhr.content();
         if (byteBuf.readableBytes() == 0) {
             return;
@@ -185,11 +234,11 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         if (GzipUtils.ENCODING_GZIP.equalsIgnoreCase(contentEncoding)) {
             byte[] content = ByteBufUtils.readBytes(fhr.content());
             content = GzipUtils.uncompress(content);
-            jsonObject = JSON.parseObject(new String(content, CharsetUtils.CHARSET_UTF_8));
+            jsonObject = JSON.parseObject(new String(content, charset));
         }
         // 没有压缩
         else {
-            jsonObject = JSON.parseObject(byteBuf.toString(CharsetUtils.CHARSET_UTF_8));
+            jsonObject = JSON.parseObject(byteBuf.toString(Charset.forName(charset)));
         }
 
         for (Map.Entry<String, Object> e : jsonObject.entrySet()) {
@@ -197,7 +246,7 @@ class NoarkHttpServletRequest implements HttpServletRequest {
         }
     }
 
-    private void parseGetRequestParameter(QueryStringDecoder decoder, Map<String, List<String>> parameterMap) {
+    private void parseUrlParameter(QueryStringDecoder decoder, Map<String, List<String>> parameterMap) {
         for (Map.Entry<String, List<String>> e : decoder.parameters().entrySet()) {
             parameterMap.computeIfAbsent(e.getKey(), key -> new ArrayList<>(e.getValue().size())).addAll(e.getValue());
         }

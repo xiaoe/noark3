@@ -19,6 +19,7 @@ import xyz.noark.core.ioc.definition.DefaultBeanDefinition;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +38,20 @@ public class ListFieldDefinition extends DefaultFieldDefinition {
 
     @Override
     protected Object extractInjectionObject(IocMaking making, Class<?> klass, Field field) {
-        return making.findAllImpl(fieldClass).stream().sorted(Comparator.comparingInt(DefaultBeanDefinition::getOrder)).map(DefaultBeanDefinition::getSingle).collect(Collectors.toList());
+        // 所有实现
+        List<DefaultBeanDefinition> implList = making.findAllImpl(fieldClass);
+
+        // 所有不带@ConditionalOnMissingBean注解的实现
+        List<DefaultBeanDefinition> result = this.findNotMissingBeanImpl(implList).collect(Collectors.toList());
+        if (!result.isEmpty()) {
+            return toListAndSort(result);
+        }
+
+        // 如果没有，就是所有实现
+        return toListAndSort(implList);
+    }
+
+    private Object toListAndSort(List<DefaultBeanDefinition> implList) {
+        return implList.stream().sorted(Comparator.comparingInt(DefaultBeanDefinition::getOrder)).map(DefaultBeanDefinition::getSingle).collect(Collectors.toList());
     }
 }

@@ -13,7 +13,6 @@
  */
 package xyz.noark.game.event;
 
-import xyz.noark.core.annotation.Autowired;
 import xyz.noark.core.annotation.Value;
 import xyz.noark.core.event.DelayEvent;
 import xyz.noark.core.event.Event;
@@ -25,6 +24,7 @@ import xyz.noark.core.ioc.manager.ScheduledMethodManager;
 import xyz.noark.core.ioc.wrap.method.EventMethodWrapper;
 import xyz.noark.core.ioc.wrap.method.ScheduledMethodWrapper;
 import xyz.noark.core.thread.ThreadDispatcher;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.game.NoarkConstant;
 
 import java.util.List;
@@ -40,10 +40,15 @@ import static xyz.noark.log.LogHelper.logger;
 public class DefaultEventManager implements EventManager {
     private static final EventMethodManager EVENT_MANAGER = EventMethodManager.getInstance();
     private static final ScheduledMethodManager SCHEDULED_MANAGER = ScheduledMethodManager.getInstance();
-    @Autowired
-    private static ThreadDispatcher threadDispatcher;
+    private static final ThreadDispatcher threadDispatcher = ThreadDispatcher.getInstance();
+
     @Value(NoarkConstant.SERVER_DEBUG)
     private static boolean debug = false;
+    /**
+     * 事件Take的最小时间间隔, 单位：毫秒，默认值：1000
+     */
+    @Value(NoarkConstant.EVENT_TAKE_MAX_DELAY)
+    private static int maxDelay = 1000;
 
     private final DelayEventThread handler = new DelayEventThread(this);
 
@@ -57,6 +62,21 @@ public class DefaultEventManager implements EventManager {
         if (debug) {
             DelayEventAsserter.notInQueue(event);
         }
+    }
+
+    /**
+     * 计算最大延迟间隔，单位：毫秒
+     *
+     * @param delay 延迟间隔
+     * @return 延迟间隔
+     */
+    public static long calculateMaxDelay(long delay) {
+        // 如果研发环境下才会生效
+        if (debug && delay > maxDelay) {
+            return maxDelay;
+        }
+        // 正常延迟
+        return delay;
     }
 
     public void init() {
@@ -82,7 +102,7 @@ public class DefaultEventManager implements EventManager {
 
     @Override
     public void publish(Event event) {
-        this.notifyListeners(event);
+        this.notifyListeners(TraceIdFactory.getMdcTraceId(), event);
     }
 
     @Override
@@ -128,7 +148,7 @@ public class DefaultEventManager implements EventManager {
      *
      * @param event 事件源
      */
-    void notifyListeners(Event event) {
+    void notifyListeners(String traceId, Event event) {
         List<EventMethodWrapper> handlers = EVENT_MANAGER.getEventMethodWrappers(event.getClass());
         if (handlers.isEmpty()) {
             // 如果有只监听了接口而无子类时，就在这里尝试重构这个子类的所对应的方法
@@ -147,7 +167,7 @@ public class DefaultEventManager implements EventManager {
             try {
                 // 异步执行，投递进线程池中派发
                 if (handler.isAsync()) {
-                    threadDispatcher.dispatchEvent(handler, event);
+                    threadDispatcher.dispatchEvent(traceId, handler, event);
                 }
                 // 有一些特别的情况需要同步执行.
                 else {
@@ -175,11 +195,11 @@ public class DefaultEventManager implements EventManager {
      * @param event 事件源
      */
     void notifyFixedTimeEventHandler(FixedTimeEventWrapper event) {
-        this.notifyListeners(event.getSource());
+        this.notifyListeners(event.getTraceId(), event.getSource());
         this.resetEndTimeAndPublish(event);
     }
 
-    void notifyListeners(FixedTimeEvent event) {
+    void notifyListeners(String traceId, FixedTimeEvent event) {
         List<EventMethodWrapper> handlers = EVENT_MANAGER.getEventMethodWrappers(event.getClass());
         if (handlers.isEmpty()) {
             logger.warn("No subscription event. class={}", event.getClass());
@@ -188,7 +208,7 @@ public class DefaultEventManager implements EventManager {
 
         for (EventMethodWrapper handler : handlers) {
             try {
-                threadDispatcher.dispatchFixedTimeEvent(handler, event);
+                threadDispatcher.dispatchFixedTimeEvent(traceId, handler, event);
             } catch (Exception e) {
                 logger.warn("handle event exception. {}", e);
             }

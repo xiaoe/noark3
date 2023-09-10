@@ -13,7 +13,9 @@
  */
 package xyz.noark.game.config;
 
-import java.util.HashMap;
+import xyz.noark.core.util.MapUtils;
+
+import java.util.Map;
 
 /**
  * 抽象的配置中心
@@ -22,8 +24,30 @@ import java.util.HashMap;
  * @since 3.4
  */
 public abstract class AbstractConfigCentre implements ConfigCentre {
-
-    protected AbstractConfigCentre(HashMap<String, String> basicConfig) {
-        ConfigCentreHolder.setInstance(this);
+    
+    @Override
+    public Map<String, String> loadConfig(String sid) {
+        Map<String, String> result = MapUtils.newHashMap(32);
+        // 加载默认的通用配置
+        result.putAll(this.doLoadConfig());
+        // 加载本服私有的配置（覆盖通用配置）
+        result.putAll(this.doLoadConfig(sid));
+        // 最终最终的配置
+        return result;
     }
+
+    /**
+     * 加载本服私有的配置（覆盖通用配置）
+     *
+     * @param sid 区服编号
+     * @return 本服私有的配置
+     */
+    protected abstract Map<String, String> doLoadConfig(String sid);
+
+    /**
+     * 加载默认的通用配置
+     *
+     * @return 通用配置
+     */
+    protected abstract Map<String, String> doLoadConfig();
 }

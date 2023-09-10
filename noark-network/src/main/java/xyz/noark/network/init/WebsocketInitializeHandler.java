@@ -51,13 +51,19 @@ public class WebsocketInitializeHandler extends AbstractInitializeHandler {
 
     @Override
     public void handle(ChannelHandlerContext ctx) {
-        logger.debug("WebSocket链接...");
         ChannelPipeline pipeline = ctx.pipeline();
+
+        this.handleBefore(ctx, pipeline);
+
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new ChunkedWriteHandler());
         pipeline.addLast(new HttpObjectAggregator(maxContentLength));
         pipeline.addLast(new WebSocketFrameAggregator(maxContentLength));
         pipeline.addLast(new WebSocketServerProtocolHandler(websocketPath));
         pipeline.addLast(websocketServerHandler);
+    }
+
+    protected void handleBefore(ChannelHandlerContext ctx, ChannelPipeline pipeline) {
+        logger.debug("WebSocket链接...");
     }
 }

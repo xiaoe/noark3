@@ -16,8 +16,6 @@ package xyz.noark.network;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import xyz.noark.network.init.WebsocketInitializeHandler;
-import xyz.noark.network.util.ByteBufUtils;
 
 import java.util.List;
 
@@ -30,14 +28,6 @@ import java.util.List;
  * @since 3.0
  */
 public class InitializeDecoder extends ByteToMessageDecoder {
-    /**
-     * 默认暗号长度为23，为什么是23呢？你来问我啊，不问我就当你是知道的
-     */
-    private static final int MAX_LENGTH = 23;
-    /**
-     * WebSocket握手的协议前缀
-     */
-    private static final String WEBSOCKET_PREFIX = "GET /";
 
     private final InitializeHandlerManager initializeHandlerManager;
 
@@ -47,23 +37,13 @@ public class InitializeDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        int length = in.readableBytes();
-        if (length > MAX_LENGTH) {
-            length = MAX_LENGTH;
-        }
-
         // 标记读位置...
         in.markReaderIndex();
-        String protocol = ByteBufUtils.readString(in, length);
-        if (protocol.startsWith(WEBSOCKET_PREFIX)) {
-            in.resetReaderIndex();
-            protocol = WebsocketInitializeHandler.WEBSOCKET_NAME;
-        }
 
-        // 处理对应协议相关的解码器
-        initializeHandlerManager.init(ctx, protocol, in);
+        // 智能分析接头暗号增加相对应协议解码器
+        initializeHandlerManager.init(ctx, in);
 
-        // 移除自己
+        // 事情办完了，移除自己
         ctx.pipeline().remove(this.getClass());
     }
 }

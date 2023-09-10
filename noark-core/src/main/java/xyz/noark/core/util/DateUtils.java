@@ -375,7 +375,20 @@ public class DateUtils {
      * @return 返回这个日期所对应的天数
      */
     public static long toDays(Date date) {
-        return toDays(date.getTime() + TimeZone.getDefault().getRawOffset());
+        TimeZone timeZone = TimeZone.getDefault();
+        final int offset = timeZone.getRawOffset();
+
+        long milliseconds = date.getTime() + offset;
+
+        // 开启了夏令时
+        if (timeZone.useDaylightTime()) {
+            // 时间1补偿1小时
+            if (timeZone.inDaylightTime(date)) {
+                milliseconds += MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR;
+            }
+        }
+
+        return toDays(milliseconds);
     }
 
     /**
@@ -385,7 +398,7 @@ public class DateUtils {
      * @return 返回这个毫秒数所对应的天数
      */
     public static long toDays(long milliseconds) {
-        return milliseconds / (1L * MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR * HOUR_PER_DAY);
+        return milliseconds / ((long) MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR * HOUR_PER_DAY);
     }
 
     /**
@@ -452,8 +465,26 @@ public class DateUtils {
      * @return 天数差，如果时间2大于时间1，有可能会是负值噢.
      */
     public static long diffDays(Date date1, Date date2) {
-        final int offset = TimeZone.getDefault().getRawOffset();
-        return toDays(date1.getTime() + offset) - toDays(date2.getTime() + offset);
+        TimeZone timeZone = TimeZone.getDefault();
+        final int offset = timeZone.getRawOffset();
+
+        long t1 = date1.getTime() + offset;
+        long t2 = date2.getTime() + offset;
+
+        // 开启了夏令时
+        if (timeZone.useDaylightTime()) {
+            // 时间1补偿1小时
+            if (timeZone.inDaylightTime(date1)) {
+                t1 += MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR;
+            }
+            // 时间2补偿1小时
+            if (timeZone.inDaylightTime(date2)) {
+                t2 += MILLISECOND_PER_SECOND * SECOND_PER_MINUTE * MINUTE_PER_HOUR;
+            }
+        }
+
+        // 计算相差多少天
+        return toDays(t1) - toDays(t2);
     }
 
     /**

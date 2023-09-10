@@ -13,6 +13,8 @@
  */
 package xyz.noark.core.lang;
 
+import xyz.noark.core.util.RandomUtils;
+
 /**
  * Int数字区间.
  *
@@ -32,8 +34,28 @@ public class IntSection {
         this.max = max;
     }
 
+    /**
+     * 判定一个数字是不是在这个区间之内，此区间两端都为闭区间
+     *
+     * @param element 判定的那个数字
+     * @return 如果在此区间内，则返回true
+     */
     public boolean contains(int element) {
         return min <= element && element <= max;
+    }
+
+    /**
+     * 在区间中随机出一个数字
+     *
+     * @return 随机数字
+     */
+    public int random() {
+        // 如果相等，直接返回
+        if (min == max) {
+            return min;
+        }
+        // 有区间存在，则进行随机
+        return RandomUtils.nextInt(min, max + 1);
     }
 
     @Override

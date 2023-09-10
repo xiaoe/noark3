@@ -20,5 +20,4 @@ package xyz.noark.core.event;
  * @since 3.0
  */
 public interface Event {
-
 }

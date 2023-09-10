@@ -22,7 +22,9 @@ import xyz.noark.core.annotation.Value;
 import xyz.noark.core.network.NetworkListener;
 import xyz.noark.core.network.Session;
 import xyz.noark.core.network.SessionManager;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.IpUtils;
+import xyz.noark.log.MDC;
 
 import java.io.IOException;
 
@@ -40,12 +42,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 心跳功能，默认值为0，则不生效
      */
-    @Value(NetworkConstant.HEARTBEAT)
+    @Value(value = NetworkConstant.HEARTBEAT, autoRefreshed = true)
     protected int heartbeat = 0;
     /**
      * 网络安全之相同IP最大链接数，默认为：256
      */
-    @Value(NetworkConstant.SOME_IP_MAX)
+    @Value(value = NetworkConstant.SOME_IP_MAX, autoRefreshed = true)
     protected int maxSomeIp = 256;
 
     @Autowired(required = false)
@@ -53,6 +55,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        // 使用链接ID做为TraceId
+        MDC.put(TraceIdFactory.TRACE_ID, ctx.channel().id().asShortText());
         logger.info("发现客户端链接，channel={}", ctx.channel());
         if (ipManager.active(IpUtils.getIp(ctx.channel().remoteAddress())) > maxSomeIp) {
             logger.warn("同一个IP链接数超出上限 max={}", maxSomeIp);
@@ -62,6 +66,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        // 使用链接ID做为TraceId
+        MDC.put(TraceIdFactory.TRACE_ID, ctx.channel().id().asShortText());
         logger.info("客户端断开链接，channel={}", ctx.channel());
         ipManager.inactive(IpUtils.getIp(ctx.channel().remoteAddress()));
 

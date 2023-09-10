@@ -13,9 +13,12 @@
  */
 package xyz.noark.redis;
 
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import redis.clients.jedis.*;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.params.SetParams;
+import redis.clients.jedis.resps.Tuple;
 import xyz.noark.core.exception.ServerBootstrapException;
 
 import java.util.HashMap;
@@ -769,7 +772,7 @@ public class Redis implements ValueOperations {
      * @param end   结束下标
      * @return 指定区间内有序集成员的列表
      */
-    public Set<String> zrange(final String key, final long start, final long end) {
+    public List<String> zrange(final String key, final long start, final long end) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.zrange(key, start, end);
         }
@@ -785,7 +788,7 @@ public class Redis implements ValueOperations {
      * @param end   结束下标
      * @return 指定区间内，带有score值的有序集成员的列表
      */
-    public Set<Tuple> zrangeWithScores(final String key, final long start, final long end) {
+    public List<Tuple> zrangeWithScores(final String key, final long start, final long end) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.zrangeWithScores(key, start, end);
         }
@@ -862,7 +865,7 @@ public class Redis implements ValueOperations {
      * @param end   结束下标
      * @return 指定区间内有序集成员的列表
      */
-    public Set<String> zrevrange(String key, long start, long end) {
+    public List<String> zrevrange(String key, long start, long end) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.zrevrange(key, start, end);
         }
@@ -878,7 +881,7 @@ public class Redis implements ValueOperations {
      * @param end   结束下标
      * @return 指定区间内，带有score值的有序集成员的列表
      */
-    public Set<Tuple> zrevrangeWithScores(final String key, final long start, final long end) {
+    public List<Tuple> zrevrangeWithScores(final String key, final long start, final long end) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.zrevrangeWithScores(key, start, end);
         }

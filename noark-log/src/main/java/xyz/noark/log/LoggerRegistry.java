@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
  * @since 3.4.3
  */
 class LoggerRegistry {
-    private ConcurrentMap<String, AbstractLogger> loggerMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, AbstractLogger> loggerMap = new ConcurrentHashMap<>();
 
     /**
      * 根据一个类来获取日志对象

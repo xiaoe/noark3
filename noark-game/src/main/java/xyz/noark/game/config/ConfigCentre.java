@@ -22,11 +22,12 @@ import java.util.Map;
  * @since 3.4
  */
 public interface ConfigCentre {
+
     /**
      * 根据区服ID来获取配置中心里的配置参数
      *
      * @param sid 区服ID
      * @return 配置参数
      */
-    public Map<String, String> loadConfig(String sid);
+    Map<String, String> loadConfig(String sid);
 }

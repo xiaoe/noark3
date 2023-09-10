@@ -19,6 +19,7 @@ import xyz.noark.core.cron.DelayTrigger;
 import xyz.noark.core.cron.DelayTriggerFactory;
 import xyz.noark.core.exception.ServerBootstrapException;
 import xyz.noark.core.ioc.definition.method.ScheduledMethodDefinition;
+import xyz.noark.core.thread.TraceIdFactory;
 import xyz.noark.core.util.StringUtils;
 
 import java.util.Date;
@@ -36,12 +37,15 @@ public class ScheduledMethodWrapper extends AbstractControllerMethodWrapper {
      */
     private static final AtomicLong AUTO_ID = new AtomicLong(0);
     private final Long id;
+    // 链路追踪ID
+    private final String traceId;
     private final DelayTrigger trigger;
 
     public ScheduledMethodWrapper(Object single, ScheduledMethodDefinition smd, ExecThreadGroup threadGroup, Class<?> controllerMasterClass) {
         super(single, threadGroup, controllerMasterClass.getName(), "scheduled(" + smd.getMethodName() + ")", smd);
         // 生成一个唯一ID编号.
         this.id = AUTO_ID.incrementAndGet();
+        this.traceId = TraceIdFactory.randomTraceId();
 
         final Scheduled scheduled = smd.getScheduled();
         // 固定速率不能为0，就是有人会忘了写参数，给个明确的提示
@@ -54,6 +58,10 @@ public class ScheduledMethodWrapper extends AbstractControllerMethodWrapper {
 
     public Long getId() {
         return id;
+    }
+
+    public String getTraceId() {
+        return traceId;
     }
 
     public Date nextExecutionTime() {

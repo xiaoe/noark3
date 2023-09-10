@@ -4,9 +4,9 @@ import xyz.noark.core.annotation.Controller;
 import xyz.noark.core.annotation.controller.RequestMapping;
 import xyz.noark.core.annotation.controller.RequestMethod;
 import xyz.noark.core.annotation.controller.RequestParam;
+import xyz.noark.core.annotation.orm.Json;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import static xyz.noark.log.LogHelper.logger;
 
@@ -17,14 +17,9 @@ import static xyz.noark.log.LogHelper.logger;
 @Controller
 public class HttpController {
 
-    private Set<Integer> id = new HashSet<  >();
-
-    @RequestMapping(path = "/test", method = RequestMethod.GET, queueId = "playerId")
-    public synchronized String haha(@RequestParam(name = "a")int a) {
-        logger.debug("test={},", a);
-       if( !id.add(a)){
-           logger.warn("重复ID={}", a);
-       }
+    @RequestMapping(path = "/test", method = RequestMethod.GET)
+    public synchronized String haha(@RequestParam(name = "a") @Json List<String> a) {
+        logger.debug("test={}, x={}", a);
         return "test";
     }
 

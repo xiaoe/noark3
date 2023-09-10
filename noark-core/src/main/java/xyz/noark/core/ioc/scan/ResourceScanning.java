@@ -123,9 +123,17 @@ public class ResourceScanning {
     private static void doFindJarResources(URL url, ResourceCallback callback, String rootEntryPath) throws IOException {
         JarURLConnection jarCon = (JarURLConnection) url.openConnection();
 
+        boolean inMetaInfPath = META_INF_PATH.equalsIgnoreCase(rootEntryPath);
+
         try (JarFile jarFile = jarCon.getJarFile()) {
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
                 String entryPath = entries.nextElement().getName();
+
+                // 目前不会使用JAVA9中兼容的类，先忽略吧，下个版本再优化具体的版本
+                if (inMetaInfPath && entryPath.startsWith("META-INF/versions/")) {
+                    continue;
+                }
+
                 if (entryPath.startsWith(rootEntryPath)) {
                     findJarFile(entryPath, callback);
                 }

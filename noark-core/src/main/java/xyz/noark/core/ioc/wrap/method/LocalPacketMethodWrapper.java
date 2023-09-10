@@ -17,6 +17,7 @@ import xyz.noark.core.annotation.PlayerId;
 import xyz.noark.core.annotation.ServerId;
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.ioc.definition.method.PacketMethodDefinition;
+import xyz.noark.core.ioc.wrap.MethodParamContext;
 import xyz.noark.core.ioc.wrap.PacketMethodWrapper;
 import xyz.noark.core.ioc.wrap.ParamWrapper;
 import xyz.noark.core.ioc.wrap.param.*;
@@ -100,29 +101,13 @@ public class LocalPacketMethodWrapper extends AbstractControllerMethodWrapper im
     /**
      * 分析参数.
      *
-     * @param session Session对象
-     * @param packet  封包
+     * @param context 方法参数上下文
      * @return 参数列表
      */
-    public Object[] analysisParam(Session session, NetworkPacket packet) {
+    public Object[] analysisParam(MethodParamContext context) {
         List<Object> args = new ArrayList<>(parameters.size());
         for (ParamWrapper parameter : parameters) {
-            args.add(parameter.read(session, packet));
-        }
-        return args.toArray();
-    }
-
-    /**
-     * 分析参数.
-     *
-     * @param playerId 玩家ID
-     * @param protocol 协议对象
-     * @return 参数列表
-     */
-    public Object[] analysisParam(Serializable playerId, Object protocol) {
-        List<Object> args = new ArrayList<>(parameters.size());
-        for (ParamWrapper parameter : parameters) {
-            args.add(parameter.read(playerId, protocol));
+            args.add(parameter.read(context));
         }
         return args.toArray();
     }

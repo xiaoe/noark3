@@ -18,7 +18,6 @@ import xyz.noark.core.ModularManager;
 import xyz.noark.core.annotation.Configuration;
 import xyz.noark.core.annotation.configuration.Bean;
 import xyz.noark.core.event.EventManager;
-import xyz.noark.core.thread.ThreadDispatcher;
 import xyz.noark.core.thread.ThreadModular;
 import xyz.noark.game.event.DefaultEventManager;
 import xyz.noark.game.event.EventModular;
@@ -51,16 +50,6 @@ public class NoarkAutoConfiguration {
     @Bean(name = Modular.THREAD_MODULAR)
     public ThreadModular threadModular() {
         return new ThreadModular();
-    }
-
-    /**
-     * 线程调度器.
-     *
-     * @return 线程调度器
-     */
-    @Bean
-    public ThreadDispatcher threadDispatcher() {
-        return new ThreadDispatcher();
     }
 
     /**

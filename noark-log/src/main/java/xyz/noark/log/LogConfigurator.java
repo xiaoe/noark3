@@ -60,7 +60,7 @@ class LogConfigurator {
     private LogConfig getParentConfig(String name) {
         LogConfig config;
         do {
-            int index = name.lastIndexOf(".");
+            int index = name.lastIndexOf('.');
             // 没有点了，那就使用根配置
             if (index == -1) {
                 name = LogConstant.DEFAULT_LOGGER_NAME;
@@ -108,6 +108,10 @@ class LogConfigurator {
             else if (configKey.startsWith(LOG_CONSOLE)) {
                 this.handleLogConsoleConfig(configKey, e.getValue());
             }
+            // 日志保留时间
+            else if (configKey.startsWith(LogConstant.LOG_DELETE_TIME)) {
+                this.handleLogPathDeleteTimeConfig(configKey, e.getValue());
+            }
             // 输出文件配置
             else if (configKey.startsWith(LogConstant.LOG_PATH)) {
                 this.handleLogPathConfig(configKey, e.getValue());
@@ -118,6 +122,12 @@ class LogConfigurator {
             }
             // 不是日志相关的配置就忽略了
         }
+    }
+
+    private void handleLogPathDeleteTimeConfig(String configKey, String value) {
+        String key = this.judgeLoggerConfigKey(configKey, LogConstant.LOG_DELETE_TIME);
+        final LogDay logDay = LogDay.parse(value);
+        configMap.computeIfAbsent(key, k -> new LogConfig()).setDay(logDay);
     }
 
     /**

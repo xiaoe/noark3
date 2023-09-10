@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Map类型的属性注入
@@ -46,6 +47,17 @@ public class MapFieldDefinition extends DefaultFieldDefinition {
             return Collections.emptyMap();
         }
 
+        // 优先选择那些没有被标@ConditionalOnMissingBean注解的实现
+        List<DefaultBeanDefinition> notMissingList = this.findNotMissingBeanImpl(allImpl).collect(Collectors.toList());
+        if (!notMissingList.isEmpty()) {
+            return toMap(notMissingList);
+        }
+
+        // 上面没有，那就全走这里了
+        return toMap(allImpl);
+    }
+
+    private Object toMap(List<DefaultBeanDefinition> allImpl) {
         final Map<Serializable, Object> result = MapUtils.newHashMap(allImpl.size());
         final Map<Serializable, DefaultBeanDefinition> primaryMap = MapUtils.newHashMap(allImpl.size());
 
@@ -70,9 +82,7 @@ public class MapFieldDefinition extends DefaultFieldDefinition {
 
         // 这个名称有两个实现，优先级一样，好无语
         if (oldImpl.isPrimary() == newImpl.isPrimary()) {
-            throw new ServerBootstrapException("Class:" + field.getDeclaringClass().getName() + ">>Field:" + field.getName()
-                    + " map key expected single matching bean but found 2. " +
-                    "class1=" + oldImpl.getBeanClass().getName() + ", class2=" + newImpl.getBeanClass().getName());
+            throw new ServerBootstrapException("Class:" + field.getDeclaringClass().getName() + ">>Field:" + field.getName() + " map key expected single matching bean but found 2. " + "class1=" + oldImpl.getBeanClass().getName() + ", class2=" + newImpl.getBeanClass().getName());
         }
 
         // 新实现优先

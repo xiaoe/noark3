@@ -32,4 +32,11 @@ public @interface Value {
      * @return Key.
      */
     String value();
+
+    /**
+     * 自动刷新开关，默认是关闭状态
+     *
+     * @return 自动刷新开关
+     */
+    boolean autoRefreshed() default false;
 }

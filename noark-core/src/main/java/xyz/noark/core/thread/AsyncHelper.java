@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 www.noark.xyz All Rights Reserved.
+ * Copyright © 2018 www.noark.xyz All Rights Reserved.
  *
  * 感谢您选择Noark框架，希望我们的努力能为您提供一个简单、易用、稳定的服务器端框架 ！
  * 除非符合Noark许可协议，否则不得使用该文件，您可以下载许可协议文件：
@@ -13,8 +13,9 @@
  */
 package xyz.noark.core.thread;
 
-import xyz.noark.core.annotation.Autowired;
-import xyz.noark.core.annotation.StaticComponent;
+import xyz.noark.core.thread.task.TaskCallback;
+import xyz.noark.core.thread.task.TaskQueue;
+import xyz.noark.log.MDC;
 
 import java.io.Serializable;
 
@@ -28,37 +29,12 @@ import java.io.Serializable;
  * @author 小流氓[176543888@qq.com]
  * @since 3.4
  */
-@StaticComponent
 public class AsyncHelper {
-    /**
-     * 构建一个ThreadLocal来存放执行期的任务上下文
-     */
-    private static final ThreadLocal<TaskContext> THREAD_LOCAL = new ThreadLocal<>();
-
-    @Autowired
-    private static ThreadDispatcher threadDispatcher;
 
     /**
      * 私有化构造函数
      */
     private AsyncHelper() {
-    }
-
-
-    /**
-     * 设置任务执行的上下文
-     *
-     * @param taskContext 任务执行的上下文
-     */
-    static void setTaskContext(TaskContext taskContext) {
-        THREAD_LOCAL.set(taskContext);
-    }
-
-    /**
-     * 移除任务执行的上下文
-     */
-    static void removeTaskContext() {
-        THREAD_LOCAL.remove();
     }
 
     /**
@@ -68,8 +44,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void localCall(TaskCallback callback) {
-        TaskContext context = THREAD_LOCAL.get();
-        call(context.getQueueId(), callback, context.getPlayerId());
+        call((Serializable) MDC.get(TaskQueue.QUEUE_ID), callback);
     }
 
     /**
@@ -79,9 +54,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void call(Serializable queueId, TaskCallback callback) {
-        TaskContext context = THREAD_LOCAL.get();
-        // 如果没有任务上下文，就用null吧，这个可能是启服时的逻辑里调用的，反正这个参数也只是日志记录
-        call(queueId, callback, context == null ? null : context.getPlayerId());
+        ThreadDispatcher.getInstance().dispatchTask(queueId, callback, true);
     }
 
     /**
@@ -91,11 +64,7 @@ public class AsyncHelper {
      * @param callback 异步逻辑
      */
     public static void randomCall(TaskCallback callback) {
-        TaskContext context = THREAD_LOCAL.get();
-        call(null, callback, context.getPlayerId());
-    }
-
-    private static void call(Serializable queueId, TaskCallback callback, Serializable playerId) {
-        threadDispatcher.dispatch(queueId, callback, playerId, true);
+        // 不指定队列ID，随机一个空闲线程
+        ThreadDispatcher.getInstance().dispatchTask(null, callback, true);
     }
 }

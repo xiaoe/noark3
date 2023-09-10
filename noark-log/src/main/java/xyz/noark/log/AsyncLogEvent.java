@@ -15,6 +15,8 @@ package xyz.noark.log;
 
 import xyz.noark.log.message.Message;
 
+import java.util.Map;
+
 /**
  * 异步日志事件
  *
@@ -23,14 +25,24 @@ import xyz.noark.log.message.Message;
  */
 public class AsyncLogEvent extends LogEvent implements Runnable {
     private final PrivateConfig privateConfig;
+    /**
+     * 异步日志那是要克隆出来的值
+     */
+    private final Map<String, Object> mdcValueMap;
 
     AsyncLogEvent(AbstractLogger logger, Level level, Message message) {
         super(logger, level, message);
         this.privateConfig = logger.getPrivateConfig();
+        this.mdcValueMap = MDC.getCopyOfContextMap();
     }
 
     @Override
     public void run() {
         privateConfig.processLogEvent(this);
+    }
+
+    @Override
+    public Object getMdcValue(String key) {
+        return mdcValueMap.get(key);
     }
 }

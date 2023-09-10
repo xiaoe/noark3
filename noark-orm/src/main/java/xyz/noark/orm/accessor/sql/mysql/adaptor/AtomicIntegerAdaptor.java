@@ -29,11 +29,16 @@ class AtomicIntegerAdaptor extends AbstractValueAdaptor<AtomicInteger> {
 
     @Override
     protected void toPreparedStatement(FieldMapping fm, PreparedStatementProxy pstmt, AtomicInteger value, int parameterIndex) throws Exception {
-        pstmt.setInt(parameterIndex, value.intValue());
+        pstmt.setInt(parameterIndex, value == null ? 0 : value.intValue());
     }
 
     @Override
     protected Object toParameter(FieldMapping fm, ResultSet rs) throws Exception {
         return new AtomicInteger(rs.getInt(fm.getColumnName()));
+    }
+
+    @Override
+    protected Object readGeneratedValue(FieldMapping fm, ResultSet rs) throws Exception {
+        return new AtomicInteger(rs.getInt(1));
     }
 }

@@ -15,6 +15,7 @@ package xyz.noark.log.pattern;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,24 +31,27 @@ public class FormatterFactory {
 
     static {
         // 日期
-        formatterImplClassMap.put("date", DatePatternFormatter.class);
+        Arrays.asList("d", "date").forEach(v -> formatterImplClassMap.put(v, DatePatternFormatter.class));
 
         // 等级
-        formatterImplClassMap.put("level", LevelPatternFormatter.class);
+        Arrays.asList("p", "level").forEach(v -> formatterImplClassMap.put(v, LevelPatternFormatter.class));
 
         // 线程
-        formatterImplClassMap.put("thread", ThreadPatternFormatter.class);
+        Arrays.asList("t", "tn", "thread", "threadName").forEach(v -> formatterImplClassMap.put(v, ThreadPatternFormatter.class));
 
         // 文件
-        formatterImplClassMap.put("file", FilePatternFormatter.class);
+        Arrays.asList("F", "file").forEach(v -> formatterImplClassMap.put(v, FilePatternFormatter.class));
         // 行号
-        formatterImplClassMap.put("line", LinePatternFormatter.class);
+        Arrays.asList("L", "line").forEach(v -> formatterImplClassMap.put(v, LinePatternFormatter.class));
 
         // 内容
-        formatterImplClassMap.put("msg", MsgPatternFormatter.class);
+        Arrays.asList("m", "msg", "message").forEach(v -> formatterImplClassMap.put(v, MsgPatternFormatter.class));
 
         // 换行
         formatterImplClassMap.put("n", LineSeparatorPatternFormatter.class);
+
+        // MDC
+        Arrays.asList("X", "mdc", "MDC").forEach(v -> formatterImplClassMap.put(v, MdcPatternFormatter.class));
     }
 
     /**
@@ -77,7 +81,8 @@ public class FormatterFactory {
         try {
             Constructor<?> constructor = klass.getConstructor(FormattingInfo.class, String.class);
             return (PatternFormatter) constructor.newInstance(formattingInfo, options);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
             return new LiteralPatternFormatter(("[%" + id + "(" + e.getMessage() + ")]").toCharArray());
         }
     }

@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import static xyz.noark.log.LogHelper.logger;
-
 /**
  * HTTP工具类.
  *
@@ -118,6 +116,7 @@ public class HttpUtils {
         // 打开和URL之间的连接
         URLConnection connection = new URL(url).openConnection();
         connection.setReadTimeout(timeout);
+        connection.setConnectTimeout(timeout);
         requestProperty.forEach(connection::setRequestProperty);
 
         // 建立实际的连接
@@ -198,7 +197,6 @@ public class HttpUtils {
      * @return 所代表远程资源的响应结果
      */
     public static String post(String url, String params, int timeout, Map<String, String> requestProperty, Charset responseCharset) {
-        logger.info("POST: url={}, param={}", url, params);
         try {
             // 打开和URL之间的连接
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -206,6 +204,7 @@ public class HttpUtils {
 
             // 设置通用的请求属性
             connection.setReadTimeout(timeout);
+            connection.setConnectTimeout(timeout);
             requestProperty.forEach(connection::setRequestProperty);
 
             // 构建Post参数并发送...

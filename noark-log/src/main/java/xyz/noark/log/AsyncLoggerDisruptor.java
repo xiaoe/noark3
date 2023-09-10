@@ -60,7 +60,31 @@ class AsyncLoggerDisruptor {
         }
     }
 
-    public ScheduledFuture<?> scheduleWithFixedDelay(LogOutputFlushTask task, int initialDelay, int delay, TimeUnit unit) {
+    /**
+     * 提交一个固定频率的任务
+     *
+     * @param task         任务
+     * @param initialDelay 初始延迟
+     * @param delay        固定频率
+     * @param unit         频率单位
+     * @return 任务句柄
+     */
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, int initialDelay, int delay, TimeUnit unit) {
+        // 如果这个线程池都停止服务了，那就不要再增加任务
+        if (scheduledExecutor.isShutdown()) {
+            return null;
+        }
         return scheduledExecutor.scheduleWithFixedDelay(task, initialDelay, delay, unit);
+    }
+
+    /**
+     * 提交一个一次性的任务
+     *
+     * @param task  任务
+     * @param delay 延迟时间
+     * @param unit  延迟单位
+     */
+    public ScheduledFuture<?> schedule(Runnable task, int delay, TimeUnit unit) {
+        return scheduledExecutor.schedule(task, delay, unit);
     }
 }

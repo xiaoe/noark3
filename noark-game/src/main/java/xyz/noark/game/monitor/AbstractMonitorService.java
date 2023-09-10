@@ -13,6 +13,8 @@
  */
 package xyz.noark.game.monitor;
 
+import xyz.noark.core.thread.TraceIdFactory;
+
 import java.util.concurrent.TimeUnit;
 
 import static xyz.noark.log.LogHelper.logger;
@@ -48,6 +50,7 @@ public abstract class AbstractMonitorService implements Runnable {
 
     @Override
     public void run() {
+        TraceIdFactory.initFixedTraceIdByMonitorService();
         try {
             this.exe();
         } catch (Exception e) {

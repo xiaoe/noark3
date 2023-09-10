@@ -16,8 +16,6 @@ package xyz.noark.core.ioc.wrap;
 import xyz.noark.core.network.NetworkPacket;
 import xyz.noark.core.network.Session;
 
-import java.io.Serializable;
-
 /**
  * 可执行方法中的参数.
  *
@@ -29,20 +27,10 @@ public interface ParamWrapper {
     /**
      * 解析参数对象
      *
-     * @param session Session会话
-     * @param packet  封包
+     * @param context 方法参数上下文.
      * @return 返回参数对象
      */
-    Object read(Session session, NetworkPacket packet);
-
-    /**
-     * 解析参数对象
-     *
-     * @param playerId 玩家ID.
-     * @param protocol 协议对象
-     * @return 返回参数对象
-     */
-    Object read(Serializable playerId, Object protocol);
+    Object read(MethodParamContext context);
 
     /**
      * 解析参数并转化为可阅读字符串

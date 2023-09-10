@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentMap;
 public class LogFileWriterManager {
     private final ConcurrentMap<String, LogFileWriter> writerMap = new ConcurrentHashMap<>();
 
-    public LogFileWriter getWriter(LogPath logPath) {
-        return writerMap.computeIfAbsent(logPath.getPath(), key -> new LogFileWriter(logPath));
+    public LogFileWriter getWriter(LogPath logPath, LogDay day) {
+        return writerMap.computeIfAbsent(logPath.getPath(), key -> new LogFileWriter(logPath, day));
     }
 
     public void shutdown() {

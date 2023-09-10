@@ -15,7 +15,6 @@ package xyz.noark.core.ioc.wrap.method;
 
 import xyz.noark.core.annotation.controller.ExecThreadGroup;
 import xyz.noark.core.annotation.controller.RequestMethod;
-import xyz.noark.core.annotation.controller.RequestParam;
 import xyz.noark.core.annotation.controller.ResponseBody;
 import xyz.noark.core.ioc.definition.method.HttpMethodDefinition;
 import xyz.noark.core.ioc.wrap.param.HttpParamWrapper;
@@ -56,8 +55,7 @@ public class HttpMethodWrapper extends AbstractControllerMethodWrapper implement
     }
 
     private void buildParamWrapper(Parameter parameter) {
-        RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-        this.parameters.add(new HttpParamWrapper(requestParam, parameter));
+        this.parameters.add(new HttpParamWrapper(parameter));
     }
 
     public String getPath() {

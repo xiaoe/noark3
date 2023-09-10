@@ -48,7 +48,11 @@ class LogFile {
     }
 
     public void close() throws IOException {
-        future.cancel(true);
+        if (future != null) {
+            future.cancel(true);
+        }
+
+        bufferedWriter.flush();
         bufferedWriter.close();
         fileWriter.close();
     }
