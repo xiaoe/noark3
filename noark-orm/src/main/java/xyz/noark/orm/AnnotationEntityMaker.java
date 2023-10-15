@@ -223,8 +223,15 @@ public class AnnotationEntityMaker {
         }
         // 其他就是Json类型的.
         else {
-            fm.setType(FieldType.AsJson);
-            fm.setWidth(fm.getColumn() == null ? 1024 : fm.getColumn().length());
+            Column column = fm.getColumn();
+            if (column==null){
+                fm.setWidth(1024);
+            }else if (column.length()==0){
+                //MysqlJson
+                fm.setType(FieldType.AsMysqlJson);
+            }else {
+                fm.getColumn().length();
+            }
         }
     }
 }

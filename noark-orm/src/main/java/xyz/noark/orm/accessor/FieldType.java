@@ -75,5 +75,9 @@ public enum FieldType {
     /**
      * Blob类型
      */
-    AsBlob;
+    AsBlob,
+    /**
+     * mysqlJSON类型
+     */
+    AsMysqlJson;
 }
