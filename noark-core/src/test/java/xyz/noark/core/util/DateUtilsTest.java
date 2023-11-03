@@ -88,6 +88,40 @@ public class DateUtilsTest {
             Date d2 = sdf.parse("2018-12-31 00:00:00:000");
             assertEquals(DateUtils.diffDays(d1, d2), -1);
         }
+
+        // 夏令时间内的
+        {
+            Date d1 = sdf.parse("2023-05-20 00:00:00:000");
+            Date d2 = sdf.parse("2023-05-20 23:59:59:999");
+            assertEquals(0, DateUtils.diffDays(d1, d2));
+        }
+        {
+            Date d1 = sdf.parse("2023-05-20 00:00:00:000");
+            Date d2 = sdf.parse("2023-05-21 23:59:59:999");
+            assertEquals(DateUtils.diffDays(d1, d2), -1);
+        }
+        {
+            Date d1 = sdf.parse("2023-05-20 23:59:59:999");
+            Date d2 = sdf.parse("2023-05-21 00:00:00:000");
+            assertEquals(DateUtils.diffDays(d1, d2), -1);
+        }
+
+        // 夏令时间外的
+        {
+            Date d1 = sdf.parse("2023-11-11 00:00:00:000");
+            Date d2 = sdf.parse("2023-11-11 23:59:59:999");
+            assertEquals(0, DateUtils.diffDays(d1, d2));
+        }
+        {
+            Date d1 = sdf.parse("2023-11-11 00:00:00:000");
+            Date d2 = sdf.parse("2023-11-12 23:59:59:999");
+            assertEquals(DateUtils.diffDays(d1, d2), -1);
+        }
+        {
+            Date d1 = sdf.parse("2023-11-11 23:59:59:999");
+            Date d2 = sdf.parse("2023-11-12 00:00:00:000");
+            assertEquals(DateUtils.diffDays(d1, d2), -1);
+        }
     }
 
     @Test
@@ -114,14 +148,7 @@ public class DateUtilsTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"'2023-02-06T00:00:00', '2023-02-06T00:00:00',60, true"
-            , "'2023-02-06T00:00:00', '2023-02-06T00:00:59',60, true"
-            , "'2023-02-06T00:00:00', '2023-02-06T00:01:00',60, false"
-            , "'2023-02-06T00:01:00', '2023-02-06T00:01:00',60, true"
-            , "'2023-02-06T00:01:00', '2023-02-06T00:01:01',60, true"
-            , "'2023-02-06T00:01:00', '2023-02-13T00:00:00',60, true"
-            , "'2023-02-06T00:01:00', '2023-02-13T00:00:59',60, true"
-            , "'2023-02-06T00:01:00', '2023-02-13T00:01:00',60, false"})
+    @CsvSource({"'2023-02-06T00:00:00', '2023-02-06T00:00:00',60, true", "'2023-02-06T00:00:00', '2023-02-06T00:00:59',60, true", "'2023-02-06T00:00:00', '2023-02-06T00:01:00',60, false", "'2023-02-06T00:01:00', '2023-02-06T00:01:00',60, true", "'2023-02-06T00:01:00', '2023-02-06T00:01:01',60, true", "'2023-02-06T00:01:00', '2023-02-13T00:00:00',60, true", "'2023-02-06T00:01:00', '2023-02-13T00:00:59',60, true", "'2023-02-06T00:01:00', '2023-02-13T00:01:00',60, false"})
     public void testIsSameWeek(LocalDateTime time1, LocalDateTime time2, int offsetSeconds, boolean want) {
         Date date1 = DateUtils.from(time1);
         Date date2 = DateUtils.from(time2);
